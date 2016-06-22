@@ -1,7 +1,7 @@
 #!/usr/bin/python
 #coding=utf-8
 
-import ConfigParser
+import ConfigParser, decimal
 
 appRoot = '/usr/local/webcluster'
 
@@ -16,4 +16,8 @@ def readConf( file ):
     return conf
 
 
+def jsonEncodeExtra( obj ):
+    if isinstance( obj, decimal.Decimal ):
+        return float( obj )
+    raise TypeError( repr( obj ) + " is not JSON serializable" )
 

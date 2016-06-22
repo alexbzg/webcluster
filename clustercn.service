@@ -1,0 +1,10 @@
+[Unit]
+Desription=web dx cluster backend
+After=network.target
+
+[Service]
+ExecStart=/usr/local/webcluster/clusterCn.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

@@ -6,7 +6,7 @@ from twisted.internet import reactor
 from twisted.internet.protocol import ClientFactory
 from twisted.conch.telnet import TelnetTransport, StatefulTelnetProtocol
 from twisted.python import log
-import sys, decimal, re, datetime, os, logging, time
+import sys, decimal, re, datetime, os, logging, time, json
 
 from common import appRoot, readConf, siteConf
 
@@ -51,6 +51,8 @@ with open( appRoot + '/cty.dat', 'r' ) as fCty:
                     prefixes[pfxType][pfx0] =  country
 
 class DX:
+
+
     def __init__( self, **params ):
 
         self.text = params['text']
@@ -58,16 +60,20 @@ class DX:
         self.cs = params['cs']
         self.ts = time.time()
 
-        dxData[:] = [ x if x.ts > self.ts - 1800 and \
-            not ( x.cs == self.cs and ( x.freq - self.freq < 0.3 and \
-                self.freq - x.freq < 0.3 ) ) \
-            for x in dxData ]
+        dxData[:] = [ x for x in dxData \
+                if x.ts > self.ts - 1800 and \
+                not ( x.cs == self.cs and ( x.freq - self.freq < 0.3 and \
+                self.freq - x.freq < 0.3 ) ) ]
 
         dxData.append( self )
 
+        with open( conf.get( 'web', 'root' ) + "/dxdata.json", 'w' ) as fDxData:
+            fDxData.write( json.dumps( dxData, default=lambda o: o.__dict__ ) )
 
 
-class TelnetPrinter(StatefulTelnetProtocol):
+
+
+class ClusterProtocol(StatefulTelnetProtocol):
     def lineReceived(self, line):
         m = reDX.match( line )
         if m: 
@@ -79,18 +85,19 @@ class TelnetPrinter(StatefulTelnetProtocol):
                 for c in xrange(1, len( cs ) ):
                     if prefixes[0].has_key( cs[:c] ):
                         dxCty = prefixes[0][ cs[:c] ]
+            freq = float( m.group(2) )
             if dxCty in ( 'UA', 'UA2', 'UA9' ):
-                
+                DX( text = line, cs = cs, freq = freq )
                 print line, dxCty
 
     def connectionMade(self):
         self.sendLine( conf.get( 'cluster', 'callsign' ) )
         self.setLineMode()
 
-class TelnetFactory(ClientFactory):
+class ClusterClient(ClientFactory):
     def buildProtocol(self, addr):
-        return TelnetTransport(TelnetPrinter)
+        return TelnetTransport(ClusterProtocol)
 
-reactor.connectTCP( conf.get( 'cluster', 'host' ), conf.getint( 'cluster', 'port' ), TelnetFactory())
+reactor.connectTCP( conf.get( 'cluster', 'host' ), conf.getint( 'cluster', 'port' ), ClusterClient())
 
 reactor.run()
