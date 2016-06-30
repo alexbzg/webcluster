@@ -9,18 +9,19 @@ from twisted.conch.telnet import TelnetTransport, StatefulTelnetProtocol
 from twisted.python import log
 import sys, decimal, re, datetime, os, logging, time, json, urllib2, xmltodict
 
-from common import appRoot, readConf, siteConf
+from common import appRoot, readConf, siteConf, loadJSON
 from dxdb import dxdb
 
 
 conf = siteConf()
-pidFile = open( appRoot + '/clusterCn.pid', 'w' )
+pidFile = open( '/run/clustercn.pid', 'w' )
 pidFile.write( str( os.getpid() ) )
 pidFile.close()
 observer = log.PythonLoggingObserver()
 observer.start()
 logging.basicConfig( level = logging.ERROR,
         format='%(asctime)s %(message)s', 
+        filename='/var/log/clustercn.log',
         datefmt='%Y-%m-%d %H:%M:%S' )
 logging.info( 'starting in test mode' )
 
@@ -64,6 +65,8 @@ class QRZLink:
             rDict = xmltodict.parse( rBody )
             if rDict['QRZDatabase']['Session'].has_key( 'session_id' ):
                 self.sessionID = rDict['QRZDatabase']['Session']['session_id']
+                with open( '/run/clustercn.sessionid', 'w' ) as f:
+                    f.write( self.sessionID )
                 self.startQueueTask()
                 reactor.callLater( 60*59, self.getSessionID )            
             else:
@@ -93,14 +96,6 @@ class QRZLink:
                 if rDict['QRZDatabase'].has_key( 'Callsign' ):
                     return rDict['QRZDatabase']['Callsign']
                 else:
-                    if rDict['QRZDatabase']['Session'].has_key('error'):
-                        if rDict['QRZDatabase']['Session']['error'] == \
-                                'Callsign not found':
-                            return { 'state': None, 'qthloc': None }
-                        elif rDict['QRZDatabase']['Session']['error'] == \
-                                'Session does not exist or expired':
-                            self.getSessionID()
-                            return None
                     raise Exception( 'Wrong QRZ response' )
             except Exception as e:
                 if isinstance(e, urllib2.HTTPError):
@@ -124,9 +119,90 @@ prefixes = [ {}, {} ]
 dxData = []
 qrzLink = QRZLink()
 
+class DX:
+
+
+    def __init__( self, **params ):
+
+        self.text = params['text']
+        self.freq = params['freq']
+        self.cs = params['cs']
+        self.de = params['de']
+
+        if params.has_key( 'ts' ):
+            self.ts = params['ts']
+            self.time = params['time']
+            self.state = params['state'] if params.has_key( 'state' ) else None
+            self.qth = params['qth'] if params.has_key( 'qth' ) else None
+
+            dxData.append( self )
+
+        else:
+        
+            self.time = params['time'][:2] + ':' + params['time'][2:4]
+            self.ts = time.time()
+            self.state = None
+            self.qth = None
+
+            if '#' in self.de:
+                self.text = (self.text.split( ' ', 1 ))[0]
+
+
+            csLookup = dxdb.getObject( 'callsigns', { 'callsign': self.cs }, \
+                    False, True )
+
+            if csLookup:
+                self.state = csLookup['state']
+                self.qth = csLookup['qth']
+                logging.debug( 'callsign found in db' )
+            if not csLookup or not csLookup['qrz_data_loaded']:
+                logging.debug( 'putting calssign in query queue: ' + self.cs )
+                qrzLink.csQueue.put( { 'cs': self.cs, 'cb': self.onQRZdata } )
+
+
+
+            dxData[:] = [ x for x in dxData \
+                    if x.ts > self.ts - 1800 and \
+                    not ( x.cs == self.cs and ( x.freq - self.freq < 0.3 and \
+                    self.freq - x.freq < 0.3 ) ) ]
+
+            dxData.append( self )
+
+            exportDxData()
+
+
+    def onQRZdata( self, data ):
+        logging.debug( 'query received ' +  self.cs )
+        if data:
+            if data.has_key( 'qthloc' ):
+                self.qth = data['qthloc']            
+            if self.state:
+                logging.debug( 'updating db callsign record' )
+                dxdb.updateObject( 'callsigns',
+                    { 'callsign': self.cs, 'qth': self.qth, \
+                    'qrz_data_loaded': True }, 'callsign' )
+            else:
+                if data.has_key( 'state' ) and data['state']:
+                    self.state = data['state'] 
+                logging.debug( 'creating new db callsign record' )
+                dxdb.getObject( 'callsigns', \
+                        { 'callsign': self.cs, 'state': self.state, \
+                        'qth': self.qth, 'qrz_data_loaded': True }, \
+                        True )
+            dxdb.commit()
+            exportDxData()
+
+
+
+
 def exportDxData():
     with open( conf.get( 'web', 'root' ) + "/dxdata.json", 'w' ) as fDxData:
         fDxData.write( json.dumps( dxData, default=lambda o: o.__dict__ ) )
+
+prevDX = loadJSON( conf.get( 'web', 'root' ) + "/dxdata.json" )
+if prevDX:
+    for item in prevDX:
+        DX( **item )
    
 
 with open( appRoot + '/cty.dat', 'r' ) as fCty:
@@ -147,59 +223,6 @@ with open( appRoot + '/cty.dat', 'r' ) as fCty:
                     prefixes[pfxType][pfx0] += "; " + country;
                 else:
                     prefixes[pfxType][pfx0] =  country
-
-class DX:
-
-
-    def __init__( self, **params ):
-
-        self.text = params['text']
-        self.freq = params['freq']
-        self.cs = params['cs']
-        self.de = params['de']
-        self.time = params['time'][:2] + ':' + params['time'][2:4]
-        self.ts = time.time()
-
-        if '#' in self.de:
-            self.text = (self.text.split( ' ', 1 ))[0]
-
-
-        csLookup = dxdb.getObject( 'callsigns', { 'callsign': self.cs }, \
-                False, True )
-
-        if csLookup:
-            self.state = csLookup['state']
-            self.qth = csLookup['qth']
-            logging.debug( 'callsign found in db' )
-        else:
-            logging.debug( 'putting calssign in query queue: ' + self.cs )
-            qrzLink.csQueue.put( { 'cs': self.cs, 'cb': self.onQRZdata } )
-
-
-
-        dxData[:] = [ x for x in dxData \
-                if x.ts > self.ts - 1800 and \
-                not ( x.cs == self.cs and ( x.freq - self.freq < 0.3 and \
-                self.freq - x.freq < 0.3 ) ) ]
-
-        dxData.append( self )
-
-        exportDxData()
-
-
-    def onQRZdata( self, data ):
-        logging.debug( 'query received ' +  self.cs )
-        print data
-        if data:
-            self.state = data['state'] if data.has_key( 'state' ) else None
-            self.qth = data['qthloc'] if data.has_key( 'qthloc' ) else None
-            logging.debug( 'saving to db' )
-            dxdb.getObject( 'callsigns', \
-                    { 'callsign': self.cs, 'state': self.state, 'qth': self.qth }, \
-                    True )
-            dxdb.commit()
-            exportDxData()
-
 
 
 

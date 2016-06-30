@@ -113,12 +113,12 @@ class dbConn:
                     self.execute( detailSQL, row ) )
         return data
 
-    def updateObject( self, table, params ):
+    def updateObject( self, table, params, idParam = "id" ):
         paramString = ", ".join( [ k + " = %(" + k + ")s" 
-            for k in params.keys() if k != "id" ] )
+            for k in params.keys() if k != idParam ] )
         if paramString != '':
             sql = "update " + table + " set " + paramString + \
-                " where id = %(id)s returning *" 
+                " where " + idParam + " = %(" + idParam + ")s returning *" 
             cur = self.execute( sql, params )
             if cur:
                 objRes = cursor2dicts( cur )

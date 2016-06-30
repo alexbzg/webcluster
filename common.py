@@ -1,7 +1,8 @@
 #!/usr/bin/python
 #coding=utf-8
 
-import ConfigParser, decimal
+import ConfigParser, decimal, json
+from os import path
 
 appRoot = '/usr/local/webcluster'
 
@@ -20,4 +21,16 @@ def jsonEncodeExtra( obj ):
     if isinstance( obj, decimal.Decimal ):
         return float( obj )
     raise TypeError( repr( obj ) + " is not JSON serializable" )
+
+def loadJSON( pathJS ):
+    if not path.isfile( pathJS ):
+        print pathJS + " not found"
+        return False
+    try:
+        r = json.load( open( pathJS ) )
+        return r
+    except Exception as ex:
+        print "Error loading " + pathJS
+        logEx( ex )
+        return False
 
