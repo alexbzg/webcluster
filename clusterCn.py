@@ -10,7 +10,7 @@ from twisted.python import log
 import sys, decimal, re, datetime, os, logging, time, json, urllib2, xmltodict
 
 from common import appRoot, readConf, siteConf, loadJSON
-from dxdb import dxdb
+from dxdb import dxdb, cursor2dicts
 
 
 conf = siteConf()
@@ -128,12 +128,15 @@ class DX:
         self.freq = params['freq']
         self.cs = params['cs']
         self.de = params['de']
+        self.qrzData = False
+        self.inDB = False
 
         if params.has_key( 'ts' ):
             self.ts = params['ts']
             self.time = params['time']
             self.state = params['state'] if params.has_key( 'state' ) else None
             self.qth = params['qth'] if params.has_key( 'qth' ) else None
+            self.inDB = True
 
             dxData.append( self )
 
@@ -144,8 +147,6 @@ class DX:
             self.state = None
             self.qth = None
 
-            if '#' in self.de:
-                self.text = (self.text.split( ' ', 1 ))[0]
 
 
             csLookup = dxdb.getObject( 'callsigns', { 'callsign': self.cs }, \
@@ -154,11 +155,23 @@ class DX:
             if csLookup:
                 self.state = csLookup['state']
                 self.qth = csLookup['qth']
+                self.inDB = True
+                self.qrzData = csLookup['qrz_data_loaded']
                 logging.debug( 'callsign found in db' )
-            if not csLookup or not csLookup['qrz_data_loaded']:
+            if  not '/' in self.cs or ( not csLookup or \
+                    not csLookup['qrz_data_loaded'] ):
                 logging.debug( 'putting calssign in query queue: ' + self.cs )
                 qrzLink.csQueue.put( { 'cs': self.cs, 'cb': self.onQRZdata } )
 
+            if '#' in self.de:
+                self.text = (self.text.split( ' ', 1 ))[0]
+            else:
+                for m in reState.finditer( self.text ):
+                    if m.group( 0 ) in states:
+                        if self.state != m.group( 0 ):
+                            self.state = m.group(0)
+                            self.updateDB()
+                        break
 
 
             dxData[:] = [ x for x in dxData \
@@ -176,21 +189,25 @@ class DX:
         if data:
             if data.has_key( 'qthloc' ):
                 self.qth = data['qthloc']            
-            if self.state:
-                logging.debug( 'updating db callsign record' )
-                dxdb.updateObject( 'callsigns',
-                    { 'callsign': self.cs, 'qth': self.qth, \
-                    'qrz_data_loaded': True }, 'callsign' )
-            else:
-                if data.has_key( 'state' ) and data['state']:
-                    self.state = data['state'] 
-                logging.debug( 'creating new db callsign record' )
-                dxdb.getObject( 'callsigns', \
-                        { 'callsign': self.cs, 'state': self.state, \
-                        'qth': self.qth, 'qrz_data_loaded': True }, \
-                        True )
-            dxdb.commit()
+            if not self.state and data.has_key( 'state' ) and data['state']:
+                self.state = data['state']
+            self.qrzData = True
+            self.updateDB()
             exportDxData()
+
+    def updateDB( self ):
+        if self.inDB:
+            logging.debug( 'updating db callsign record' )
+            dxdb.updateObject( 'callsigns',
+                { 'callsign': self.cs, 'qth': self.qth, \
+                'qrz_data_loaded': self.qrzData }, 'callsign' )
+        else:
+            logging.debug( 'creating new db callsign record' )
+            dxdb.getObject( 'callsigns', \
+                    { 'callsign': self.cs, 'state': self.state, \
+                    'qth': self.qth, 'qrz_data_loaded': self.qrzData }, \
+                    True )
+            dxdb.commit()
 
 
 
@@ -203,6 +220,10 @@ prevDX = loadJSON( conf.get( 'web', 'root' ) + "/dxdata.json" )
 if prevDX:
     for item in prevDX:
         DX( **item )
+
+states = frozenset( [ x['state'] for x in cursor2dicts( dxdb.execute( \
+        'select distinct state from callsigns where state is not null;' ) ) ] )
+reState = re.compile( '[a-zA-Z]{2}[ -]+\d\d' )
    
 
 with open( appRoot + '/cty.dat', 'r' ) as fCty:
