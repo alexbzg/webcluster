@@ -182,7 +182,7 @@ class DX:
         if self.inDB:
             logging.debug( 'updating db callsign record' )
             dxdb.updateObject( 'callsigns',
-                { 'callsign': self.cs, 'qth': self.qth, \
+              { 'callsign': self.cs, 'qth': self.qth, 'state': self.state,\
                 'qrz_data_loaded': self.qrzData }, 'callsign' )
         else:
             logging.debug( 'creating new db callsign record' )
