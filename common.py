@@ -1,7 +1,7 @@
 #!/usr/bin/python
 #coding=utf-8
 
-import ConfigParser, decimal, json
+import ConfigParser, decimal, json, logging
 from os import path
 
 appRoot = '/usr/local/webcluster'
@@ -30,7 +30,7 @@ def loadJSON( pathJS ):
         r = json.load( open( pathJS ) )
         return r
     except Exception as ex:
-        print "Error loading " + pathJS
-        logEx( ex )
+        logging.error( "Error loading " + pathJS )
+        logging.exception( ex )
         return False
 
