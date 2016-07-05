@@ -10,10 +10,26 @@ import sys, decimal, re, datetime, os, logging, time, json, urllib2, xmltodict
 from common import appRoot, readConf, siteConf, loadJSON
 from dxdb import dxdb, cursor2dicts
 
-
-states = frozenset( [ x['state'] for x in cursor2dicts( dxdb.execute( \
-        'select distinct state from callsigns where state is not null;' ) ) ] )
+states = []
+with open( os.path.dirname( os.path.abspath( __file__ ) ) + '/rda_rus.txt', 'r' ) as frda:
+    reRDA = re.compile( '^([A-Z]{2}-\d\d)\s+(deleted)*' )
+    for line in frda.readlines():
+        m = reRDA.match( line )
+        if m and not m.group(2):
+            states.append( m.group(1) )
+states = frozenset( states )
 reState = re.compile( '[a-zA-Z]{2}[ -]+\d\d' )
+
+rafaQTH = {}
+with open( os.path.dirname( os.path.abspath( __file__ ) ) + '/air_rafa.csv', 'r' ) as frafa:
+    for line in frafa.readlines():
+        r, qs = line.split( ';', 3 )[1:3]
+        qs = qs.strip( '"' ).split( ',' )
+        for q in qs:
+            rafaQTH[q.strip()] = r
+rafa = frozenset( rafaQTH.values() )
+reQTH = re.compile( '[a-zA-Z0-9]{6}' )
+reRAFA = re.compile( '[a-zA-Z0-9]{4}' )
 
 
 class QRZLink:
@@ -102,7 +118,7 @@ class QRZLink:
                 return None
 
 
-class DX:
+class DX( object ):
 
     def toDict( self ):
         return {
@@ -113,10 +129,12 @@ class DX:
             'ts': self.ts,
             'time': self.time,
             'state': self.state,
-            'qth': self.qth }
+            'qth': self.qth,
+            'rafa': self.rafa }
 
     def __init__( self, dxData = None, **params ):
 
+        self._qth = None
         self.dxData = dxData
         self.text = params['text']
         self.freq = params['freq']
@@ -130,6 +148,7 @@ class DX:
             self.time = params['time']
             self.state = params['state'] if params.has_key( 'state' ) else None
             self.qth = params['qth'] if params.has_key( 'qth' ) else None
+            self.rafa = params['rafa'] if params.has_key( 'rafa' ) else None
             self.inDB = True
 
         else:
@@ -138,8 +157,7 @@ class DX:
             self.ts = time.time()
             self.state = None
             self.qth = None
-
-
+            self.rafa = None
 
             csLookup = dxdb.getObject( 'callsigns', { 'callsign': self.cs }, \
                     False, True )
@@ -147,6 +165,7 @@ class DX:
             if csLookup:
                 self.state = csLookup['state']
                 self.qth = csLookup['qth']
+                self.rafa = csLookup['rafa']
                 self.inDB = True
                 self.qrzData = csLookup['qrz_data_loaded']
                 logging.debug( 'callsign found in db' )
@@ -158,13 +177,34 @@ class DX:
             if '#' in self.de:
                 self.text = (self.text.split( ' ', 1 ))[0]
             else:
+                fl = False
                 for m in reState.finditer( self.text ):
                     state = m.group( 0 ).upper()
                     if  state in states:
                         if self.state != state:
                             self.state = state
-                            self.updateDB()
+                            fl = True
                         break
+
+                for m in reQTH.finditer( self.text ):
+                    r = m.group( 0 ).upper()
+                    if rafaQTH.has_key( r ):                        
+                        if self.qth != r:
+                            self.qth = r
+                            fl = True
+                        break
+
+                for m in reRAFA.finditer( self.text ):
+                    r = m.group( 0 ).upper()
+                    if r in rafa:    
+                        if self.rafa != r:
+                            self.rafa = r
+                            fl = True
+                        break
+
+                if fl:
+                    self.updateDB()
+                   
 
     def onQRZdata( self, data ):
         logging.debug( 'query received ' +  self.cs )
@@ -183,14 +223,27 @@ class DX:
             logging.debug( 'updating db callsign record' )
             dxdb.updateObject( 'callsigns',
               { 'callsign': self.cs, 'qth': self.qth, 'state': self.state,\
-                'qrz_data_loaded': self.qrzData }, 'callsign' )
+                      'qrz_data_loaded': self.qrzData, 'rafa': self.rafa }, 'callsign' )
         else:
             logging.debug( 'creating new db callsign record' )
             dxdb.getObject( 'callsigns', \
                     { 'callsign': self.cs, 'state': self.state, \
-                    'qth': self.qth, 'qrz_data_loaded': self.qrzData }, \
+                    'qth': self.qth, 'qrz_data_loaded': self.qrzData, 'rafa': self.rafa }, \
                     True )
             dxdb.commit()
+
+    @property
+    def qth( self ):
+        return self._qth
+
+    @qth.setter
+    def qth( self, value ):
+        v = value.upper() if value != None else None
+        if self._qth != v:
+            self._qth = v
+            if rafaQTH.has_key( self._qth ):
+                self.rafa = rafaQTH[ self._qth ]
+
 
 
 class DXData:
