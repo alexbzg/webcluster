@@ -1,0 +1,66 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"                                                
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" land="ru" xml:lang="en" ng-app="webDXapp">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <meta http-equiv="Content-Language" content="ru-ru"/>
+        <meta name="description" content="" />
+        <meta name="keywords" content="" />
+        <title>Awards DX Cluster by R7AB</title>
+        <link href="style.css" rel="stylesheet" type="text/css">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon">
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
+
+        <script src="app.js"></script>
+    </head>
+    <body ng-controller="bodyCtrl">
+    <div id="top">
+        <a href="/"><img src="/images/ac_logo.jpg" border="0" /></a>
+        <div id="top_menu">
+        <!-- <a href="/login.html">Login</a> -->
+            <a href="/contact.html">Contact</a>
+        </div>
+    </div>
+        <table id="cluster">
+            <tr>
+                <th class="spotter">Spotter</th>
+                <th class="time">UTC</th>
+                <th class="freq">MHz</th>
+                <th class="callsign">Callsign</th>
+                <th class="awards">Awards</th> 
+                <th class="QTHLoc">QTHLoc</th>
+                <th class="text"></th>
+            </tr>
+            <tr ng-repeat="item in dxItems" ng-class-odd="'odd'" ng-class-even="'even'">
+                <td class="spotter">{{ replace0( item.de )}}</td>
+                <td class="time">{{item.time}}</td>
+                <td class="freq">
+                    {{item.freq.toFixed(1).substr(0, item.freq.toFixed(1).length - 5 )
+                    }}<span>{{item.freq.toFixed(1).substr( -5 )}}</span>
+                </td>
+                <td class="callsign">{{ replace0( item.cs ) }}</td>
+                <td class="awards">
+                    <span ng-repeat="award in item.awards" ><span 
+                            class="award_name">{{award.award}}</span>
+                        ({{award.value}})<span ng-show="!$last">, </span></span>
+                </td>  
+                <td class="QTHLoc">{{ replace0( item.qth )}}</td>
+                <td class="text">{{ replace0( item.text )}}</td>
+            </tr>
+        </table>
+
+<!--    <div id="contact_link">
+        <a href="/contact.html">Support contact</a>
+    </div> -->
+
+    <div id="counter">
+    Special thanks to <a href="http://qrz.ru" target="_blank">QRZ.ru</a>, <a href="https://www.qrz.com/db/DL6KVA" target="_blank">DL6KVA</a>.<br/><br/>
+        <!-- Yandex.Metrika informer --> <a href="https://metrika.yandex.ru/stat/?id=38305355&amp;from=informer" target="_blank" rel="nofollow"><img src="https://informer.yandex.ru/informer/38305355/3_0_EFEFEFFF_EFEFEFFF_0_pageviews" style="width:88px; height:31px; border:0;" alt="Яндекс.Метрика" title="Яндекс.Метрика: данные за сегодня (просмотры, визиты и уникальные посетители)" onclick="try{Ya.Metrika.informer({i:this,id:38305355,lang:'ru'});return false}catch(e){}" /></a> <!-- /Yandex.Metrika informer --> <!-- Yandex.Metrika counter --> <script type="text/javascript"> (function (d, w, c) { (w[c] = w[c] || []).push(function() { try { w.yaCounter38305355 = new Ya.Metrika({ id:38305355, clickmap:true, trackLinks:true, accurateTrackBounce:true }); } catch(e) { } }); var n = d.getElementsByTagName("script")[0], s = d.createElement("script"), f = function () { n.parentNode.insertBefore(s, n); }; s.type = "text/javascript"; s.async = true; s.src = "https://mc.yandex.ru/metrika/watch.js"; if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f, false); } else { f(); } })(document, window, "yandex_metrika_callbacks"); </script> <noscript><div><img src="https://mc.yandex.ru/watch/38305355" style="position:absolute; left:-9999px;" alt="" /></div></noscript> <!-- /Yandex.Metrika counter -->
+    </div>
+
+    </body>
+</html>
+
