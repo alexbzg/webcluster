@@ -32,51 +32,11 @@ logging.basicConfig( level = logging.DEBUG if args['t'] else logging.ERROR,
         datefmt='%Y-%m-%d %H:%M:%S' )
 logging.info( 'starting in test mode' )
 
-reDX = re.compile( "DX de (\S+):\s+(\d+\.\d+)\s+(\S+)\s+(.+)\s(\d\d\d\dZ)" )
-country = "";
-reCountry = re.compile("\s(\S+):$");
-rePfx = re.compile("(\(.*\))?(\[.*\])?");
-prefixes = [ {}, {} ]
 dxData = DXData( conf.get( 'web', 'root' ) + "/dxdata.json" )
-
-with open( appRoot + '/cty.dat', 'r' ) as fCty:
-    for line in fCty.readlines():
-        line = line.rstrip( '\r\n' )
-        mCountry = reCountry.search( line )
-        if mCountry:
-            country = mCountry.group( 1 )
-        else: 
-            pfxs = line.lstrip(' ').rstrip( ';,' ).split(',')
-            for pfx in pfxs:
-                pfxType = 0
-                pfx0 = rePfx.sub( pfx, "" )
-                if pfx0.startswith("="):
-                    pfx0 = pfx0.lstrip('=')
-                    pfxType = 1
-                if prefixes[pfxType].has_key( pfx0 ):
-                    prefixes[pfxType][pfx0] += "; " + country;
-                else:
-                    prefixes[pfxType][pfx0] =  country
-
-
-
 
 class ClusterProtocol(StatefulTelnetProtocol):
     def lineReceived(self, line):
-        m = reDX.match( line )
-        if m: 
-            cs = m.group( 3 )
-            dxCty = ""
-            if prefixes[1].has_key( cs ):
-                dxCty = prefixes[1][cs];
-            else:
-                for c in xrange(1, len( cs ) ):
-                    if prefixes[0].has_key( cs[:c] ):
-                        dxCty = prefixes[0][ cs[:c] ]
-            freq = float( m.group(2) )
-            if dxCty in ( 'UA', 'UA2', 'UA9' ):
-                dxData.append( DX( dxData = dxData, text = m.group(4), cs = cs, freq = freq, de = m.group(1), \
-                        time = m.group(5) ) )
+        dxData.dxLine( line )
 
     def connectionMade(self):
         self.sendLine( conf.get( 'cluster', 'callsign' ) )

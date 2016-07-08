@@ -10,18 +10,26 @@ import sys, decimal, re, datetime, os, logging, time, json, urllib2, xmltodict
 from common import appRoot, readConf, siteConf, loadJSON
 from dxdb import dxdb, cursor2dicts
 
-states = []
-with open( os.path.dirname( os.path.abspath( __file__ ) ) + '/rda_rus.txt', 'r' ) as frda:
+conf = siteConf()
+states = {}
+with open( appRoot + '/rda_rus.txt', 'r' ) as frda:
+    rs = []
     reRDA = re.compile( '^([A-Z]{2}-\d\d)\s+(deleted)*' )
     for line in frda.readlines():
         m = reRDA.match( line )
         if m and not m.group(2):
-            states.append( m.group(1) )
-states = frozenset( states )
+            rs.append( m.group(1) )
+    states['Russia'] = frozenset( rs )
+with open( appRoot + '/URDAlist.csv', 'r' ) as furda:
+    us = []
+    for line in furda.readlines():
+        us.append( line.split( ';', 3 )[1] )
+    states['Ukraine'] = frozenset( us )
+   
 reState = re.compile( '[a-zA-Z]{2}[ -]+\d\d' )
 
 rafaQTH = {}
-with open( os.path.dirname( os.path.abspath( __file__ ) ) + '/air_rafa.csv', 'r' ) as frafa:
+with open( appRoot + '/air_rafa.csv', 'r' ) as frafa:
     for line in frafa.readlines():
         r, qs = line.split( ';', 3 )[1:3]
         qs = qs.strip( '"' ).split( ',' )
@@ -30,6 +38,47 @@ with open( os.path.dirname( os.path.abspath( __file__ ) ) + '/air_rafa.csv', 'r'
 rafa = frozenset( rafaQTH.values() )
 reQTH = re.compile( '[a-zA-Z0-9]{6}' )
 reRAFA = re.compile( '[a-zA-Z0-9]{4}' )
+
+reCountry = re.compile("\s(\S+):$");
+rePfx = re.compile("(\(.*\))?(\[.*\])?");
+prefixes = [ {}, {} ]
+countries = {}
+for cty, cl in conf.items( 'countries' ):
+    for code in cl.split( ',' ):
+        countries[code] = cty.title()
+with open( appRoot + '/cty.dat', 'r' ) as fCty:
+    for line in fCty.readlines():
+        line = line.rstrip( '\r\n' )
+        mCountry = reCountry.search( line )
+        if mCountry:
+            country = mCountry.group( 1 )
+        else:
+            pfxs = line.lstrip(' ').rstrip( ';,' ).split(',')
+            for pfx in pfxs:
+                pfxType = 0
+                pfx0 = rePfx.sub( pfx, "" )
+                if pfx0.startswith("="):
+                    pfx0 = pfx0.lstrip('=')
+                    pfxType = 1
+                if prefixes[pfxType].has_key( pfx0 ):
+                    prefixes[pfxType][pfx0] += "; " + country;
+                else:
+                    prefixes[pfxType][pfx0] =  country
+
+def getCountry( cs ):
+    dxCty = None
+    if prefixes[1].has_key( cs ):
+        dxCty = prefixes[1][cs];
+    else:
+        for c in xrange(1, len( cs ) ):
+            if prefixes[0].has_key( cs[:c] ):
+                dxCty = prefixes[0][ cs[:c] ]
+    if dxCty:
+        return countries[ dxCty ] if countries.has_key( dxCty ) else None
+    else:
+        return None
+
+
 
 
 class QRZLink:
@@ -130,7 +179,8 @@ class DX( object ):
             'time': self.time,
             'state': self.state,
             'qth': self.qth,
-            'rafa': self.rafa }
+            'rafa': self.rafa,
+            'country' : self.country }
 
     def __init__( self, dxData = None, **params ):
 
@@ -140,15 +190,17 @@ class DX( object ):
         self.freq = params['freq']
         self.cs = params['cs']
         self.de = params['de']
+        self.country = params['country'] if params.has_key( 'country' ) \
+                else getCountry( self.cs )
         self.qrzData = False
         self.inDB = False
 
         if params.has_key( 'ts' ):
             self.ts = params['ts']
             self.time = params['time']
+            self.rafa = params['rafa'] if params.has_key( 'rafa' ) else None
             self.state = params['state'] if params.has_key( 'state' ) else None
             self.qth = params['qth'] if params.has_key( 'qth' ) else None
-            self.rafa = params['rafa'] if params.has_key( 'rafa' ) else None
             self.inDB = True
 
         else:
@@ -164,8 +216,8 @@ class DX( object ):
 
             if csLookup:
                 self.state = csLookup['state']
-                self.qth = csLookup['qth']
                 self.rafa = csLookup['rafa']
+                self.qth = csLookup['qth']
                 self.inDB = True
                 self.qrzData = csLookup['qrz_data_loaded']
                 logging.debug( 'callsign found in db' )
@@ -180,7 +232,7 @@ class DX( object ):
                 fl = False
                 for m in reState.finditer( self.text ):
                     state = m.group( 0 ).upper()
-                    if  state in states:
+                    if  state in states[self.country]:
                         if self.state != state:
                             self.state = state
                             fl = True
@@ -193,14 +245,14 @@ class DX( object ):
                             self.qth = r
                             fl = True
                         break
-
-                for m in reRAFA.finditer( self.text ):
-                    r = m.group( 0 ).upper()
-                    if r in rafa:    
-                        if self.rafa != r:
-                            self.rafa = r
-                            fl = True
-                        break
+                if self.country == 'Russia':
+                    for m in reRAFA.finditer( self.text ):
+                        r = m.group( 0 ).upper()
+                        if r in rafa:    
+                            if self.rafa != r:
+                                self.rafa = r
+                                fl = True
+                            break
 
                 if fl:
                     self.updateDB()
@@ -228,7 +280,8 @@ class DX( object ):
             logging.debug( 'creating new db callsign record' )
             dxdb.getObject( 'callsigns', \
                     { 'callsign': self.cs, 'state': self.state, \
-                    'qth': self.qth, 'qrz_data_loaded': self.qrzData, 'rafa': self.rafa }, \
+                    'qth': self.qth, 'qrz_data_loaded': self.qrzData, 'rafa': self.rafa, \
+                    'country': self.country }, \
                     True )
             dxdb.commit()
 
@@ -241,12 +294,15 @@ class DX( object ):
         v = value.upper() if value != None else None
         if self._qth != v:
             self._qth = v
-            if rafaQTH.has_key( self._qth ):
+            if self.country == 'Russia' and rafaQTH.has_key( self._qth ):
                 self.rafa = rafaQTH[ self._qth ]
 
 
 
 class DXData:
+    reDX = re.compile( "DX de (\S+):\s+(\d+\.\d+)\s+(\S+)\s+(.+)\s(\d\d\d\dZ)" )
+
+    
     def __init__( self, file = None ):
         self.data = []
         self.file = file
@@ -256,6 +312,18 @@ class DXData:
             if prevDX:
                 for item in prevDX:
                     self.append( DX( **item ), False )
+
+    def dxLine( self, line ):
+        m = DXData.reDX.match( line )
+        if m: 
+            cs = m.group( 3 )
+            country = getCountry( cs )
+            freq = float( m.group(2) )
+            if country:
+                self.append( DX( dxData = self, text = m.group(4), cs = cs, freq = freq, de = m.group(1), \
+                        time = m.group(5), country = country ) )
+
+
 
     def append( self, dxItem, new = True ):
         if new:

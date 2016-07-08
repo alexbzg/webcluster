@@ -4,7 +4,7 @@
 import ConfigParser, decimal, json, logging
 from os import path
 
-appRoot = '/usr/local/webcluster'
+appRoot = path.dirname( path.abspath( __file__ ) ) 
 
 def siteConf():
     conf = ConfigParser.ConfigParser()
