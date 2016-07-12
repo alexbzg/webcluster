@@ -223,8 +223,21 @@ class DX( object ):
                 logging.debug( 'callsign found in db' )
             if  self.dxData and ( not '/' in self.cs or ( not csLookup or \
                     not csLookup['qrz_data_loaded'] ) ):
-                logging.debug( 'putting calssign in query queue: ' + self.cs )
-                self.dxData.qrzLink.csQueue.put( { 'cs': self.cs, 'cb': self.onQRZdata } )
+                if self.country == 'Russia':
+                    logging.debug( 'putting calssign in query queue: ' + self.cs )
+                    self.dxData.qrzLink.csQueue.put( { 'cs': self.cs, 'cb': self.onQRZdata } )
+                elif self.country == 'Ukraine':
+                    r = urllib2.urlopen( 'http://www.uarl.com.ua/UkrainianCallBOOK/adxcluster.php?calls=' \
+                            + self.cs )
+                    rBody = r.read()
+                    m = reState.search( rBody )
+                    if m:
+                        self.state = m.group( 0 ).upper()
+                    m = reQTH.search( rBody )
+                    if m:
+                        self.qth = m.group( 0 ).upper()
+                    self.qrzData = True
+                    self.updateDB()
 
             if '#' in self.de:
                 self.text = (self.text.split( ' ', 1 ))[0]
@@ -253,9 +266,12 @@ class DX( object ):
                                 self.rafa = r
                                 fl = True
                             break
-
                 if fl:
                     self.updateDB()
+
+            if self.qrzData:
+                self.checkEmpty()
+
                    
 
     def onQRZdata( self, data ):
@@ -267,8 +283,14 @@ class DX( object ):
                 self.state = data['state']
             self.qrzData = True
             self.updateDB()
-            if self.dxData:
+            if self.dxData and not self.checkEmpty():
                 self.dxData.toFile()
+
+
+    def checkEmpty( self ):
+        if self.dxData and not self.qth and not self.rafa and not self.state:
+            self.dxData.remove( self )
+            return True
 
     def updateDB( self ):
         if self.inDB:
@@ -320,8 +342,10 @@ class DXData:
             country = getCountry( cs )
             freq = float( m.group(2) )
             if country:
-                self.append( DX( dxData = self, text = m.group(4), cs = cs, freq = freq, de = m.group(1), \
-                        time = m.group(5), country = country ) )
+                dx = DX( dxData = self, text = m.group(4), cs = cs, freq = freq, de = m.group(1), \
+                        time = m.group(5), country = country )
+                if  not dx.checkEmpty():
+                    self.append( dx )
 
 
 
@@ -329,8 +353,8 @@ class DXData:
         if new:
             self.data[:] = [ x for x in self.data \
                     if x.ts > dxItem.ts - 1800 and \
-                    not ( x.cs == dxItem.cs and ( x.freq - dxItem.freq < 0.3 and \
-                    dxItem.freq - x.freq < 0.3 ) ) ]
+                    not ( x.cs == dxItem.cs and ( x.freq - dxItem.freq < 1 and \
+                    dxItem.freq - x.freq < 1 ) ) ]
 
         self.data.append( dxItem )
         dxItem.dxData = self
@@ -338,6 +362,11 @@ class DXData:
         if new and self.file:
             self.toFile()
 
+
+    def remove( self, dx ):
+        if dx in self.data:
+            self.data.remove( dx )
+            self.toFile()
 
     def toFile( self ):
         if self.file:
