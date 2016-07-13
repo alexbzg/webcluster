@@ -1,7 +1,18 @@
 var webDXapp = angular.module( 'webDXapp', [] );
 
-webDXapp.controller( 'bodyCtrl', function( $scope, $http, $interval ) {
+function getUserData( $scope, $window ) {
+    if ( $window.localStorage['adxcluster-user'] )
+        $scope.user = JSON.parse( $window.localStorage['adxcluster-user'] );
+    else if ( $window.sessionStorage['adxcluster-user'] )
+        $scope.user = JSON.parse( $window.sessionStorage['adxcluster-user'] );
+    else
+        $scope.user = null;
+}
+
+webDXapp.controller( 'bodyCtrl', function( $scope, $http, $interval, $window ) {
     var stateAw = { 'Russia': 'RDA', 'Ukraine': 'URDA' };
+
+    getUserData( $scope, $window ); 
 
     function loadDX() {
         $http.get( '/dxdata.json', { cache: false } ).then( function( response ) {

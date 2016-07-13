@@ -7,7 +7,11 @@ function validateEmail(email) {
     return re.test(email);
 }
 
-loginApp.controller( 'bodyCtrl', function( $scope, $http ) {
+loginApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
+
+    if ( $window.localStorage['adxcluster-user'] || $window.sessionStorage['adxcluster-user'] )
+        $window.location.href = "http://adxcluster.com";
+
 
     $scope.user = { 'callsign': '', 'password': '', 'register': false,
         'recaptcha': false, 'email': '' };
@@ -25,7 +29,11 @@ loginApp.controller( 'bodyCtrl', function( $scope, $http ) {
 
     $scope.login = function() {
         $http.post( '/uwsgi/login', $scope.user ).then( function( response ) {
-            alert( 'Your are logged in as ' + response.data.callsign );
+            if ( $scope.remember )
+                $window.localStorage['adxcluster-user'] = JSON.stringify( response.data );
+            else
+                $window.sessionStorage['adxcluster-user'] = JSON.stringify( response.data );
+            $window.location.href = "http://adxcluster.com";
         }, function( response ) {
             grecaptcha.reset();
             alert( response.data);
@@ -39,10 +47,11 @@ loginApp.controller( 'bodyCtrl', function( $scope, $http ) {
                 validateEmail( $scope.user.email ) &&
                 $scope.user.callsign.length > 2 && 
                 $scope.user.password.length > 5;
-        else
-            return $scope.user.callsign.length > 2 &&
-                $scope.user.password.length > 5;
+        else {
+            return $scope.user.callsign.length > 2;
+        }
     }
+
 
 } );
 

@@ -40,6 +40,7 @@ class ClusterProtocol(StatefulTelnetProtocol):
 
     def connectionMade(self):
         self.sendLine( conf.get( 'cluster', 'callsign' ) )
+        self.sendLine( conf.get( 'cluster', 'init_cmd' ) )  
         self.setLineMode()
 
 class ClusterClient(ReconnectingClientFactory):
