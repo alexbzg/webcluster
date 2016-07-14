@@ -9,7 +9,7 @@ function validateEmail(email) {
 
 loginApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
 
-    if ( $window.localStorage['adxcluster-user'] || $window.sessionStorage['adxcluster-user'] )
+    if ( $scope.user = getUserData() )    
         $window.location.href = "http://adxcluster.com";
 
 
@@ -29,10 +29,9 @@ loginApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
 
     $scope.login = function() {
         $http.post( '/uwsgi/login', $scope.user ).then( function( response ) {
-            if ( $scope.remember )
-                $window.localStorage['adxcluster-user'] = JSON.stringify( response.data );
-            else
-                $window.sessionStorage['adxcluster-user'] = JSON.stringify( response.data );
+            userData = response.data;
+            userData['remember'] = $scope.remember;
+            saveUserData( userData );
             $window.location.href = "http://adxcluster.com";
         }, function( response ) {
             grecaptcha.reset();

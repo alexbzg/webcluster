@@ -1,0 +1,8 @@
+[ { "country": "Russia", 
+    "awards": [{ "name": "RDA", "fullName": "Russian District Award", "link":"http://rdaward.org/" }, 
+        { "name": "RAFA", "fullName": "Russian AirField Award", "link":"http://www.aviaham.ru/rafa/"}] 
+    },
+    { "country":"Ukraine", 
+    "awards": [{ "name": "URDA", "fullName":"Ukraine Districts Award", "link":"http://uarl.com.ua/urda/" }]
+    } 
+]

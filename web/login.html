@@ -12,6 +12,8 @@
         <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
         <script src='https://www.google.com/recaptcha/api.js'></script>
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+        <script src="autofill-event.js"></script>
+        <script src="userData.js"></script>
         <script src='login.js'></script>
 
     </head>
@@ -24,7 +26,7 @@
                 Callsign<br/>
                 <input type="text" name="callsign" ng-model="user.callsign">
                 <br><br>Password<br>
-                <input type="password" name="password" ng-model="user.password">
+                <input type="password" name="password" ng-model="user.password" id="password">
                 <br><br>
                 <span ng-show="user.register">
                     <br><br>Email<br/>

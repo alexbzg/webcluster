@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"                                                
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" land="ru" xml:lang="en" ng-app="profileApp">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <meta http-equiv="Content-Language" content="ru-ru"/>
+        <meta name="description" content="" />
+        <meta name="keywords" content="" />
+        <title></title>
+        <link href="style.css" rel="stylesheet" type="text/css">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon">
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
+        <script src="userData.js"></script>
+        <script src="profile.js"></script>
+
+    </head>
+    <body ng-controller="bodyCtrl">
+    <div id="top">
+        <a href="/"><img src="/images/ac_logo.jpg" border="0" /></a>
+        <div id="top_menu">
+            <a href="/my_awards.html">My awards</a>
+            <a href="/profile.html">Profile</a>
+            <a href="#" ng-click="logout()">Logout</a>
+            <a href="/contact.html">Contact</a>
+        </div>
+    </div>
+    
+    <div id="profile">
+        <h4>{{user.callsign}}</h4>
+        <div id="profile_settings">
+            <div id="profile_menu">
+                <a>Upload ADIF log</a>
+                <a>Change email</a>
+                <a>Change password</a>
+            </div>
+            <form id="upload_adif" method="post" ng-show="uploadAdifShow">
+                Upload ADIF log<br>
+                <input type="file" name="adiflog" size="chars"><br/>
+                <input type="submit" id="submit_btn" name="change_psw" value="Upload"><br/>
+                {{adif.date}}
+            </form>
+            <form id="profile_call" method="post" ng-show="changeEmailShow">
+                Email<br>
+                <input type="text" name="email" ng-model="user.email"><br/>
+                <input type="button" id="submit_btn" name="save_email" value="Save"
+                    ng-click="changeEmail()">                
+            </form>
+            <form id="new_pass" method="post" ng-show="changePwdShow">
+                Current password<br/>
+                <input type="text" name="old_pass" ng-model="changePwd.oldPwd"><br/>
+                New password<br/>
+                <input type="text" name="new_pass" ng-model="changePwd.newPwd"><br/>
+                <input type="button" id="submit_btn" name="change_psw" value="Change password"
+                    ng-click="changePwdClick()">                
+            </form>
+        </div> 
+        <h4>List of awards</h4>
+        
+        <div id="awards_list">
+        <table id="awards_list">
+            <tr>
+                <th class="track">Track</th>
+                <th class="color_name">Color</th>
+                <th class="short_name"></th>
+                <th class="full_name">
+                    Full award's name
+                </th>
+                <th class="website">
+                    Аward's website
+                </th>
+            </tr>
+            <tr ng-repeat-start="country in awardsList">
+                <td colspan="5" class="country">
+                    {{country.country}}
+                </td>
+            </tr>
+            <tr ng-repeat="award in country.awards">
+                <td class="track">
+                    <input type="checkbox" ng-model="awardsSettings[award.name].track" 
+                        ng-change="awardSettingsChanged(award.name)">
+                </td>
+                <td class="color_name">
+                    <input type="color" id="color_{{award.name}}" ng-model="awardsSettings[award.name].color"
+                        ng-change="awardSettingsChanged(award.name)">
+                </td>
+                <td class="short_name" style='color: {{awardsSettings[award.name].color}};'>
+                    {{award.name}}
+                </td>
+                <td class="full_name">
+                    {{award.fullName}}
+                </td>
+                <td class="website">
+                    <a href="{{award.link}}" target="_blank" title="Link to {{award.name}} website">Link</a>
+                </td>
+            </tr>
+            <tr ng-repeat-end class="country_footer">
+                 <td colspan="5" class="country">
+                </td>
+            </tr>
+        </table>
+        </div>
+
+
+    </div>
+
+    </body>
+</html>
+
