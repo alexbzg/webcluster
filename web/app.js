@@ -1,9 +1,10 @@
-var webDXapp = angular.module( 'webDXapp', [] );
+var webDXapp = angular.module( 'webDXapp', [ 'ngSanitize' ] );
 
-webDXapp.controller( 'bodyCtrl', function( $scope, $http, $interval, $window ) {
+webDXapp.controller( 'bodyCtrl', function( $scope, $http, $interval, $window, $timeout ) {
     var stateAw = { 'Russia': 'RDA', 'Ukraine': 'URDA' };
 
-    $scope.user = getUserData( $scope, $window ); 
+    if ( $scope.user = getUserData( $scope, $window ) )
+        $scope.awardsSettings = $scope.user.awardsSettings;
 
     function loadDX() {
         $http.get( '/dxdata.json', { cache: false } ).then( function( response ) {
@@ -31,13 +32,16 @@ webDXapp.controller( 'bodyCtrl', function( $scope, $http, $interval, $window ) {
             dx.awards.push( { 'award': stateAw[dx.country], 'value': dx.state } );
         if ( dx.rafa != null )
             dx.awards.push( { 'award': 'RAFA', 'value': dx.rafa } );
-        if ( $scope.user != null && $scope.user.awardsSettings != null ) {
+        if ( $scope.awardsSettings != null ) {
             fAwards = [];
             dx.awards.forEach( function( award ) {
-                if ( $scope.user.awardsSettings[award.award].track ) {
-                    award.color = $scope.user.awardsSettings[award.award].color;
+                if ( award.award in $scope.awardsSettings ) {
+                    if ( $scope.awardsSettings[award.award].track ) {
+                        award.color = $scope.awardsSettings[award.award].color;
+                        fAwards.push( award );
+                    }
+                } else
                     fAwards.push( award );
-                }
             });
             dx.awards = fAwards;
         }
@@ -50,5 +54,31 @@ webDXapp.controller( 'bodyCtrl', function( $scope, $http, $interval, $window ) {
     loadDX();
 
     $interval( loadDX, 1000 );
+
+    $scope.news = { 'etag': $window.localStorage.getItem( 'adxcluster-news' ),
+        'html': null };
+
+    $http.get( '/news.txt', { cache: false } ).then( function( response ) {
+        if ( $scope.news.etag != response.headers( 'etag' ) ) {
+            $scope.news.etag = response.headers( 'etag' );
+            $scope.news.html = response.data;
+        }
+    });
+
+
+    $scope.news.close = function() {
+        $window.localStorage['adxcluster-news'] = $scope.news.etag;
+        $scope.news.html = null;
+    }
+
+    function updateTime() {
+        var n = new Date();
+        var min = n.getUTCMinutes();
+        if ( min < 10 ) min = "0" + min;
+        $scope.time = n.getUTCHours() + ':' + min;
+        $timeout( updateTime, ( 60 - n.getUTCSeconds() ) * 1000 );
+    }
+    updateTime();
+
 } );
 

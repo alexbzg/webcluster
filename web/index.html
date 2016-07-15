@@ -11,34 +11,50 @@
         <link rel="icon" href="/favicon.ico" type="image/x-icon">
         <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
         <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
-
+        <style>
+            [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+                  display: none !important;
+            }
+        </style>
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-sanitize.js"></script>
         <script src="userData.js"></script>
         <script src="app.js"></script>
+
     </head>
-    <body ng-controller="bodyCtrl">
+    <body ng-controller="bodyCtrl" ng-cloak>
     <div id="top">
         <a href="/"><img src="/images/ac_logo.jpg" border="0" /></a>
         <div id="top_menu">
             <a href="/login.html" ng-show="!user">Login</a>
-            <a href="" ng-click="logout()" ng-show="user">Logout</a>
             <a href="/profile.html" ng-show="user">Profile</a>
             <a href="/contact.html">Contact</a>
+            <a href="" ng-click="logout()" ng-show="user">Logout</a>
         </div>
     </div>
+
+    <div id="news" ng-show="news.html">
+        <h4>Новости</h4>
+        <div id="news_close">
+             <img src="/images/icon_close.png" title="Close" ng-click="news.close()"/> 
+        </div>
+        <span ng-bind-html="news.html"/>
+    </div>
+
         <table id="cluster">
             <tr>
-                <th class="spotter">Spotter</th>
-                <th class="time">UTC</th>
+                <th class="time">{{time}}<br/><span>UTC</span></th>
                 <th class="freq">MHz</th>
                 <th class="callsign">Callsign</th>
                 <th class="awards">Awards</th> 
                 <!--th class="QTHLoc">QTHLoc</th-->
-                <th id="link_status"><img src="/images/status_ok.gif" title="Link checked"><div id="link_status_text">Cluster online</div></th>
+                <th id="link_status">Text
+                    <!--<img src="/images/status_ok.gif" title="Link checked"><div id="link_status_text">Cluster online</div>-->
+                </th>
+                <th class="spotter">Spotter</th>
             </tr>
             <tr ng-repeat="item in dxItems | filter: { noAwards: false }" 
                 ng-class-odd="'odd'" ng-class-even="'even'">
-                <td class="spotter">{{ replace0( item.de )}}</td>
                 <td class="time">{{item.time}}</td>
                 <td class="freq">
                     {{item.freq.toFixed(1).substr(0, item.freq.toFixed(1).length - 5 )
@@ -52,6 +68,7 @@
                 </td>  
                 <!--td class="QTHLoc">{{ replace0( item.qth )}}</td-->
                 <td class="text">{{ replace0( item.text )}}</td>
+                <td class="spotter">{{ replace0( item.de )}}</td>
             </tr>
         </table>
 

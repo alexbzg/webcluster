@@ -31,7 +31,16 @@ profileApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
     $scope.awardSettingsChanged = function( award ) {
         $scope.user.awardsSettings = $scope.awardsSettings;
         saveUserData( $scope.user );
-        if ( award ) {}
+        if ( award ) {
+            $http.post( '/uwsgi/usersAwardsSettings',
+                { 'token': $scope.user.token,
+                    'award': award,
+                    'track': $scope.awardsSettings[award].track,
+                    'color': $scope.awardsSettings[award].color,
+                } ).then( function( response ) {
+                    console.log( response.data );
+                } );
+        }
 
     }
 
