@@ -1,0 +1,575 @@
+
+
+body{
+/*	font:16px Arial, Helvetica, sans-serif;*/
+	font-size: 16px;
+	font-family: 'Open Sans', sans-serif;
+	color:#000;	
+	margin:0; padding:0;
+	text-align: left;
+	background-color: #eee;
+	cursor: default;
+}
+
+
+h4{
+	text-align: center;
+	font-size: 24px;
+	padding: 0;
+	margin: 10px 0 0 0;
+}
+
+input, textarea, select, option{
+	font-size: 18px;
+	font-family: 'Open Sans', sans-serif;
+}
+
+
+
+
+
+
+#top{
+	margin: 0;
+	padding: 10px 20px 0 20px;
+	background-color: #eee;
+}
+#top_menu{
+	float: right;
+	text-align: right;
+	padding-top: 10px;
+	padding-right: 30px;
+	font-weight: bold;
+	font-size: 18px;
+}
+#top_menu a{
+	color: #333;
+	padding-left: 30px;
+}
+#top_menu a:hover{
+	color: #009;
+}
+
+
+
+
+
+
+/*   L O G I N  */
+
+
+form#login{ 
+    font: 16px Arial, Helvetica, sans-serif; 
+    text-align: center;
+    width: 50%;
+    margin: 10px auto;
+    background-color: #fff;
+	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
+	padding: 20px;
+}
+
+form#login input{
+    font-size: 18px;
+    padding: 5px;
+    margin-bottom: 15px;
+    margin-top: 2px;
+    width: 70%; 
+    border: 1px solid #ccc;
+    text-align: center;
+}
+form#login input#remember{
+    width: 20px; 
+}
+form#login input#submit_btn{
+    border: 1px solid #a6def8;
+	color: #fff;
+	background-color: #0091c9;
+    font-weight: bold;
+   	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
+}
+form#login a{
+    color: #999;
+    font-weight: normal;
+    font-size: 14px;
+}
+form#login a:hover{
+    color: #00F;
+}
+
+
+form#login #login_register{
+	float: left;
+	text-align: left;
+}
+form#login #login_register a{
+	color: #333;
+	font-weight: bold;
+}
+form#login #login_recovery{
+	float: right;
+	text-align: left;
+}
+form#login #login_recovery a{
+	color: #333;
+}
+form#login #login_register a:hover, form#login #login_recovery a:hover{
+	color: #00f;
+}
+
+
+
+
+
+
+
+
+
+
+/*                           P R O F I L E                  */
+
+#profile_settings{
+	width: 70%;
+	margin: 10px auto 50px auto;
+	padding: 20px;
+	background-color: #fff;
+	text-align: center;
+	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
+}
+#profile_menu a{
+	padding: 0 50px;
+	color: #000;
+	text-decoration: underline;
+	cursor: pointer;
+}
+#profile_settings form{
+    width: 40%; 
+    margin: 20px auto;
+    text-align: center;
+    font-weight: bold;
+}
+#profile_settings input{
+    font-size: 18px;
+    padding: 5px;
+    margin: 10px 0px;
+    width: 95%; 
+    border: 1px solid #ccc;
+    text-align: center;
+}
+form#profile_call input#submit_btn, 
+form#new_pass input#submit_btn, 
+form#upload_adif input#submit_btn{
+    background-color: #0091c9;
+    color: #fff;
+    text-align: center;
+   	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
+   	cursor: pointer;
+}
+
+
+
+
+
+
+/*                    N E W S                  */
+
+#news{
+	width: 80%;
+	margin: 20px auto 0 auto;
+	padding: 0px 20px 5px 20px;
+	background-color: #fffeb3;
+	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
+	position: relative;
+	border: 1px solid #c30202;
+	font-size: 14px;
+}
+#news_close{
+	width: 30px;
+	height: 30px;
+	position: absolute;
+	top: 5px;
+	right: 5px;
+	cursor: pointer;
+}
+#news h4{
+	margin: 0;
+	padding: 0 0 0px 10px;
+	text-align: left;
+	font-weight: bold;
+	font-size: 18px;
+	color:#c30202;
+}
+#news a{
+	color:#009;
+}
+
+
+
+
+
+
+
+
+
+
+/*                    C L U S T E R             */
+
+table#cluster{
+	width: 90%;
+	border-collapse: collapse;
+	background-color: #fff;
+	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
+	margin: 20px auto;
+}
+table#cluster th{
+	padding: 7px;
+	border: 1px solid #a6def8;
+	color: #fff;
+	background-color: #0091c9;
+	text-align: center;
+}
+table#cluster th.time span{
+	font-size: 12px;
+}
+table#cluster th a{
+	color: #fff;
+}
+table#cluster th.awards{
+	color: #fff400;
+}
+table#cluster #link_status_text{
+	padding: 1px 5px 0 0;
+	font-size: 11px;
+	text-align: right;
+	vertical-align: middle;
+}
+table#cluster img{
+	float: right;
+}
+#link_status_text{
+	float: right;
+	padding: 7px 7px 0 0;
+}
+
+
+table#cluster td{
+	padding: 5px;
+	border: 1px solid #a6def8;
+	text-align: center;
+	font-size: 14px;
+	color: #666;
+	vertical-align: top;
+}
+table#cluster tr.odd{	background-color: #eff9fe;}
+
+
+
+table#cluster td.time{
+	width: 60px;
+	color: #005;
+}
+table#cluster td.time span{
+	font-size: 10px;
+}
+table#cluster td.freq{
+	font-size: 16px;
+	width: 80px;
+	color: #005;
+	text-align: right;
+	font-weight: bold;
+}
+table#cluster td.freq span{
+	font-weight: normal;
+	font-size: 14px;
+	padding-left: 2px;
+}
+table#cluster td.callsign{
+	width: 130px;
+	font-size: 18px;
+	font-weight: bold;
+	color: #000;
+	text-align: left;
+	padding-left: 10px;
+}
+
+table#cluster td.awards {
+	text-align: left;
+	color: #333;
+}
+table#cluster td.awards span.award_name{
+	font-weight: bold;
+	font-size: 16px;
+	color: #700;
+}
+
+
+table#cluster td.QTHLoc {
+	text-transform: uppercase;
+	text-align: center;
+	width: 70px;
+}
+table#cluster td.spotter{
+	width: 80px;
+	text-align: left;
+}
+table#cluster td.text{
+	width: 200px;
+	text-align: left;
+	color: #000;
+	font-size: 12px;
+}
+
+
+
+
+/*                   A W A R D S   L I S T              */
+
+#awards_list{
+	width: 80%;
+	margin: 0 auto;
+}
+table#awards_list{
+	width: 100%;
+	background-color: #fff;
+	border-collapse: collapse;
+	margin: 0px auto;
+	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
+	margin: 0 auto;
+}
+table#awards_list th{
+	padding: 7px;
+	border: 1px solid #a6def8;
+	background-color: #0091c9;
+	text-align: center;
+	color: #fff;
+}
+table#awards_list td{
+	padding: 5px;
+	border: 1px solid #a6def8;
+	text-align: center;
+	color: #000;
+	vertical-align: middle;
+}
+table#awards_list td.country{
+	font-size: 22px;
+	font-weight: bold;
+	background-color: #eff9fe;
+	color: #900;
+}
+table#awards_list tr.country_footer{
+	display: none;
+}
+table#awards_list td.track{
+	width: 50px;
+}
+table#awards_list td.color_name{
+	width: 100px;
+	padding: 5px;
+}
+table#awards_list td.color_name input{
+	width: 25px;
+	height: 25px;
+	border: 1px solid #ccc;
+	
+}
+table#awards_list td.color_name input::-webkit-color-swatch-wrapper {
+	padding: 0;
+}
+
+table#awards_list td.short_name{
+	width: 100px;
+	font-weight: bold;
+}
+table#awards_list td.full_name{
+	text-align: left;
+}
+table#awards_list td.website{
+	width: 100px;
+}
+
+input#button_ok {
+    font-size: 18px;
+    padding: 10px 20px;
+    margin: 20px auto;
+    display: block;
+    border: 1px solid #aaa;
+    text-align: center;
+    background-color: #0091c9;
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
+}
+
+
+
+
+
+
+
+
+
+/*                M Y   A W A R D S              */
+
+
+select#award_title{
+	text-align: center;
+	font-weight: bold;
+	font-size: 24px;
+	color: #900;
+	padding: 5px 10px;
+	margin: 10px auto;
+	display: block;
+}
+select#award_title option{	
+	color: #000;
+}
+table#award_info{
+	width: 90%;
+	border-collapse: collapse;
+	margin: 20px auto;
+	background-color: #fff;
+	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
+}
+table#award_info td{
+	margin: 10px;
+	padding: 20px;
+	line-height: 2em;
+}
+
+table#award_info td#award_stat{
+	width: 30%;
+	padding-left: 5%;
+}
+table#award_info td#award_stat span{
+	font-weight: bold;
+}
+table#award_info td#award_stat a{
+	color: #009;
+	font-size: 14px;
+}
+
+table#award_info td#award_edit{
+	width: 60%;
+	padding: 20x 0;
+	text-align: center;
+}
+table#award_info input{
+	font-size: 18px;
+    border: 1px solid #ccc;
+    text-align: center;
+    padding: 5px 10px;
+    font-weight: bold;
+}
+table#award_info input.submit_btn{
+	background-color: #0091c9;
+	color: #fff;
+	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
+	font-weight: normal;
+}
+
+#selected_unit_info{
+	padding: 10px 0;
+	border: 1px solid #eee;
+	margin-top: 10px;
+	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
+}
+
+
+
+
+
+
+
+
+
+#award_progress{
+	width: 95%;
+	background-color: #fff;
+	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
+	padding: 20px;
+	margin: 10px auto 50px auto;
+}
+.award_unit{
+	font-size: 10px;
+	padding: 2px;
+	display: inline-block;
+	border: 1px solid #ccc;
+	margin: 1px;
+}
+.award_unit_block{
+	display: inline-block;
+	font-size: 16px;
+	padding: 5px 5px 0 0;
+	text-align: left;
+	font-weight: bold;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*            C O N T A C T         */
+
+form#contact{
+	width: 500px;
+	margin: 50px auto 150px auto;
+    padding: 20px;
+	background-color: #fff;
+    border: 1px solid #ccc;
+	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
+	text-align: center;
+	font-size: 18px;
+}
+form#contact input, form#contact textarea{
+    font-size: 18px;
+    padding: 5px;
+    margin-bottom: 15px;
+    margin-top: 2px;
+    width: 95%; 
+    border: 1px solid #ccc;
+    text-align: left;
+}
+form#contact textarea{
+	height: 120px;
+}
+
+form#contact input#submit_btn{
+    background-color: #0091c9;
+    color: #fff;
+    text-align: center;
+   	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
+}
+#recaptcha{
+	width: 300px;
+	margin: 0 auto 10px auto;
+	text-align: center;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+#counter{
+	padding-top: 50px;
+	text-align: center;
+	font-size: 12px;
+	color: #777;
+}
+#counter a{
+	color: #777;
+}
