@@ -32,7 +32,7 @@ profileApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
         $scope.user.awardsSettings = $scope.awardsSettings;
         saveUserData( $scope.user );
         if ( award ) {
-            $http.post( '/uwsgi/usersAwardsSettings',
+            $http.post( '/uwsgi/userSettings',
                 { 'token': $scope.user.token,
                     'award': award,
                     'track': $scope.awardsSettings[award].track,
@@ -51,6 +51,31 @@ profileApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
         }
     );
 
+    $scope.changeEmailClick = function() {
+        $http.post( '/uwsgi/userSettings',
+        { 'token': $scope.user.token,
+            'email': $scope.user.email
+        } ).then( function( response ) {
+            alert( 'Email changed successfully' );
+            console.log( response.data );
+        } );
+   }
+
+   $scope.changePwdClick = function() {
+        $http.post( '/uwsgi/userSettings',
+        { 'token': $scope.user.token,
+            'password': $scope.changePwd.newPwd,
+            'oldPassword': $scope.changePwd.oldPwd
+        } ).then( function( response ) {
+            alert( 'Password changed successfully' );
+            console.log( response.data );
+        }, function( response ) {
+            if ( response.status == "500" )
+                alert( 'Server error. Please try again later' );
+            else
+                alert( response.data );
+        });
+   }
 
 
 } );
