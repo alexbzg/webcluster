@@ -37,8 +37,10 @@ dxData = DXData( conf.get( 'web', 'root' ) + "/dxdata.json" )
 class ClusterProtocol(StatefulTelnetProtocol):
     def lineReceived(self, line):
         dxData.dxLine( line )
-        logging.error( line )
+        logging.debug( line )
         self.schedulePing()
+        if self.connectionStatus == 'Testing':
+            self.setConnectionStatus( 'Connected' )
 
     def schedulePing( self ):
         if self.pingTask and self.pingTask.active():
@@ -55,23 +57,38 @@ class ClusterProtocol(StatefulTelnetProtocol):
         self.pingTask = None
         self.timeoutTask = None
         self.schedulePing()
+        self.setConnectionStatus( 'Connected' )
+        logging.error( 'Cluster connection made' )
+
+    def connectionLost(self, reason):
+        logging.error( 'Cluster connection lost: ' + reason.getErrorMessage() )
+        self.setConnectionStatus( 'Disconnected' )
 
     def ping( self ):
-        self.sendLine( 'dxtest 14001 r7ab' )
-        logging.error( 'sending ping' )
+        self.sendLine( 'dxtest 14001 rn6bnd' )
+        self.setConnectionStatus( 'Testing' )
+        logging.debug( 'sending ping' )
         self.timeoutTask = reactor.callLater( 5, self.timeout )
 
     def timeout( self ):
         self.transport.loseConnection()
         logging.error( 'Cluster timeout' )
 
+    def setConnectionStatus( self, status ):
+        self.connectionStatus = status
+        with open( conf.get( 'web', 'root' ) + '/clusterConnection.json', 'w' ) \
+                as fS:
+            fS.write( json.dumps( { 'status': status } ) )
+       
+
 class ClusterClient(ReconnectingClientFactory):
+    maxDelay = 30
+
+
     def buildProtocol(self, addr):
         return TelnetTransport(ClusterProtocol)
 
-    def clientConnectionLost(self, connector, reason):
-        # do stuff here that is unique to your own requirements, then:
-        ReconnectingClientFactory.clientConnectionLost(self, connector, reason)
+
 
 reactor.connectTCP( conf.get( 'cluster', 'host' ), \
         conf.getint( 'cluster', 'port' ), ClusterClient())
