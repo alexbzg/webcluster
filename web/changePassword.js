@@ -28,6 +28,7 @@ chPwdApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
             else {
                 alert( response.data );
                 $window.location.href = "/passwordrecovery.html";
+            }
         });
    }
 

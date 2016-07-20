@@ -75,10 +75,20 @@ webDXapp.controller( 'bodyCtrl', function( $scope, $http, $interval, $window, $t
         var n = new Date();
         var min = n.getUTCMinutes();
         if ( min < 10 ) min = "0" + min;
-        $scope.time = n.getUTCHours() + ':' + min;
+        var hr = n.getUTCHours();
+        if ( hr < 10 ) hr = "0" + hr;
+        $scope.time = hr + ':' + min;
         $timeout( updateTime, ( 60 - n.getUTCSeconds() ) * 1000 );
     }
     updateTime();
 
+/*    function checkStatus() {
+//        $scope.connectionStatus = "testing";
+        $http.get( "/clusterConnection.json", { cache: false } ).then( function( response ) {
+            $scope.connectionStatus = response.data.status;
+        } );
+    }
+    $scope.connectionStatus = "testing";
+    $interval( checkStatus, 1000 );*/
 } );
 

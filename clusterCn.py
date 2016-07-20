@@ -39,8 +39,8 @@ class ClusterProtocol(StatefulTelnetProtocol):
         dxData.dxLine( line )
         logging.debug( line )
         self.schedulePing()
-        if self.connectionStatus == 'Testing':
-            self.setConnectionStatus( 'Connected' )
+        if self.connectionStatus == 'testing':
+            self.setConnectionStatus( 'connected' )
 
     def schedulePing( self ):
         if self.pingTask and self.pingTask.active():
@@ -57,16 +57,16 @@ class ClusterProtocol(StatefulTelnetProtocol):
         self.pingTask = None
         self.timeoutTask = None
         self.schedulePing()
-        self.setConnectionStatus( 'Connected' )
+        self.setConnectionStatus( 'connected' )
         logging.error( 'Cluster connection made' )
 
     def connectionLost(self, reason):
         logging.error( 'Cluster connection lost: ' + reason.getErrorMessage() )
-        self.setConnectionStatus( 'Disconnected' )
+        self.setConnectionStatus( 'disconnected' )
 
     def ping( self ):
         self.sendLine( 'dxtest 14001 rn6bnd' )
-        self.setConnectionStatus( 'Testing' )
+        self.setConnectionStatus( 'testing' )
         logging.debug( 'sending ping' )
         self.timeoutTask = reactor.callLater( 5, self.timeout )
 

@@ -40,6 +40,7 @@
         </div>
         <span ng-bind-html="news.html"/>
     </div>
+        <h4 ng-show="user">{{user.callsign}}</h4>
 
         <table id="cluster">
             <tr>
@@ -49,7 +50,9 @@
                 <th class="awards">Awards</th> 
                 <!--th class="QTHLoc">QTHLoc</th-->
                 <th id="link_status">Text
-                    <!--<img src="/images/status_ok.gif" title="Link checked"><div id="link_status_text">Cluster online</div>-->
+                    <!--img src="/images/status_{{connectionStatus}}.gif" 
+                        title="Cluster connection: {{connectionStatus}}">
+                    <div id="link_status_text">Cluster connection: {{connectionStatus}}</div-->
                 </th>
                 <th class="spotter">Spotter</th>
             </tr>

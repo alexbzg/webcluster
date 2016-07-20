@@ -29,12 +29,13 @@ with open( appRoot + '/URDAlist.csv', 'r' ) as furda:
 reState = re.compile( '[a-zA-Z]{2}[ -]+\d\d' )
 
 rafaQTH = {}
-with open( appRoot + '/air_rafa.csv', 'r' ) as frafa:
-    for line in frafa.readlines():
-        r, qs = line.split( ';', 3 )[1:3]
-        qs = qs.strip( '"' ).split( ',' )
-        for q in qs:
-            rafaQTH[q.strip()] = r
+for fnrafa in ( 'air_rafa.csv', 'air_rafa1.csv' ):
+    with open( appRoot + '/' + fnrafa, 'r' ) as frafa:
+        for line in frafa.readlines():
+            r, qs = line.split( ';', 3 )[1:3]
+            qs = qs.strip( '"' ).split( ',' )
+            for q in qs:
+                rafaQTH[q.strip()] = r
 rafa = frozenset( rafaQTH.values() )
 reQTH = re.compile( '[a-zA-Z0-9]{6}' )
 reRAFA = re.compile( '[a-zA-Z0-9]{4}' )
@@ -248,6 +249,7 @@ class DX( object ):
                     if  state in states[self.country]:
                         if self.state != state:
                             self.state = state
+                            self.rafa = None
                             fl = True
                         break
 
