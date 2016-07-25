@@ -32,10 +32,20 @@ webDXapp.controller( 'bodyCtrl', function( $scope, $http, $interval, $window, $t
             dx.awards.push( { 'award': stateAw[dx.country], 'value': dx.state } );
         if ( dx.rafa != null )
             dx.awards.push( { 'award': 'RAFA', 'value': dx.rafa } );
-        if ( $scope.awardsSettings != null ) {
+        if ( $scope.user != null && ( $scope.user.awards != null || 
+                    $scope.awardsSettings != null ) ) {
             fAwards = [];
             dx.awards.forEach( function( award ) {
-                if ( award.award in $scope.awardsSettings ) {
+                if ( $scope.user.awards != null 
+                    && award.award in $scope.user.awards &&
+                    award.value in $scope.user.awards[award.award] ) {
+                    if ( $scope.user.awards[award.award][award.value] )
+                        return;
+                    else
+                        award.worked = true;
+                }
+                if ( $scope.awardsSettings != null &&
+                        award.award in $scope.awardsSettings ) {
                     if ( $scope.awardsSettings[award.award].track ) {
                         award.color = $scope.awardsSettings[award.award].color;
                         fAwards.push( award );

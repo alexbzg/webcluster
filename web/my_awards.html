@@ -20,6 +20,7 @@
     <div id="top">
         <a href="/"><img src="/images/ac_logo.jpg" border="0" /></a>
         <div id="top_menu">
+            <a href="/my_awards.html">My awards</a>
             <a href="/profile.html">Profile</a>
             <a href="/contact.html">Contact</a>
             <a href="#" ng-click="logout()">Logout</a>
@@ -38,24 +39,23 @@
             <td id="award_stat">
                 <input type="color" class="select_color" value="#0091c9" ng-model="user.awardValueWorkedColor"
                     ng-change="saveUserSettings()"> 
-                <span>{{userAwards[activeAward.name].workedCount}}</span> worked<br/>
+                <span>{{activeAward.workedCount}}</span> worked<br/>
                 <input type="color" class="select_color" value="#02b20e" ng-model="user.awardValueConfirmedColor"
                     ng-change="saveUserSettings()">
-                <span>{{userAwards[activeAward.name].confirmedCount}}</span> confirmed
+                <span>{{activeAward.confirmedCount}}</span> confirmed
             </td>
-            <td id="award_edit">
-                {{activeAward.name}} code
+            <td id="award_edit">                
                 <form ng-submit="searchValue = searchValue.toUpperCase(); setActiveValue( searchValue )">
+                    {{activeAward.name}} code 
                     <input type="text" name="award_option" ng-model="searchValue"> 
                     <input type="submit" class="submit_btn" name="award_unit_search" value="OK">
                 </form>
-                <br/>
                     <div id="selected_unit_info" ng-show="activeValue">
-                        <span>{{activeValue.name}}</span> &nbsp; 
+                        <span>{{activeValue.value}}</span> &nbsp; 
                         <input type="checkbox" name="unit_worked" ng-model="activeValue.worked" 
-                            ng-change="modifyActiveValue()"><b>Worked</b> &nbsp; 
+                            ng-change="modifyActiveValue( 'worked' )"><b>Worked</b> &nbsp; 
                         <input type="checkbox" name="unit_qsl" ng-model="activeValue.confirmed" 
-                            ng-change="modifyActiveValue()"><b>Confirmed</b> &nbsp; 
+                            ng-change="modifyActiveValue( 'confirmed' )"><b>Confirmed</b> &nbsp; 
                         <!--input type="submit" class="submit_btn" name="save_award_unit_info" value="Save"--><br/>
                         {{activeAward.groups[activeValue.group]}} {{activeValue.desc}}
                     </div>
@@ -71,7 +71,9 @@
             <td class="award_units">           
                 <div class="award_unit" 
                     ng-repeat="item in activeAward.values | filter: { 'group': group }" 
-                    ng-click="setActiveValue( item )">{{item.displayValue}}</div>
+                    ng-click="setActiveValue( item )"
+                    ng-style="{ 'background-color': item.confirmed ? user.awardValueConfirmedColor : 
+                    ( item.worked ? user.awardValueWorkedColor : null ) }">{{item.displayValue}}</div>
             </td>
         </tr>
     </table>

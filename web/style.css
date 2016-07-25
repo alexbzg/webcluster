@@ -133,7 +133,7 @@ table#cluster{
 	border-collapse: collapse;
 	background-color: #fff;
 	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
-	margin: 20px auto;
+	margin: 0px auto 20px auto;
 }
 table#cluster th{
 	padding: 7px;
@@ -421,7 +421,7 @@ table#awards_list td.full_name, table#awards_list th.full_name{
 	text-align: left;
 }
 table#awards_list td.notification{
-	width: 130px;
+	width: 90px;
 	vertical-align: middle;
 }
 table#awards_list td.notification img{
@@ -457,6 +457,151 @@ input#button_ok {
 
 
 
+
+
+
+/*                  M Y   L I S T              */
+
+#add_call{
+	width: 50%;
+	background-color: #fff;
+	padding: 20px;
+	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
+	margin: 20px auto;
+}
+#add_call textarea{
+	width: 100%;
+	margin: 10px 0;
+}
+
+table#my_list_edit{
+	width: 90%;
+	background-color: #fff;
+	border-collapse: collapse;
+	margin: 0px auto;
+	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
+	margin: 0 auto;
+}
+table#my_list_edit th{
+	padding: 2px 7px;
+	border: 1px solid #a6def8;
+	background-color: #0091c9;
+	text-align: center;
+	color: #fff;
+}
+table#my_list_edit th.band, table#my_list_edit th.mode{
+	font-size: 14px;
+	width: 30px;
+}
+table#my_list_edit td{
+	padding: 0px;
+	border: 1px solid #a6def8;
+	text-align: center;
+	color: #000;
+	vertical-align: middle;
+}
+table#my_list_edit td.callsign{
+	padding-left: 10px;
+	text-align: left;
+}
+
+table#my_list_edit td.delete{
+	padding-top: 2px;
+}
+
+
+
+
+
+
+
+
+table#edit_call_info{
+	width: 90%;
+	background-color: #fff;
+	padding: 5px;
+	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
+	margin: 0 auto 20px auto;
+}
+table#edit_call_info th{
+	color: #000;
+	text-align: center;
+	padding: 5px 5px 0px 5px;
+}
+table#edit_call_info th.band{
+	width: 68px;
+}
+table#edit_call_info th#callsign{
+	padding-left: 10px;
+	font-size: 24px;
+	font-weight: bold;
+}
+table#edit_call_info td{
+	color: #000;
+	vertical-align: middle;
+	text-align: left;
+	font-size: 12px;
+	border: 1px solid #a6def8;
+	padding: 5px;
+}
+table#edit_call_info td#note{
+	color: #777;
+	vertical-align: bottom;
+	text-align: center;
+	font-size: 12px;
+	border: none;
+}
+
+
+
+
+table#my_list_view{
+	width: 90%;
+	background-color: #fff;
+	border-collapse: collapse;
+	margin: 0px auto;
+	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
+	margin: 0 auto;
+}
+table#my_list_view th{
+	padding: 2px 7px;
+	border: 1px solid #a6def8;
+	background-color: #0091c9;
+	text-align: center;
+	color: #fff;
+}
+table#my_list_view td{
+	padding: 0px;
+	border: 1px solid #a6def8;
+	text-align: center;
+	color: #000;
+	vertical-align: middle;
+}
+table#my_list_view td.callsign{
+	padding-left: 10px;
+	text-align: left;
+	cursor: pointer;
+}
+table#my_list_view td.callsign img{
+	float: right;
+	padding-right: 5px;
+}
+table#my_list_view td.band{
+	width: 70px;
+	font-size: 12px;
+	padding: 5px;
+}
+
+
+
+
+
+
+
+
+
+
+
 /*                M Y   A W A R D S              */
 
 
@@ -483,8 +628,9 @@ table#award_info{
 }
 table#award_info td{
 	margin: 10px;
-	padding: 20px;
+	padding: 10px 20px;
 	line-height: 2em;
+	vertical-align: center;
 }
 
 table#award_info td#award_stat{
@@ -500,8 +646,7 @@ table#award_info td#award_stat span{
 
 table#award_info td#award_edit{
 	width: 60%;
-	padding: 20x 0;
-	text-align: center;
+	text-align: center;	
 }
 table#award_info td#award_edit input{
 	font-size: 18px;
@@ -562,11 +707,10 @@ table#award_progress td.award_block{
 }
 .award_unit{
 	display: inline-block;
-	width: 14px;
 	height: 14px;
 	font-size: 10px;
 	margin: 1px;
-	padding: 2px;
+	padding: 2px 3px;
 	border: 1px solid #ccc;
 	cursor: pointer;
 	text-align: center;

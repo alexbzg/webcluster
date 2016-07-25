@@ -3,13 +3,17 @@ var awardsApp = angular.module( 'awardsApp', [] );
 awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
 
     if ( !( $scope.user = getUserData() ) )    
-//        console.log( "no user data" );
         $window.location.href = "http://adxcluster.com/login.html";
 
     if ( 'awardsSettings' in $scope.user )
         $scope.awardsSettings = $scope.user.awardsSettings;
     else
         $scope.awardsSettings = {};
+
+    if ( 'awards' in $scope.user )
+        $scope.userAwards = $scope.user.awards;
+    else
+        $scope.userAwards = {};
 
     $scope.logout = function() {
         logoutUser();
@@ -31,12 +35,25 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
     $http.get( '/awardsValues.json' ).then( function( response ) {
             $scope.awardsValues = response.data;
             $scope.awardsValues.forEach( function( award ) {
-            if ( !( award.name in $scope.awardsSettings ) )
-                $scope.awardsSettings[award.name] = { 'track': true, 'color': '#770000' };
+                award.workedCount = 0;
+                award.confirmedCount = 0;
+                if ( !( award.name in $scope.awardsSettings ) )
+                    $scope.awardsSettings[award.name] = 
+                        { 'track': true, 'color': '#770000' };
+                if ( !( award.name in $scope.userAwards ) )
+                    $scope.userAwards[award.name] = {};
+                award.values.forEach( function( av ) {
+                    if ( av.value in $scope.userAwards[award.name] ) {
+                        av.worked = true;
+                        award.workedCount++;
+                        av.confirmed = $scope.userAwards[award.name][av.value];
+                        if ( av.confirmed )
+                            award.confirmedCount++;
+                    }
+                });
+                        
             });
-
-        }
-    );
+    });
 
     $scope.setActiveValue = function( value ) {
         if ( typeof value == 'object' )
@@ -47,6 +64,46 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
             $scope.searchValue = null;
         }
     };
+
+    $scope.modifyActiveValue = function( param ) {
+        var aw = $scope.userAwards[$scope.activeAward.name];
+        if ( param == 'worked' && !$scope.activeValue.worked ) {
+            if ( $scope.activeValue.confirmed ) {
+                $scope.activeAward.confirmedCount--;
+                $scope.activeValue.confirmed = false;
+            }
+            $scope.activeAward.workedCount--;
+            delete aw[$scope.activeValue.value];
+            $http.post( '/uwsgi/userSettings',
+            { 'token': $scope.user.token,
+                'award': $scope.activeAward.name,
+                'value': $scope.activeValue.value,
+                'delete': true
+            } );
+       } else {
+            if ( param == 'worked' ) {
+                aw[$scope.activeValue.value] = false;
+                $scope.activeAward.workedCount++;
+            } else {
+                if ( !$scope.activeValue.worked ) {
+                    $scope.activeValue.worked = true;
+                    $scope.activeAward.workedCount++;
+                }
+                if ( $scope.activeValue.confirmed )
+                    $scope.activeAward.confirmedCount++;
+                else
+                    $scope.activeAward.confirmedCount--;
+            }
+            $http.post( '/uwsgi/userSettings',
+            { 'token': $scope.user.token,
+                'award': $scope.activeAward.name,
+                'value': $scope.activeValue.value,
+                'confirmed': $scope.activeValue.confirmed == true
+            } );
+        }
+        $scope.user.awards = $scope.userAwards;
+        saveUserData( $scope.user );
+    }
 
     $scope.changeEmailClick = function() {
         $http.post( '/uwsgi/userSettings',

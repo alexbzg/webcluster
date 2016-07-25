@@ -8,6 +8,7 @@
         <meta name="keywords" content="" />
         <title>ADXcluster.com - Profile</title>
         <link href="style.css" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
         <link rel="icon" href="/favicon.ico" type="image/x-icon">
         <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
@@ -20,6 +21,7 @@
         <a href="/"><img src="/images/ac_logo.jpg" border="0" /></a>
         <div id="top_menu">
             <!-- <a href="/my_awards.html">My awards</a> -->
+            <a href="/my_awards.html">My awards</a>
             <a href="/profile.html">Profile</a>
             <a href="/contact.html">Contact</a>
             <a href="#" ng-click="logout()">Logout</a>
@@ -85,7 +87,7 @@
                         ng-change="awardSettingsChanged(award.name)">
                 </td>
                 <td class="color_name">
-                    <input type="color" id="color_{{award.name}}" ng-model="awardsSettings[award.name].color"
+                    <input type="color" id="color_{{award.name}}" class="select_color" ng-model="awardsSettings[award.name].color"
                         ng-change="awardSettingsChanged(award.name)">
                 </td>
                 <td class="short_name" style='color: {{awardsSettings[award.name].color}};'>
