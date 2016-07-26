@@ -9,6 +9,7 @@ body{
 	text-align: left;
 	background-color: #eee;
 	cursor: default;
+	position: relative;
 }
 
 
@@ -53,8 +54,9 @@ input.select_color::-webkit-color-swatch-wrapper {
 
 
 #top{
-	margin: 0;
-	padding: 10px 20px 0 20px;
+	width: 98%;
+	margin: 0 auto;
+	padding: 10px 1% 0 1%;
 	background-color: #eee;
 }
 #top_menu{
@@ -63,7 +65,6 @@ input.select_color::-webkit-color-swatch-wrapper {
 	padding-top: 10px;
 	padding-right: 30px;
 	font-weight: bold;
-	font-size: 18px;
 }
 #top_menu a{
 	color: #333;
@@ -157,9 +158,7 @@ table#cluster #link_status_text{
 	text-align: right;
 	vertical-align: middle;
 }
-table#cluster img{
-	float: right;
-}
+
 #link_status_text{
 	float: right;
 	padding: 7px 7px 0 0;
@@ -214,6 +213,9 @@ table#cluster td.awards span.award_name{
 	font-weight: bold;
 	font-size: 16px;
 	color: #700;
+}
+table#cluster td.awards span.award_name img{
+	padding-left: 2px;
 }
 
 
@@ -605,6 +607,18 @@ table#my_list_view td.band{
 /*                M Y   A W A R D S              */
 
 
+
+#fixed_top{
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	padding: 0;
+	margin: 0;
+	background-color: #eee;
+}
+
+
 select#award_title{
 	text-align: center;
 	font-weight: bold;
@@ -621,7 +635,7 @@ select#award_title option{
 
 
 table#award_info{
-	width: 70%;
+	width: 80%;
 	margin: 20px auto;
 	background-color: #fff;
 	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
@@ -634,7 +648,7 @@ table#award_info td{
 }
 
 table#award_info td#award_stat{
-	width: 30%;
+	width: 25%;
 	padding-left: 5%;
 }  
 table#award_info td#award_stat span{
@@ -643,9 +657,8 @@ table#award_info td#award_stat span{
 	font-size: 20px;
 }
 
-
 table#award_info td#award_edit{
-	width: 60%;
+	width: 70%;
 	text-align: center;	
 }
 table#award_info td#award_edit input{
@@ -669,17 +682,23 @@ table#award_info td#award_edit input.submit_btn {
 #selected_unit_info{
 	padding: 10px 0;
 	border: 1px solid #eee;
-	margin-top: 10px;
+	margin-top: 15px;
 	box-shadow: 3px 3px 10px rgba(0,0,0,0.2); /* Параметры тени */
 	border: 1px solid #ccc;
 }
 
-#selected_unit_info span{
+#selected_unit_info span#code{
 	font-weight: bold;
 	font-size: 20px;
 	color: #900;
 }
-
+table#award_info td#award_edit input#wkd_calls{
+	width: 50%;
+	font-weight: normal;
+	text-align: left;
+	margin-left: 20px;
+	padding: 2px 5px;
+}
 
 
 
@@ -690,7 +709,7 @@ table#award_info td#award_edit input.submit_btn {
 
 table#award_progress{
 	width: 95%;
-	margin: 10px auto 50px auto;
+	margin: 350px auto 50px auto;
 	padding: 20px;
 	background-color: #fff;
 	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
@@ -717,9 +736,7 @@ table#award_progress td.award_block{
 }
 
 .worked{
-	background-color: #0091c9;
-	border-color: #0091c9;
-	color: #fff;
+	
 }
 .confirmed{
 	background-color: #02b20e;

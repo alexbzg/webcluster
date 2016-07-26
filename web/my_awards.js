@@ -15,6 +15,7 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
     else
         $scope.userAwards = {};
 
+
     $scope.logout = function() {
         logoutUser();
         $window.location.href = "http://adxcluster.com/login.html";
@@ -46,7 +47,8 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
                     if ( av.value in $scope.userAwards[award.name] ) {
                         av.worked = true;
                         award.workedCount++;
-                        av.confirmed = $scope.userAwards[award.name][av.value];
+                        av.confirmed = $scope.userAwards[award.name][av.value].confirmed;
+                        av.workedCS = $scope.userAwards[award.name][av.value].workedCS;
                         if ( av.confirmed )
                             award.confirmedCount++;
                     }
@@ -65,6 +67,30 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
         }
     };
 
+    function saveUserAwards( noPost ) {
+        $scope.user.awards = $scope.userAwards;
+        saveUserData( $scope.user );
+        if ( !noPost )
+            $http.post( '/uwsgi/userSettings',
+            { 'token': $scope.user.token,
+                'award': $scope.activeAward.name,
+                'value': $scope.activeValue.value,
+                'confirmed': $scope.activeValue.confirmed == true,
+                'workedCS': $scope.activeValue.workedCS 
+            } );
+    }
+
+    $scope.saveWorkedCS = function( data ) {
+        if ( !$scope.activeValue.worked ) {
+            $scope.activeValue.worked = true;
+            $scope.modifyActiveValue( 'worked' );
+        } else {
+            $scope.userAwards[$scope.activeAward.name][$scope.activeValue.value].workedCS = 
+                $scope.activeValue.workedCS;
+            saveUserAwards();
+        }
+    }
+
     $scope.modifyActiveValue = function( param ) {
         var aw = $scope.userAwards[$scope.activeAward.name];
         if ( param == 'worked' && !$scope.activeValue.worked ) {
@@ -72,6 +98,7 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
                 $scope.activeAward.confirmedCount--;
                 $scope.activeValue.confirmed = false;
             }
+            $scope.activeValue.workedCS = null;
             $scope.activeAward.workedCount--;
             delete aw[$scope.activeValue.value];
             $http.post( '/uwsgi/userSettings',
@@ -80,30 +107,30 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
                 'value': $scope.activeValue.value,
                 'delete': true
             } );
+            saveUserAwards( true );
        } else {
             if ( param == 'worked' ) {
-                aw[$scope.activeValue.value] = false;
+                aw[$scope.activeValue.value] = { 'confirmed': false, 'workedCS': '' };
                 $scope.activeAward.workedCount++;
             } else {
                 if ( !$scope.activeValue.worked ) {
-                    $scope.activeValue.worked = true;
-                    $scope.activeAward.workedCount++;
+                   $scope.activeValue.worked = true;
+                   $scope.activeAward.workedCount++;
                 }
-                if ( $scope.activeValue.confirmed )
+                if ( $scope.activeValue.confirmed ) {
                     $scope.activeAward.confirmedCount++;
-                else
+                    aw[$scope.activeValue.value] = { 'confirmed': true, 
+                        'workedCS': $scope.activeValue.workedCS };
+                } else {
                     $scope.activeAward.confirmedCount--;
+                    aw[$scope.activeValue.value].confirmed = false;
+                }
             }
-            $http.post( '/uwsgi/userSettings',
-            { 'token': $scope.user.token,
-                'award': $scope.activeAward.name,
-                'value': $scope.activeValue.value,
-                'confirmed': $scope.activeValue.confirmed == true
-            } );
+            saveUserAwards();
         }
-        $scope.user.awards = $scope.userAwards;
-        saveUserData( $scope.user );
     }
+
+
 
     $scope.changeEmailClick = function() {
         $http.post( '/uwsgi/userSettings',

@@ -17,51 +17,58 @@
 
     </head>
     <body ng-controller="bodyCtrl">
-    <div id="top">
-        <a href="/"><img src="/images/ac_logo.jpg" border="0" /></a>
-        <div id="top_menu">
-            <a href="/my_awards.html">My awards</a>
-            <a href="/profile.html">Profile</a>
-            <a href="/contact.html">Contact</a>
-            <a href="#" ng-click="logout()">Logout</a>
-        </div>
-    </div>
-    
-    <h4>{{user.callsign}}</h4>   
-    <select id="award_title" ng-model="activeAward" 
-        ng-options="award as (award.fullName + '(' + award.name + ')') for award in awardsValues"
-        ng-change="activeValue = null; searchValue = null;">
-        <option value="">Select award</option>
-    </select>
 
-    <table id="award_info" ng-show="activeAward">
-        <tr>
-            <td id="award_stat">
-                <input type="color" class="select_color" value="#0091c9" ng-model="user.awardValueWorkedColor"
-                    ng-change="saveUserSettings()"> 
-                <span>{{activeAward.workedCount}}</span> worked<br/>
-                <input type="color" class="select_color" value="#02b20e" ng-model="user.awardValueConfirmedColor"
-                    ng-change="saveUserSettings()">
-                <span>{{activeAward.confirmedCount}}</span> confirmed
-            </td>
-            <td id="award_edit">                
-                <form ng-submit="searchValue = searchValue.toUpperCase(); setActiveValue( searchValue )">
-                    {{activeAward.name}} code 
-                    <input type="text" name="award_option" ng-model="searchValue"> 
-                    <input type="submit" class="submit_btn" name="award_unit_search" value="OK">
-                </form>
-                    <div id="selected_unit_info" ng-show="activeValue">
-                        <span>{{activeValue.value}}</span> &nbsp; 
-                        <input type="checkbox" name="unit_worked" ng-model="activeValue.worked" 
-                            ng-change="modifyActiveValue( 'worked' )"><b>Worked</b> &nbsp; 
-                        <input type="checkbox" name="unit_qsl" ng-model="activeValue.confirmed" 
-                            ng-change="modifyActiveValue( 'confirmed' )"><b>Confirmed</b> &nbsp; 
-                        <!--input type="submit" class="submit_btn" name="save_award_unit_info" value="Save"--><br/>
-                        {{activeAward.groups[activeValue.group]}} {{activeValue.desc}}
-                    </div>
-            </td>
-        </tr>
-    </table>
+    <div id="fixed_top">
+
+        <div id="top">
+            <a href="/"><img src="/images/ac_logo.jpg" border="0" /></a>
+            <div id="top_menu">
+                <a href="/my_awards.html">My awards</a>
+                <a href="/profile.html">Profile</a>
+                <a href="/contact.html">Contact</a>
+                <a href="#" ng-click="logout()">Logout</a>
+            </div>
+        </div>
+        
+        <h4>{{user.callsign}}</h4>   
+        <select id="award_title" ng-model="activeAward" 
+            ng-options="award as (award.fullName + '(' + award.name + ')') for award in awardsValues"
+            ng-change="activeValue = null; searchValue = null;">
+            <option value="">Select award</option>
+        </select>
+
+        <table id="award_info" ng-show="activeAward">
+            <tr>
+                <td id="award_stat">
+                    <input type="color" class="select_color" value="#0091c9" ng-model="user.awardValueWorkedColor"
+                        ng-change="saveUserSettings()"> 
+                    <span>{{activeAward.workedCount}}</span> worked<br/>
+                    <input type="color" class="select_color" value="#02b20e" ng-model="user.awardValueConfirmedColor"
+                        ng-change="saveUserSettings()">
+                    <span>{{activeAward.confirmedCount}}</span> confirmed
+                </td>
+                <td id="award_edit">                
+                    <form ng-submit="searchValue = searchValue.toUpperCase(); setActiveValue( searchValue )">
+                        {{activeAward.name}} code 
+                        <input type="text" name="award_option" ng-model="searchValue"> 
+                        <input type="submit" class="submit_btn" name="award_unit_search" value="OK">
+                    </form>
+                        <div id="selected_unit_info" ng-show="activeValue">
+                            <span id="code">{{activeValue.value}}</span> &nbsp; <span id="code_info">{{activeAward.groups[activeValue.group]}} {{activeValue.desc}}</span><br/>
+                            <input type="checkbox" name="unit_worked" ng-model="activeValue.worked" 
+                                ng-change="modifyActiveValue( 'worked' )"><b>Worked</b> &nbsp; 
+                            <input type="checkbox" name="unit_qsl" ng-model="activeValue.confirmed" 
+                                ng-change="modifyActiveValue( 'confirmed' )"><b>Confirmed</b> &nbsp; 
+                            <input type="text" id="wkd_calls" placeholder="worked callsigns" 
+                                ng-model="activeValue.workedCS"/>
+                            <input type="submit" class="submit_btn" name="save_award_unit_info" value="Save"
+                                ng-click="saveWorkedCS()"/>
+                        </div>
+                </td>
+            </tr>
+        </table>
+
+    </div>
 
     <table id="award_progress">
         <tr ng-repeat="group in activeAward.orderedGroups">

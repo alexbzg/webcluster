@@ -68,7 +68,8 @@
                 <td class="awards">
                     <span ng-repeat="award in item.awards" ><span 
                           class="award_name" style="color: {{award.color}};"
-                        ng-class="{worked: award.worked}">{{award.award}}</span>
+                        >{{award.award}}<img ng-show="award.worked" src="/images/icon_worked.png" 
+                                title="worked but not confirmed"/></span>
                         {{ replace0( award.value)}}<span ng-show="!$last">, </span></span>
                 </td>  
                 <!--td class="QTHLoc">{{ replace0( item.qth )}}</td-->
