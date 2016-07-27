@@ -8,10 +8,10 @@ webDXapp.controller( 'bodyCtrl', function( $scope, $http, $interval, $window, $t
 
     function loadDX() {
         $http.get( '/dxdata.json', { cache: false } ).then( function( response ) {
-            if ( $scope.etag != response.headers( 'etag' ) ) {
+            if ( $scope.dxlm != response.headers( 'last-modified' ) ) {
                 $scope.dxItems = response.data.reverse();
                 $scope.dxItems.forEach( awards );
-                $scope.etag = response.headers( 'etag' );
+                $scope.dxlm = response.headers( 'last-modified' );
             }
         } );
     }
@@ -39,7 +39,7 @@ webDXapp.controller( 'bodyCtrl', function( $scope, $http, $interval, $window, $t
                 if ( $scope.user.awards != null 
                     && award.award in $scope.user.awards &&
                     award.value in $scope.user.awards[award.award] ) {
-                    if ( $scope.user.awards[award.award][award.value] )
+                    if ( $scope.user.awards[award.award][award.value].confirmed )
                         return;
                     else
                         award.worked = true;
@@ -65,19 +65,20 @@ webDXapp.controller( 'bodyCtrl', function( $scope, $http, $interval, $window, $t
 
     $interval( loadDX, 1000 );
 
-    $scope.news = { 'etag': $window.localStorage.getItem( 'adxcluster-news' ),
+    $scope.news = { 'lm': $window.localStorage.getItem( 'adxcluster-news' ),
         'html': null };
 
     $http.get( '/news.txt', { cache: false } ).then( function( response ) {
-        if ( $scope.news.etag != response.headers( 'etag' ) ) {
-            $scope.news.etag = response.headers( 'etag' );
-            $scope.news.html = response.data;
+        if ( $scope.news.lm != response.headers( 'last-modified' ) ) {
+            $scope.news.lm = response.headers( 'last-modified' );
+            if ( response.data.length > 10 )
+                $scope.news.html = response.data;
         }
     });
 
 
     $scope.news.close = function() {
-        $window.localStorage['adxcluster-news'] = $scope.news.etag;
+        $window.localStorage['adxcluster-news'] = $scope.news.lm;
         $scope.news.html = null;
     }
 

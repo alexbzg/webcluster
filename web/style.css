@@ -1,7 +1,6 @@
 
 
 body{
-/*	font:16px Arial, Helvetica, sans-serif;*/
 	font-size: 16px;
 	font-family: 'Open Sans', sans-serif;
 	color:#000;	
@@ -89,7 +88,7 @@ input.select_color::-webkit-color-swatch-wrapper {
 /*                    N E W S                  */
 
 #news{
-	width: 80%;
+	width: 70%;
 	margin: 20px auto 0 auto;
 	padding: 0px 20px 5px 20px;
 	background-color: #fffeb3;
@@ -492,8 +491,7 @@ table#my_list_edit th{
 	color: #fff;
 }
 table#my_list_edit th.band, table#my_list_edit th.mode{
-	font-size: 14px;
-	width: 30px;
+	width: 35px;
 }
 table#my_list_edit td{
 	padding: 0px;
@@ -812,7 +810,24 @@ form#contact textarea{
 
 
 
-
+table#loader{
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	position: fixed;
+	z-index: 1;
+	top: 0;
+	left: 0;
+	background: url(images/background_white_75.png) top left;
+	font-size: 24px;
+	line-height: 2em;
+	color: #000;
+}
+table#loader td{
+	text-align: center;
+	vertical-align: middle;
+}
 
 
 

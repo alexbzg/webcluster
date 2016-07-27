@@ -32,8 +32,9 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
             } );
     };
 
-
+    $scope.loading = true;
     $http.get( '/awardsValues.json' ).then( function( response ) {
+            $scope.loading = false;
             $scope.awardsValues = response.data;
             $scope.awardsValues.forEach( function( award ) {
                 award.workedCount = 0;
@@ -60,10 +61,19 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
     $scope.setActiveValue = function( value ) {
         if ( typeof value == 'object' )
             $scope.activeValue = value;
-        else if ( found = $scope.activeAward.values.find( 
-                function( x ) { return x.value === value; } ) ) {
-            $scope.activeValue = found;
-            $scope.searchValue = null;
+        else {
+            var search = value.replace( /\s/g, '' ).replace( /\u00D8/g, '0' );
+            var eg = $scope.activeAward.values[0].value;
+            if ( !search.includes( '-' ) && eg.includes( '-' ) ) {
+                var hpos = eg.indexOf( '-' );
+                search = [search.slice( 0, hpos ), '-', search.slice( hpos )].join('');
+            } else if ( search.includes( '-' ) && !eg.includes( '-' ) )
+                search = search.replace( /-/g, '' );
+            if ( found = $scope.activeAward.values.find( 
+                function( x ) { return x.value === search; } ) ) {
+                $scope.activeValue = found;
+                $scope.searchValue = null;
+            }
         }
     };
 

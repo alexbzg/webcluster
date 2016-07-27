@@ -21,7 +21,7 @@ if not awardsValues:
 def getSplitLine( file, fr, to ):
     line = file.readline()
     if line:
-        return [item.strip( '"\r\n' ) for item in line.split( ';' )[fr:to]]
+        return [item.strip( '"\r\n ' ) for item in line.split( ';' )[fr:to]]
     else:
         return None
 

@@ -46,7 +46,8 @@ profileApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
         $http({
             method: 'POST',
             url: "/uwsgi/userSettings",
-            headers: { 'Content-Type': false },
+            headers: { 'Content-Type': false,
+                'Content-Encoding': 'gzip'},
             data: { token: $scope.user.token, adif: $scope.adif.file }});
     };
 
