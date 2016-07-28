@@ -90,14 +90,16 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
             } );
     }
 
-    $scope.saveWorkedCS = function( data ) {
-        if ( !$scope.activeValue.worked ) {
-            $scope.activeValue.worked = true;
-            $scope.modifyActiveValue( 'worked' );
-        } else {
-            $scope.userAwards[$scope.activeAward.name][$scope.activeValue.value].workedCS = 
-                $scope.activeValue.workedCS;
-            saveUserAwards();
+    $scope.saveWorkedCS = function() {
+        if ( $scope.activeValue.workedCS  ) {
+            if ( !$scope.activeValue.worked ) {
+                $scope.activeValue.worked = true;
+                $scope.modifyActiveValue( 'worked' );
+            } else {
+                $scope.userAwards[$scope.activeAward.name][$scope.activeValue.value].workedCS = 
+                    $scope.activeValue.workedCS;
+                saveUserAwards();
+            }
         }
     }
 

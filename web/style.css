@@ -602,6 +602,123 @@ table#my_list_view td.band{
 
 
 
+/*                D X C C          */
+
+#dxcc_info{
+	width: 70%;
+	background-color: #fff;
+	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
+	margin: 20px auto;
+	padding: 20px;
+}
+
+table#dxcc_edit td#country_edit input#wkd_calls{
+	width: 50%;
+	font-weight: normal;
+	text-align: left;
+	margin-left: 20px;
+	padding: 2px 5px;
+}
+table#dxcc_edit td#country_edit input.submit_btn {
+    padding: 5px 10px;
+    border: 1px solid #aaa;
+    background-color: #0091c9;
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 3px 3px 10px rgba(0,0,0,0.2); /* Параметры тени */
+   	border-radius: 5px;
+}
+table#mode{
+	width: 70%;
+	margin: 0 auto 20px auto;
+	font-weight: bold;
+	border-collapse: collapse;
+}
+table#mode td{
+	width: 9%;
+	border: 1px solid #a6def8;
+	text-align: center;
+	padding: 3px;
+	line-height: 14px;
+}
+table#mode td#mode_text{
+	width: 12%;
+	background-color: #0091c9;
+	color: #fff;
+}
+table#band{
+	width: 100%;
+	margin-bottom: 10px;
+	font-weight: bold;
+	border-collapse: collapse;
+}
+table#band th{
+	border: 1px solid #a6def8;
+	background-color: #0091c9;
+	text-align: center;
+	color: #fff;
+}
+table#band td{
+	width: 9%;
+	border: 1px solid #a6def8;
+	text-align: center;
+	padding: 10px 5px;
+	line-height: 14px;
+}
+
+
+
+table#dxcc{
+	width: 90%;
+	background-color: #fff;
+	border-collapse: collapse;
+	margin: 0px auto;
+	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
+	margin: 0 auto;
+}
+table#dxcc tr.odd{	background-color: #eff9fe;}
+table#dxcc th{
+	padding: 2px 7px;
+	border: 1px solid #a6def8;
+	background-color: #0091c9;
+	text-align: center;
+	color: #fff;
+}
+table#dxcc th.band{
+	padding: 2px 7px;
+	width: 8%;
+}
+
+table#dxcc td{
+	padding: 2px;
+	border: 1px solid #a6def8;
+	vertical-align: top;
+}
+table#dxcc td.country{
+	padding-left: 10px;
+	font-weight: bold;
+	font-size: 18px;
+}
+table#dxcc td.band span{
+	display: inline-block;
+	font-size: 12px;
+	padding: 2px 4px;
+	margin: 2px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*                M Y   A W A R D S              */
 
 
@@ -734,7 +851,9 @@ table#award_progress td.award_block{
 }
 
 .worked{
-	
+	background-color: #0091c9;
+	border-color: #0091c9;
+	color: #fff;	
 }
 .confirmed{
 	background-color: #02b20e;
