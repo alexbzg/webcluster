@@ -169,6 +169,7 @@ class QRZLink:
 
 
 class DX( object ):
+    reState0 = re.compile( '(\w+)-0+(\d\d)' )
 
     def toDict( self ):
         return {
@@ -186,6 +187,7 @@ class DX( object ):
     def __init__( self, dxData = None, **params ):
 
         self._qth = None
+        self._state = None
         self.dxData = dxData
         self.text = params['text']
         self.freq = params['freq']
@@ -320,6 +322,22 @@ class DX( object ):
             self._qth = v
             if self.country == 'Russia' and rafaQTH.has_key( self._qth ):
                 self.rafa = rafaQTH[ self._qth ]
+
+    @property
+    def state( self ):
+        return self._state
+
+    @state.setter
+    def state( self, value ):
+        if not value:
+            self._state = value
+            return
+        v = value.replace( ' ', '' )
+        m = DX.reState0.match( v )
+        if m:
+            self._state = m.group( 1 ) + '-' + m.group( 2 )
+        else:
+            self._state = v
 
 
 

@@ -109,6 +109,11 @@ def application(env, start_response):
                 elif not data.has_key( 'recaptcha' ) or \
                         not checkRecaptcha( data['recaptcha'] ):
                     error = 'Recaptcha error'
+                else:
+                    csLookup = dxdb.getObject( 'users', { 'callsign': data['callsign'] },\
+                            False )
+                    if csLookup:
+                        error = 'callsign is already registered'
 
                 if error == '':
 
@@ -173,11 +178,10 @@ def application(env, start_response):
             elif data.has_key( 'adif' ):
                 adif = data['adif'].split( ',' )[1].decode( 'base64', 'strict' )
                 logging.debug( 'adif received' )
+                newAwards, lastLine = loadAdif( callsign, adif )
                 start_response( '200 OK', [('Content-Type','application/json')])                
-                if loadAdif( callsign, adif ):
-                    return json.dumps( getUserAwards( callsign ) )
-                else:
-                    return json.dumps( False )
+                return json.dumps( { 'lastAdifLine': lastLine, \
+                        'awards': getUserAwards( callsign ) if newAwards else False } )
             elif data.has_key( 'award' ) and data.has_key( 'value' ) \
                     and ( data.has_key( 'confirmed' ) or data.has_key('delete') ):
                 params =  { 'callsign': callsign, 'award': data['award'], \
@@ -334,13 +338,16 @@ def getUserAwards( callsign ):
                 from user_awards
                 where callsign = %s """, \
                  ( callsign, ) ), True )
-    r = {}
-    for item in awards:
-        if not r.has_key( item['award'] ):
-            r[item['award']] = {}
-        r[item['award']][item['value']] = \
-            { 'confirmed': item['confirmed'], 'workedCS': item['worked_cs'] }
-    return r
+    if awards:
+        r = {}
+        for item in awards:
+            if not r.has_key( item['award'] ):
+                r[item['award']] = {}
+            r[item['award']][item['value']] = \
+                { 'confirmed': item['confirmed'], 'workedCS': item['worked_cs'] }
+        return r
+    else:
+        return None
 
 def sendUserData( userData, start_response ):
     awardsSettings = cursor2dicts( \
@@ -352,6 +359,7 @@ def sendUserData( userData, start_response ):
     toSend = { 'token': jwt.encode( { 'callsign': userData['callsign'] }, \
             secret, algorithm='HS256' ), 'callsign': userData['callsign'], \
             'email': userData['email'], \
+            'lastAdifLine': userData['last_adif_line'], \
             'awardValueWorkedColor': userData['award_value_worked_color'], \
             'awardValueConfirmedColor': userData['award_value_confirmed_color'], \
             'awards': getUserAwards( userData['callsign'] )}
@@ -378,17 +386,20 @@ def loadAdif( callsign, adif ):
     eoh = False
     lines = adif.split( '\n' )
     reState = re.compile( '[a-zA-Z]{2}-\d\d' )
+    lastLine = ''
     for line in lines:
         if not eoh and '<EOH>' in line:
             eoh = True
             continue
         if eoh and line.startswith( '<' ):
+            cs = getAdifField( line, 'CALL' )  
+            lastLine = getAdifField( line, 'QSO_DATE' ) + ' ' + \
+                    getAdifField( line, 'TIME_ON' ) + ' ' + cs
             line = line.strip( '\r ' )
             dxcc = getAdifField( line, 'DXCC' )
             if countryCodes.has_key(dxcc):
                 lineAwards = []
                 country = countries[countryCodes[dxcc]]
-                cs = getAdifField( line, 'CALL' )  
                 csLookup = dxdb.getObject( 'callsigns', { 'callsign': cs }, \
                         False, True )
                 state, rafa = None, None
@@ -428,6 +439,7 @@ def loadAdif( callsign, adif ):
     with open( '/var/www/adxc.73/adifAwardsDebug.json', 'w' ) as f:
         f.write( json.dumps( awards ) )
     commitFl = False
+    newAwards = []
     if awards:
         for award in awards.keys():
             for value in awards[award].keys():
@@ -461,12 +473,18 @@ def loadAdif( callsign, adif ):
                             where callsign = %(callsign)s and award = %(award)s and
                                 value = %(value)s""", params )
                         commitFl = True
+                        newAwards.append( params )
                 else:
                     params['confirmed'] = awState['confirmed']
                     params['worked_cs'] = ', '.join( awState['callsigns'] )
                     dxdb.getObject( 'user_awards', params, True )
                     commitFl = True
-        if commitFl:
-            dxdb.commit()
-    return commitFl
+
+    dxdb.updateObject( 'users', { 'callsign': callsign, 'last_adif_line': lastLine }, \
+            'callsign' )
+    dxdb.commit()
+    with open( '/var/www/adxc.73/adifNewAwardsDebug.json', 'w' ) as f:
+        f.write( json.dumps( newAwards ) )
+
+    return ( commitFl, lastLine )
 
