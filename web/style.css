@@ -8,7 +8,6 @@ body{
 	text-align: left;
 	background-color: #eee;
 	cursor: default;
-	position: relative;
 }
 
 
@@ -31,12 +30,13 @@ input#submit_btn{
     border: 1px solid #a6def8;
     border-radius: 5px;
 }
-input.select_color{
+button{
 	width: 25px;
 	height: 25px;
 	padding: 0;
 	border: 1px solid #ccc;
 	cursor: pointer;
+	position: relative;
 }
 input.select_color::-webkit-color-swatch-wrapper {
 	display:-webkit-flex;
@@ -133,7 +133,7 @@ table#cluster{
 	border-collapse: collapse;
 	background-color: #fff;
 	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
-	margin: 0px auto 20px auto;
+	margin: 10px auto 20px auto;
 }
 table#cluster th{
 	padding: 7px;
@@ -149,7 +149,7 @@ table#cluster th a{
 	color: #fff;
 }
 table#cluster th.awards{
-	color: #fff400;
+	/* color: #fff400; */
 }
 table#cluster #link_status_text{
 	padding: 1px 5px 0 0;
@@ -174,6 +174,13 @@ table#cluster td{
 }
 table#cluster tr.odd{	background-color: #eff9fe;}
 
+table#cluster a{
+	text-decoration: none;
+	color: #666;
+}
+table#cluster a:hover{
+	text-decoration: underline;
+}
 
 
 table#cluster td.time{
@@ -207,6 +214,7 @@ table#cluster td.callsign{
 table#cluster td.awards {
 	text-align: left;
 	color: #333;
+	padding-left: 15px;
 }
 table#cluster td.awards span.award_name{
 	font-weight: bold;
@@ -461,7 +469,7 @@ input#button_ok {
 
 
 
-/*                  M Y   L I S T              */
+/*                  M Y   L I S T     edit         */
 
 #add_call{
 	width: 50%;
@@ -469,6 +477,19 @@ input#button_ok {
 	padding: 20px;
 	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
 	margin: 20px auto;
+}
+#add_call span#list_title{
+	font-size: 24px;
+	font-weight: bold;
+}
+#add_call span#short_name{
+	font-size: 14px;
+	color: #777;
+	float: right;
+}
+#add_call span#short_name input{
+	width: 100px;
+	text-align: center;
 }
 #add_call textarea{
 	width: 100%;
@@ -514,48 +535,47 @@ table#my_list_edit td.delete{
 
 
 
+/*                  M Y   L I S T     view         */
 
-
-table#edit_call_info{
+table#mylist_edit_call{
 	width: 90%;
 	background-color: #fff;
 	padding: 5px;
 	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
 	margin: 0 auto 20px auto;
 }
-table#edit_call_info th{
-	color: #000;
-	text-align: center;
-	padding: 5px 5px 0px 5px;
-}
-table#edit_call_info th.band{
-	width: 68px;
-}
-table#edit_call_info th#callsign{
+table#mylist_edit_call td#callsign{
 	padding-left: 10px;
 	font-size: 24px;
 	font-weight: bold;
+	vertical-align: top;
 }
-table#edit_call_info td{
-	color: #000;
-	vertical-align: middle;
-	text-align: left;
-	font-size: 12px;
-	border: 1px solid #a6def8;
-	padding: 5px;
-}
-table#edit_call_info td#note{
-	color: #777;
-	vertical-align: bottom;
+table#mylist_edit_call td.inputs{
+	vertical-align: top;
 	text-align: center;
-	font-size: 12px;
-	border: none;
 }
 
 
 
 
-table#my_list_view{
+
+
+
+
+
+
+
+/*                D X C C   setup       */
+
+#dxcc_setup{
+	width: 90%;
+	background-color: #fff;
+	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
+	margin: 20px auto;
+	padding: 20px 20px 50px 20px;
+	text-align: center;
+}
+table#dxcc_setup{
 	width: 90%;
 	background-color: #fff;
 	border-collapse: collapse;
@@ -563,33 +583,16 @@ table#my_list_view{
 	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
 	margin: 0 auto;
 }
-table#my_list_view th{
+table#dxcc_setup th{
 	padding: 2px 7px;
 	border: 1px solid #a6def8;
 	background-color: #0091c9;
 	text-align: center;
 	color: #fff;
 }
-table#my_list_view td{
-	padding: 0px;
+table#dxcc_setup td{
+	padding: 10px;
 	border: 1px solid #a6def8;
-	text-align: center;
-	color: #000;
-	vertical-align: middle;
-}
-table#my_list_view td.callsign{
-	padding-left: 10px;
-	text-align: left;
-	cursor: pointer;
-}
-table#my_list_view td.callsign img{
-	float: right;
-	padding-right: 5px;
-}
-table#my_list_view td.band{
-	width: 70px;
-	font-size: 12px;
-	padding: 5px;
 }
 
 
@@ -598,11 +601,7 @@ table#my_list_view td.band{
 
 
 
-
-
-
-
-/*                D X C C          */
+/*                D X C C   view       */
 
 #dxcc_info{
 	width: 70%;
@@ -610,7 +609,17 @@ table#my_list_view td.band{
 	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
 	margin: 20px auto;
 	padding: 20px;
+	text-align: center;
 }
+#dxcc_info span#worked{
+	font-size: 12px;
+}
+#dxcc_info span#confirmed{
+	font-size: 10px;
+	color: #777;
+}
+
+
 
 table#dxcc_edit td#country_edit input#wkd_calls{
 	width: 50%;
@@ -648,7 +657,7 @@ table#mode td#mode_text{
 }
 table#band{
 	width: 100%;
-	margin-bottom: 10px;
+	margin: 0px;
 	font-weight: bold;
 	border-collapse: collapse;
 }
@@ -659,13 +668,16 @@ table#band th{
 	color: #fff;
 }
 table#band td{
-	width: 9%;
 	border: 1px solid #a6def8;
 	text-align: center;
 	padding: 10px 5px;
 	line-height: 14px;
+	font-size: 18px;
 }
-
+table#band td span{
+	font-size: 14px;
+	color: #777;
+}
 
 
 table#dxcc{
@@ -737,7 +749,7 @@ table#dxcc td.band span{
 select#award_title{
 	text-align: center;
 	font-weight: bold;
-	font-size: 24px;
+	font-size: 18px;
 	color: #900;
 	padding: 5px 10px;
 	margin: 10px auto;
@@ -824,7 +836,7 @@ table#award_info td#award_edit input#wkd_calls{
 
 table#award_progress{
 	width: 95%;
-	margin: 350px auto 50px auto;
+	margin: 300px auto 50px auto;
 	padding: 20px;
 	background-color: #fff;
 	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
@@ -923,6 +935,37 @@ form#contact textarea{
 	margin: 0 auto 10px auto;
 	text-align: center;
 }
+
+
+
+
+
+
+
+
+
+/*                      A B O U T              */
+
+#about{
+	width: 70%;
+	margin: 50px auto 50px auto;
+    padding: 20px;
+	background-color: #fff;
+    border: 1px solid #ccc;
+	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
+	text-align: left;
+	line-height: 1.5em;
+}
+
+#about hr{
+	margin: 50px 0;
+}
+
+
+
+
+
+
 
 
 

@@ -1,4 +1,4 @@
-var awardsApp = angular.module( 'awardsApp', [] );
+var awardsApp = angular.module( 'awardsApp', ['colorpicker.module'] );
 
 awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
 
@@ -10,11 +10,14 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
     else
         $scope.awardsSettings = {};
 
-    if ( 'awards' in $scope.user )
+    if ( 'awards' in $scope.user && $scope.user.awards != null )
         $scope.userAwards = $scope.user.awards;
     else
         $scope.userAwards = {};
 
+    $scope.params = {};
+    location.search.substr(1).split("&").forEach(function(item) 
+            {$scope.params[item.split("=")[0]] = item.split("=")[1]});
 
     $scope.logout = function() {
         logoutUser();
@@ -39,6 +42,8 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
             $scope.awardsValues.forEach( function( award ) {
                 award.workedCount = 0;
                 award.confirmedCount = 0;
+                if ( $scope.params.award == award.name )
+                    $scope.activeAward = award;
                 if ( !( award.name in $scope.awardsSettings ) )
                     $scope.awardsSettings[award.name] = 
                         { 'track': true, 'color': '#770000' };
@@ -53,9 +58,11 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
                         if ( av.confirmed )
                             award.confirmedCount++;
                     }
+                    if ( $scope.activeAward == award && $scope.params.value == av.value )
+                        $scope.activeValue = av;
                 });
-                        
             });
+           
     });
 
     $scope.setActiveValue = function( value ) {

@@ -35,7 +35,10 @@ loginApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
             $window.location.href = "http://adxcluster.com";
         }, function( response ) {
             grecaptcha.reset();
-            alert( response.data);
+             if ( response.status == "500" || response.status == "502" )
+                alert( 'Server error. Please try again later' );
+            else
+                alert( response.data );
        });
     }
    

@@ -8,6 +8,7 @@
         <meta name="keywords" content="" />
         <title>ADXcluster.com - My awards</title>
         <link href="style.css" rel="stylesheet" type="text/css">
+        <link href="colorpicker.css" rel="stylesheet" type="text/css">
         <link rel="icon" href="/favicon.ico" type="image/x-icon">
         <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
         <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
@@ -17,6 +18,7 @@
             }
         </style>
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
+        <script src="bootstrap-colorpicker-module.min.js"></script>
         <script src="userData.js"></script>
         <script src="my_awards.js"></script>
 
@@ -28,14 +30,16 @@
         <div id="top">
             <a href="/"><img src="/images/ac_logo.jpg" border="0" /></a>
             <div id="top_menu">
+                <span id="callsign" ng-show="user">{{user.callsign}}</span>
                 <a href="/my_awards.html">My awards</a>
                 <a href="/profile.html">Profile</a>
+                <a href="/info.html">Info</a>
                 <a href="/contact.html">Contact</a>
                 <a href="#" ng-click="logout()">Logout</a>
             </div>
         </div>
         
-        <h4>{{user.callsign}}</h4>   
+        <!-- <h4>{{user.callsign}}</h4>    -->
         <select id="award_title" ng-model="activeAward" 
             ng-options="award as (award.fullName + '(' + award.name + ')') for award in awardsValues"
             ng-change="activeValue = null; searchValue = null;">
@@ -45,11 +49,15 @@
         <table id="award_info" ng-show="activeAward">
             <tr>
                 <td id="award_stat">
-                    <input type="color" class="select_color" value="#0091c9" ng-model="user.awardValueWorkedColor"
-                        ng-change="saveUserSettings()"> 
+                    <button colorpicker type="button" colorpicker-position="top" 
+                        ng-model="user.awardValueWorkedColor"
+                        style='background-color: {{user.awardValueWorkedColor}};'
+                        ng-change="saveUserSettings()">&nbsp;</button>
                     <span>{{activeAward.workedCount}}</span> worked<br/>
-                    <input type="color" class="select_color" value="#02b20e" ng-model="user.awardValueConfirmedColor"
-                        ng-change="saveUserSettings()">
+                     <button colorpicker type="button" colorpicker-position="top" 
+                        ng-model="user.awardValueConfirmedColor"
+                        style='background-color: {{user.awardValueConfirmedColor}};'
+                        ng-change="saveUserSettings()">&nbsp;</button>
                     <span>{{activeAward.confirmedCount}}</span> confirmed
                 </td>
                 <td id="award_edit">                
