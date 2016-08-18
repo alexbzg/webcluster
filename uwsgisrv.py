@@ -384,14 +384,13 @@ def getAdifField( line, field ):
 def loadAdif( callsign, adif ):
     awards = {}
     eoh = False
-    lines = adif.split( '\n' )
+    adif = adif.upper()
+    adif = adif.split( '<EOH>' )[1]
+    lines = adif.split( '<EOR>' )
     reState = re.compile( '[a-zA-Z]{2}-\d\d' )
     lastLine = ''
     for line in lines:
-        if not eoh and '<EOH>' in line:
-            eoh = True
-            continue
-        if eoh and line.startswith( '<' ):
+        if '<' in line:
             cs = getAdifField( line, 'CALL' )  
             lastLine = getAdifField( line, 'QSO_DATE' ) + ' ' + \
                     getAdifField( line, 'TIME_ON' ) + ' ' + cs
@@ -430,7 +429,8 @@ def loadAdif( callsign, adif ):
                                 aw['confirmed'] = True
                                 aw['callsigns'] = [ cs, ]
                             elif aw['confirmed'] == confirmed:
-                                if len( aw['callsigns'] ) < 2 and not cs in aw['callsigns']:
+                                if len( aw['callsigns'] ) < 2 and \
+                                    not cs in aw['callsigns']:
                                     aw['callsigns'].append( cs )
                         else:
                             awards[award['award']][award['value']] = \
@@ -454,15 +454,17 @@ def loadAdif( callsign, adif ):
                         csCount = 0 if not awLookup['worked_cs'] else \
                                 2 if ',' in awLookup['worked_cs'] else 1
                         if csCount < 2:
-                            workedCs = awLookup['worked_cs'] if awLookup['worked_cs'] else ''
+                            workedCs = awLookup['worked_cs'] \
+                                    if awLookup['worked_cs'] else ''
                             for cs in awState['callsigns']:
-                                workedCs += ', ' + cs if workedCs else cs
-                                csCount += 1
-                                if csCount > 1:
-                                    break
+                                if not cs in workedCs:
+                                    workedCs += ', ' + cs if workedCs else cs
+                                    csCount += 1
+                                    updateFl = True
+                                    if csCount > 1:
+                                        break
                             params['worked_cs'] = workedCs
                             params['confirmed'] = awLookup['confirmed']
-                            updateFl = True
                     elif awState['confirmed']:
                         params['confirmed'] = True
                         params['worked_cs'] = ', '.join( awState['callsigns'] )
