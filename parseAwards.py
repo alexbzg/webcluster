@@ -33,7 +33,7 @@ def getSplitLine( file, fr, to = None ):
 for aw in awardsData:
     webAw = { 'name': aw['name'], 'country': aw['country'], \
             'fullName': aw['fullName'], 'values': [], 'groups': {} }
-    aw['values'] = []
+    aw['values'] = {}
     if aw.has_key( 'keyAttr' ):
         aw['byKey'] = {}
 
@@ -49,11 +49,12 @@ for aw in awardsData:
                     aw['groupInValue'] else data[1]
                 webAw['values'].append( { 'value': value, 'desc': data[2], 'group': group, \
                         'displayValue': data[1] } )
-                aw['values'].append( value )
+                aw['values'][value] = {'lookups':[]}
                 if aw.has_key( 'keyAttr' ):
                     for key in data[3].split( ',' ):
-                        aw['byKey'][key] = value
-            data = getSplitLine( file, 0, 3 )
+                        if key:
+                            aw['byKey'][key] = value
+            data = getSplitLine( file, 0 )
         webAw['values'].sort( key = lambda x: x['value'] )
         webAw['orderedGroups'] = webAw['groups'].keys()
         webAw['orderedGroups'].sort()

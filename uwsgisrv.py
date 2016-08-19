@@ -377,7 +377,7 @@ def getAdifField( line, field ):
     iBeg = line.find( ">", iHead ) + 1
     ends = [ x for x in [ line.find( x, iBeg ) for x in ( ' ', '<' ) ] \
                 if x > -1 ]
-    iEnd = min( ends ) if ends else len( line ) - 1;
+    iEnd = min( ends ) if ends else len( line )
     return line[iBeg:iEnd]         
 
 
@@ -402,15 +402,15 @@ def loadAdif( callsign, adif ):
                 csLookup = dxdb.getObject( 'callsigns', { 'callsign': cs }, \
                         False, True )
                 state, rafa = None, None
+                state = getAdifField( line, 'CNTY' )
+                if not state or not reState.match( state ):
+                    state = getAdifField( line, 'STATE' )
+                    if state and not reState.match( state ):
+                        state = None
                 if csLookup:
-                    state = csLookup['state']
+                    if not state:
+                        tate = csLookup['state']
                     rafa = csLookup['rafa']
-                if not state:
-                    state = getAdifField( line, 'CNTY' )
-                    if not state or not reState.match( state ):
-                        state = getAdifField( line, 'STATE' )
-                        if state and not reState.match( state ):
-                            state = None
                 if state:
                     lineAwards.append( \
                         { 'award': countryStateAward[country],\
