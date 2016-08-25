@@ -26,9 +26,11 @@
     <div id="top">
         <a href="/"><img src="/images/ac_logo.jpg" border="0" /></a>
         <div id="top_menu">
+            <span id="callsign" ng-show="user">{{user.callsign}}</span>
             <a href="/login.html" ng-show="!user">Login</a>
             <a href="/my_awards.html" ng-show="user">My awards</a>
             <a href="/profile.html" ng-show="user">Profile</a>
+            <a href="/info.html">Info</a>
             <a href="/contact.html">Contact</a>
             <a href="" ng-click="logout()" ng-show="user">Logout</a>
         </div>
@@ -41,20 +43,34 @@
         </div>
         <span ng-bind-html="news.html"/>
     </div>
-        <h4 ng-show="user">{{user.callsign}}</h4>
+    <div id="bands_modes">
+        <div id="selectors_bands_modes">
+            <span class="band"><input type="checkbox" checked>1.8</span>
+            <span class="band"><input type="checkbox" checked>3.5</span>
+            <span class="band"><input type="checkbox" checked>7</span>
+            <span class="band"><input type="checkbox" checked>10</span>
+            <span class="band"><input type="checkbox" checked>14</span>
+            <span class="band"><input type="checkbox" checked>18</span>
+            <span class="band"><input type="checkbox" checked>21</span>
+            <span class="band"><input type="checkbox" checked>24</span>
+            <span class="band"><input type="checkbox" checked>28</span>
+            <span class="band"><input type="checkbox" checked>50</span>
+            <span class="band"><input type="checkbox" checked>144</span>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <span class="mode"><input type="checkbox" checked>CW</span>
+            <span class="mode"><input type="checkbox" checked>SSB</span>
+            <span class="mode"><input type="checkbox" checked>DIGI</span>
+        </div>
+        <img src="/images/icon_select.png" title="Select desired bands and modes">
+    </div>
 
         <table id="cluster">
             <tr>
-                <th class="time">{{time}} <span>z</span></th> <!-- <br/><span>UTC</span> -->
+                <th class="time">{{time}} <span>z</span></th>
                 <th class="freq">MHz</th>
                 <th class="callsign">Callsign</th>
                 <th class="awards">Awards</th> 
-                <!--th class="QTHLoc">QTHLoc</th-->
-                <th id="link_status">Text
-                    <!--img src="/images/status_{{connectionStatus}}.gif" 
-                        title="Cluster connection: {{connectionStatus}}">
-                    <div id="link_status_text">Cluster connection: {{connectionStatus}}</div-->
-                </th>
+                <th id="link_status">Text</th>
                 <th class="spotter">Spotter</th>
             </tr>
             <tr ng-repeat="item in dxItems | filter: { noAwards: false }" 
@@ -66,21 +82,17 @@
                 </td>
                 <td class="callsign">{{ replace0( item.cs ) }}</td>
                 <td class="awards">
-                    <span ng-repeat="award in item.awards" ><span 
-                          class="award_name" style="color: {{award.color}};"
+                    <a ng-repeat="award in item.awards" 
+                        href="/my_awards.html?award={{award.award}}&value={{award.value}}"><span 
+                        class="award_name" ng-style="{'color': award.color}"
                         >{{award.award}}<img ng-show="award.worked" src="/images/icon_worked.png" 
                                 title="worked but not confirmed"/></span>
-                        {{ replace0( award.value)}}<span ng-show="!$last">, </span></span>
+                        {{ replace0( award.value)}}<span ng-show="!$last">, </span></a>
                 </td>  
-                <!--td class="QTHLoc">{{ replace0( item.qth )}}</td-->
                 <td class="text">{{ replace0( item.text )}}</td>
                 <td class="spotter">{{ replace0( item.de )}}</td>
             </tr>
         </table>
-
-<!--    <div id="contact_link">
-        <a href="/contact.html">Support contact</a>
-    </div> -->
 
     <div id="counter">
     Special thanks to <a href="http://qrz.ru/" target="_blank">QRZ.ru</a>, <a href="http://uarl.com.ua/" target="_blank">UARL</a>, <a href="https://www.qrz.com/db/DL6KVA" target="_blank">DL6KVA</a>.<br/><br/>

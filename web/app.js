@@ -27,32 +27,36 @@ webDXapp.controller( 'bodyCtrl', function( $scope, $http, $interval, $window, $t
     }
 
     function awards( dx ) {
-        dx.awards = [];
-        if ( dx.state != null )
-            dx.awards.push( { 'award': stateAw[dx.country], 'value': dx.state } );
-        if ( dx.rafa != null )
-            dx.awards.push( { 'award': 'RAFA', 'value': dx.rafa } );
         if ( $scope.user != null && ( $scope.user.awards != null || 
                     $scope.awardsSettings != null ) ) {
             fAwards = [];
-            dx.awards.forEach( function( award ) {
-                if ( $scope.user.awards != null 
-                    && award.award in $scope.user.awards &&
-                    award.value in $scope.user.awards[award.award] ) {
-                    if ( $scope.user.awards[award.award][award.value].confirmed )
-                        return;
-                    else
-                        award.worked = true;
-                }
-                if ( $scope.awardsSettings != null &&
-                        award.award in $scope.awardsSettings ) {
-                    if ( $scope.awardsSettings[award.award].track ) {
-                        award.color = $scope.awardsSettings[award.award].color;
-                        fAwards.push( award );
+            for ( var name in dx.awards ) 
+                if ( dx.awards.hasOwnProperty( name ) ) {
+                    var value = dx.awards[name];
+                    var award = { award: name, value: value };
+                    if ( $scope.user.awards != null 
+                        && name in $scope.user.awards &&
+                        value in $scope.user.awards[name] ) {
+                        if ( $scope.user.awards[name][value].confirmed )
+                            return;
+                        else
+                            award.worked = true;
                     }
-                } else
-                    fAwards.push( award );
-            });
+                    if ( $scope.awardsSettings != null &&
+                            name in $scope.awardsSettings ) {
+                        if ( $scope.awardsSettings[name].track ) {
+                            award.color = $scope.awardsSettings[name].color;
+                            fAwards.push( award );
+                        }
+                    } else
+                        fAwards.push( award );
+                }
+            dx.awards = fAwards;
+        } else {
+            fAwards = [];
+            for ( var name in dx.awards ) 
+                if ( dx.awards.hasOwnProperty( name ) ) 
+                    fAwards.push( { award: name, value: dx.awards[name] } );
             dx.awards = fAwards;
         }
         dx.noAwards = dx.awards.length == 0;

@@ -13,7 +13,7 @@ from dxdb import dxdb, cursor2dicts
 conf = siteConf()
 webRoot = conf.get( 'web', 'root' )
 
-awardsData = loadJSON( webRoot + '/debug/awardsData.json' )
+awardsData = loadJSON( webRoot + '/awardsData.json' )
 
 fieldValues = {}
 for ad in awardsData:
@@ -163,10 +163,11 @@ class DX( object ):
             'freq': self.freq,
             'ts': self.ts,
             'time': self.time,
-            'state': self.state,
-            'qth': self.qth,
-            'rafa': self.rafa,
-            'country' : self.country }
+            'district': self.district,
+            'gridsquare': self.gridsquare,
+            'country' : self.country,
+            'awards': self.awards
+            }
 
     def __init__( self, dxData = None, **params ):
 
@@ -279,7 +280,7 @@ class DX( object ):
             if data.has_key( 'qthloc' ) and data['qthloc'] and not self.gridsquare:
                 self.gridsquare = data['qthloc']            
             if not self.district and data.has_key( 'state' ) and data['state']:
-                self.state = data['state']
+                self.district = data['state']
             self.qrzData = True
             self.updateDB()
             self.detectAwards()

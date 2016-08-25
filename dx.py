@@ -11,34 +11,19 @@ from common import appRoot, readConf, siteConf, loadJSON
 from dxdb import dxdb, cursor2dicts
 
 conf = siteConf()
-states = {}
-with open( appRoot + '/rda_rus.txt', 'r' ) as frda:
-    rs = []
-    reRDA = re.compile( '^([A-Z]{2}-\d\d)\s+(deleted)*' )
-    for line in frda.readlines():
-        m = reRDA.match( line )
-        if m and not m.group(2):
-            rs.append( m.group(1) )
-    states['Russia'] = frozenset( rs )
-with open( appRoot + '/URDAlist.csv', 'r' ) as furda:
-    us = []
-    for line in furda.readlines():
-        us.append( line.split( ';', 3 )[1] )
-    states['Ukraine'] = frozenset( us )
-   
-reState = re.compile( '[a-zA-Z]{2}[ -]+\d\d' )
+webRoot = conf.get( 'web', 'root' )
 
-rafaQTH = {}
-for fnrafa in ( 'air_rafa.csv', 'air_rafa1.csv' ):
-    with open( appRoot + '/' + fnrafa, 'r' ) as frafa:
-        for line in frafa.readlines():
-            r, qs = line.split( ';', 3 )[1:3]
-            qs = qs.strip( '"' ).split( ',' )
-            for q in qs:
-                rafaQTH[q.strip()] = r
-rafa = frozenset( rafaQTH.values() )
-reQTH = re.compile( '[a-zA-Z0-9]{6}' )
-reRAFA = re.compile( '[a-zA-Z0-9]{4}' )
+awardsData = loadJSON( webRoot + '/awardsData.json' )
+
+fieldValues = {}
+for ad in awardsData:
+    if ad['country'] and ad.has_key( 'fieldValues' ) and ad['fieldValues']:
+        if not fieldValues.has_key(ad['country']):
+            fieldValues[ad['country']] = {}
+        fieldValues[ad['country']][ad['fieldValues']] = frozenset( ad['values'].keys() )
+
+fieldRe = { 'district': re.compile( '[a-zA-Z]{2}[ -]+\d\d' ),\
+        'gridsquare': re.compile( '[a-zA-Z0-9]{6}' ) }
 
 reCountry = re.compile("\s(\S+):$");
 rePfx = re.compile("(\(.*\))?(\[.*\])?");
@@ -78,7 +63,6 @@ def getCountry( cs ):
         return countries[ dxCty ] if countries.has_key( dxCty ) else None
     else:
         return None
-
 
 
 
@@ -169,7 +153,7 @@ class QRZLink:
 
 
 class DX( object ):
-    reState0 = re.compile( '(\w+)-0+(\d\d)' )
+    reState0 = re.compile( '(\w+)\s*-?\s*0*(\d\d)' )
 
     def toDict( self ):
         return {
@@ -179,15 +163,16 @@ class DX( object ):
             'freq': self.freq,
             'ts': self.ts,
             'time': self.time,
-            'state': self.state,
-            'qth': self.qth,
-            'rafa': self.rafa,
-            'country' : self.country }
+            'district': self.district,
+            'gridsquare': self.gridsquare,
+            'country' : self.country,
+            'awards': self.awards
+            }
 
     def __init__( self, dxData = None, **params ):
 
-        self._qth = None
-        self._state = None
+        self._district = None
+        self.awards = {}
         self.dxData = dxData
         self.text = params['text']
         self.freq = params['freq']
@@ -201,98 +186,108 @@ class DX( object ):
         if params.has_key( 'ts' ):
             self.ts = params['ts']
             self.time = params['time']
-            self.rafa = params['rafa'] if params.has_key( 'rafa' ) else None
-            self.state = params['state'] if params.has_key( 'state' ) else None
-            self.qth = params['qth'] if params.has_key( 'qth' ) else None
+            self.district = params['district'] if params.has_key( 'state' ) else None
+            self.gridsquare = params['gridsquare'] if params.has_key( 'qth' ) \
+                    else None
             self.inDB = True
+            self.awards = params['awards'] if params.has_key( 'awards' ) else {}
 
         else:
         
             self.time = params['time'][:2] + ':' + params['time'][2:4]
             self.ts = time.time()
-            self.state = None
-            self.qth = None
-            self.rafa = None
+            self.district = None
+            self.gridsquare = None
 
             csLookup = dxdb.getObject( 'callsigns', { 'callsign': self.cs }, \
                     False, True )
 
             if csLookup:
-                self.state = csLookup['state']
-                self.rafa = csLookup['rafa']
-                self.qth = csLookup['qth']
+                self.district = csLookup['state']
+                self.gridsquare = csLookup['qth']
                 self.inDB = True
                 self.qrzData = csLookup['qrz_data_loaded']
                 logging.debug( 'callsign found in db' )
-            if  self.dxData and ( not '/' in self.cs or ( not csLookup or \
-                    not csLookup['qrz_data_loaded'] ) ):
-                if self.country == 'Russia':
-                    logging.debug( 'putting calssign in query queue: ' + self.cs )
-                    self.dxData.qrzLink.csQueue.put( { 'cs': self.cs, 'cb': self.onQRZdata } )
-                elif self.country == 'Ukraine':
-                    r = urllib2.urlopen( 'http://www.uarl.com.ua/UkrainianCallBOOK/adxcluster.php?calls=' \
-                            + self.cs )
-                    rBody = r.read()
-                    m = reState.search( rBody )
-                    if m:
-                        self.state = m.group( 0 ).upper()
-                    m = reQTH.search( rBody )
-                    if m:
-                        self.qth = m.group( 0 ).upper()
-                    self.qrzData = True
-                    self.updateDB()
+                awLookup = cursor2dicts( dxdb.execute( """ 
+                    select award, value 
+                    from awards
+                    where callsign = %s""", ( self.cs, ) ), True )
+                if awLookup:
+                    for i in awLookup:
+                        self.awards[i['award']] = i['value']
 
             if '#' in self.de:
                 self.text = (self.text.split( ' ', 1 ))[0]
-            else:
-                fl = False
-                for m in reState.finditer( self.text ):
-                    state = m.group( 0 ).upper()
-                    if  state in states[self.country]:
-                        if self.state != state:
-                            self.state = state
-                            self.rafa = None
-                            fl = True
-                        break
 
-                for m in reQTH.finditer( self.text ):
-                    r = m.group( 0 ).upper()
-                    if rafaQTH.has_key( r ):                        
-                        if self.qth != r:
-                            self.qth = r
-                            fl = True
-                        break
-                if self.country == 'Russia':
-                    for m in reRAFA.finditer( self.text ):
-                        r = m.group( 0 ).upper()
-                        if r in rafa:    
-                            if self.rafa != r:
-                                self.rafa = r
-                                fl = True
+            self.testLookups()
+            self.detectAwards()
+
+
+    def testLookups( self ):
+        skip = { 'web': self.qrzData or '/' in self.cs, 'text': '#' in self.de }
+        do = { 'web': False , 'text': False }
+        for ad in awardsData:
+            if not ad['country'] or ad['country'] == self.country:
+                for t in do.keys():
+                    if not do[t] and ad['getFields'][t]:
+                        do[t] = True
+                if ( do['text'] or skip['text'] ) and ( do['web'] or skip['web'] ):
+                    break
+                else:
+                    av = None
+                    if ad.has_key('valueAttr') and getattr( self, ad['valueAttr'] ) \
+                        and ad['values'].has_key( getattr( self, ad['valueAttr'] ) ):
+                        av = ad['values'][getattr( self, ad['valueAttr'] )]
+                    elif ad.has_key('keyAttr') and getattr( self, ad['keyAttr'] ) \
+                        and ad['byKey'].has_key( getattr( self, ad['keyAttr'] ) ):
+                        av = ad['values'][ad['byKey'][getattr( self, ad['valueAttr'] )]]
+                    if av and av.has_key( 'getFields' ):
+                        for t in do.keys():
+                            if not do[t] and av['getFields'][t]:
+                                do[t] = True
+                        if ( do['text'] or skip['text'] ) and ( do['web'] or skip['web'] ):
                             break
-                if fl:
-                    self.updateDB()
+        if do['web'] and not skip['web']:
+            self.doWebLookup()
+        if do['text'] and not skip['text']:
+            self.doTextLookup()
 
-            if self.qrzData:
-                self.checkEmpty()
+    def doWebLookup( self ):
+        if self.country == 'Russia':
+            if self.dxData:
+                self.dxData.qrzLink.csQueue.put( { 'cs': self.cs, 'cb': self.onQRZdata } )
+            elif self.country == 'Ukraine':
+                r = urllib2.urlopen( 'http://www.uarl.com.ua/UkrainianCallBOOK/adxcluster.php?calls=' \
+                        + self.cs )
+                rBody = r.read()
+                self.doTextLookup( rBody )
+
+    def doTextLookup( self, text = None ):
+        if not text:
+            text = self.text
+        for field in fieldRe.keys():
+            if fieldValues.has_key( self.country ) and \
+                fieldValues[ self.country ].has_key( field ):
+                for m in fieldRe[field].finditer( text ):
+                    if m.group(0) in fieldValues[self.country][field]:
+                        setattr( self, field, m.group( 0 ).upper() )
 
                    
 
     def onQRZdata( self, data ):
         logging.debug( 'query received ' +  self.cs )
         if data:
-            if data.has_key( 'qthloc' ):
-                self.qth = data['qthloc']            
-            if not self.state and data.has_key( 'state' ) and data['state']:
-                self.state = data['state']
+            if data.has_key( 'qthloc' ) and data['qthloc'] and not self.gridsquare:
+                self.gridsquare = data['qthloc']            
+            if not self.district and data.has_key( 'state' ) and data['state']:
+                self.district = data['state']
             self.qrzData = True
             self.updateDB()
-            if self.dxData and not self.checkEmpty():
-                self.dxData.toFile()
+            self.detectAwards()
 
 
     def checkEmpty( self ):
-        if self.dxData and not self.qth and not self.rafa and not self.state:
+        if self.dxData and not self.awards and self.qrzData:
             self.dxData.remove( self )
             return True
 
@@ -300,44 +295,82 @@ class DX( object ):
         if self.inDB:
             logging.debug( 'updating db callsign record' )
             dxdb.updateObject( 'callsigns',
-              { 'callsign': self.cs, 'qth': self.qth, 'state': self.state,\
-                      'qrz_data_loaded': self.qrzData, 'rafa': self.rafa }, 'callsign' )
+              { 'callsign': self.cs, 'qth': self.gridlock, 'state': self.district,\
+                      'qrz_data_loaded': self.qrzData }, 'callsign' )
         else:
             logging.debug( 'creating new db callsign record' )
             dxdb.getObject( 'callsigns', \
-                    { 'callsign': self.cs, 'state': self.state, \
-                    'qth': self.qth, 'qrz_data_loaded': self.qrzData, 'rafa': self.rafa, \
+                    { 'callsign': self.cs, 'state': self.district, \
+                    'qth': self.gridlock, 'qrz_data_loaded': self.qrzData, \
                     'country': self.country }, \
                     True )
             dxdb.commit()
 
-    @property
-    def qth( self ):
-        return self._qth
+    def detectAwards( self ):
 
-    @qth.setter
-    def qth( self, value ):
-        v = value.upper() if value != None else None
-        if self._qth != v:
-            self._qth = v
-            if self.country == 'Russia' and rafaQTH.has_key( self._qth ):
-                self.rafa = rafaQTH[ self._qth ]
+        def checkAwardValue( ad, l, v ):
+            if l['type'] == 'key':
+                if ad['byKey'].has_key( v ):
+                    return ad['byKey'][v]
+            elif l['type'] == 'value':
+                if ad['values'].has_key( v ):
+                    return v
+            return None
 
-    @property
-    def state( self ):
-        return self._state
+        for ad in awardsData:
+            if not ad['country'] or ad['country'] == self.country:
+                
+                av = None
+                
+                for l in ad['lookups']:                
+                    if l['source'] == 'text':
+                        for m in re.finditer( l['re'], self.text ):
+                            v = m.group(0).upper()
+                            av = checkAwardValue( ad, l, v )
+                    elif l['source'] == 'field' and getattr( self, l['field'] ):
+                        av = checkAwardValue( ad, l, getattr( self, l['field'] )  )
+                    if av:
+                        self.updateAward( ad, av )
+                        break
 
-    @state.setter
-    def state( self, value ):
-        if not value:
-            self._state = value
-            return
-        v = value.replace( ' ', '' )
-        m = DX.reState0.match( v )
-        if m:
-            self._state = m.group( 1 ) + '-' + m.group( 2 )
+
+    def updateAward( self, ad, av ):
+        if self.awards.has_key( ad['name'] ):
+            if self.awards[ad['name']] == av:
+                return
+            dxdb.execute( """
+                update awards
+                set value = %(value)s
+                where callsign = %(callsign)s and award = %(award)s""",
+                { 'value': av, 'award': ad['name'], 'callsign': self.cs } )
         else:
-            self._state = v
+            dxdb.execute( """
+                insert into awards
+                values ( %(callsign)s, %(award)s, %(value)s )""",
+                { 'value': av, 'award': ad['name'], 'callsign': self.cs } )
+        dxdb.commit()
+        self.awards[ad['name']] = av
+
+
+    @property
+    def district( self ):
+        return self._district
+
+    @district.setter
+    def district( self, value ):
+        v = None
+        if value:
+            v = value.replace( ' ', '' )
+            m = DX.reState0.match( v )
+            if m:
+                v = m.group( 1 ) + '-' + m.group( 2 )
+        if self._district and self._district != v and self.awards:
+            self.awards.clear()
+            dxdb.execute( """
+                delete from awards
+                where callsign = %s """, ( self.cs, ) )
+            dxdb.commit()
+        self._district = v
 
 
 
@@ -362,9 +395,9 @@ class DXData:
             country = getCountry( cs )
             freq = float( m.group(2) )
             if country:
-                dx = DX( dxData = self, text = m.group(4), cs = cs, freq = freq, de = m.group(1), \
-                        time = m.group(5), country = country )
-                if  not dx.checkEmpty():
+                dx = DX( dxData = self, text = m.group(4), cs = cs, freq = freq, \
+                        de = m.group(1), time = m.group(5), country = country )
+                if not dx.checkEmpty():
                     self.append( dx )
 
 

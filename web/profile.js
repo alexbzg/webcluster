@@ -59,7 +59,7 @@ profileApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
                     if ( response.data.awards )
                         alert( 'ADIF log was loaded successfully!' );
                     else 
-                        alert( 'No new awards were found!' );                
+                        alert( 'No new callsigns for supported awards were found!' );                
                 },
                 function( response ) {
                     $scope.loading = false;
@@ -84,11 +84,18 @@ profileApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
     }
 
     $http.get( '/awards.json' ).then( function( response ) {
-            $scope.awardsList = response.data;
+        $scope.awardsList = [];
+        response.data.forEach( function( award ) {
+            var country = $scope.awardsList.find( function( item ) {
+                return item.country == award.country; } );
+            if ( !country ) {
+                country = { country: award.country, awards: [] };
+                $scope.awardsList.push( country );
+            }
+            country.awards.push( award );
             $scope.awardsList.forEach( awardSettings );
-
-        }
-    );
+        } );
+    } );
 
     $scope.changeEmailClick = function() {
         $http.post( '/uwsgi/userSettings',
