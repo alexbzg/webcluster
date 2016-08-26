@@ -123,6 +123,42 @@ input.select_color::-webkit-color-swatch-wrapper {
 
 
 
+/*                         BANDS MODES SELECT                    */
+
+#bands_modes{
+	width: 90%;
+	margin: 0;
+	position: relative;
+	margin: 0 auto;
+}
+#selectors_bands_modes{
+	text-align: center;
+	background-color: #fff;
+	padding: 15px;
+	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
+	font-size: 18px;
+	font-weight: bold;
+	margin-top: 10px;
+}
+#selectors_bands_modes input{
+	margin-right: 0px;
+}
+#selectors_bands_modes span.band{
+	margin-right: 15px;
+}
+#selectors_bands_modes span.mode{
+	margin-right: 15px;
+	color: #025c7e;
+}
+#bands_modes img{
+	position: absolute;
+	bottom: -50px; /* Положение от нижнего края */
+    right: -40px; 
+    cursor: pointer;
+}
+
+
+
 
 
 
@@ -565,36 +601,34 @@ table#mylist_edit_call td.inputs{
 
 
 
-/*                D X C C   setup       */
+/*                A W A R D  setup       */
 
-#dxcc_setup{
-	width: 90%;
+#award_setup{
+	width: 80%;
 	background-color: #fff;
 	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
 	margin: 20px auto;
 	padding: 20px 20px 50px 20px;
 	text-align: center;
 }
-table#dxcc_setup{
-	width: 90%;
+table.award_setup{
 	background-color: #fff;
 	border-collapse: collapse;
 	margin: 0px auto;
 	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
-	margin: 0 auto;
+	margin: 20px auto;
 }
-table#dxcc_setup th{
+table.award_setup th{
 	padding: 2px 7px;
 	border: 1px solid #a6def8;
 	background-color: #0091c9;
 	text-align: center;
 	color: #fff;
 }
-table#dxcc_setup td{
-	padding: 10px;
+table.award_setup td{
+	padding: 10px 20px;
 	border: 1px solid #a6def8;
 }
-
 
 
 
@@ -618,8 +652,6 @@ table#dxcc_setup td{
 	font-size: 10px;
 	color: #777;
 }
-
-
 
 table#dxcc_edit td#country_edit input#wkd_calls{
 	width: 50%;
@@ -762,7 +794,7 @@ select#award_title option{
 
 
 table#award_info{
-	width: 80%;
+	width: 90%;
 	margin: 20px auto;
 	background-color: #fff;
 	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
@@ -783,6 +815,38 @@ table#award_info td#award_stat span{
 	padding: 0 5px 0 10px;
 	font-size: 20px;
 }
+
+table#view_cfm {
+	width: 80%;
+	padding: 0;
+	margin: 25px 0 0 0;
+}
+table#view_cfm th{
+	padding: 0 0 3px 0;
+	font-size: 12px;
+	line-height: 10px;
+	text-align: center;
+	font-weight: normal;
+	color: #0091c9;
+}
+table#view_cfm td{
+	width: 33%;
+	padding: 0;
+	margin: 0;
+	font-size: 14px;
+	line-height: 10px;
+	text-align: center;
+}
+
+
+
+
+
+
+
+
+
+
 
 table#award_info td#award_edit{
 	width: 70%;
@@ -812,6 +876,7 @@ table#award_info td#award_edit input.submit_btn {
 	margin-top: 15px;
 	box-shadow: 3px 3px 10px rgba(0,0,0,0.2); /* Параметры тени */
 	border: 1px solid #ccc;
+	clear: both;
 }
 
 #selected_unit_info span#code{
@@ -819,8 +884,14 @@ table#award_info td#award_edit input.submit_btn {
 	font-size: 20px;
 	color: #900;
 }
+
+#selected_unit_info span#wkd, span#cfm{
+	font-weight: bold;
+	padding-right: 20px;
+}
+
 table#award_info td#award_edit input#wkd_calls{
-	width: 50%;
+	width: 80%;
 	font-weight: normal;
 	text-align: left;
 	margin-left: 20px;
@@ -836,7 +907,7 @@ table#award_info td#award_edit input#wkd_calls{
 
 table#award_progress{
 	width: 95%;
-	margin: 300px auto 50px auto;
+	margin: 350px auto 50px auto;
 	padding: 20px;
 	background-color: #fff;
 	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */

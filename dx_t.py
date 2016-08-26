@@ -151,9 +151,39 @@ class QRZLink:
                     logging.error( 'Http response body: ' + r.read() )
                 return None
 
+def findDiap( diaps, value ):
+    for diap in diaps:
+        if diap[1] <= value and diap[2] >= value:
+            return diap[0]
+        elif diap[1] > value:
+            return None
+    return None
+
 
 class DX( object ):
     reState0 = re.compile( '(\w+)\s*-?\s*0*(\d\d)' )
+    bands = [ [ '1.8', 1800, 2000 ],
+            [ '3.5', 3500, 4000 ],
+            [ '7', 7000, 7300 ],
+            [ '10', 1000, 10150 ],
+            [ '14', 14000, 14350 ],
+            [ '18', 18068, 18168 ],
+            [ '21', 21000, 21450 ],
+            [ '24', 24890, 24990 ],
+            [ '28', 28000, 29700 ], 
+            [ '50', 50000, 54000 ], 
+            [ '144', 144000, 148000 ] ]
+    modes = { 'CW': ( 'CW', ),
+            'SSB': ( 'USB', 'LSB', 'FM', 'SSB' ),
+            'DIGI': ( 'RTTY', 'PSK', 'JT65', 'FSK', 'OLIVIA', 'SSTV' ) }
+    modesMap = []
+    with open( appRoot + '/bandMap.txt', 'r' ) as fBandMap:
+        reBandMap = re.compile( "^(\d+\.?\d*)\s*-?(\d+\.?\d*)\s+(\S+)(\r\n)?$" )
+        for line in fBandMap.readlines():
+            m = reBandMap.match( line )
+            if m:
+                modesMap.append( [ m.group(3), float( m.group(1) ), \
+                        float( m.group(2) ) ] )
 
     def toDict( self ):
         return {
@@ -166,7 +196,10 @@ class DX( object ):
             'district': self.district,
             'gridsquare': self.gridsquare,
             'country' : self.country,
-            'awards': self.awards
+            'awards': self.awards,
+            'mode': self.mode,
+            'band': self.band
+
             }
 
     def __init__( self, dxData = None, **params ):
@@ -176,6 +209,23 @@ class DX( object ):
         self.dxData = dxData
         self.text = params['text']
         self.freq = params['freq']
+        self.band = findDiap( DX.bands, self.freq )
+
+        self.mode = None
+        t = self.text.upper()
+        for ( mode, aliases ) in DX.modes.iteritems():
+            for alias in aliases:
+                if re.search( '(^|\s)' + alias + '(\d|\s|$)', t ):
+                    self.mode = mode
+                    break
+        if not self.mode:
+            modeByMap = findDiap( DX.modesMap, self.freq )
+            if modeByMap:
+                for ( mode, aliases ) in DX.modes.iteritems():
+                    if modeByMap in aliases:
+                        self.mode = mode
+                        break
+
         self.cs = params['cs']
         self.de = params['de']
         self.country = params['country'] if params.has_key( 'country' ) \
@@ -240,12 +290,14 @@ class DX( object ):
                         av = ad['values'][getattr( self, ad['valueAttr'] )]
                     elif ad.has_key('keyAttr') and getattr( self, ad['keyAttr'] ) \
                         and ad['byKey'].has_key( getattr( self, ad['keyAttr'] ) ):
-                        av = ad['values'][ad['byKey'][getattr( self, ad['valueAttr'] )]]
+                        av = ad['values'][ad['byKey'][getattr( self, \
+                                ad['valueAttr'] )]]
                     if av and av.has_key( 'getFields' ):
                         for t in do.keys():
                             if not do[t] and av['getFields'][t]:
                                 do[t] = True
-                        if ( do['text'] or skip['text'] ) and ( do['web'] or skip['web'] ):
+                        if ( do['text'] or skip['text'] ) and \
+                                ( do['web'] or skip['web'] ):
                             break
         if do['web'] and not skip['web']:
             self.doWebLookup()

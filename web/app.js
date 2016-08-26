@@ -3,8 +3,62 @@ var webDXapp = angular.module( 'webDXapp', [ 'ngSanitize' ] );
 webDXapp.controller( 'bodyCtrl', function( $scope, $http, $interval, $window, $timeout ) {
     var stateAw = { 'Russia': 'RDA', 'Ukraine': 'URDA' };
 
-    if ( $scope.user = getUserData( $scope, $window ) )
+    if ( $scope.user = getUserData( $scope, $window ) ) {
         $scope.awardsSettings = $scope.user.awardsSettings;
+//        $scope.selector = null;
+    }
+
+    var r = null;
+    if ( r = window.localStorage.getItem('adxcluster-selector') ) {
+        try {
+            r = JSON.parse( r );
+            if ( !Array.isArray( r.bands ) || !Array.isArray( r.modes ) )
+                r = null;
+        } catch( err ) {
+            r = null;
+        }
+    }
+    $scope.selector = r;
+   
+
+    if ( !$scope.selector )
+        $scope.selector = { bands: [], modes: [] };
+    var selector = { bands: [ '1.8', '3.5', '7', '10', '14', '18', '21', '24', '28', '50', '144' ],
+        modes: [ 'CW', 'SSB', 'DIGI' ] };
+    for ( field in selector ) 
+        if ( selector.hasOwnProperty( field ) ) {
+
+            $scope.selector[field] = $scope.selector[field].filter( function( item ) {
+                return selector[field].indexOf( item.name ) != -1;
+            } );
+
+            selector[field].forEach( function( value ) {
+                if ( !$scope.selector[field].find( function( item ) { 
+                    return item.name == value; } ) )
+                    $scope.selector[field].push( { name: value, enabled: true } );
+            } );
+        }
+
+    $scope.selectorChange = function() {
+        window.localStorage['adxcluster-selector'] = JSON.stringify( $scope.selector );
+    };
+
+    $scope.dxFilter = function( dx ) {
+        if ( dx.awards.length > 0 ){
+            var band =  $scope.selector.bands.find( function( band ) {
+                return band.name == dx.band; } );
+            if ( band && !band.enabled )
+                return false;
+            var mode =  $scope.selector.modes.find( function( mode ) {
+                return mode.name == dx.mode; } );
+            if ( mode && !mode.enabled )
+                return false;
+            else
+                return true;
+        } else 
+            return false;
+    };
+
 
     function loadDX() {
         $http.get( '/dxdata.json', { cache: false } ).then( function( response ) {
@@ -52,14 +106,13 @@ webDXapp.controller( 'bodyCtrl', function( $scope, $http, $interval, $window, $t
                         fAwards.push( award );
                 }
             dx.awards = fAwards;
-        } else {
+         } else {
             fAwards = [];
             for ( var name in dx.awards ) 
                 if ( dx.awards.hasOwnProperty( name ) ) 
                     fAwards.push( { award: name, value: dx.awards[name] } );
             dx.awards = fAwards;
         }
-        dx.noAwards = dx.awards.length == 0;
     }
 
    

@@ -19,6 +19,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-sanitize.js"></script>
         <script src="userData.js"></script>
+        <script src="polyfill.js"></script>
         <script src="app.js"></script>
 
     </head>
@@ -44,24 +45,19 @@
         <span ng-bind-html="news.html"/>
     </div>
     <div id="bands_modes">
-        <div id="selectors_bands_modes">
-            <span class="band"><input type="checkbox" checked>1.8</span>
-            <span class="band"><input type="checkbox" checked>3.5</span>
-            <span class="band"><input type="checkbox" checked>7</span>
-            <span class="band"><input type="checkbox" checked>10</span>
-            <span class="band"><input type="checkbox" checked>14</span>
-            <span class="band"><input type="checkbox" checked>18</span>
-            <span class="band"><input type="checkbox" checked>21</span>
-            <span class="band"><input type="checkbox" checked>24</span>
-            <span class="band"><input type="checkbox" checked>28</span>
-            <span class="band"><input type="checkbox" checked>50</span>
-            <span class="band"><input type="checkbox" checked>144</span>
+        <div id="selectors_bands_modes" ng-show="showSelector">
+            <span class="band" ng-repeat="band in selector.bands">
+                <input type="checkbox" ng-model="band.enabled"
+                    ng-change="selectorChange()">{{band.name}}
+            </span>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <span class="mode"><input type="checkbox" checked>CW</span>
-            <span class="mode"><input type="checkbox" checked>SSB</span>
-            <span class="mode"><input type="checkbox" checked>DIGI</span>
+            <span class="mode" ng-repeat="mode in selector.modes">
+                <input type="checkbox" ng-model="mode.enabled"
+                    ng-change="selectorChange()">{{mode.name}}
+            </span>
         </div>
-        <img src="/images/icon_select.png" title="Select desired bands and modes">
+        <img src="/images/icon_select.png" title="Select desired bands and modes" 
+            ng-click="showSelector = !showSelector"/>
     </div>
 
         <table id="cluster">
@@ -73,7 +69,7 @@
                 <th id="link_status">Text</th>
                 <th class="spotter">Spotter</th>
             </tr>
-            <tr ng-repeat="item in dxItems | filter: { noAwards: false }" 
+            <tr ng-repeat="item in dxItems | filter: dxFilter" 
                 ng-class-odd="'odd'" ng-class-even="'even'">
                 <td class="time">{{item.time}}</td>
                 <td class="freq">
