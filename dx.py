@@ -211,16 +211,20 @@ class DX( object ):
         self.text = params['text']
         self.freq = params['freq']
 
-        self.band = findDiap( DX.bands, self.freq )
+        self.band = params['band'] if params.has_key( 'band' ) else None
+        self.mode = params['mode'] if params.has_key( 'mode' ) else None
 
-        self.mode = None
-        t = self.text.upper()
-        for ( mode, aliases ) in DX.modes.iteritems():
-            for alias in aliases:
-                if re.search( '(^|\s)' + alias + '(\d|\s|$)', t ):
-                    self.mode = mode
-                    break
-        if not self.mode:
+        if not self.band and self.freq:
+            self.band = findDiap( DX.bands, self.freq )
+
+        if not self.mode and self.text:
+            t = self.text.upper()
+            for ( mode, aliases ) in DX.modes.iteritems():
+                for alias in aliases:
+                    if re.search( '(^|\s)' + alias + '(\d|\s|$)', t ):
+                        self.mode = mode
+                        break
+        if not self.mode and self.freq:
             modeByMap = findDiap( DX.modesMap, self.freq )
             if modeByMap:
                 for ( mode, aliases ) in DX.modes.iteritems():

@@ -2,6 +2,7 @@
 #coding=utf-8
 from common import appRoot, readConf, siteConf, loadJSON
 from dxdb import cursor2dicts, dbConn
+from dx import DX
 
 import json, smtplib, urllib2, urllib, os, base64, jwt, re, logging, time, urlparse
 
@@ -384,62 +385,49 @@ def getAdifField( line, field ):
 def loadAdif( callsign, adif ):
     awards = {}
     eoh = False
-    adif = adif.upper()
+    adif = adif.upper().replace( '\r', '' ).replace( '\n', '' )
     adif = adif.split( '<EOH>' )[1]
     lines = adif.split( '<EOR>' )
-    reState = re.compile( '[a-zA-Z]{2}-\d\d' )
+    reDistrict = re.compile( '[a-zA-Z]{2}-\d\d' )
     lastLine = ''
     for line in lines:
         if '<' in line:
             cs = getAdifField( line, 'CALL' )  
             lastLine = getAdifField( line, 'QSO_DATE' ) + ' ' + \
                     getAdifField( line, 'TIME_ON' ) + ' ' + cs
-            line = line.strip( '\r ' )
-            dxcc = getAdifField( line, 'DXCC' )
-            if countryCodes.has_key(dxcc):
-                lineAwards = []
-                country = countries[countryCodes[dxcc]]
-                csLookup = dxdb.getObject( 'callsigns', { 'callsign': cs }, \
-                        False, True )
-                state, rafa = None, None
-                state = getAdifField( line, 'CNTY' )
-                if not state or not reState.match( state ):
-                    state = getAdifField( line, 'STATE' )
-                    if state and not reState.match( state ):
-                        state = None
-                if csLookup:
-                    if not state:
-                        tate = csLookup['state']
-                    rafa = csLookup['rafa']
-                if state:
-                    lineAwards.append( \
-                        { 'award': countryStateAward[country],\
-                            'value': state } )
-                if rafa:
-                    lineAwards.append( \
-                            { 'award': 'RAFA', 'value': rafa } )
-                if lineAwards:
-                    confirmed = getAdifField( line, 'QSL_RCVD' ) == 'Y'
-                    for award in lineAwards:
-                        if not awards.has_key(award['award']):
-                            awards[award['award']] = {}
-                        if awards[award['award']].has_key(award['value']):
-                            aw = awards[award['award']][award['value']]
-                            if not aw['confirmed'] and confirmed:
-                                aw['confirmed'] = True
-                                aw['callsigns'] = [ cs, ]
-                            elif aw['confirmed'] == confirmed:
-                                if len( aw['callsigns'] ) < 2 and \
-                                    not cs in aw['callsigns']:
-                                    aw['callsigns'].append( cs )
-                        else:
-                            awards[award['award']][award['value']] = \
-                                { 'confirmed': confirmed, \
-                                'callsigns': [ cs, ] }    
+            freq = getAdifField( line, 'FREQ' )
+            dx = DX( cs = cs, de = '', text = '', \
+                    freq = float( freq ) if freq else None, \
+                    time = '    ' )
+            district = getAdifField( line, 'CNTY' )
+            if not district or not reDistrict.match( district ):
+                district = getAdifField( line, 'STATE' )
+                if district and not reDistrict.match( district ):
+                    state = None
+            if district and district != dx.district:
+                dx.district = district
+                dx.detectAwards()
+            if dx.awards:
+                confirmed = getAdifField( line, 'QSL_RCVD' ) == 'Y'
+                for ( award, value ) in dx.awards.iteritems():
+                    if not awards.has_key(award):
+                        awards[award] = {}
+                    if awards[award].has_key(value):
+                        aw = awards[award][value]
+                        if not aw['confirmed'] and confirmed:
+                            aw['confirmed'] = True
+                            aw['callsigns'] = [ cs, ]
+                        elif aw['confirmed'] == confirmed:
+                            if len( aw['callsigns'] ) < 2 and \
+                                not cs in aw['callsigns']:
+                                aw['callsigns'].append( cs )
+                    else:
+                        awards[award][value] = \
+                            { 'confirmed': confirmed, \
+                            'callsigns': [ cs, ] }    
     with open( '/var/www/adxc.73/adifAwardsDebug.json', 'w' ) as f:
         f.write( json.dumps( awards ) )
     commitFl = False
-    newAwards = []
     if awards:
         for award in awards.keys():
             for value in awards[award].keys():
@@ -475,7 +463,6 @@ def loadAdif( callsign, adif ):
                             where callsign = %(callsign)s and award = %(award)s and
                                 value = %(value)s""", params )
                         commitFl = True
-                        newAwards.append( params )
                 else:
                     params['confirmed'] = awState['confirmed']
                     params['worked_cs'] = ', '.join( awState['callsigns'] )
@@ -485,8 +472,6 @@ def loadAdif( callsign, adif ):
     dxdb.updateObject( 'users', { 'callsign': callsign, 'last_adif_line': lastLine }, \
             'callsign' )
     dxdb.commit()
-    with open( '/var/www/adxc.73/adifNewAwardsDebug.json', 'w' ) as f:
-        f.write( json.dumps( newAwards ) )
 
     return ( commitFl, lastLine )
 
