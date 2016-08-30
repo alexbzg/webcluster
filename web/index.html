@@ -55,6 +55,11 @@
                 <input type="checkbox" ng-model="mode.enabled"
                     ng-change="selectorChange()">{{mode.name}}
             </span>
+            <span class="sound">
+                <input type="checkbox" ng-model="selector.sound"
+                    ng-change="soundChange()">Sound
+            </span>
+
         </div>
         <img src="/images/icon_select.png" title="Select desired bands and modes" 
             ng-click="showSelector = !showSelector"/>

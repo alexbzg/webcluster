@@ -43,24 +43,46 @@ webDXapp.controller( 'bodyCtrl', function( $scope, $http, $interval, $window, $t
         window.localStorage['adxcluster-selector'] = JSON.stringify( $scope.selector );
     };
 
+    $scope.sound = new Audio( '/note.mp3' );
+
+    function playSound() {
+        $scope.sound.play();
+    }
+
+    $scope.soundChange = function() {
+        if ( $scope.selector.sound )
+            playSound();
+        $scope.selectorChange();
+    }
+
+    $scope.lastDx = { cs:'', ts: 0 };
+
     $scope.dxFilter = function( dx ) {
+        var r = false;
         if ( dx.awards.length > 0 ){
             var band =  $scope.selector.bands.find( function( band ) {
                 return band.name == dx.band; } );
-            if ( band && !band.enabled )
-                return false;
-            var mode =  $scope.selector.modes.find( function( mode ) {
-                return mode.name == dx.mode; } );
-            if ( mode && !mode.enabled )
-                return false;
-            else
-                return true;
-        } else 
-            return false;
+            if ( !band || band.enabled ) {
+                var mode =  $scope.selector.modes.find( function( mode ) {
+                    return mode.name == dx.mode; } );
+                if ( !mode || mode.enabled )
+                    r = true;
+            }
+        } 
+        if ( r && dx.ts > $scope.lastDx.ts ) {
+            $scope.lastDx.ts = dx.ts;
+            if ( dx.cs != $scope.lastDx.cs ) {
+                $scope.lastDx.cs = dx.cs;
+                if ( !$scope.firstLoad && $scope.selector.sound )
+                    playSound();
+            }
+        }
+        return r;
     };
 
 
     function loadDX() {
+        $scope.firstLoad = $scope.dxlm == null;
         $http.get( '/dxdata.json', { cache: false } ).then( function( response ) {
             if ( $scope.dxlm != response.headers( 'last-modified' ) ) {
                 $scope.dxItems = response.data.reverse();
@@ -117,7 +139,7 @@ webDXapp.controller( 'bodyCtrl', function( $scope, $http, $interval, $window, $t
 
    
 
-    $scope.etag = null;
+    $scope.dxlm = null;
     loadDX();
 
     $interval( loadDX, 1000 );
