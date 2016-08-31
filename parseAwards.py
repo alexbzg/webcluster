@@ -12,7 +12,7 @@ from dx import DX, DXData
 
 conf = siteConf()
 webRoot = conf.get( 'web', 'root' ) 
-awardsData = loadJSON( webRoot + '/debug/awards.json' )
+awardsData = loadJSON( webRoot + '/awards.json' )
 if not awardsData:
     print 'No awards data!'
 awards = []
@@ -58,15 +58,24 @@ for aw in awardsData:
         webAw['values'].sort( key = lambda x: x['value'] )
         webAw['orderedGroups'] = webAw['groups'].keys()
         webAw['orderedGroups'].sort()
+
+    if aw.has_key( 'substFile' ) and aw['substFile']:
+        aw['subst'] = {}
+        with open( webRoot + '/' + aw['substFile'], 'r' ) as file:
+            data = getSplitLine( file, 0 )
+            while data:
+                if data[0] and data[1]:
+                    aw['subst'][data[0]] = data[1]
+                data = getSplitLine( file, 0 )
     
     awards.append( aw )
     webAwards.append( webAw )
 
 
-with open( webRoot + '/debug/awardsValues.json', 'w' ) as fav:
+with open( webRoot + '/awardsValues.json', 'w' ) as fav:
     fav.write( json.dumps( webAwards ) )
 
-with open( webRoot + '/debug/awardsData.json', 'w' ) as fav:
+with open( webRoot + '/awardsData.json', 'w' ) as fav:
     fav.write( json.dumps( awards ) )
 
 

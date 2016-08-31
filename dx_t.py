@@ -16,11 +16,15 @@ webRoot = conf.get( 'web', 'root' )
 awardsData = loadJSON( webRoot + '/awardsData.json' )
 
 fieldValues = {}
+fieldValuesSubst = {}
 for ad in awardsData:
     if ad['country'] and ad.has_key( 'fieldValues' ) and ad['fieldValues']:
         if not fieldValues.has_key(ad['country']):
             fieldValues[ad['country']] = {}
+            fieldValuesSubst[ad['country']] = {}
         fieldValues[ad['country']][ad['fieldValues']] = frozenset( ad['values'].keys() )
+        if ad.has_key( 'subst' ):
+            fieldValuesSubst[ad['country']][ad['fieldValues']] = ad['subst']
 
 fieldRe = { 'district': re.compile( '[a-zA-Z]{2}[ -]+\d\d' ),\
         'gridsquare': re.compile( '[a-zA-Z0-9]{6}' ) }
@@ -160,6 +164,7 @@ def findDiap( diaps, value ):
     return None
 
 
+
 class DX( object ):
     reState0 = re.compile( '(\w+)\s*-?\s*0*(\d\d)' )
     bands = [ [ '1.8', 1800, 2000 ],
@@ -209,23 +214,28 @@ class DX( object ):
         self.dxData = dxData
         self.text = params['text']
         self.freq = params['freq']
-        self.band = findDiap( DX.bands, self.freq )
 
-        self.mode = None
-        t = self.text.upper()
-        for ( mode, aliases ) in DX.modes.iteritems():
-            for alias in aliases:
-                if re.search( '(^|\s)' + alias + '(\d|\s|$)', t ):
-                    self.mode = mode
-                    break
-        if not self.mode:
+        self.band = params['band'] if params.has_key( 'band' ) else None
+        self.mode = params['mode'] if params.has_key( 'mode' ) else None
+
+        if not self.band and self.freq:
+            self.band = findDiap( DX.bands, self.freq )
+
+        if not self.mode and self.text:
+            t = self.text.upper()
+            for ( mode, aliases ) in DX.modes.iteritems():
+                for alias in aliases:
+                    if re.search( '(^|\s)' + alias + '(\d|\s|$)', t ):
+                        self.mode = mode
+                        break
+        if not self.mode and self.freq:
             modeByMap = findDiap( DX.modesMap, self.freq )
             if modeByMap:
                 for ( mode, aliases ) in DX.modes.iteritems():
                     if modeByMap in aliases:
                         self.mode = mode
                         break
-
+        
         self.cs = params['cs']
         self.de = params['de']
         self.country = params['country'] if params.has_key( 'country' ) \
@@ -236,18 +246,18 @@ class DX( object ):
         if params.has_key( 'ts' ):
             self.ts = params['ts']
             self.time = params['time']
-            self.rafa = params['rafa'] if params.has_key( 'rafa' ) else None
-            self.state = params['state'] if params.has_key( 'state' ) else None
-            self.qth = params['qth'] if params.has_key( 'qth' ) else None
+            self.district = params['district'] if params.has_key( 'state' ) else None
+            self.gridsquare = params['gridsquare'] if params.has_key( 'qth' ) \
+                    else None
             self.inDB = True
+            self.awards = params['awards'] if params.has_key( 'awards' ) else {}
 
         else:
         
             self.time = params['time'][:2] + ':' + params['time'][2:4]
             self.ts = time.time()
-            self.state = None
-            self.qth = None
-            self.rafa = None
+            self.district = None
+            self.gridsquare = None
 
             csLookup = dxdb.getObject( 'callsigns', { 'callsign': self.cs }, \
                     False, True )
@@ -290,8 +300,8 @@ class DX( object ):
                         av = ad['values'][getattr( self, ad['valueAttr'] )]
                     elif ad.has_key('keyAttr') and getattr( self, ad['keyAttr'] ) \
                         and ad['byKey'].has_key( getattr( self, ad['keyAttr'] ) ):
-                        av = ad['values'][ad['byKey'][getattr( self, \
-                                ad['valueAttr'] )]]
+                        av = ad['values'][ad['byKey'][getattr( \
+                                self, ad['valueAttr'] )]]
                     if av and av.has_key( 'getFields' ):
                         for t in do.keys():
                             if not do[t] and av['getFields'][t]:
@@ -307,9 +317,11 @@ class DX( object ):
     def doWebLookup( self ):
         if self.country == 'Russia':
             if self.dxData:
-                self.dxData.qrzLink.csQueue.put( { 'cs': self.cs, 'cb': self.onQRZdata } )
+                self.dxData.qrzLink.csQueue.put( \
+                        { 'cs': self.cs, 'cb': self.onQRZdata } )
             elif self.country == 'Ukraine':
-                r = urllib2.urlopen( 'http://www.uarl.com.ua/UkrainianCallBOOK/adxcluster.php?calls=' \
+                r = urllib2.urlopen( \
+                    'http://www.uarl.com.ua/UkrainianCallBOOK/adxcluster.php?calls='\
                         + self.cs )
                 rBody = r.read()
                 self.doTextLookup( rBody )
@@ -321,8 +333,13 @@ class DX( object ):
             if fieldValues.has_key( self.country ) and \
                 fieldValues[ self.country ].has_key( field ):
                 for m in fieldRe[field].finditer( text ):
-                    if m.group(0) in fieldValues[self.country][field]:
-                        setattr( self, field, m.group( 0 ).upper() )
+                    v = m.group( 0 ).upper()
+                    if v in fieldValues[self.country][field]:
+                        setattr( self, field, v )
+                    elif fieldValuesSubst[ self.country ].has_key( field ) and \
+                        fieldValuesSubst[ self.country ][ field ].has_key( v ):
+                        setattr( self, field, \
+                            fieldValuesSubst[ self.country ][ field ][ v ] )
 
                    
 
@@ -339,7 +356,7 @@ class DX( object ):
 
 
     def checkEmpty( self ):
-        if self.dxData and not self.qth and not self.rafa and not self.state:
+        if self.dxData and not self.awards and self.qrzData:
             self.dxData.remove( self )
             return True
 
@@ -347,13 +364,13 @@ class DX( object ):
         if self.inDB:
             logging.debug( 'updating db callsign record' )
             dxdb.updateObject( 'callsigns',
-              { 'callsign': self.cs, 'qth': self.gridlock, 'state': self.district,\
+              { 'callsign': self.cs, 'qth': self.gridsquare, 'state': self.district,\
                       'qrz_data_loaded': self.qrzData }, 'callsign' )
         else:
             logging.debug( 'creating new db callsign record' )
             dxdb.getObject( 'callsigns', \
                     { 'callsign': self.cs, 'state': self.district, \
-                    'qth': self.gridlock, 'qrz_data_loaded': self.qrzData, \
+                    'qth': self.gridsquare, 'qrz_data_loaded': self.qrzData, \
                     'country': self.country }, \
                     True )
             dxdb.commit()
@@ -387,6 +404,8 @@ class DX( object ):
 
 
     def updateAward( self, ad, av ):
+        if not self.inDB:
+            self.updateDB()
         if self.awards.has_key( ad['name'] ):
             if self.awards[ad['name']] == av:
                 return
@@ -416,13 +435,17 @@ class DX( object ):
             m = DX.reState0.match( v )
             if m:
                 v = m.group( 1 ) + '-' + m.group( 2 )
+        if v and fieldValuesSubst[ self.country ].has_key( 'district' ) and \
+            fieldValuesSubst[ self.country ]['district'].has_key( v ):
+            v = fieldValuesSubst[ self.country ]['district'][v]
         if self._district and self._district != v and self.awards:
             self.awards.clear()
             dxdb.execute( """
                 delete from awards
                 where callsign = %s """, ( self.cs, ) )
             dxdb.commit()
-        self._district = v
+        if self._district != v:
+            self._district = v
 
 
 
@@ -447,9 +470,9 @@ class DXData:
             country = getCountry( cs )
             freq = float( m.group(2) )
             if country:
-                dx = DX( dxData = self, text = m.group(4), cs = cs, freq = freq, de = m.group(1), \
-                        time = m.group(5), country = country )
-                if  not dx.checkEmpty():
+                dx = DX( dxData = self, text = m.group(4), cs = cs, freq = freq, \
+                        de = m.group(1), time = m.group(5), country = country )
+                if not dx.checkEmpty():
                     self.append( dx )
 
 

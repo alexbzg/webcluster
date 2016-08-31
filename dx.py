@@ -16,11 +16,15 @@ webRoot = conf.get( 'web', 'root' )
 awardsData = loadJSON( webRoot + '/awardsData.json' )
 
 fieldValues = {}
+fieldValuesSubst = {}
 for ad in awardsData:
     if ad['country'] and ad.has_key( 'fieldValues' ) and ad['fieldValues']:
         if not fieldValues.has_key(ad['country']):
             fieldValues[ad['country']] = {}
+            fieldValuesSubst[ad['country']] = {}
         fieldValues[ad['country']][ad['fieldValues']] = frozenset( ad['values'].keys() )
+        if ad.has_key( 'subst' ):
+            fieldValuesSubst[ad['country']][ad['fieldValues']] = ad['subst']
 
 fieldRe = { 'district': re.compile( '[a-zA-Z]{2}[ -]+\d\d' ),\
         'gridsquare': re.compile( '[a-zA-Z0-9]{6}' ) }
@@ -296,12 +300,14 @@ class DX( object ):
                         av = ad['values'][getattr( self, ad['valueAttr'] )]
                     elif ad.has_key('keyAttr') and getattr( self, ad['keyAttr'] ) \
                         and ad['byKey'].has_key( getattr( self, ad['keyAttr'] ) ):
-                        av = ad['values'][ad['byKey'][getattr( self, ad['valueAttr'] )]]
+                        av = ad['values'][ad['byKey'][getattr( \
+                                self, ad['valueAttr'] )]]
                     if av and av.has_key( 'getFields' ):
                         for t in do.keys():
                             if not do[t] and av['getFields'][t]:
                                 do[t] = True
-                        if ( do['text'] or skip['text'] ) and ( do['web'] or skip['web'] ):
+                        if ( do['text'] or skip['text'] ) and \
+                                ( do['web'] or skip['web'] ):
                             break
         if do['web'] and not skip['web']:
             self.doWebLookup()
@@ -311,9 +317,11 @@ class DX( object ):
     def doWebLookup( self ):
         if self.country == 'Russia':
             if self.dxData:
-                self.dxData.qrzLink.csQueue.put( { 'cs': self.cs, 'cb': self.onQRZdata } )
+                self.dxData.qrzLink.csQueue.put( \
+                        { 'cs': self.cs, 'cb': self.onQRZdata } )
             elif self.country == 'Ukraine':
-                r = urllib2.urlopen( 'http://www.uarl.com.ua/UkrainianCallBOOK/adxcluster.php?calls=' \
+                r = urllib2.urlopen( \
+                    'http://www.uarl.com.ua/UkrainianCallBOOK/adxcluster.php?calls='\
                         + self.cs )
                 rBody = r.read()
                 self.doTextLookup( rBody )
@@ -325,8 +333,13 @@ class DX( object ):
             if fieldValues.has_key( self.country ) and \
                 fieldValues[ self.country ].has_key( field ):
                 for m in fieldRe[field].finditer( text ):
-                    if m.group(0) in fieldValues[self.country][field]:
-                        setattr( self, field, m.group( 0 ).upper() )
+                    v = m.group( 0 ).upper()
+                    if v in fieldValues[self.country][field]:
+                        setattr( self, field, v )
+                    elif fieldValuesSubst[ self.country ].has_key( field ) and \
+                        fieldValuesSubst[ self.country ][ field ].has_key( v ):
+                        setattr( self, field, \
+                            fieldValuesSubst[ self.country ][ field ][ v ] )
 
                    
 
@@ -351,13 +364,13 @@ class DX( object ):
         if self.inDB:
             logging.debug( 'updating db callsign record' )
             dxdb.updateObject( 'callsigns',
-              { 'callsign': self.cs, 'qth': self.gridlock, 'state': self.district,\
+              { 'callsign': self.cs, 'qth': self.gridsquare, 'state': self.district,\
                       'qrz_data_loaded': self.qrzData }, 'callsign' )
         else:
             logging.debug( 'creating new db callsign record' )
             dxdb.getObject( 'callsigns', \
                     { 'callsign': self.cs, 'state': self.district, \
-                    'qth': self.gridlock, 'qrz_data_loaded': self.qrzData, \
+                    'qth': self.gridsquare, 'qrz_data_loaded': self.qrzData, \
                     'country': self.country }, \
                     True )
             dxdb.commit()
@@ -391,6 +404,8 @@ class DX( object ):
 
 
     def updateAward( self, ad, av ):
+        if not self.inDB:
+            self.updateDB()
         if self.awards.has_key( ad['name'] ):
             if self.awards[ad['name']] == av:
                 return
@@ -420,13 +435,17 @@ class DX( object ):
             m = DX.reState0.match( v )
             if m:
                 v = m.group( 1 ) + '-' + m.group( 2 )
+        if v and fieldValuesSubst[ self.country ].has_key( 'district' ) and \
+            fieldValuesSubst[ self.country ]['district'].has_key( v ):
+            v = fieldValuesSubst[ self.country ]['district'][v]
         if self._district and self._district != v and self.awards:
             self.awards.clear()
             dxdb.execute( """
                 delete from awards
                 where callsign = %s """, ( self.cs, ) )
             dxdb.commit()
-        self._district = v
+        if self._district != v:
+            self._district = v
 
 
 
