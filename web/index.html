@@ -38,7 +38,7 @@
     </div>
 
     <div id="news" ng-show="news.html">
-        <h4>News</h4>
+        <div id="news_title">NEWS</div>
         <div id="news_close">
              <img src="/images/icon_close.png" title="Close" ng-click="news.close()"/> 
         </div>
@@ -46,7 +46,7 @@
     </div>
     <div id="bands_modes">
         <div id="selectors_bands_modes" ng-show="showSelector">
-            <span class="band" ng-repeat="band in selector.bands">
+            <span class="band" ng-repeat="band in selector.bands track by $index">
                 <input type="checkbox" ng-model="band.enabled"
                     ng-change="selectorChange()">{{band.name}}
             </span>
@@ -55,6 +55,7 @@
                 <input type="checkbox" ng-model="mode.enabled"
                     ng-change="selectorChange()">{{mode.name}}
             </span>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            
             <span class="sound">
                 <input type="checkbox" ng-model="selector.sound"
                     ng-change="soundChange()">Sound

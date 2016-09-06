@@ -23,7 +23,7 @@ webDXapp.controller( 'bodyCtrl', function( $scope, $http, $interval, $window, $t
 
     if ( !$scope.selector )
         $scope.selector = { bands: [], modes: [] };
-    var selector = { bands: [ '1.8', '3.5', '7', '10', '14', '18', '21', '24', '28', '50', '144' ],
+    var selector = { bands: [ '1.8', '3.5', '7', '10', '14', '18', '21', '24', '28', '50', '144', 'UHF' ],
         modes: [ 'CW', 'SSB', 'DIGI' ] };
     for ( field in selector ) 
         if ( selector.hasOwnProperty( field ) ) {
