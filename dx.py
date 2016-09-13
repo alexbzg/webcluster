@@ -35,7 +35,7 @@ prefixes = [ {}, {} ]
 countries = {}
 for cty, cl in conf.items( 'countries' ):
     for code in cl.split( ',' ):
-        countries[code] = cty.title()
+        countries[code] = cty
 with open( appRoot + '/cty.dat', 'r' ) as fCty:
     for line in fCty.readlines():
         line = line.rstrip( '\r\n' )

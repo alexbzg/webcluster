@@ -8,6 +8,7 @@ appRoot = path.dirname( path.abspath( __file__ ) )
 
 def siteConf():
     conf = ConfigParser.ConfigParser()
+    conf.optionxform = str
     conf.read( appRoot + '/site.conf' )
     return conf
 

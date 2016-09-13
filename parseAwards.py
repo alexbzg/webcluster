@@ -12,7 +12,7 @@ from dx import DX, DXData
 
 conf = siteConf()
 webRoot = conf.get( 'web', 'root' ) 
-awardsData = loadJSON( webRoot + '/awards.json' )
+awardsData = loadJSON( webRoot + '/debug/awards.json' )
 if not awardsData:
     print 'No awards data!'
 awards = []
@@ -36,24 +36,42 @@ for aw in awardsData:
     aw['values'] = {}
     if aw.has_key( 'keyAttr' ):
         aw['byKey'] = {}
+    columns = { 'group' : aw['groupColumns'] if aw.has_key( 'groupColumns' ) \
+            else { 'value': 0, 'desc': 2 }, \
+        'value': aw['valueColumns'] if aw.has_key( 'valueColumns' ) \
+            else { 'value': 1, 'desc': 2, 'keys': 3 } }
+    groupSeparator = aw['groupSeparator'] if aw.has_key( 'groupSeparator' )\
+            else '-'
+
+    def getType( data ):
+        return 'group' if data[columns['group']['value']] \
+                else 'value'
+
+    def getColumn( data, column ):
+        type = getType( data )
+        return data[columns[type][column]] if columns[type].has_key(column) \
+                else None
 
     with open( webRoot + '/' + aw['valuesFile'], 'r' ) as file:
         data = getSplitLine( file, 0 )
         group = None
         while data:
-            if data[0]:
-                group = data[0]
-                webAw['groups'][group] = data[2]
+            type = getType( data )
+            if type == 'group':
+                group = getColumn( data, 'value' )
+                webAw['groups'][group] = getColumn( data, 'desc' )
             else:
-                value = group + '-' + data[1] if \
-                    aw['groupInValue'] else data[1]
-                webAw['values'].append( { 'value': value, 'desc': data[2], 'group': group, \
-                        'displayValue': data[1] } )
-                aw['values'][value] = {'lookups':[]}
+                av = {}
+                av['displayValue'] = getColumn( data, 'value' )
+                av['value'] = group + groupSeparator + av['displayValue'] if \
+                    aw['groupInValue'] else av['displayValue']
+                av['group'] = group
+                webAw['values'].append( av )
+                aw['values'][av['value']] = {'lookups':[]}
                 if aw.has_key( 'keyAttr' ):
-                    for key in data[3].split( ',' ):
+                    for key in getColumn( data, 'keys' ).split( ',' ):
                         if key:
-                            aw['byKey'][key] = value
+                            aw['byKey'][key] = av['value']
             data = getSplitLine( file, 0 )
         webAw['values'].sort( key = lambda x: x['value'] )
         webAw['orderedGroups'] = webAw['groups'].keys()
@@ -72,10 +90,10 @@ for aw in awardsData:
     webAwards.append( webAw )
 
 
-with open( webRoot + '/awardsValues.json', 'w' ) as fav:
+with open( webRoot + '/debug/awardsValues.json', 'w' ) as fav:
     fav.write( json.dumps( webAwards ) )
 
-with open( webRoot + '/awardsData.json', 'w' ) as fav:
+with open( webRoot + '/debug/awardsData.json', 'w' ) as fav:
     fav.write( json.dumps( awards ) )
 
 

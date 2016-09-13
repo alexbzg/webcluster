@@ -13,7 +13,7 @@ from dxdb import dxdb, cursor2dicts
 conf = siteConf()
 webRoot = conf.get( 'web', 'root' )
 
-awardsData = loadJSON( webRoot + '/awardsData.json' )
+awardsData = loadJSON( webRoot + '/debug/awardsData.json' )
 
 fieldValues = {}
 fieldValuesSubst = {}
@@ -22,7 +22,8 @@ for ad in awardsData:
         if not fieldValues.has_key(ad['country']):
             fieldValues[ad['country']] = {}
             fieldValuesSubst[ad['country']] = {}
-        fieldValues[ad['country']][ad['fieldValues']] = frozenset( ad['values'].keys() )
+        fieldValues[ad['country']][ad['fieldValues']] = \
+                frozenset( ad['values'].keys() )
         if ad.has_key( 'subst' ):
             fieldValuesSubst[ad['country']][ad['fieldValues']] = ad['subst']
 
@@ -35,7 +36,7 @@ prefixes = [ {}, {} ]
 countries = {}
 for cty, cl in conf.items( 'countries' ):
     for code in cl.split( ',' ):
-        countries[code] = cty.title()
+        countries[code] = cty
 with open( appRoot + '/cty.dat', 'r' ) as fCty:
     for line in fCty.readlines():
         line = line.rstrip( '\r\n' )
@@ -54,6 +55,75 @@ with open( appRoot + '/cty.dat', 'r' ) as fCty:
                     prefixes[pfxType][pfx0] += "; " + country;
                 else:
                     prefixes[pfxType][pfx0] =  country
+
+class QRZComLink:
+
+    def __init__( self ):
+        conf = siteConf()
+        self.login = conf.get( 'QRZCom', 'login' )
+        self.pwd = conf.get( 'QRZCom', 'pwd' )
+        self.sessionID = None
+        self.getSessionID()
+
+
+    def getSessionID( self ):
+        r, rBody = None, None
+        try:
+            r = urllib2.urlopen( 'http://xmldata.qrz.com/xml/current/?username=' \
+                    + self.login + ';password=' + self.pwd )
+            rBody = r.read()
+            rDict = xmltodict.parse( rBody )
+            if rDict['QRZDatabase']['Session'].has_key( 'Key' ):
+                self.sessionID = rDict['QRZDatabase']['Session']['Key']
+            else:
+                raise Exception( 'Wrong QRZ response' )
+        except Exception as e:
+            logging.exception( 'Error logging into QRZ.com' )
+            if isinstance(e, urllib2.HTTPError):
+                r = e                    
+            if r:
+                logging.error( 'Http result code: ' + str( r.getcode() ) )
+                logging.error( 'Http response body: ' + r.read() )
+            task.deferLater( reactor, 60*10, self.getSessionID )
+
+    def getData( self, cs ):
+        if self.sessionID:
+            r, rBody = None, None
+            try:
+                r = urllib2.urlopen( 'http://xmldata.qrz.com/xml/current/?s=' \
+                        + self.sessionID + ';callsign=' + cs )
+                rBody = r.read()
+                rDict = xmltodict.parse( rBody )
+                if rDict['QRZDatabase'].has_key( 'Callsign' ):
+                    return rDict['QRZDatabase']['Callsign']
+                elif rDict['QRZDatabase'].has_key('Session') and \
+                    rDict['QRZDatabase']['Session'].has_key( 'Error' ) and \
+                    rDict['QRZDatabase']['Session']['Error'] == 'Session Timeout':
+                        self.getSessionID()
+                        if self.sessionID:
+                            return self.getData( cs )
+                else:
+                    raise Exception( 'Wrong QRZ response' )
+            except Exception as e:
+                if isinstance(e, urllib2.HTTPError):
+                    if e.getcode() == 404:
+                        return { 'state': None, 'qthloc': None }
+                    elif e.getcode() == 403:
+                        self.getSessionID()
+                        return None
+                    r = e                    
+                logging.exception( 'QRZ query error' )
+                if r:
+                    logging.error( 'Http result code: ' + str( r.getcode() ) )
+                    logging.error( 'Http response body: ' + r.read() )
+                return None
+        else:
+            self.getSessionID()
+            if self.sessionID:
+                return self.getData( cs )
+
+qrzComLink = QRZComLink()
+
 
 def getCountry( cs ):
     dxCty = None
@@ -177,7 +247,8 @@ class DX( object ):
             [ '24', 24890, 24990 ],
             [ '28', 28000, 29700 ], 
             [ '50', 50000, 54000 ], 
-            [ '144', 144000, 148000 ] ]
+            [ '144', 144000, 148000 ],
+            [ 'UHF', 150000, 2000000 ] ]
     modes = { 'CW': ( 'CW', ),
             'SSB': ( 'USB', 'LSB', 'FM', 'SSB' ),
             'DIGI': ( 'RTTY', 'PSK', 'JT65', 'FSK', 'OLIVIA', 'SSTV' ) }
@@ -289,7 +360,7 @@ class DX( object ):
         for ad in awardsData:
             if not ad['country'] or ad['country'] == self.country:
                 for t in do.keys():
-                    if not do[t] and ad['getFields'][t]:
+                    if not do[t] and ad['getFields'].has_key( t ) and ad['getFields'][t]:
                         do[t] = True
                 if ( do['text'] or skip['text'] ) and ( do['web'] or skip['web'] ):
                     break
@@ -319,12 +390,18 @@ class DX( object ):
             if self.dxData:
                 self.dxData.qrzLink.csQueue.put( \
                         { 'cs': self.cs, 'cb': self.onQRZdata } )
-            elif self.country == 'Ukraine':
-                r = urllib2.urlopen( \
-                    'http://www.uarl.com.ua/UkrainianCallBOOK/adxcluster.php?calls='\
-                        + self.cs )
-                rBody = r.read()
-                self.doTextLookup( rBody )
+        elif self.country == 'Ukraine':
+            r = urllib2.urlopen( \
+                'http://www.uarl.com.ua/UkrainianCallBOOK/adxcluster.php?calls='\
+                    + self.cs )
+            rBody = r.read()
+            self.doTextLookup( rBody )
+        else:
+            data = qrzComLink.getData( self.cs )
+            if data:
+                self.district = data['state'] + ' ' + data['county']
+                self.gridsquare = data['grid']
+                self.updateDB()
 
     def doTextLookup( self, text = None ):
         if not text:
@@ -430,14 +507,17 @@ class DX( object ):
     @district.setter
     def district( self, value ):
         v = None
-        if value:
-            v = value.replace( ' ', '' )
-            m = DX.reState0.match( v )
-            if m:
-                v = m.group( 1 ) + '-' + m.group( 2 )
-        if v and fieldValuesSubst[ self.country ].has_key( 'district' ) and \
-            fieldValuesSubst[ self.country ]['district'].has_key( v ):
-            v = fieldValuesSubst[ self.country ]['district'][v]
+        if self.country == 'USA':
+            v = value
+        else:
+            if value:
+                v = value.replace( ' ', '' )
+                m = DX.reState0.match( v )
+                if m:
+                    v = m.group( 1 ) + '-' + m.group( 2 )
+            if v and fieldValuesSubst[ self.country ].has_key( 'district' ) and \
+                fieldValuesSubst[ self.country ]['district'].has_key( v ):
+                v = fieldValuesSubst[ self.country ]['district'][v]
         if self._district and self._district != v and self.awards:
             self.awards.clear()
             dxdb.execute( """
