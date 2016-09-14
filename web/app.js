@@ -83,7 +83,8 @@ webDXapp.controller( 'bodyCtrl', function( $scope, $http, $interval, $window, $t
 
     function loadDX() {
         $scope.firstLoad = $scope.dxlm == null;
-        $http.get( '/dxdata.json', { cache: false } ).then( function( response ) {
+        var url = testing ? '/debug/dxdata.json' : '/dxdata.json';
+        $http.get( url, { cache: false } ).then( function( response ) {
             if ( $scope.dxlm != response.headers( 'last-modified' ) ) {
                 $scope.dxItems = response.data.reverse();
                 $scope.dxItems.forEach( awards );

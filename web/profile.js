@@ -83,7 +83,8 @@ profileApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
 
     }
 
-    $http.get( '/awards.json' ).then( function( response ) {
+    var url = testing ? '/debug/awards.json' : '/awards.json';
+    $http.get( url ).then( function( response ) {
         $scope.awardsList = [];
         response.data.forEach( function( award ) {
             var country = $scope.awardsList.find( function( item ) {

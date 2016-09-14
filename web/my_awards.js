@@ -17,7 +17,8 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
 
     $scope.params = {};
     location.search.substr(1).split("&").forEach(function(item) 
-            {$scope.params[item.split("=")[0]] = item.split("=")[1]});
+            {$scope.params[item.split("=")[0]] = decodeURIComponent( item.split("=")[1] )});
+
 
     $scope.logout = function() {
         logoutUser();
@@ -36,7 +37,8 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
     };
 
     $scope.loading = true;
-    $http.get( '/awardsValues.json' ).then( function( response ) {
+    var url = testing ? '/debug/awardsValues.json' : '/awardsValues.json';
+    $http.get( url ).then( function( response ) {
             $scope.loading = false;
             $scope.awardsValues = response.data;
             $scope.awardsValues.forEach( function( award ) {

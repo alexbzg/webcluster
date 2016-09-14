@@ -399,14 +399,15 @@ def loadAdif( callsign, adif ):
             dx = DX( cs = cs, de = '', text = '', \
                     freq = float( freq ) if freq else None, \
                     time = '    ' )
-            district = getAdifField( line, 'CNTY' )
-            if not district or not reDistrict.match( district ):
-                district = getAdifField( line, 'STATE' )
-                if district and not reDistrict.match( district ):
-                    state = None
-            if district and district != dx.district:
-                dx.district = district
-                dx.detectAwards()
+            if dx.country == 'Russia' or dx.country == 'Ukraine':
+                district = getAdifField( line, 'CNTY' )
+                if not district or not reDistrict.match( district ):
+                    district = getAdifField( line, 'STATE' )
+                    if district and not reDistrict.match( district ):
+                        state = None
+                if district and district != dx.district:
+                    dx.district = district
+                    dx.detectAwards()
             if dx.awards:
                 confirmed = getAdifField( line, 'QSL_RCVD' ) == 'Y'
                 for ( award, value ) in dx.awards.iteritems():

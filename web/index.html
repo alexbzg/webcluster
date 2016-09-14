@@ -20,6 +20,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-sanitize.js"></script>
         <script src="userData.js"></script>
         <script src="polyfill.js"></script>
+        <script src="testing.js"></script>
         <script src="app.js"></script>
 
     </head>
@@ -46,13 +47,14 @@
     </div>
     <div id="bands_modes">
         <div id="selectors_bands_modes" ng-show="showSelector">
-            <span class="band" ng-repeat="band in selector.bands track by $index">
-                <input type="checkbox" ng-model="band.enabled"
+            <span class="band" ng-repeat="band in selector.bands track by $index"
+                ng-class="{active: band.enabled}">
+                <input type="checkbox" ng-model="band.enabled" 
                     ng-change="selectorChange()">{{band.name}}
             </span>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <span class="mode" ng-repeat="mode in selector.modes">
-                <input type="checkbox" ng-model="mode.enabled"
+            <span class="mode" ng-repeat="mode in selector.modes" ng-class="{active: mode.enabled}">
+                <input type="checkbox" ng-model="mode.enabled" 
                     ng-change="selectorChange()">{{mode.name}}
             </span>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            

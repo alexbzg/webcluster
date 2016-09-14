@@ -15,6 +15,8 @@
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
         <script src="userData.js"></script>
         <script src="bootstrap-colorpicker-module.min.js"></script>
+        <script src="polyfill.js"></script>
+        <script src="testing.js"></script>
         <script src="profile.js"></script>
 
     </head>
@@ -93,7 +95,7 @@
                 <td class="color_name">
                     <button colorpicker type="button" colorpicker-position="top" id="color_{{award.name}}"
                         ng-model="awardsSettings[award.name].color" 
-                        style='background-color: {{awardsSettings[award.name].color}};'
+                        ng-style="{'background-color': awardsSettings[award.name].color}"
                         ng-change="awardSettingsChanged(award.name)">&nbsp;
                     </button>
                 </td>
