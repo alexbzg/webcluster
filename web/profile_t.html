@@ -8,28 +8,86 @@
         <meta name="keywords" content="" />
         <title>ADXcluster.com - Profile</title>
         <link href="style.css" rel="stylesheet" type="text/css">
+        <link href="colorpicker.min.css" rel="stylesheet" type="text/css">
         <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
         <link rel="icon" href="/favicon.ico" type="image/x-icon">
         <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
         <script src="userData.js"></script>
+        <script src="bootstrap-colorpicker-module.min.js"></script>
+        <script src="testing.js"></script>
+        <script src="polyfill.js"></script>
         <script src="profile_t.js"></script>
 
     </head>
     <body ng-controller="bodyCtrl">
+
+    <table id="setup_block" ng-show="setupAward">
+        <tr>
+            <td>
+                <div id="award_setup">
+                    <div id="news_close">
+                         <img src="/images/icon_close.png" title="Close" ng-click="openSetup(null)"/> 
+                    </div>
+                    <h3>{{setupAward}} setup</h3>       
+                    <table class="award_setup">
+                    <tr>
+                        <th id="band" colspan="11">Band (MHz)</th>
+                    </tr>
+                    <tr>
+                        <td class="band" ng-repeat="band in awardsSettings[setupAward].settings.bands 
+                            track by $index">
+                            {{band.name}}<br/>
+                            <input type="checkbox" ng-model="band.enabled" 
+                                ng-change="awardSettingsChanged(setupAward)">
+                        </td>
+                    </tr>
+                </table>
+                <table class="award_setup">
+                    <tr>
+                        <th id="mode" colspan="7">Mode</th>
+                    </tr>
+                    <tr>
+                        <td class="mode" ng-repeat="mode in awardsSettings[setupAward].settings.modes">
+                            {{mode.name}}<br/>
+                            <input type="checkbox" ng-model="mode.enabled"
+                                ng-change="awardSettingsChanged(setupAward)">
+                        </td>
+                    </tr>
+                </table>
+                <table class="award_setup">
+                        <tr>
+                            <th id="cfm" colspan="3">CFM</th>
+                        </tr>
+                        <tr>
+                            <td class="cfm" ng-repeat="cfm in awardsSettings[setupAward].settings.cfm">
+                                {{cfm.name}}<br/>
+                                <input type="checkbox" ng-model="cfm.enabled"
+                                    ng-change="awardSettingsChanged(setupAward)">
+                            </td>
+                        </tr>
+                    </table>
+
+                </div>
+            </td>
+        </tr>
+    </table>
+
+
     <div id="top">
         <a href="/"><img src="/images/ac_logo.jpg" border="0" /></a>
         <div id="top_menu">
-            <!-- <a href="/my_awards.html">My awards</a> -->
+        <span id="callsign" ng-show="user">{{user.callsign}}</span>
             <a href="/my_awards.html">My awards</a>
             <a href="/profile.html">Profile</a>
+            <a href="/info.html">Info</a>
             <a href="/contact.html">Contact</a>
             <a href="#" ng-click="logout()">Logout</a>
         </div>
     </div>
     
     <div id="profile">
-        <h4>{{user.callsign}}</h4>
+        <!-- <h4>{{user.callsign}}</h4> -->
         <div id="profile_settings">
             <div id="profile_menu">
                 <a ng-click="uploadAdifShow=true; changeEmailShow=false; changePwdShow=false">Upload ADIF log</a>
@@ -41,7 +99,7 @@
                 <input type="file" name="adiflog" size="chars" id="adifFile" 
                     onchange="angular.element(this).scope().adifFileChanged(this)"/><br/>
                 <input type="submit" id="submit_btn" name="change_psw" value="Upload"/><br/>
-                {{adif.date}}
+                <span ng-show="user.lastAdifLine">Last loaded QSO: {{user.lastAdifLine}}</span>
             </form>
             <form id="profile_call" method="post" ng-show="changeEmailShow">
                 Email<br>
@@ -88,8 +146,11 @@
                         ng-change="awardSettingsChanged(award.name)">
                 </td>
                 <td class="color_name">
-                    <input type="color" id="color_{{award.name}}" class="select_color" ng-model="awardsSettings[award.name].color"
-                        ng-change="awardSettingsChanged(award.name)">
+                    <button colorpicker type="button" colorpicker-position="top" id="color_{{award.name}}"
+                        ng-model="awardsSettings[award.name].color" 
+                        style='background-color: {{awardsSettings[award.name].color}};'
+                        ng-change="awardSettingsChanged(award.name)">&nbsp;
+                    </button>
                 </td>
                 <td class="short_name" style='color: {{awardsSettings[award.name].color}};'>
                     {{award.name}}
@@ -97,11 +158,14 @@
                 <td class="full_name">
                     {{award.fullName}}
                 </td>
-                <td class="notification"><!--
+                <td class="notification">
+                    <a href="" ng-click="openSetup( award );"><img src="/images/icon_setup.png"></a>
+  
+                    <!--
                     <input type="checkbox" disabled><img src="/images/icon_sound.jpg" title="Sound notification"> <input type="checkbox" disabled><img src="/images/icon_telegram.jpg" title="Telegram message">  -->
                 </td>
                 <td class="website">
-                    <a href="{{award.link}}" target="_blank" title="Link to {{award.name}} website"><img src="/images/icon_weblink.jpg"></a>
+                    <a href="{{award.link}}" target="_blank" title="Link to {{award.name}} website"><img src="/images/icon_weblink.png"></a>
                 </td>
             </tr>
             <tr ng-repeat-end class="country_footer">
@@ -111,6 +175,8 @@
         </table>
         <input type="button" value="OK" onclick="window.location.href='/'" id="button_ok"/>
         </div>
+        <table id="loader" ng-show="loading"><tr><td>Loading...<br/><img src="/images/loader.gif" title="Loading"></td></tr></table>
+
 
 
     </div>

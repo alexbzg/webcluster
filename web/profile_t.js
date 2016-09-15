@@ -1,4 +1,4 @@
-var profileApp = angular.module( 'profileApp', [] );
+var profileApp = angular.module( 'profileApp', ['colorpicker.module'] );
 
 function validateEmail(email) {
     var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -20,7 +20,26 @@ profileApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
         country.awards.forEach( function( award ) {
             if ( !( award.name in $scope.awardsSettings ) )
                 $scope.awardsSettings[award.name] = { 'track': true, 'color': '#770000' };
+            if ( !( 'settings' in $scope.awardsSettings[award.name] ) ) {
+                $scope.awardsSettings[award.name].settings = {};
+                var s = $scope.awardsSettings[award.name].settings;
+                var st =
+                { bands: [ '1.8', '3.5', '7', '10', '14', '18', '21', '24', '28', '50', '144' ],
+                    modes: [ 'CW', 'SSB', 'RTTY', 'PSK31', 'PSK63', 'PSK125', 'JT65' ],
+                    cfm: [ 'Paper', 'eQSL', 'LOTW' ] };
+                for ( var field in st )
+                    if ( st.hasOwnProperty( field ) ) {
+                        s[field] = [];
+                        for ( value in st[field] )
+                            s[field].push( { name: value, enabled: true } );
+                    }
+            }
         } );
+    }
+
+    $scope.setupAward = null;
+    $scope.openSetup = function( award ) {
+        $scope.setupAward = award == null ? null : award.name;
     }
 
     $scope.logout = function() {
@@ -43,12 +62,28 @@ profileApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
     };
 
     $scope.uploadAdif = function() {
+        $scope.loading = true;
         $http({
             method: 'POST',
             url: "/uwsgi/userSettings",
             headers: { 'Content-Type': false,
                 'Content-Encoding': 'gzip'},
-            data: { token: $scope.user.token, adif: $scope.adif.file }});
+            data: { token: $scope.user.token, adif: $scope.adif.file }}).then(
+                function( response ) {
+                    if ( response.data.awards )
+                        $scope.user.awards = response.data.awards;
+                    $scope.user.lastAdifLine = response.data.lastAdifLine;
+                    saveUserData( $scope.user );
+                    $scope.loading = false;
+                    if ( response.data.awards )
+                        alert( 'ADIF log was loaded successfully!' );
+                    else 
+                        alert( 'No new callsigns for supported awards were found!' );                
+                },
+                function( response ) {
+                    $scope.loading = false;
+                    alert( 'Error while loading ADIF log!' );
+                } );
     };
 
     $scope.awardSettingsChanged = function( award ) {
@@ -60,6 +95,7 @@ profileApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
                     'award': award,
                     'track': $scope.awardsSettings[award].track,
                     'color': $scope.awardsSettings[award].color,
+                    'settings': $scope.awardsSettings[award].settings,
                 } ).then( function( response ) {
                     console.log( response.data );
                 } );
@@ -67,12 +103,20 @@ profileApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
 
     }
 
-    $http.get( '/awards.json' ).then( function( response ) {
-            $scope.awardsList = response.data;
+    var url = testing ? '/debug/awards.json' : '/awards.json';
+    $http.get( url ).then( function( response ) {
+        $scope.awardsList = [];
+        response.data.forEach( function( award ) {
+            var country = $scope.awardsList.find( function( item ) {
+                return item.country == award.country; } );
+            if ( !country ) {
+                country = { country: award.country, awards: [] };
+                $scope.awardsList.push( country );
+            }
+            country.awards.push( award );
             $scope.awardsList.forEach( awardSettings );
-
-        }
-    );
+        } );
+    } );
 
     $scope.changeEmailClick = function() {
         $http.post( '/uwsgi/userSettings',

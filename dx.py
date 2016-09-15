@@ -252,6 +252,7 @@ class DX( object ):
     modes = { 'CW': ( 'CW', ),
             'SSB': ( 'USB', 'LSB', 'FM', 'SSB' ),
             'DIGI': ( 'RTTY', 'PSK', 'JT65', 'FSK', 'OLIVIA', 'SSTV' ) }
+    subModes = { 'RTTY': [], 'JT75': [], 'PSK': [ 'PSK31', 'PSK63', 'PSK125' ] }
     modesMap = []
     with open( appRoot + '/bandMap.txt', 'r' ) as fBandMap:
         reBandMap = re.compile( "^(\d+\.?\d*)\s*-?(\d+\.?\d*)\s+(\S+)(\r\n)?$" )
@@ -274,9 +275,22 @@ class DX( object ):
             'country' : self.country,
             'awards': self.awards,
             'mode': self.mode,
+            'subMode': self.subMode,
             'band': self.band
 
             }
+
+    def setMode( self, mode, alias ):
+        self.mode = mode
+        if DX.subModes.has_key( alias ):
+            if DX.subModes[alias]:
+                t = self.text.upper()
+                for subMode in DX.subModes[alias]:
+                    if subMode in t:
+                        self.subMode = subMode
+                        break
+            else:
+                self.subMode = alias
 
     def __init__( self, dxData = None, **params ):
 
@@ -288,6 +302,8 @@ class DX( object ):
 
         self.band = params['band'] if params.has_key( 'band' ) else None
         self.mode = params['mode'] if params.has_key( 'mode' ) else None
+        self.subMode = params['subMode'] if params.has_key( 'subMode' ) else None
+
 
         if not self.band and self.freq:
             self.band = findDiap( DX.bands, self.freq )
@@ -297,15 +313,17 @@ class DX( object ):
             for ( mode, aliases ) in DX.modes.iteritems():
                 for alias in aliases:
                     if re.search( '(^|\s)' + alias + '(\d|\s|$)', t ):
-                        self.mode = mode
+                        self.setMode( mode, alias )
                         break
         if not self.mode and self.freq:
             modeByMap = findDiap( DX.modesMap, self.freq )
             if modeByMap:
                 for ( mode, aliases ) in DX.modes.iteritems():
                     if modeByMap in aliases:
-                        self.mode = mode
+                        self.setMode( mode, alias )
                         break
+
+
         
         self.cs = params['cs']
         self.de = params['de']
