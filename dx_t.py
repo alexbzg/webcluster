@@ -13,7 +13,7 @@ from dxdb import dxdb, cursor2dicts
 conf = siteConf()
 webRoot = conf.get( 'web', 'root' )
 
-awardsData = loadJSON( webRoot + '/debug/awardsData.json' )
+awardsData = loadJSON( webRoot + '/awardsData.json' )
 
 fieldValues = {}
 fieldValuesSubst = {}
@@ -252,6 +252,7 @@ class DX( object ):
     modes = { 'CW': ( 'CW', ),
             'SSB': ( 'USB', 'LSB', 'FM', 'SSB' ),
             'DIGI': ( 'RTTY', 'PSK', 'JT65', 'FSK', 'OLIVIA', 'SSTV' ) }
+    subModes = { 'RTTY': [], 'JT75': [], 'PSK': [ 'PSK31', 'PSK63', 'PSK125' ] }
     modesMap = []
     with open( appRoot + '/bandMap.txt', 'r' ) as fBandMap:
         reBandMap = re.compile( "^(\d+\.?\d*)\s*-?(\d+\.?\d*)\s+(\S+)(\r\n)?$" )
@@ -274,9 +275,22 @@ class DX( object ):
             'country' : self.country,
             'awards': self.awards,
             'mode': self.mode,
+            'subMode': self.subMode,
             'band': self.band
 
             }
+
+    def setMode( self, mode, alias ):
+        self.mode = mode
+        if DX.subModes.has_key( alias ):
+            if DX.subModes[alias]:
+                t = self.text.upper()
+                for subMode in DX.subModes[alias]:
+                    if subMode in t:
+                        self.subMode = subMode
+                        break
+            else:
+                self.subMode = alias
 
     def __init__( self, dxData = None, **params ):
 
@@ -288,6 +302,8 @@ class DX( object ):
 
         self.band = params['band'] if params.has_key( 'band' ) else None
         self.mode = params['mode'] if params.has_key( 'mode' ) else None
+        self.subMode = params['subMode'] if params.has_key( 'subMode' ) else None
+
 
         if not self.band and self.freq:
             self.band = findDiap( DX.bands, self.freq )
@@ -297,15 +313,17 @@ class DX( object ):
             for ( mode, aliases ) in DX.modes.iteritems():
                 for alias in aliases:
                     if re.search( '(^|\s)' + alias + '(\d|\s|$)', t ):
-                        self.mode = mode
+                        self.setMode( mode, alias )
                         break
         if not self.mode and self.freq:
             modeByMap = findDiap( DX.modesMap, self.freq )
             if modeByMap:
                 for ( mode, aliases ) in DX.modes.iteritems():
                     if modeByMap in aliases:
-                        self.mode = mode
+                        self.setMode( mode, alias )
                         break
+
+
         
         self.cs = params['cs']
         self.de = params['de']
@@ -360,7 +378,8 @@ class DX( object ):
         for ad in awardsData:
             if not ad['country'] or ad['country'] == self.country:
                 for t in do.keys():
-                    if not do[t] and ad['getFields'].has_key( t ) and ad['getFields'][t]:
+                    if not do[t] and ad['getFields'].has_key( t ) and \
+                        ad['getFields'][t]:
                         do[t] = True
                 if ( do['text'] or skip['text'] ) and ( do['web'] or skip['web'] ):
                     break
@@ -372,7 +391,7 @@ class DX( object ):
                     elif ad.has_key('keyAttr') and getattr( self, ad['keyAttr'] ) \
                         and ad['byKey'].has_key( getattr( self, ad['keyAttr'] ) ):
                         av = ad['values'][ad['byKey'][getattr( \
-                                self, ad['valueAttr'] )]]
+                                self, ad['keyAttr'] )]]
                     if av and av.has_key( 'getFields' ):
                         for t in do.keys():
                             if not do[t] and av['getFields'][t]:
@@ -396,11 +415,20 @@ class DX( object ):
                     + self.cs )
             rBody = r.read()
             self.doTextLookup( rBody )
+            self.qrzData = True
+            self.updateDB()
         else:
             data = qrzComLink.getData( self.cs )
             if data:
-                self.district = data['state'] + ' ' + data['county']
-                self.gridsquare = data['grid']
+                self.qrzData = True
+                if data.has_key( 'state' ) or data.has_key( 'county' ):
+                    self.district = ( data['state'] \
+                            if data.has_key( 'state' ) else '' ) + \
+                            ( ' ' if data.has_key( 'state' ) and \
+                                data.has_key( 'county' ) else '' ) + \
+                            ( data['county'] if data.has_key( 'county' ) else '' )
+                if data.has_key( 'grid' ):
+                    self.gridsquare = data['grid']
                 self.updateDB()
 
     def doTextLookup( self, text = None ):
@@ -451,6 +479,7 @@ class DX( object ):
                     'country': self.country }, \
                     True )
             dxdb.commit()
+            self.inDB = True
 
     def detectAwards( self ):
 
@@ -515,9 +544,12 @@ class DX( object ):
                 m = DX.reState0.match( v )
                 if m:
                     v = m.group( 1 ) + '-' + m.group( 2 )
-            if v and fieldValuesSubst[ self.country ].has_key( 'district' ) and \
-                fieldValuesSubst[ self.country ]['district'].has_key( v ):
-                v = fieldValuesSubst[ self.country ]['district'][v]
+        if v and fieldValuesSubst[ self.country ].has_key( 'district' ) and \
+            fieldValuesSubst[ self.country ]['district'].has_key( v ):
+            v = fieldValuesSubst[ self.country ]['district'][v]
+        elif v and fieldValues[ self.country ].has_key( 'district' ):
+            if not v in fieldValues[ self.country ]['district']:
+                return
         if self._district and self._district != v and self.awards:
             self.awards.clear()
             dxdb.execute( """

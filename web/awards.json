@@ -3,15 +3,37 @@
     "substFile":"csv/rda_old_new.csv",
     "lookups":[{"type":"value", "source":"field", "field":"district"},
         {"type":"value","source":"text","re":"[a-zA-Z]{2}[ -]+\\d\\d"}] }, 
+
  { "name": "URDA", "fullName":"Ukraine Districts Award", "link":"http://uarl.com.ua/urda/", "country": "Ukraine",
     "valuesFile": "csv/urda.csv", "groupInValue": 1, "getFields":{"text":1, "web":1}, "fieldValues":"district",
      "lookups":[{"type":"value", "source":"field", "field":"district"},
         {"type":"value","source":"text","re":"[a-zA-Z]{2}[ -]+\\d\\d"}] },
- {  "name": "RAFA", "fullName": "Russian AirField Award", "link":"http://www.aviaham.ru/rafa/",
+
+ { "name": "UKR_C", "fullName":"Ukrainian Carpathians Award", "link":"http://uff.pp.ua/uc", "country": "Ukraine",
+    "valuesFile": "csv/ukr_c.csv", "groupInValue": 1, "getFields":{"text":0, "web":0}, "keyAttr":"district",
+     "lookups":[{"type":"key", "source":"field", "field":"district"}] },
+
+ { "name": "USA-CA", "fullName":"USA Counties Award", 
+     "link":"http://www.cq-amateur-radio.com/cq_awards/cq_usa_ca_awards/cq_usa_ca_awards.html", "country": "USA",
+    "valuesFile": "csv/usa_ca.csv", "groupInValue": 1, "groupSeparator": " ", 
+    "getFields":{"web":1}, "fieldValues":"district",
+    "valueColumns": {"value": 2 },
+     "lookups":[{"type":"value", "source":"field", "field":"district"}]},
+
+    {  "name": "RAFA", "fullName": "Russian AirField Award", "link":"http://www.aviaham.ru/rafa/",
     "country": "Russia", "valuesFile": "csv/rafa.csv", "groupInValue": 0,  "keyAttr":"gridsquare",
     "getFields":{"text":1, "web":1},
      "lookups":[{"type":"key", "source":"field", "field":"gridsquare"},
         {"type":"value","source":"text","re":"[a-zA-Z0-9]{4}"},
-        {"type":"key","source":"text","re":"[a-zA-Z0-9]{6}"}] }
+        {"type":"key","source":"text","re":"[a-zA-Z0-9]{6}"}] },
+
+    {  "name": "WASerbia", "fullName": "Worked All Serbia Award", 
+        "link":"http://cqserbia.com",
+    "country": "Serbia", "valuesFile": "csv/waserbia.csv", "groupInValue": 0,  
+    "keyAttr":"cs", "getFields":{"text":0, "web":0},
+    "valueColumns": {"value": 0, "desc": 1, "keys": 2 },
+    "groupColumns": {"value": 3 },
+    "lookups":[{"type":"key", "source":"field", "field":"cs"},
+        {"type":"value","source":"text","re":"[a-zA-Z]\\d\\d"}] }
 
 ] 

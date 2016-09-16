@@ -12,7 +12,7 @@ from dx import DX, DXData
 
 conf = siteConf()
 webRoot = conf.get( 'web', 'root' ) 
-awardsData = loadJSON( webRoot + '/debug/awards.json' )
+awardsData = loadJSON( webRoot + '/awards.json' )
 if not awardsData:
     print 'No awards data!'
 awards = []
@@ -44,7 +44,8 @@ for aw in awardsData:
             else '-'
 
     def getType( data ):
-        return 'group' if data[columns['group']['value']] \
+        return 'group' if columns['group']['value'] < len( data ) and \
+                data[columns['group']['value']] \
                 else 'value'
 
     def getColumn( data, column ):
@@ -66,15 +67,18 @@ for aw in awardsData:
                 av['value'] = group + groupSeparator + av['displayValue'] if \
                     aw['groupInValue'] else av['displayValue']
                 av['group'] = group
+                if columns['value'].has_key( 'desc' ):
+                    av['desc'] = getColumn( data, 'desc' )
                 webAw['values'].append( av )
                 aw['values'][av['value']] = {'lookups':[]}
                 if aw.has_key( 'keyAttr' ):
                     for key in getColumn( data, 'keys' ).split( ',' ):
                         if key:
-                            aw['byKey'][key] = av['value']
+                            aw['byKey'][key.strip()] = av['value']
             data = getSplitLine( file, 0 )
         webAw['values'].sort( key = lambda x: x['value'] )
-        webAw['orderedGroups'] = webAw['groups'].keys()
+        webAw['orderedGroups'] = webAw['groups'].keys() if webAw['groups'] \
+                else [ None ]
         webAw['orderedGroups'].sort()
 
     if aw.has_key( 'substFile' ) and aw['substFile']:
@@ -90,10 +94,10 @@ for aw in awardsData:
     webAwards.append( webAw )
 
 
-with open( webRoot + '/debug/awardsValues.json', 'w' ) as fav:
+with open( webRoot + '/awardsValues.json', 'w' ) as fav:
     fav.write( json.dumps( webAwards ) )
 
-with open( webRoot + '/debug/awardsData.json', 'w' ) as fav:
+with open( webRoot + '/awardsData.json', 'w' ) as fav:
     fav.write( json.dumps( awards ) )
 
 

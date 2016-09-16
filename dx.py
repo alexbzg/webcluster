@@ -378,7 +378,8 @@ class DX( object ):
         for ad in awardsData:
             if not ad['country'] or ad['country'] == self.country:
                 for t in do.keys():
-                    if not do[t] and ad['getFields'].has_key( t ) and ad['getFields'][t]:
+                    if not do[t] and ad['getFields'].has_key( t ) and \
+                        ad['getFields'][t]:
                         do[t] = True
                 if ( do['text'] or skip['text'] ) and ( do['web'] or skip['web'] ):
                     break
@@ -390,7 +391,7 @@ class DX( object ):
                     elif ad.has_key('keyAttr') and getattr( self, ad['keyAttr'] ) \
                         and ad['byKey'].has_key( getattr( self, ad['keyAttr'] ) ):
                         av = ad['values'][ad['byKey'][getattr( \
-                                self, ad['valueAttr'] )]]
+                                self, ad['keyAttr'] )]]
                     if av and av.has_key( 'getFields' ):
                         for t in do.keys():
                             if not do[t] and av['getFields'][t]:

@@ -5,7 +5,21 @@ webDXapp.controller( 'bodyCtrl', function( $scope, $http, $interval, $window, $t
 
     if ( $scope.user = getUserData( $scope, $window ) ) {
         $scope.awardsSettings = $scope.user.awardsSettings;
-//        $scope.selector = null;
+        for ( var award in $scope.awardsSettings )
+            if ( $scope.awardsSettings[award].settings != null ) {
+                var as = $scope.awardsSettings[award].settings;
+                for ( var field in as ) {
+                    var fs = {};
+                    as[field].forEach( function( item ) {
+                        fs[item.name] = item.enabled;
+                    });
+                    as[field] = fs;
+                }
+            }
+                
+        
+            
+        
     }
 
     var r = null;
@@ -115,13 +129,25 @@ webDXapp.controller( 'bodyCtrl', function( $scope, $http, $interval, $window, $t
                         && name in $scope.user.awards &&
                         value in $scope.user.awards[name] ) {
                         if ( $scope.user.awards[name][value].confirmed )
-                            return;
+                            continue;
                         else
                             award.worked = true;
                     }
                     if ( $scope.awardsSettings != null &&
                             name in $scope.awardsSettings ) {
+                        var as = $scope.awardsSettings[name];
                         if ( $scope.awardsSettings[name].track ) {
+                            if ( as.settings != null ) {
+                                if ( dx.band in as.settings.bands && 
+                                        !as.settings.bands[dx.band] )
+                                    continue;
+                                if ( dx.mode in as.settings.modes &&
+                                        !as.settings.modes[dx.mode] )
+                                    continue;
+                                if ( dx.subMode in as.settings.modes &&
+                                        !as.settings.modes[dx.subMode] )
+                                    continue;
+                            }
                             award.color = $scope.awardsSettings[name].color;
                             fAwards.push( award );
                         }

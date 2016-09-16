@@ -156,17 +156,20 @@ def application(env, start_response):
                     False, True )
                 params['track'] = data['track']
                 params['color'] = data['color']
+                params['settings'] = json.dumps( data['settings'] ) \
+                        if data.has_key( 'settings' ) else None
                 sql = ''
                 if dbRec:
                     sql = """
                         update users_awards_settings
-                        set track = %(track)s, color = %(color)s
+                        set track = %(track)s, color = %(color)s, 
+                            settings = %(settings)s
                         where callsign = %(callsign)s and
                             award = %(award)s"""
                 else:
                      sql = """
                         insert into users_awards_settings
-                        values ( %(callsign)s, %(award)s, %(track)s,
+                        values ( %(callsign)s, %(award)s, %(track)s, %(settings)s
                             %(color)s )"""
                 if dxdb.execute( sql, params ):
                     dxdb.commit()
@@ -353,7 +356,7 @@ def getUserAwards( callsign ):
 def sendUserData( userData, start_response ):
     awardsSettings = cursor2dicts( \
             dxdb.execute( """
-                select award, track, color
+                select award, track, color, settings
                 from users_awards_settings
                 where callsign = %(callsign)s """, \
                  userData ), True )

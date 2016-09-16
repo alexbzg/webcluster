@@ -42,7 +42,7 @@
         
         <!-- <h4>{{user.callsign}}</h4>    -->
         <select id="award_title" ng-model="activeAward" 
-            ng-options="award as (award.fullName + '(' + award.name + ')') for award in awardsValues"
+            ng-options="award as (award.fullName + ' (' + award.name + ')') for award in awardsValues | orderBy: 'country'"
             ng-change="activeValue = null; searchValue = null;">
             <option value="">Select award</option>
         </select>

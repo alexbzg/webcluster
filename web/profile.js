@@ -20,7 +20,28 @@ profileApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
         country.awards.forEach( function( award ) {
             if ( !( award.name in $scope.awardsSettings ) )
                 $scope.awardsSettings[award.name] = { 'track': true, 'color': '#770000' };
+            if ( !( 'settings' in $scope.awardsSettings[award.name] ) || 
+                    $scope.awardsSettings[award.name].settings == null) {
+                $scope.awardsSettings[award.name].settings = {};
+                var s = $scope.awardsSettings[award.name].settings;
+                var st =
+                { bands: [ '1.8', '3.5', '7', '10', '14', '18', '21', '24', '28', '50', '144' ],
+                    modes: [ 'CW', 'SSB', 'RTTY', 'PSK31', 'PSK63', 'PSK125', 'JT65' ],
+                    cfm: [ 'Paper', 'eQSL', 'LOTW' ] };
+                for ( var field in st )
+                    if ( st.hasOwnProperty( field ) ) {
+                        s[field] = [];
+                        st[field].forEach( function( item ) {
+                            s[field].push( { name: item, enabled: true } );
+                        });
+                    }
+            }
         } );
+    }
+
+    $scope.setupAward = null;
+    $scope.openSetup = function( award ) {
+        $scope.setupAward = award == null ? null : award.name;
     }
 
     $scope.logout = function() {
@@ -76,6 +97,7 @@ profileApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
                     'award': award,
                     'track': $scope.awardsSettings[award].track,
                     'color': $scope.awardsSettings[award].color,
+                    'settings': $scope.awardsSettings[award].settings,
                 } ).then( function( response ) {
                     console.log( response.data );
                 } );
