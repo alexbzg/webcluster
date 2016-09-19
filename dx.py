@@ -102,8 +102,15 @@ class QRZComLink:
                         self.getSessionID()
                         if self.sessionID:
                             return self.getData( cs )
+                elif rDict['QRZDatabase'].has_key('Session') and \
+                    rDict['QRZDatabase']['Session'].has_key( 'Error' ):
+                        if 'Not found' in rDict['QRZDatabase']['Session']['Error']:
+                            return None
+                        else:
+                            raise Exception( 'QRZ error: ' + \
+                                rDict['QRZDatabase']['Session']['Error'] )
                 else:
-                    raise Exception( 'Wrong QRZ response' )
+                    raise Exception( 'Wrong QRZ response: ' + json.dumps( rDict ) )
             except Exception as e:
                 if isinstance(e, urllib2.HTTPError):
                     if e.getcode() == 404:

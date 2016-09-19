@@ -169,8 +169,8 @@ def application(env, start_response):
                 else:
                      sql = """
                         insert into users_awards_settings
-                        values ( %(callsign)s, %(award)s, %(track)s, %(settings)s
-                            %(color)s )"""
+                        values ( %(callsign)s, %(award)s, %(track)s, %(color)s,
+                            %(settings)s )"""
                 if dxdb.execute( sql, params ):
                     dxdb.commit()
                     start_response( '200 OK', [('Content-Type','text/plain')])
