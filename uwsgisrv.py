@@ -185,7 +185,8 @@ def application(env, start_response):
                 newAwards, lastLine = loadAdif( callsign, adif )
                 start_response( '200 OK', [('Content-Type','application/json')])                
                 return json.dumps( { 'lastAdifLine': lastLine, \
-                        'awards': getUserAwards( callsign ) if newAwards else False } )
+                        'awards': getUserAwards( callsign ) \
+                            if newAwards else False } )
             elif data.has_key( 'award' ) and data.has_key( 'value' ) \
                     and ( data.has_key( 'confirmed' ) or data.has_key('delete') ):
                 params =  { 'callsign': callsign, 'award': data['award'], \
@@ -200,9 +201,16 @@ def application(env, start_response):
                             where callsign = %(callsign)s and award = %(award)s and
                                 value = %(value)s""", params )
                 else:
-                    params['confirmed'] = data['confirmed']
-                    params['worked_cs'] = data['workedCS'] if data.has_key( 'workedCS' ) \
-                            else None
+                    params['confirmed'] = data['confirmed'] \
+                            if data.has_key('confirmed') else None
+                    params['cfm_paper'] = data['cfm_paper'] \
+                            if data.has_key('cfm_paper') else None
+                    params['cfm_eqsl'] = data['cfm_eqsl'] \
+                            if data.has_key('cfm_eqsl') else None
+                    params['cfm_lotw'] = data['cfm_lotw'] \
+                            if data.has_key('cfm_lotw') else None
+                    params['worked_cs'] = data['workedCS'] \
+                            if data.has_key( 'workedCS' ) else None
                     if awardLookup:
                         fl = dxdb.execute( """
                             update user_awards
@@ -348,7 +356,9 @@ def getUserAwards( callsign ):
             if not r.has_key( item['award'] ):
                 r[item['award']] = {}
             r[item['award']][item['value']] = \
-                { 'confirmed': item['confirmed'], 'workedCS': item['worked_cs'] }
+                { 'confirmed': item['confirmed'], 'workedCS': item['worked_cs'],\
+                'cfm_paper': item['cfm_paper'], 'cfm_eqsl': item['cfm_eqsl'],\
+                'cfm_lotw': item['cfm_lotw'] }
         return r
     else:
         return None
