@@ -1,4 +1,4 @@
-var contactApp = angular.module( 'contactApp', [] );
+var contactApp = angular.module( 'contactApp', [ 'ngSanitize' ] );
 var rcCallback;
 var rcExpired;
 
@@ -9,9 +9,15 @@ function validateEmail(email) {
 
 contactApp.controller( 'bodyCtrl', function( $scope, $http ) {
 
+    $scope.user = getUserData();
+    $scope.logout = function() {
+        logoutUser();
+        window.location.href = "http://adxcluster.com/login.html";
+    }
+
     $scope.sendEmail = function() {
         $scope.sending = true;
-        $http.post( '/emailSupport', $scope.email ).then( function( response ) {
+        $http.post( '/uwsgi/contact', $scope.email ).then( function( response ) {
             if ( response.data == 'OK' ) {
                 alert( 'Your message is sent.' );
                 $scope.email.text = '';

@@ -1,7 +1,7 @@
 #!/usr/bin/python
 #coding=utf-8
 from common import appRoot, readConf, siteConf, loadJSON
-from dxdb import cursor2dicts, dbConn
+from dxdb import cursor2dicts, dbConn, paramStr
 from dx import DX
 
 import json, smtplib, urllib2, urllib, os, base64, jwt, re, logging, time, urlparse
@@ -188,7 +188,8 @@ def application(env, start_response):
                         'awards': getUserAwards( callsign ) \
                             if newAwards else False } )
             elif data.has_key( 'award' ) and data.has_key( 'value' ) \
-                    and ( data.has_key( 'confirmed' ) or data.has_key('delete') ):
+                    and ( data.has_key( 'confirmed' ) or data.has_key('delete') or \
+                    data.has_key( 'cfm_paper' ) ):
                 params =  { 'callsign': callsign, 'award': data['award'], \
                     'value': data['value'] }
                 awardLookup = dxdb.getObject( 'user_awards', params, \
@@ -403,6 +404,9 @@ def loadAdif( callsign, adif ):
     lines = adif.split( '<EOR>' )
     reDistrict = re.compile( '[a-zA-Z]{2}-\d\d' )
     lastLine = ''
+    cfmFields = { 'cfm_paper': 'QSL_RCVD',\
+        'cfm_eqsl': 'EQSL_QSL_RCVD',\
+        'cfm_lotw': 'LOTW_QSL_RCVD' }
     for line in lines:
         if '<' in line:
             cs = getAdifField( line, 'CALL' )  
@@ -422,23 +426,24 @@ def loadAdif( callsign, adif ):
                     dx.district = district
                     dx.detectAwards()
             if dx.awards:
-                confirmed = getAdifField( line, 'QSL_RCVD' ) == 'Y'
+                cfm = {}
+                for ( cfmType, field ) in cfmFields.iteritems():
+                    cfm[cfmType] = getAdifField( line, field ) == 'Y'
                 for ( award, value ) in dx.awards.iteritems():
                     if not awards.has_key(award):
                         awards[award] = {}
                     if awards[award].has_key(value):
                         aw = awards[award][value]
-                        if not aw['confirmed'] and confirmed:
-                            aw['confirmed'] = True
-                            aw['callsigns'] = [ cs, ]
-                        elif aw['confirmed'] == confirmed:
-                            if len( aw['callsigns'] ) < 2 and \
-                                not cs in aw['callsigns']:
-                                aw['callsigns'].append( cs )
+                        for cfmType in cfmFields.keys():
+                            if not aw[cfmType] and cfm[cfmType]:
+                                aw[cfmType] = True
+                        if len( aw['callsigns'] ) < 2 and \
+                            not cs in aw['callsigns']:
+                            aw['callsigns'].append( cs )
                     else:
-                        awards[award][value] = \
-                            { 'confirmed': confirmed, \
-                            'callsigns': [ cs, ] }    
+                        awards[award][value] = { 'callsigns': [ cs, ] }    
+                        for cfmType in cfmFields.keys():
+                            awards[award][value][cfmType] = cfm[cfmType]
     with open( '/var/www/adxc.73/adifAwardsDebug.json', 'w' ) as f:
         f.write( json.dumps( awards ) )
     commitFl = False
@@ -446,41 +451,41 @@ def loadAdif( callsign, adif ):
         for award in awards.keys():
             for value in awards[award].keys():
                 awState = awards[award][value]
-                params = { 'callsign': callsign, \
+                idParams = { 'callsign': callsign, \
                         'award': award,\
                         'value': value }
-                awLookup = dxdb.getObject( 'user_awards', params, False, True )
+                updParams = {}
+                awLookup = dxdb.getObject( 'user_awards', idParams, False, True )
                 if awLookup:
                     updateFl = False
-                    if awLookup['confirmed'] == awState['confirmed']:
-                        csCount = 0 if not awLookup['worked_cs'] else \
-                                2 if ',' in awLookup['worked_cs'] else 1
-                        if csCount < 2:
-                            workedCs = awLookup['worked_cs'] \
-                                    if awLookup['worked_cs'] else ''
-                            for cs in awState['callsigns']:
-                                if not cs in workedCs:
-                                    workedCs += ', ' + cs if workedCs else cs
-                                    csCount += 1
-                                    updateFl = True
-                                    if csCount > 1:
+                    for cfmType in cfmFields.keys():
+                        if not awLookup[cfmType] and awState[cfmType]:
+                            updParams[cfmType] = True
+                            updateFl = True
+                    csCount = 0 if not awLookup['worked_cs'] else \
+                            2 if ',' in awLookup['worked_cs'] else 1
+                    if csCount < 2:
+                        workedCs = awLookup['worked_cs'] \
+                                if awLookup['worked_cs'] else ''
+                        for cs in awState['callsigns']:
+                            if not cs in workedCs:
+                                workedCs += ', ' + cs if workedCs else cs
+                                csCount += 1
+                                updateFl = True
+                                if csCount > 1:
                                         break
-                            params['worked_cs'] = workedCs
-                            params['confirmed'] = awLookup['confirmed']
-                    elif awState['confirmed']:
-                        params['confirmed'] = True
-                        params['worked_cs'] = ', '.join( awState['callsigns'] )
-                        updateFl = True
+                        updParams['worked_cs'] = workedCs
                     if updateFl:
                         dxdb.execute( """update user_awards
-                            set confirmed = %(confirmed)s, worked_cs = %(worked_cs)s
-                            where callsign = %(callsign)s and award = %(award)s and
-                                value = %(value)s""", params )
+                            set """ + paramStr( updParams, ', ' ) + \
+                            " where " + paramStr( idParams, ' and ' ), \
+                            dict( idParams, **updParams ) )
                         commitFl = True
                 else:
-                    params['confirmed'] = awState['confirmed']
-                    params['worked_cs'] = ', '.join( awState['callsigns'] )
-                    dxdb.getObject( 'user_awards', params, True )
+                    idParams['worked_cs'] = ', '.join( awState['callsigns'] )
+                    for cfmType in cfmFields.keys():
+                        idParams[cfmType] = awState[cfmType]
+                    dxdb.getObject( 'user_awards', idParams, True )
                     commitFl = True
 
     dxdb.updateObject( 'users', { 'callsign': callsign, 'last_adif_line': lastLine }, \

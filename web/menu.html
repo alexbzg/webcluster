@@ -1,0 +1,16 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"                                                
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<div id="top">
+    <a href="/"><img src="/images/ac_logo.jpg" border="0" /></a>
+    <div id="top_menu">
+        <span id="callsign" ng-show="user">{{user.callsign}}</span>
+        <a href="/login.html" ng-show="!user">Login</a>
+        <a href="/stats.html" ng-show="user">Stats</a>
+        <a href="/awards.html" ng-show="user">Awards</a>
+        <a href="/profile.html" ng-show="user">Profile</a>
+        <a href="/info.html" ng-show="!user">Info</a>
+        <a href="/contact.html" ng-show="user">Contact</a>
+        <a href="" ng-click="logout()" ng-show="user">Logout</a>
+    </div>
+</div>
+

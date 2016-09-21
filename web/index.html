@@ -25,18 +25,8 @@
 
     </head>
     <body ng-controller="bodyCtrl" ng-cloak>
-    <div id="top">
-        <a href="/"><img src="/images/ac_logo.jpg" border="0" /></a>
-        <div id="top_menu">
-            <span id="callsign" ng-show="user">{{user.callsign}}</span>
-            <a href="/login.html" ng-show="!user">Login</a>
-            <a href="/my_awards.html" ng-show="user">My awards</a>
-            <a href="/profile.html" ng-show="user">Profile</a>
-            <a href="/info.html">Info</a>
-            <a href="/contact.html">Contact</a>
-            <a href="" ng-click="logout()" ng-show="user">Logout</a>
-        </div>
-    </div>
+    <ng-include src="'menu.html'">
+    </ng-include>
 
     <div id="news" ng-show="news.html">
         <div id="news_title">NEWS</div>

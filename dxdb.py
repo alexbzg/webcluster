@@ -22,6 +22,10 @@ def cursor2dicts( cur, keys = None ):
     else:
         return False
 
+def paramStr( params, str ):
+    return str.join( [ x + " = %(" + x + ")s" for x in params.keys() ] )
+
+
 class dbConn:
     def __init__( self ):
         conf = siteConf()

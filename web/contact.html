@@ -8,18 +8,20 @@
         <meta name="keywords" content="ham radio, award, cluster, dx" />
         <title>Awards DX Cluster - Contact</title>
         <link href="style.css" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
         <link rel="icon" href="/favicon.ico" type="image/x-icon">
         <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 
         <script src='https://www.google.com/recaptcha/api.js'></script>
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-sanitize.js"></script>
+        <script src="userData.js"></script>
         <script src='contact.js'></script>
-   </head>
+    </head>
     <body ng-controller="bodyCtrl">
-    <div id="top">
-        <a href="/"><img src="/images/ac_logo.jpg" border="0" /></a>
-        <!-- <div id="top_menu"><a href="/login.html">Login</a></div> -->
-    </div>
+    <ng-include src="'menu.html'">
+    </ng-include>
+
     
     <form id="contact" method="post">
         <input type="text" name="contact_email" placeholder="Your email" ng-model="email.from">

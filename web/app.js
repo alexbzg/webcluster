@@ -8,13 +8,14 @@ webDXapp.controller( 'bodyCtrl', function( $scope, $http, $interval, $window, $t
         for ( var award in $scope.awardsSettings )
             if ( $scope.awardsSettings[award].settings != null ) {
                 var as = $scope.awardsSettings[award].settings;
-                for ( var field in as ) {
-                    var fs = {};
-                    as[field].forEach( function( item ) {
-                        fs[item.name] = item.enabled;
-                    });
-                    as[field] = fs;
-                }
+                for ( var field in as ) 
+                    if ( field != 'cfm' ) {
+                        var fs = {};
+                        as[field].forEach( function( item ) {
+                            fs[item.name] = item.enabled;
+                        });
+                        as[field] = fs;
+                    }
             }
                 
         
@@ -125,14 +126,7 @@ webDXapp.controller( 'bodyCtrl', function( $scope, $http, $interval, $window, $t
                 if ( dx.awards.hasOwnProperty( name ) ) {
                     var value = dx.awards[name];
                     var award = { award: name, value: value };
-                    if ( $scope.user.awards != null 
-                        && name in $scope.user.awards &&
-                        value in $scope.user.awards[name] ) {
-                        if ( $scope.user.awards[name][value].confirmed )
-                            continue;
-                        else
-                            award.worked = true;
-                    }
+                    var cfm = { 'cfm_paper': 1, 'cfm_eqsl': 1, 'cfm_lotw': 1 };
                     if ( $scope.awardsSettings != null &&
                             name in $scope.awardsSettings ) {
                         var as = $scope.awardsSettings[name];
@@ -147,6 +141,24 @@ webDXapp.controller( 'bodyCtrl', function( $scope, $http, $interval, $window, $t
                                 if ( dx.subMode in as.settings.modes &&
                                         !as.settings.modes[dx.subMode] )
                                     continue;
+                                as.settings.cfm.forEach( function( cfmType ) {                                    
+                                    if ( !cfmType.enabled )
+                                        delete cfm[cfmType.name];
+                                });
+                            }
+                            if ( $scope.user.awards != null 
+                                && name in $scope.user.awards &&
+                                value in $scope.user.awards[name] ) {
+                                var confirmed = false;
+                                for ( var cfmType in cfm )
+                                    if ( $scope.user.awards[name][value][cfmType] ) {
+                                        confirmed = true;
+                                        break;
+                                    }
+                                if ( confirmed )
+                                    continue;
+                                else
+                                    award.worked = true;
                             }
                             award.color = $scope.awardsSettings[name].color;
                             fAwards.push( award );
