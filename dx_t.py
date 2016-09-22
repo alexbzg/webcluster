@@ -67,6 +67,15 @@ class QRZComLink:
 
 
     def getSessionID( self ):
+
+        fpSession = '/var/run/qrzcom.sessionkey'
+        if ( os.path.isfile( fpSession ) ):
+            with open( fpSession, 'r' ) as fSession:
+                sessionID = fSession.read()
+                if self.sessionID != sessionID:
+                    self.sessionID = sessionID
+                    return
+
         r, rBody = None, None
         try:
             r = urllib2.urlopen( 'http://xmldata.qrz.com/xml/current/?username=' \
@@ -75,6 +84,8 @@ class QRZComLink:
             rDict = xmltodict.parse( rBody )
             if rDict['QRZDatabase']['Session'].has_key( 'Key' ):
                 self.sessionID = rDict['QRZDatabase']['Session']['Key']
+                with open( fpSession, 'w' ) as fSession:
+                    fSession.write( self.sessionID )
             else:
                 raise Exception( 'Wrong QRZ response' )
         except Exception as e:
@@ -98,12 +109,22 @@ class QRZComLink:
                     return rDict['QRZDatabase']['Callsign']
                 elif rDict['QRZDatabase'].has_key('Session') and \
                     rDict['QRZDatabase']['Session'].has_key( 'Error' ) and \
-                    rDict['QRZDatabase']['Session']['Error'] == 'Session Timeout':
+                    ( rDict['QRZDatabase']['Session']['Error'] == \
+                        'Session Timeout' or \
+                        rDict['QRZDatabase']['Session']['Error'] == \
+                        'Invalid session key' ) :
                         self.getSessionID()
                         if self.sessionID:
                             return self.getData( cs )
+                elif rDict['QRZDatabase'].has_key('Session') and \
+                    rDict['QRZDatabase']['Session'].has_key( 'Error' ):
+                        if 'Not found' in rDict['QRZDatabase']['Session']['Error']:
+                            return None
+                        else:
+                            raise Exception( 'QRZ error: ' + \
+                                rDict['QRZDatabase']['Session']['Error'] )
                 else:
-                    raise Exception( 'Wrong QRZ response' )
+                    raise Exception( 'Wrong QRZ response: ' + json.dumps( rDict ) )
             except Exception as e:
                 if isinstance(e, urllib2.HTTPError):
                     if e.getcode() == 404:
@@ -469,7 +490,8 @@ class DX( object ):
         if self.inDB:
             logging.debug( 'updating db callsign record' )
             dxdb.updateObject( 'callsigns',
-              { 'callsign': self.cs, 'qth': self.gridsquare, 'state': self.district,\
+              { 'callsign': self.cs, 'qth': self.gridsquare, \
+                      'district': self.district, 'region': self.region,\
                       'qrz_data_loaded': self.qrzData }, 'callsign' )
         else:
             logging.debug( 'creating new db callsign record' )

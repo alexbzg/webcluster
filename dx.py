@@ -67,6 +67,15 @@ class QRZComLink:
 
 
     def getSessionID( self ):
+
+        fpSession = '/var/run/qrzcom.sessionkey'
+        if ( os.path.isfile( fpSession ) ):
+            with open( fpSession, 'r' ) as fSession:
+                sessionID = fSession.read()
+                if self.sessionID != sessionID:
+                    self.sessionID = sessionID
+                    return
+
         r, rBody = None, None
         try:
             r = urllib2.urlopen( 'http://xmldata.qrz.com/xml/current/?username=' \
@@ -75,6 +84,8 @@ class QRZComLink:
             rDict = xmltodict.parse( rBody )
             if rDict['QRZDatabase']['Session'].has_key( 'Key' ):
                 self.sessionID = rDict['QRZDatabase']['Session']['Key']
+                with open( fpSession, 'w' ) as fSession:
+                    fSession.write( self.sessionID )
             else:
                 raise Exception( 'Wrong QRZ response' )
         except Exception as e:
@@ -98,7 +109,10 @@ class QRZComLink:
                     return rDict['QRZDatabase']['Callsign']
                 elif rDict['QRZDatabase'].has_key('Session') and \
                     rDict['QRZDatabase']['Session'].has_key( 'Error' ) and \
-                    rDict['QRZDatabase']['Session']['Error'] == 'Session Timeout':
+                    ( rDict['QRZDatabase']['Session']['Error'] == \
+                        'Session Timeout' or \
+                        rDict['QRZDatabase']['Session']['Error'] == \
+                        'Invalid session key' ) :
                         self.getSessionID()
                         if self.sessionID:
                             return self.getData( cs )
