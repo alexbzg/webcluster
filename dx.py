@@ -373,7 +373,7 @@ class DX( object ):
                     False, True )
 
             if csLookup:
-                self.district = csLookup['state']
+                self.district = csLookup['district']
                 self.gridsquare = csLookup['qth']
                 self.inDB = True
                 self.qrzData = csLookup['qrz_data_loaded']
@@ -490,12 +490,13 @@ class DX( object ):
         if self.inDB:
             logging.debug( 'updating db callsign record' )
             dxdb.updateObject( 'callsigns',
-              { 'callsign': self.cs, 'qth': self.gridsquare, 'state': self.district,\
+              { 'callsign': self.cs, 'qth': self.gridsquare, \
+                      'district': self.district,\
                       'qrz_data_loaded': self.qrzData }, 'callsign' )
         else:
             logging.debug( 'creating new db callsign record' )
             dxdb.getObject( 'callsigns', \
-                    { 'callsign': self.cs, 'state': self.district, \
+                    { 'callsign': self.cs, 'district': self.district, \
                     'qth': self.gridsquare, 'qrz_data_loaded': self.qrzData, \
                     'country': self.country }, \
                     True )

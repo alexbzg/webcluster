@@ -316,6 +316,7 @@ class DX( object ):
     def __init__( self, dxData = None, **params ):
 
         self._district = None
+        self.region = None
         self.awards = {}
         self.dxData = dxData
         self.text = params['text']
@@ -356,7 +357,10 @@ class DX( object ):
         if params.has_key( 'ts' ):
             self.ts = params['ts']
             self.time = params['time']
-            self.district = params['district'] if params.has_key( 'state' ) else None
+            self.district = params['district'] if params.has_key( 'state' ) \
+                    else None
+            self.region = params['region'] if params.has_key( 'region' ) \
+                    else None
             self.gridsquare = params['gridsquare'] if params.has_key( 'qth' ) \
                     else None
             self.inDB = True
@@ -366,6 +370,7 @@ class DX( object ):
         
             self.time = params['time'][:2] + ':' + params['time'][2:4]
             self.ts = time.time()
+            self.region = None
             self.district = None
             self.gridsquare = None
 
@@ -373,7 +378,8 @@ class DX( object ):
                     False, True )
 
             if csLookup:
-                self.district = csLookup['state']
+                self.region = csLookup['region']
+                self.district = csLookup['district']
                 self.gridsquare = csLookup['qth']
                 self.inDB = True
                 self.qrzData = csLookup['qrz_data_loaded']
