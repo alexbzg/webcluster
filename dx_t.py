@@ -13,7 +13,7 @@ from dxdb import dxdb, cursor2dicts
 conf = siteConf()
 webRoot = conf.get( 'web', 'root' )
 
-awardsData = loadJSON( webRoot + '/awardsData.json' )
+awardsData = loadJSON( webRoot + '/debug/awardsData.json' )
 
 fieldValues = {}
 fieldValuesSubst = {}
@@ -297,8 +297,8 @@ class DX( object ):
             'awards': self.awards,
             'mode': self.mode,
             'subMode': self.subMode,
-            'band': self.band
-
+            'band': self.band,
+            'region': self.region
             }
 
     def setMode( self, mode, alias ):
@@ -448,6 +448,8 @@ class DX( object ):
             data = qrzComLink.getData( self.cs )
             if data:
                 self.qrzData = True
+                if data.has_key( 'state' ):
+                    self.state = data['state']
                 if data.has_key( 'state' ) or data.has_key( 'county' ):
                     self.district = ( data['state'] \
                             if data.has_key( 'state' ) else '' ) + \
@@ -566,6 +568,10 @@ class DX( object ):
         v = None
         if self.country == 'USA':
             v = value
+            if v and self.region == None:
+                r = v.split( ' ' )[0]
+                if r in fieldValues[ 'USA' ]['region']:
+                    self.region = r
         else:
             if value:
                 v = value.replace( ' ', '' )

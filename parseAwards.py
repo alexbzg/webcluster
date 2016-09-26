@@ -8,11 +8,15 @@ from common import appRoot, readConf, siteConf, loadJSON
 from dxdb import dxdb
 from dx import DX, DXData
 
+argparser = argparse.ArgumentParser()
+argparser.add_argument( '-t', action = 'store_true' )
+args = vars( argparser.parse_args() )
 
 
 conf = siteConf()
 webRoot = conf.get( 'web', 'root' ) 
-awardsData = loadJSON( webRoot + '/awards.json' )
+dir = webRoot + ( '/debug' if args['t'] else '' )
+awardsData = loadJSON( dir + '/awards.json' )
 if not awardsData:
     print 'No awards data!'
 awards = []
@@ -94,10 +98,10 @@ for aw in awardsData:
     webAwards.append( webAw )
 
 
-with open( webRoot + '/awardsValues.json', 'w' ) as fav:
+with open( dir + '/awardsValues.json', 'w' ) as fav:
     fav.write( json.dumps( webAwards ) )
 
-with open( webRoot + '/awardsData.json', 'w' ) as fav:
+with open( dir + '/awardsData.json', 'w' ) as fav:
     fav.write( json.dumps( awards ) )
 
 
