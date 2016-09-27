@@ -19,6 +19,8 @@ dir = webRoot + ( '/debug' if args['t'] else '' )
 awardsData = loadJSON( dir + '/awards.json' )
 if not awardsData:
     print 'No awards data!'
+else:
+    print 'Processing ' + dir + '/awards.json'
 awards = []
 webAwards = []
 
@@ -35,8 +37,9 @@ def getSplitLine( file, fr, to = None ):
         return None
 
 for aw in awardsData:
-    webAw = { 'name': aw['name'], 'country': aw['country'], \
-            'fullName': aw['fullName'], 'values': [], 'groups': {} }
+    webAw = dict( aw )
+    webAw['values'] = []
+    webAw['groups'] = {}
     aw['values'] = {}
     if aw.has_key( 'keyAttr' ):
         aw['byKey'] = {}
