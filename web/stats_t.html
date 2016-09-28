@@ -36,7 +36,7 @@
         <select id="award_title" ng-model="activeAward" 
             ng-options="award as (award.fullName + ' (' + award.name + ')') 
                 for award in awardsValues | orderBy: 'country'"
-            ng-change="activeValue = null; searchValue = null;">
+            ng-change="activeAwardChanged()">
             <option value="">Select award</option>
         </select>
 
@@ -69,9 +69,9 @@
                     
                 </td>
                 <td id="award_edit">                
-                    <form ng-submit="searchValue = searchValue.toUpperCase(); setActiveValue( searchValue )">
+                    <form ng-submit="findValue()">
                         {{activeAward.name}} code 
-                        <input type="text" name="award_option" ng-model="searchValue"> 
+                        <input type="text" name="award_option" ng-model="searchExpr"> 
                         <input type="submit" class="submit_btn" name="award_unit_search" value="OK">
                     </form>
                         <div id="selected_unit_info" ng-show="activeValue">
@@ -117,8 +117,8 @@
                         </tr>
                         <tr>
                             <td ng-repeat="item in const.modes">
-                                <input type="checkbox" ng-model="selector.modes[item]" 
-                                    ng-change="selectorChanged()">
+                                <input type="checkbox" ng-model="modesFilter[item]" 
+                                    ng-change="cfmChanged()">
                                 {{item}}
                             </td>
                         </tr>
@@ -135,8 +135,8 @@
                         </tr>
                         <tr>
                             <td ng-repeat="item in cfm">
-                                <input type="checkbox" ng-model="selector.cfm[item]" 
-                                    ng-change="selectorChanged()">
+                                <input type="checkbox" ng-model="item.enabled" 
+                                    ng-change="cfmChanged()">
                                 {{item.display}}
                             </td>
                         </tr>
@@ -150,8 +150,8 @@
                     <table class="bands_modes">
                         <tr>
                             <td ng-repeat="item in const.modes">
-                                <input type="radio" ng-model="activeMode" name="mode_select"
-                                ng-change="activeModeChanged()">
+                                <input type="radio" ng-model="$parent.activeMode" name="mode_select"
+                                value="{{item}}" ng-change="activeModeChanged()">
                                 {{item}}
                             </td>
                         </tr>
@@ -159,29 +159,33 @@
                     <table class="bands_modes">
                         <tr>
                             <td ng-repeat="item in const.bands">
-                                <input type="radio" ng-model="activeBand" name="band_select"
-                                ng-change="activeBandChanged()">
+                                <input type="radio" ng-model="$parent.activeBand" name="band_select"
+                                value="{{item}}" ng-change="activeModeChanged()">
                                 {{item}}
                             </td>
                         </tr>
                     </table>  
-                    <span id="wkd">
-                        <u>Worked</u>
-                        <input type="checkbox" name="unit_worked" ng-model="activeValue.worked" 
-                            ng-change="modifyActiveValue( 'worked' )">
-                    </span> 
-                    <span id="cfm">
-                        <u>Confirmed</u>:
-                        <span ng-repeat="type in const.cfm">
-                            <input type="checkbox" ng-model="activeValue[type.field]"
-                                ng-change="modifyActiveValue( 'confirmed' )">
-                            {{type.display}} &nbsp;
+                    <span ng-show="activeValue && activeBand && activeMode">
+                        <span id="wkd">
+                            <u>Worked</u>
+                            <input type="checkbox" name="unit_worked" 
+                                ng-model="activeValue.byBand[activeBand].byMode[activeMode].worked" 
+                                ng-change="modifyActiveValue( 'worked' )">
                         </span> 
+                        <span id="cfm">
+                            <u>Confirmed</u>:
+                            <span ng-repeat="type in cfm">
+                                <input type="checkbox" 
+                                    ng-model="activeValue.byBand[activeBand].byMode[activeMode][type.field]"
+                                    ng-change="modifyActiveValue( 'confirmed' )">
+                                {{type.display}} &nbsp;
+                            </span> 
+                        </span>
+                        <input type="text" id="wkd_calls" placeholder="worked callsigns" 
+                            ng-model="activeValue.byBand[activeBand].byMode[activeMode].workedCS"/>
+                        <input type="submit" class="submit_btn" name="save_award_unit_info" value="Save"
+                            ng-click="saveWorkedCS()"/>
                     </span>
-                    <input type="text" id="wkd_calls" placeholder="worked callsigns" 
-                        ng-model="activeValue.workedCS"/>
-                    <input type="submit" class="submit_btn" name="save_award_unit_info" value="Save"
-                        ng-click="saveWorkedCS()"/>
 
                     </div>
                 </td>
@@ -213,12 +217,25 @@
             <td class="award_units">           
                 <div class="award_unit" 
                     ng-repeat="item in activeAward.values | filter: { 'group': group }" 
-                    ng-click="setActiveValue( item )"
+                    ng-click="setActive( item )"
                     ng-style="{ 'background-color': item.confirmed ? user.awardValueConfirmedColor : 
                     ( item.worked ? user.awardValueWorkedColor : null ) }">{{item.displayValue}}</div>
             </td>
         </tr>
     </table>
+
+    <table id="ABM_view" ng-show="activeAward.byBand">
+        <tr ng-repeat="item in activeAward.values" ng-class-odd="odd">
+            <td class="unit_to_select">
+                {{item.value}} {{item.desc}}
+            </td>
+            <td class="band" ng-repeat="band in const.bands" 
+                ng-class="{worked: item.byBand[band].wkd, confirmed: item.byBand[band].cfm }"
+                ng-click="setActive( item, band )">
+            </td>
+        </tr>
+    </table>
+
 
 
 <table id="loader" ng-show="loading"><tr><td>Loading...<br/><img src="/images/loader.gif" title="Loading"></td></tr></table>

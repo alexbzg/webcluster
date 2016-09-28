@@ -356,6 +356,16 @@ def getUserAwards( callsign ):
         for item in awards:
             if not r.has_key( item['award'] ):
                 r[item['award']] = {}
+            if item['band']:
+                if not r[item['award']].has_key( item['value'] ):
+                    r[item['award']][item['value']] = {}
+                if not r[item['award']][item['value']].has_key( item['band'] ):
+                    r[item['award']][item['value']][item['band']] = {}
+                r[item['award']][item['value']][item['band']][item['mode']] = \
+                    { 'confirmed': item['confirmed'], \
+                    'workedCS': item['worked_cs'],\
+                    'cfm_paper': item['cfm_paper'], 'cfm_eqsl': item['cfm_eqsl'],\
+                    'cfm_lotw': item['cfm_lotw'] }
             r[item['award']][item['value']] = \
                 { 'confirmed': item['confirmed'], 'workedCS': item['worked_cs'],\
                 'cfm_paper': item['cfm_paper'], 'cfm_eqsl': item['cfm_eqsl'],\
