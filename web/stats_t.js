@@ -39,8 +39,9 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
     $scope.const = { 
         'bands': [ '1.8', '3.5', '7', '10', '14', '18', '21', '24', '28', '50', '144' ],
         'modes': [ 'CW', 'SSB', 'RTTY', 'PSK', 'JT65' ] };
+    $scope.stats = {};
 
-    $scope.modessFilter = {};
+    $scope.modesFilter = {};
     $scope.const.modes.forEach( function( mode ) {
         $scope.modesFilter[mode] = true;
     });
@@ -51,15 +52,48 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
     $scope.cfmTypesCount = $scope.cfm.length;
 
     function isConfirmed( av ) {
-        for ( var co = 0; co < $scope.cfmTypesCount; co++ )
-            if ( $scope.cfm[co].enabled && av[$scope.cfm[co].field] ) 
-                return true;
+        if ( 'byMode' in av ) {
+            for ( var mode in av.byMode )
+                if ( $scope.modesFilter[mode] && isConfirmed( av.byMode[mode] ) )
+                    return true;
+        } else {
+            for ( var co = 0; co < $scope.cfmTypesCount; co++ )
+                if ( $scope.cfm[co].enabled && av[$scope.cfm[co].field] ) 
+                    return true;
+        }
         return false;
+    }
+
+    function isWorked( av ) {
+        if ( 'byMode' in av ) {
+            for ( var mode in av.byMode )
+                if ( $scope.modesFilter[mode] && av.byMode[mode].worked )
+                    return true;
+            return false;
+        } else 
+            return av.worked;
+    }
+
+    function copyCfm( src, dst ) {
+        for ( var co = 0 ; co < $scope.cfmTypesCount; co++ )
+            dst[$scope.cfm[co].field] = src[$scope.cfm[co].field];
     }
 
     $scope.cfmChanged = function() {
         var award = $scope.activeAward;
         if ( award.byBand ) {
+            $scope.const.bands.forEach( function( band ) {
+                $scope.stats[band] = { wkd: 0, cfm: 0 }
+                for ( var av in $scope.activeAward.values )
+                    if ( av.byBand && band in av.byBand ) {
+                        var avb = av.byBand[band];
+                        if ( avb.wkd = isWorked( avb ) )
+                            $scope.stats[band].wkd++;
+                        if ( avb.cfm = isConfirmed( avb ) )
+                            $scope.stats[band].cfm++;
+                    }
+            });
+
         } else {
             award.confirmedCount = 0;
             award.values.forEach( function( av ) {
@@ -68,6 +102,19 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
                     award.confirmedCount++;
             });
         }
+    };
+
+    $scope.modesFilterChanged = function() {
+    };
+
+    $scope.activeAwardChanged = function() {
+        $scope.activeValue = null;
+        $scope.activeBand = null;
+        $scope.activeMode = null;
+        $scope.searchValue = null;
+        if ( $scope.activeAward.byBand )
+            $scope.modesFilterChanged();
+        $scope.cfmChanged();
     };
 
     $scope.loading = true;
@@ -87,18 +134,21 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
                     $scope.userAwards[award.name] = {};
                 award.values.forEach( function( av ) {
                     if ( av.value in $scope.userAwards[award.name] ) {
-                        av.worked = true;
-                        award.workedCount++;
-                        av.workedCS = $scope.userAwards[award.name][av.value].workedCS;
-                        for ( var co = 0 ; co < $scope.cfmTypesCount; co++ ) {
-                            av[$scope.cfm[co].field] = 
-                                $scope.userAwards[award.name][av.value][$scope.cfm[co].field];
-                            if ( !av.confirmed && $scope.cfm[co].enabled && av[$scope.cfm[co].field] ) {
-                                av.confirmed = true;
-                                award.confirmedCount++;
+                        var uav = $scope.userAwards[award.name][av.value];
+                        if ( award.byBand ) {
+                            av.byBand = {};
+                            for ( var band in uav ) {
+                                av.byBand[band] = { byMode: {} };
+                                for ( var mode in uav[band] ) {
+                                    angular.extend( av.byBand[band].byMode[mode], uav[band][mode] );
+                                    av.worked = true;
+                                }
                             }
+                        } else {
+                            angular.extend( av, uav );
+                            av.worked = true;
+                            award.workedCount++;
                         }
-
                     }
                     if ( $scope.activeAward == award && $scope.params.value == av.value )
                         $scope.activeValue = av;
@@ -107,27 +157,36 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
            
     });
 
-    $scope.setActiveValue = function( value ) {
-        if ( typeof value == 'object' )
-            $scope.activeValue = value;
-        else {
-            var search = value.replace( /\s/g, '' ).replace( /\u00D8/g, '0' );
-            var eg = $scope.activeAward.values[0].value;
-            if ( !search.includes( '-' ) && eg.includes( '-' ) ) {
-                var hpos = eg.indexOf( '-' );
-                search = [search.slice( 0, hpos ), '-', search.slice( hpos )].join('');
-            } else if ( search.includes( '-' ) && !eg.includes( '-' ) )
-                search = search.replace( /-/g, '' );
-            if ( found = $scope.activeAward.values.find( 
-                function( x ) { return x.value === search; } ) ) {
-                $scope.activeValue = found;
-                $scope.searchValue = null;
-            }
+    $scope.findValue = function() {
+        var search = $scope.searchExpr.toUpperCase().replace( /\s/g, '' ).replace( /\u00D8/g, '0' );
+        var eg = $scope.activeAward.values[0].value;
+        if ( !search.includes( '-' ) && eg.includes( '-' ) ) {
+            var hpos = eg.indexOf( '-' );
+            search = [search.slice( 0, hpos ), '-', search.slice( hpos )].join('');
+        } else if ( search.includes( '-' ) && !eg.includes( '-' ) )
+            search = search.replace( /-/g, '' );
+        if ( found = $scope.activeAward.values.find( 
+            function( x ) { return x.value === search; } ) ) {
+            $scope.setActiveValue( found );
+            $scope.searchValue = null;
         }
     };
 
+    $scope.activeModeChanged = function() {
+        console.log( $scope.activeValue );
+        console.log( $scope.activeBand );
+        console.log( $scope.activeMode );
+    };
+
+    $scope.setActive = function ( value, band, mode ) {
+        $scope.activeValue = value;
+        if ( band )
+            $scope.activeBand = band;
+        if ( mode )
+            $scope.activeMode = mode;
+    }
+
     function saveUserAwards( noPost ) {
-        $scope.user.awards = $scope.userAwards;
         saveUserData( $scope.user );
         if ( !noPost ) {
             var data = 
@@ -156,13 +215,16 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
     }
 
     $scope.modifyActiveValue = function( param ) {
-        var aw = $scope.userAwards[$scope.activeAward.name];
-        if ( param == 'worked' && !$scope.activeValue.worked ) {
-            if ( $scope.activeValue.confirmed ) {
-                $scope.activeAward.confirmedCount--;
+        var aw = $scope.user.awards[$scope.activeAward.name];
+        var iv = $scope.activeAward.byBand ? 
+            $scope.activeValue.byBand[$scope.acriveBand].byMode[$scope.activeMode] :
+            $scope.activeValue;
+        if ( param == 'worked' && !iv.worked ) {
+            if ( iv.confirmed ) {
+                iv.confirmedCount--;
                 $scope.activeValue.confirmed = false;
             }
-            $scope.activeValue.workedCS = null;
+            iv = null;
             $scope.activeAward.workedCount--;
             delete aw[$scope.activeValue.value];
             $http.post( '/uwsgi/userSettings',
