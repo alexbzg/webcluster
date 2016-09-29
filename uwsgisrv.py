@@ -183,15 +183,20 @@ def application(env, start_response):
                 adif = data['adif'].split( ',' )[1].decode( 'base64', 'strict' )
                 logging.debug( 'adif received' )
                 newAwards, lastLine = loadAdif( callsign, adif )
-                start_response( '200 OK', [('Content-Type','application/json')])                
+                start_response( '200 OK', [('Content-Type','application/json')])     
                 return json.dumps( { 'lastAdifLine': lastLine, \
                         'awards': getUserAwards( callsign ) \
                             if newAwards else False } )
             elif data.has_key( 'award' ) and data.has_key( 'value' ) \
                     and ( data.has_key( 'confirmed' ) or data.has_key('delete') or \
                     data.has_key( 'cfm_paper' ) ):
+
                 params =  { 'callsign': callsign, 'award': data['award'], \
-                    'value': data['value'] }
+                    'value': data['value'], \
+                    'band': data['band'] if data.has_key( 'band' ) else 'N/A',\
+                    'mode': data['mode'] if data.has_key( 'mode' ) else 'N/A',\
+                    }
+                
                 awardLookup = dxdb.getObject( 'user_awards', params, \
                     False, True )
                 fl = False
@@ -356,7 +361,7 @@ def getUserAwards( callsign ):
         for item in awards:
             if not r.has_key( item['award'] ):
                 r[item['award']] = {}
-            if item['band']:
+            if item['band'] != 'N/A':
                 if not r[item['award']].has_key( item['value'] ):
                     r[item['award']][item['value']] = {}
                 if not r[item['award']][item['value']].has_key( item['band'] ):

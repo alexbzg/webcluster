@@ -200,7 +200,7 @@
             </tr>
             <tr>
                 <td class="band_stat" ng-repeat="item in const.bands">
-                    {{stats[item].wkd}}<span> / {{stats[item].cfm}}</span>
+                    {{stats[item].worked}}<span> / {{stats[item].confirmed}}</span>
                 </td>
             </tr>
         </table>
@@ -230,7 +230,7 @@
                 {{item.value}} {{item.desc}}
             </td>
             <td class="band" ng-repeat="band in const.bands" 
-                ng-class="{worked: item.byBand[band].wkd, confirmed: item.byBand[band].cfm }"
+                ng-class="{worked: item.byBand[band].worked, confirmed: item.byBand[band].confirmed }"
                 ng-click="setActive( item, band )">
             </td>
         </tr>
