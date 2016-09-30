@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"                                                
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" land="ru" xml:lang="en" ng-app="webDXapp">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <meta http-equiv="Content-Language" content="ru-ru"/>
+        <meta name="description" content="" />
+        <meta name="keywords" content="" />
+        <title>Awards DX Cluster by R7AB</title>
+        <link href="style.css" rel="stylesheet" type="text/css">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon">
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+        <style>
+            [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+                  display: none !important;
+            }
+        </style>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-sanitize.js"></script>
+        <script src="userData.js"></script>
+        <script src="polyfill.js"></script>
+        <script src="testing.js"></script>
+        <script src="app_t.js"></script>
+
+    </head>
+    <body ng-controller="bodyCtrl" ng-cloak>
+    <ng-include src="'menu.html'">
+    </ng-include>
+
+    <div id="news" ng-show="news.html">
+        <div id="news_title">NEWS</div>
+        <div id="news_close">
+             <img src="/images/icon_close.png" title="Close" ng-click="news.close()"/> 
+        </div>
+        <span ng-bind-html="news.html"/>
+    </div>
+    <div id="bands_modes">
+        <div id="selectors_bands_modes" ng-show="showSelector">
+            <span class="band" ng-repeat="band in selector.bands track by $index"
+                ng-class="{active: band.enabled}">
+                <input type="checkbox" ng-model="band.enabled" 
+                    ng-change="selectorChange()">{{band.name}}
+            </span>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <span class="mode" ng-repeat="mode in selector.modes" ng-class="{active: mode.enabled}">
+                <input type="checkbox" ng-model="mode.enabled" 
+                    ng-change="selectorChange()">{{mode.name}}
+            </span>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            
+            <span class="sound">
+                <input type="checkbox" ng-model="selector.sound"
+                    ng-change="soundChange()">Sound
+            </span>
+
+        </div>
+        <img src="/images/icon_select.png" title="Select desired bands and modes" 
+            ng-click="showSelector = !showSelector"/>
+    </div>
+
+        <table id="cluster">
+            <tr>
+                <th class="time">{{time}} <span>z</span></th>
+                <th class="freq">MHz</th>
+                <th class="mode">Mode</th>
+                <th class="callsign">Callsign</th>
+                <th class="awards">Awards</th> 
+                <th id="link_status">Text</th>
+                <th class="spotter">Spotter</th>
+            </tr>
+            <tr ng-repeat="item in dxItems | filter: dxFilter" 
+                ng-class-odd="'odd'" ng-class-even="'even'">
+                <td class="time">{{item.time}}</td>
+                <td class="freq">
+                    {{item.freq.toFixed(1).substr(0, item.freq.toFixed(1).length - 5 )
+                    }}<span>{{item.freq.toFixed(1).substr( -5 )}}</span>
+                </td>
+                <td class="mode">{{item.subMode ? item.subMode : item.mode}}</td>
+                <td class="callsign">
+                    <a target="_blank" 
+                       href="http://qrz.com/db/{{item.cs.toLowerCase()}}">{{ replace0( item.cs ) }}</a>
+                </td>
+                <td class="awards">
+                    <a ng-repeat="award in item.awards" 
+                        href="/stats.html?award={{award.award}}&value={{award.value}}"><span 
+                        class="award_name" ng-style="{'color': award.color}"
+                        >{{award.award}}<img ng-show="award.worked" src="/images/icon_worked.png" 
+                                title="worked but not confirmed"/></span>
+                        {{ replace0( award.value)}}<span ng-show="!$last">, </span></a>
+                </td>  
+                <td class="text">{{ replace0( item.text )}}</td>
+                <td class="spotter">{{ replace0( item.de )}}</td>
+            </tr>
+        </table>
+
+    <div id="counter">
+    Special thanks to <a href="http://qrz.ru/" target="_blank">QRZ.ru</a>, <a href="http://uarl.com.ua/" target="_blank">UARL</a>, <a href="http://qrz.com/" target="_blank">QRZ.com</a>, <a href="https://www.qrz.com/db/DL6KVA" target="_blank">DL6KVA</a>, <a href="http://www.ik3qar.it/wais/" target="_blank">IK3QAR</a>.
+    <br/><br/>
+        <!-- Yandex.Metrika informer --> <a href="https://metrika.yandex.ru/stat/?id=38305355&amp;from=informer" target="_blank" rel="nofollow"><img src="https://informer.yandex.ru/informer/38305355/3_0_EFEFEFFF_EFEFEFFF_0_pageviews" style="width:88px; height:31px; border:0;" alt="Яндекс.Метрика" title="Яндекс.Метрика: данные за сегодня (просмотры, визиты и уникальные посетители)" onclick="try{Ya.Metrika.informer({i:this,id:38305355,lang:'ru'});return false}catch(e){}" /></a> <!-- /Yandex.Metrika informer --> <!-- Yandex.Metrika counter --> <script type="text/javascript"> (function (d, w, c) { (w[c] = w[c] || []).push(function() { try { w.yaCounter38305355 = new Ya.Metrika({ id:38305355, clickmap:true, trackLinks:true, accurateTrackBounce:true }); } catch(e) { } }); var n = d.getElementsByTagName("script")[0], s = d.createElement("script"), f = function () { n.parentNode.insertBefore(s, n); }; s.type = "text/javascript"; s.async = true; s.src = "https://mc.yandex.ru/metrika/watch.js"; if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f, false); } else { f(); } })(document, window, "yandex_metrika_callbacks"); </script> <noscript><div><img src="https://mc.yandex.ru/watch/38305355" style="position:absolute; left:-9999px;" alt="" /></div></noscript> <!-- /Yandex.Metrika counter -->
+    </div>
+
+    </body>
+</html>
+
