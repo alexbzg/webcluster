@@ -90,7 +90,7 @@ input.select_color::-webkit-color-swatch-wrapper {
 #news{
 	width: 70%;
 	margin: 20px auto 0 auto;
-	padding: 0px 20px 5px 20px;
+	padding: 10px 20px 5px 20px;
 	background-color: #fffeb3;
 	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
 	position: relative;
@@ -105,13 +105,15 @@ input.select_color::-webkit-color-swatch-wrapper {
 	right: 5px;
 	cursor: pointer;
 }
-#news h4{
-	margin: 0;
-	padding: 0 0 0px 10px;
-	text-align: left;
+#news_title{	
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	padding: 2px 10px;
 	font-weight: bold;
-	font-size: 18px;
-	color:#c30202;
+	background-color:#c30202;
+	color: #fffeb3;
+	letter-spacing: 2px;
 }
 #news a{
 	color:#009;
@@ -139,6 +141,7 @@ input.select_color::-webkit-color-swatch-wrapper {
 	font-size: 18px;
 	font-weight: bold;
 	margin-top: 10px;
+	color: #bbb;
 }
 #selectors_bands_modes input{
 	margin-right: 0px;
@@ -146,9 +149,15 @@ input.select_color::-webkit-color-swatch-wrapper {
 #selectors_bands_modes span.band{
 	margin-right: 15px;
 }
+#selectors_bands_modes span.active{
+	color: #000;
+}
 #selectors_bands_modes span.mode{
 	margin-right: 15px;
-	color: #025c7e;
+	color: #283a90 ;
+}
+#selectors_bands_modes span.sound{
+	color: #006600;
 }
 #bands_modes img{
 	position: absolute;
@@ -206,7 +215,7 @@ table#cluster td{
 	text-align: center;
 	font-size: 14px;
 	color: #666;
-	vertical-align: top;
+	vertical-align: middle;
 }
 table#cluster tr.odd{	background-color: #eff9fe;}
 
@@ -238,6 +247,12 @@ table#cluster td.freq span{
 	font-size: 14px;
 	padding-left: 2px;
 }
+table#cluster td.mode{
+	width: 60px;
+	color: #050;
+	font-weight: bold;
+	font-size: 12px;
+}
 table#cluster td.callsign{
 	width: 130px;
 	font-size: 18px;
@@ -245,6 +260,9 @@ table#cluster td.callsign{
 	color: #000;
 	text-align: left;
 	padding-left: 10px;
+}
+table#cluster td.callsign a{
+	color: #000;
 }
 
 table#cluster td.awards {
@@ -262,19 +280,17 @@ table#cluster td.awards span.award_name img{
 }
 
 
-table#cluster td.QTHLoc {
-	text-transform: uppercase;
-	text-align: center;
-	width: 70px;
+table#cluster td.text{
+	width: 180px;
+	text-align: left;
+	color: #777;
+	font-size: 12px;
+	overflow: hidden;
 }
 table#cluster td.spotter{
-	width: 80px;
+	width: 70px;
 	text-align: left;
-}
-table#cluster td.text{
-	width: 200px;
-	text-align: left;
-	color: #000;
+	color: #777;
 	font-size: 12px;
 }
 
@@ -394,6 +410,52 @@ form#login #login_register a:hover, form#login #login_recovery a:hover{
 
 
 
+/*                A W A R D  setup       */
+
+table#setup_block{
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	position: fixed;
+	z-index: 1;
+	top: 0;
+	left: 0;
+	background: url(images/background_black_80.png) top left;
+	color: #000;
+}
+table#setup_block td{
+	text-align: center;
+	vertical-align: middle;
+}
+
+#award_setup{
+	width: 80%;
+	background-color: #fff;
+	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
+	margin: 20px auto;
+	padding: 20px 20px 50px 20px;
+	text-align: center;
+	position: relative;
+}
+table.award_setup{
+	background-color: #fff;
+	border-collapse: collapse;
+	margin: 0px auto;
+	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
+	margin: 20px auto;
+}
+table.award_setup th{
+	padding: 2px 7px;
+	border: 1px solid #a6def8;
+	background-color: #0091c9;
+	text-align: center;
+	color: #fff;
+}
+table.award_setup td{
+	padding: 10px 20px;
+	border: 1px solid #a6def8;
+}
 
 
 
@@ -407,7 +469,7 @@ form#login #login_register a:hover, form#login #login_recovery a:hover{
 /*                   A W A R D S   L I S T              */
 
 #awards_list{
-	width: 90%;
+	width: 900px;
 	margin: 0 auto;
 }
 table#awards_list{
@@ -505,249 +567,229 @@ input#button_ok {
 
 
 
-/*                  M Y   L I S T     edit         */
+/*                  L I S T     edit         */
 
-#add_call{
-	width: 50%;
+#list_add_calls{
+	width: 1060px;
 	background-color: #fff;
 	padding: 20px;
 	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
 	margin: 20px auto;
 }
-#add_call span#list_title{
+#list_add_calls span#list_title{
 	font-size: 24px;
 	font-weight: bold;
 }
-#add_call span#short_name{
+#list_add_calls span#short_name{
 	font-size: 14px;
 	color: #777;
 	float: right;
 }
-#add_call span#short_name input{
-	width: 100px;
+#list_add_calls span#short_name input{
+	width: 150px;
 	text-align: center;
 }
-#add_call textarea{
+#list_add_calls textarea{
 	width: 100%;
 	margin: 10px 0;
 }
 
-table#my_list_edit{
-	width: 90%;
+table#list_edit{
+	width: 1100px;
 	background-color: #fff;
 	border-collapse: collapse;
 	margin: 0px auto;
 	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
 	margin: 0 auto;
-}
-table#my_list_edit th{
-	padding: 2px 7px;
-	border: 1px solid #a6def8;
-	background-color: #0091c9;
 	text-align: center;
+}
+table#list_edit th{
+	padding: 2px 0;
+	border: 1px solid #a6def8;
+}
+table#list_edit th#mode, table#list_edit th#band, table#list_edit th#sound, table#list_edit th#mobile{
+	background-color: #0091c9;
 	color: #fff;
 }
-table#my_list_edit th.band, table#my_list_edit th.mode{
-	width: 35px;
+table#list_edit th#delete{
+	width: 30px;	
 }
-table#my_list_edit td{
-	padding: 0px;
+
+table#list_edit td{
+	padding: 2px 0px;
+	font-size: 14px;
 	border: 1px solid #a6def8;
-	text-align: center;
 	color: #000;
+}
+table#list_edit td.band, table#list_edit td.mobile{
+	width: 33px;
+}
+table#list_edit td.mode{
+	width: 50px;
+}
+table#list_edit td.sound{
+	width: 50px;
+}
+
+table#list_edit td.callsign{
+	padding-left: 10px;
+	text-align: left;
+	border-right: 3px solid #a6def8;
+}
+table#list_edit td.delete{
+	width: 30px;
+	cursor: pointer;
 	vertical-align: middle;
 }
-table#my_list_edit td.callsign{
-	padding-left: 10px;
-	text-align: left;
+table#list_edit td.delete img{
+	width: 20px;
 }
-
-table#my_list_edit td.delete{
-	padding-top: 2px;
-}
-
+table#list_edit tr.odd{	background-color: #eff9fe; }
+table#list_edit th.border_right, table#list_edit td.border_right{	border-right: 3px solid #a6def8; }
+.grey{color: #aaa;}
 
 
 
 
 
-/*                  M Y   L I S T     view         */
 
-table#mylist_edit_call{
-	width: 90%;
+
+
+
+
+
+
+
+
+
+/*                ALL BANDS MODES     view       */
+
+
+table#ABM_edit{
+	width: 1100px;
 	background-color: #fff;
-	padding: 5px;
 	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
-	margin: 0 auto 20px auto;
+	margin: 10px auto 15px auto;
+	padding: 10px;
+	text-align: center;
 }
-table#mylist_edit_call td#callsign{
-	padding-left: 10px;
+table#ABM_edit td{
+	line-height: 14px;
+	padding: 0;
+	vertical-align: top;
+}
+
+table#ABM_edit td#view{
+	font-size: 14px;
+	color: #555;
+	vertical-align: middle;
+	padding-right: 30px;
+}
+table#ABM_edit table.view_modes{
+	margin: 5px auto;
+	border-collapse: collapse;
+}
+table#ABM_edit table.view_modes td{
+	padding: 0 5px;
+}
+table#ABM_edit table.view_modes td.view_title{
+	font-size: 16px;
+	font-weight: bold;
+	border-bottom: 1px solid #777;
+	padding-top: 5px;
+}
+
+
+table#ABM_edit span#selected_item{
 	font-size: 24px;
 	font-weight: bold;
-	vertical-align: top;
+	line-height: 16px;
 }
-table#mylist_edit_call td.inputs{
-	vertical-align: top;
-	text-align: center;
-}
-
-
-
-
-
-
-
-
-
-
-
-/*                A W A R D  setup       */
-
-#award_setup{
-	width: 80%;
-	background-color: #fff;
-	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
-	margin: 20px auto;
-	padding: 20px 20px 50px 20px;
-	text-align: center;
-}
-table.award_setup{
-	background-color: #fff;
+table#ABM_edit table.bands_modes{
+	margin: 7px auto;
+	font-weight: bold;
 	border-collapse: collapse;
-	margin: 0px auto;
-	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
-	margin: 20px auto;
 }
-table.award_setup th{
-	padding: 2px 7px;
-	border: 1px solid #a6def8;
-	background-color: #0091c9;
+table#ABM_edit table.bands_modes td{
+	padding: 5px 10px;
 	text-align: center;
-	color: #fff;
+	color: #bbb;
 }
-table.award_setup td{
-	padding: 10px 20px;
-	border: 1px solid #a6def8;
+table#ABM_edit span#wkd, table#allbandsmodes_edit span#cfm{
+	font-weight: bold;
+	padding-right: 20px;
 }
-
-
-
-
-
-
-/*                D X C C   view       */
-
-#dxcc_info{
-	width: 70%;
-	background-color: #fff;
-	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
-	margin: 20px auto;
-	padding: 20px;
-	text-align: center;
-}
-#dxcc_info span#worked{
-	font-size: 12px;
-}
-#dxcc_info span#confirmed{
-	font-size: 10px;
-	color: #777;
-}
-
-table#dxcc_edit td#country_edit input#wkd_calls{
-	width: 50%;
+table#ABM_edit input#wkd_calls{
+	width: 80%;
 	font-weight: normal;
 	text-align: left;
-	margin-left: 20px;
+	margin:7px 0 0 0;
 	padding: 2px 5px;
 }
-table#dxcc_edit td#country_edit input.submit_btn {
-    padding: 5px 10px;
-    border: 1px solid #aaa;
-    background-color: #0091c9;
-    color: #fff;
-    cursor: pointer;
-    box-shadow: 3px 3px 10px rgba(0,0,0,0.2); /* Параметры тени */
-   	border-radius: 5px;
-}
-table#mode{
-	width: 70%;
-	margin: 0 auto 20px auto;
-	font-weight: bold;
+
+
+
+
+table#ABM_fixed, table#ABM_view{
+	width: 1100px;
+	background-color: #fff;
 	border-collapse: collapse;
-}
-table#mode td{
-	width: 9%;
-	border: 1px solid #a6def8;
+	margin: 0 auto;
 	text-align: center;
-	padding: 3px;
-	line-height: 14px;
+	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
 }
-table#mode td#mode_text{
-	width: 12%;
-	background-color: #0091c9;
-	color: #fff;
-}
-table#band{
-	width: 100%;
-	margin: 0px;
-	font-weight: bold;
-	border-collapse: collapse;
-}
-table#band th{
+table#ABM_fixed td{
 	border: 1px solid #a6def8;
+	padding: 2px 7px;
+}
+table#ABM_fixed td.band{
+	width: 7%;	
 	background-color: #0091c9;
 	text-align: center;
 	color: #fff;
 }
-table#band td{
-	border: 1px solid #a6def8;
-	text-align: center;
-	padding: 10px 5px;
-	line-height: 14px;
-	font-size: 18px;
+table#ABM_fixed td#wkd_cfm_note{
+	text-align: right;
+	font-size: 12px;
+	color: #000;
+	vertical-align: bottom;
 }
-table#band td span{
-	font-size: 14px;
+table#ABM_fixed td#wkd_cfm_note span{
+	color: #777;
+}
+table#ABM_fixed td.band_stat{
+	font-size: 12px;
+	color: #000;
+}
+table#ABM_fixed td.band_stat span{
 	color: #777;
 }
 
 
-table#dxcc{
-	width: 90%;
-	background-color: #fff;
-	border-collapse: collapse;
-	margin: 0px auto;
-	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
-	margin: 0 auto;
-}
-table#dxcc tr.odd{	background-color: #eff9fe;}
-table#dxcc th{
-	padding: 2px 7px;
-	border: 1px solid #a6def8;
-	background-color: #0091c9;
-	text-align: center;
-	color: #fff;
-}
-table#dxcc th.band{
-	padding: 2px 7px;
-	width: 8%;
-}
-
-table#dxcc td{
+table#ABM_view{	margin: 360px auto; }
+table#ABM_view tr.odd{	background-color: #eff9fe;}
+table#ABM_view td{
 	padding: 2px;
 	border: 1px solid #a6def8;
-	vertical-align: top;
+	vertical-align: middle;
+	text-align: center;
+	cursor: pointer;
 }
-table#dxcc td.country{
+table#ABM_view td.band{
+	width: 7%;	
+}
+table#ABM_view td.unit_to_select{
 	padding-left: 10px;
 	font-weight: bold;
 	font-size: 18px;
+	text-align: left;
+	cursor: pointer;
 }
-table#dxcc td.band span{
-	display: inline-block;
-	font-size: 12px;
-	padding: 2px 4px;
-	margin: 2px;
+table#ABM_view td.worked{
+	background-color: #0091c9;
+}
+table#ABM_view td.confirmed{
+	background-color: #02b20e;
 }
 
 
@@ -763,7 +805,7 @@ table#dxcc td.band span{
 
 
 
-/*                M Y   A W A R D S              */
+/*                S T A T S           */
 
 
 
@@ -885,7 +927,7 @@ table#award_info td#award_edit input.submit_btn {
 	color: #900;
 }
 
-#selected_unit_info span#wkd, span#cfm{
+span#wkd, span#cfm{
 	font-weight: bold;
 	padding-right: 20px;
 }
@@ -1052,7 +1094,7 @@ table#loader{
 	z-index: 1;
 	top: 0;
 	left: 0;
-	background: url(images/background_white_75.png) top left;
+	background: url(images/background_white_85.png) top left;
 	font-size: 24px;
 	line-height: 2em;
 	color: #000;

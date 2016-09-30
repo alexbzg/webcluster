@@ -85,7 +85,7 @@
                             </span> 
                             <span id="cfm">
                                 <u>Confirmed</u>:
-                                <span ng-repeat="type in const.cfm">
+                                <span ng-repeat="type in cfm">
                                     <input type="checkbox" ng-model="activeValue[type.field]"
                                         ng-change="modifyActiveValue( 'confirmed' )">
                                     {{type.display}} &nbsp;
@@ -160,7 +160,7 @@
                         <tr>
                             <td ng-repeat="item in const.bands">
                                 <input type="radio" ng-model="$parent.activeBand" name="band_select"
-                                value="{{item}}" ng-change="activeModeChanged()">
+                                value="{{item}}" >
                                 {{item}}
                             </td>
                         </tr>
@@ -226,7 +226,7 @@
 
     <table id="ABM_view" ng-show="activeAward.byBand">
         <tr ng-repeat="item in activeAward.values" ng-class-odd="odd">
-            <td class="unit_to_select">
+            <td class="unit_to_select" ng-click="setActive( item )">
                 {{item.value}} {{item.desc}}
             </td>
             <td class="band" ng-repeat="band in const.bands" 

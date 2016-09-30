@@ -123,13 +123,14 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
     $scope.loading = true;
     var url = testing ? '/debug/awardsValues.json' : '/awardsValues.json';
     $http.get( url ).then( function( response ) {
+            var active = {};
             $scope.loading = false;
             $scope.awardsValues = response.data;
             $scope.awardsValues.forEach( function( award ) {
                 award.workedCount = 0;
                 award.confirmedCount = 0;
                 if ( $scope.params.award == award.name )
-                    $scope.activeAward = award;
+                    active.award = award;
                 if ( !( award.name in $scope.awardsSettings ) )
                     $scope.awardsSettings[award.name] = 
                         { 'track': true, 'color': '#770000' };
@@ -154,8 +155,12 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
                         }
                     }
                     if ( $scope.activeAward == award && $scope.params.value == av.value )
-                        $scope.activeValue = av;
+                        active.value = av;
                 });
+                if ( active.award )
+                    $scope.setActiveAward( active.award );
+                if ( active.value )
+                    $scope.setActive( active.value, $scope.params.band, $scope.params.mode );
             });
            
     });
@@ -173,12 +178,6 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
             $scope.setActiveValue( found );
             $scope.searchValue = null;
         }
-    };
-
-    $scope.activeModeChanged = function() {
-        console.log( $scope.activeValue );
-        console.log( $scope.activeBand );
-        console.log( $scope.activeMode );
     };
 
     $scope.setActive = function ( value, band, mode ) {
@@ -208,13 +207,13 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
     }
 
     $scope.saveWorkedCS = function() {
-        if ( $scope.activeValue.workedCS  ) {
-            if ( !$scope.activeValue.worked ) {
-                $scope.activeValue.worked = true;
+        var iv = getIV();
+        if ( iv.workedCS  ) {
+            if ( !iv.worked ) {
+                iv.worked = true;
                 $scope.modifyActiveValue( 'worked' );
             } else {
-                $scope.userAwards[$scope.activeAward.name][$scope.activeValue.value].workedCS = 
-                    $scope.activeValue.workedCS;
+                getUAV().workedCS = iv.workedCS;
                 saveUserAwards();
             }
         }
@@ -257,6 +256,13 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
             $scope.activeValue;
     }
 
+    function getUAV() {
+        var uav = $scope.user.awards[$scope.activeAward.name][$scope.activeValue.value];
+        if ( $scope.activeAward.byBand )
+            uav = uav[$scope.activeBand][$scope.activeMode];
+        return uav;
+    }
+
     function updateIVState() {
         var iv = $scope.activeAward.byBand ? $scope.activeValue.byBand[$scope.activeBand] :
             $scope.activeValue;
@@ -292,58 +298,11 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
                 iw.worked = true;
                 createAward();                
             }
+            copyCfm( iv, getUAV() );
             saveUserAwards();
-
         }
         updateIVState();
     }
-
-    $scope._modifyActiveValue = function( param ) {
-        var aw = $scope.user.awards[$scope.activeAward.name];
-        if ( param == 'worked' && !iv.worked ) {
-
-            if ( iv.confirmed ) {
-                iv.confirmedCount--;
-                $scope.activeValue.confirmed = false;
-            }
-            iv = null;
-            $scope.activeAward.workedCount--;
-            delete aw[$scope.activeValue.value];
-            $http.post( '/uwsgi/userSettings',
-            { 'token': $scope.user.token,
-                'award': $scope.activeAward.name,
-                'value': $scope.activeValue.value,
-                'delete': true
-            } );
-            saveUserAwards( true );
-       } else {
-            if ( param == 'worked' ) {
-                aw[$scope.activeValue.value] = { 'workedCS': '' };
-                for ( var co = 0 ; co < $scope.cfmTypesCount; co++ )
-                    aw[$scope.activeValue.value][$scope.cfm[co].field] = false;
-                $scope.activeAward.workedCount++;
-            } else {
-                if ( !$scope.activeValue.worked ) {
-                   $scope.activeValue.worked = true;
-                   $scope.activeAward.workedCount++;
-                }
-                aw[$scope.activeValue.value] = { 'workedCS': $scope.activeValue.workedCS };
-                for ( var co = 0 ; co < $scope.cfmTypesCount; co++ )
-                    aw[$scope.activeValue.value][$scope.cfm[co].field] = 
-                        $scope.activeValue[$scope.cfm[co].field];
-                if ( $scope.activeValue.confirmed != isConfirmed( $scope.activeValue ) ) {
-                    if ( $scope.activeValue.confirmed ) 
-                        $scope.activeAward.confirmedCount--;
-                    else
-                        $scope.activeAward.confirmedCount++;
-                    $scope.activeValue.confirmed = !$scope.activeValue.confirmed;
-                }
-            }
-            saveUserAwards();
-        }
-    }
-
-
 
 
 
