@@ -612,12 +612,12 @@ table#list_edit th#mode, table#list_edit th#band, table#list_edit th#sound, tabl
 	color: #fff;
 }
 table#list_edit th#delete{
-	width: 30px;	
+	width: 50px;	
 }
 
 table#list_edit td{
 	padding: 2px 0px;
-	font-size: 14px;
+	font-size: 12px;
 	border: 1px solid #a6def8;
 	color: #000;
 }
@@ -625,24 +625,27 @@ table#list_edit td.band, table#list_edit td.mobile{
 	width: 33px;
 }
 table#list_edit td.mode{
-	width: 50px;
+	width: 40px;
 }
-table#list_edit td.sound{
+table#list_edit td.sound, table#list_edit td.mobile{
 	width: 50px;
 }
 
 table#list_edit td.callsign{
+	font-size: 14px;
 	padding-left: 10px;
 	text-align: left;
 	border-right: 3px solid #a6def8;
 }
 table#list_edit td.delete{
 	width: 30px;
+	padding: 0;
 	cursor: pointer;
 	vertical-align: middle;
 }
 table#list_edit td.delete img{
 	width: 20px;
+	margin: 3px 0 0 0;
 }
 table#list_edit tr.odd{	background-color: #eff9fe; }
 table#list_edit th.border_right, table#list_edit td.border_right{	border-right: 3px solid #a6def8; }
@@ -684,6 +687,7 @@ table#ABM_edit td#view{
 	color: #555;
 	vertical-align: middle;
 	padding-right: 30px;
+	border-right: 1px solid #ddd;
 }
 table#ABM_edit table.view_modes{
 	margin: 5px auto;
@@ -698,6 +702,16 @@ table#ABM_edit table.view_modes td.view_title{
 	border-bottom: 1px solid #777;
 	padding-top: 5px;
 }
+table#ABM_edit td span#view_filter_note{
+	font-size: 10px;
+	background-color: #aaa;
+	color: #fff;
+	padding: 0 5px;
+	float: left;
+}
+
+
+
 
 
 table#ABM_edit span#selected_item{
@@ -726,6 +740,14 @@ table#ABM_edit input#wkd_calls{
 	margin:7px 0 0 0;
 	padding: 2px 5px;
 }
+table#ABM_edit td span#manual_edit_note{
+	font-size: 10px;
+	background-color: #aaa;
+	color: #fff;
+	padding: 0 5px;
+	float: right;
+}
+
 
 
 
@@ -766,7 +788,7 @@ table#ABM_fixed td.band_stat span{
 }
 
 
-table#ABM_view{	margin: 360px auto; }
+table#ABM_view{	margin: 370px auto; }
 table#ABM_view tr.odd{	background-color: #eff9fe;}
 table#ABM_view td{
 	padding: 2px;
@@ -780,10 +802,14 @@ table#ABM_view td.band{
 }
 table#ABM_view td.unit_to_select{
 	padding-left: 10px;
-	font-weight: bold;
-	font-size: 18px;
+	font-size: 14px;
 	text-align: left;
 	cursor: pointer;
+}
+table#ABM_view td.unit_to_select span{
+	font-weight: bold;
+	font-size: 18px;
+	padding-right: 20px;
 }
 table#ABM_view td.worked{
 	background-color: #0091c9;

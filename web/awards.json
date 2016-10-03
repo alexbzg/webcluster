@@ -34,6 +34,15 @@
     "valueColumns": {"value": 0, "desc": 1, "keys": 2 },
     "groupColumns": {"value": 3 },
     "lookups":[{"type":"key", "source":"field", "field":"cs"},
-        {"type":"value","source":"text","re":"[a-zA-Z]\\d\\d"}] }
+        {"type":"value","source":"text","re":"[a-zA-Z]\\d\\d"}] },
+
+  { "name": "WAS", "fullName":"Worked All States Award", 
+     "link":"http://www.arrl.org/was", "country": "USA",
+    "valuesFile": "csv/was.csv", "groupInValue": 0, 
+    "getFields":{"web":1}, "fieldValues":"region",
+    "valueColumns": {"value": 0, "desc": 1 },
+    "groupColumns": {"value": 3}, "byMode": 1, "byBand": 1,
+     "lookups":[{"type":"value", "source":"field", "field":"region"}]}
+   
 
 ] 

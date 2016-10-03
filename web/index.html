@@ -82,7 +82,7 @@
                 </td>
                 <td class="awards">
                     <a ng-repeat="award in item.awards" 
-                        href="/stats.html?award={{award.award}}&value={{award.value}}"><span 
+                       href="/stats.html?award={{award.award}}&value={{award.value}}&band={{item.band}}&mode={{item.mode}}"><span 
                         class="award_name" ng-style="{'color': award.color}"
                         >{{award.award}}<img ng-show="award.worked" src="/images/icon_worked.png" 
                                 title="worked but not confirmed"/></span>

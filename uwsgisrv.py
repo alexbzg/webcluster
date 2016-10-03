@@ -440,6 +440,21 @@ def loadAdif( callsign, adif ):
                 if district and district != dx.district:
                     dx.district = district
                     dx.detectAwards()
+            if dx.country == '_USA':
+                region = getAdifField( line, 'STATE' )
+                district = getAdifField( line, 'CNTY' )
+                district = region + ' ' + district \
+                        if region and district \
+                        else None
+                if region and region != dx.region:
+                    if dx.region:
+                        dx.offDB = True
+                    dx.region = region
+                    dx.detectAwards()
+                if district and dx.district != district:
+                    if dx.district:
+                        dx.offDB = True
+                    dx.district = district
             if dx.awards:
                 cfm = {}
                 for ( cfmType, field ) in cfmFields.iteritems():

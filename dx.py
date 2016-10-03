@@ -273,7 +273,7 @@ class DX( object ):
     modes = { 'CW': ( 'CW', ),
             'SSB': ( 'USB', 'LSB', 'FM', 'SSB' ),
             'DIGI': ( 'RTTY', 'PSK', 'JT65', 'FSK', 'OLIVIA', 'SSTV' ) }
-    subModes = { 'RTTY': [], 'JT75': [], 'PSK': [ 'PSK31', 'PSK63', 'PSK125' ] }
+    subModes = { 'RTTY': [], 'JT65': [], 'PSK': [ 'PSK31', 'PSK63', 'PSK125' ] }
     modesMap = []
     with open( appRoot + '/bandMap.txt', 'r' ) as fBandMap:
         reBandMap = re.compile( "^(\d+\.?\d*)\s*-?(\d+\.?\d*)\s+(\S+)(\r\n)?$" )
@@ -297,8 +297,8 @@ class DX( object ):
             'awards': self.awards,
             'mode': self.mode,
             'subMode': self.subMode,
-            'band': self.band
-
+            'band': self.band,
+            'region': self.region
             }
 
     def setMode( self, mode, alias ):
@@ -316,6 +316,8 @@ class DX( object ):
     def __init__( self, dxData = None, **params ):
 
         self._district = None
+        self.region = None
+        self.offDB = False
         self.awards = {}
         self.dxData = dxData
         self.text = params['text']
@@ -356,7 +358,10 @@ class DX( object ):
         if params.has_key( 'ts' ):
             self.ts = params['ts']
             self.time = params['time']
-            self.district = params['district'] if params.has_key( 'state' ) else None
+            self.district = params['district'] if params.has_key( 'state' ) \
+                    else None
+            self.region = params['region'] if params.has_key( 'region' ) \
+                    else None
             self.gridsquare = params['gridsquare'] if params.has_key( 'qth' ) \
                     else None
             self.inDB = True
@@ -366,6 +371,7 @@ class DX( object ):
         
             self.time = params['time'][:2] + ':' + params['time'][2:4]
             self.ts = time.time()
+            self.region = None
             self.district = None
             self.gridsquare = None
 
@@ -373,6 +379,7 @@ class DX( object ):
                     False, True )
 
             if csLookup:
+                self.region = csLookup['region']
                 self.district = csLookup['district']
                 self.gridsquare = csLookup['qth']
                 self.inDB = True
@@ -442,6 +449,8 @@ class DX( object ):
             data = qrzComLink.getData( self.cs )
             if data:
                 self.qrzData = True
+                if data.has_key( 'state' ):
+                    self.state = data['state']
                 if data.has_key( 'state' ) or data.has_key( 'county' ):
                     self.district = ( data['state'] \
                             if data.has_key( 'state' ) else '' ) + \
@@ -487,16 +496,18 @@ class DX( object ):
             return True
 
     def updateDB( self ):
+        if self.offDB:
+            return
         if self.inDB:
             logging.debug( 'updating db callsign record' )
             dxdb.updateObject( 'callsigns',
               { 'callsign': self.cs, 'qth': self.gridsquare, \
-                      'district': self.district,\
+                      'district': self.district, 'region': self.region,\
                       'qrz_data_loaded': self.qrzData }, 'callsign' )
         else:
             logging.debug( 'creating new db callsign record' )
             dxdb.getObject( 'callsigns', \
-                    { 'callsign': self.cs, 'district': self.district, \
+                    { 'callsign': self.cs, 'region': self.district, \
                     'qth': self.gridsquare, 'qrz_data_loaded': self.qrzData, \
                     'country': self.country }, \
                     True )
@@ -532,6 +543,8 @@ class DX( object ):
 
 
     def updateAward( self, ad, av ):
+        if self.offDB:
+            return
         if not self.inDB:
             self.updateDB()
         if self.awards.has_key( ad['name'] ):
@@ -560,6 +573,10 @@ class DX( object ):
         v = None
         if self.country == 'USA':
             v = value
+            if v and self.region == None:
+                r = v.split( ' ' )[0]
+                if r in fieldValues[ 'USA' ]['region']:
+                    self.region = r
         else:
             if value:
                 v = value.replace( ' ', '' )

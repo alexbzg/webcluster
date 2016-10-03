@@ -22,7 +22,7 @@
         <script src="bootstrap-colorpicker-module.min.js"></script>
         <script src="userData.js"></script>
         <script src="testing.js"></script>
-        <script src="stats_t.js"></script>
+        <script src="stats.js"></script>
 
     </head>
     <body ng-controller="bodyCtrl" ng-cloak>
@@ -227,7 +227,7 @@
     <table id="ABM_view" ng-show="activeAward.byBand">
         <tr ng-repeat="item in activeAward.values" ng-class-odd="odd">
             <td class="unit_to_select" ng-click="setActive( item )">
-                {{item.value}} {{item.desc}}
+                <span>{{item.value}}</span> {{item.desc}}
             </td>
             <td class="band" ng-repeat="band in const.bands" 
                 ng-class="{worked: item.byBand[band].worked, confirmed: item.byBand[band].confirmed }"
