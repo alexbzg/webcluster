@@ -51,6 +51,16 @@ class dbConn:
             cur.close()
             return False
 
+    def paramUpdate( self, table, idParams, updParams ):
+        return self.execute( 'update ' + table + ' set ' + paramStr( updParams, ', ' ) + \
+                " where " + paramStr( idParams, ' and ' ), \
+                dict( idParams, **updParams ) )
+
+    def paramDelete( self, table, idParams ):
+        return self.execute( 'delete from ' + table + \
+                " where " + paramStr( idParams, ' and ' ), \
+                idParams )
+
     def execute( self, sql, params = None ):
         cur = self.conn.cursor()
         try:

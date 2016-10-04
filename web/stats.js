@@ -10,10 +10,8 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
     else
         $scope.awardsSettings = {};
 
-    if ( 'awards' in $scope.user && $scope.user.awards != null )
-        $scope.userAwards = $scope.user.awards;
-    else
-        $scope.userAwards = {};
+    if ( !('awards' in $scope.user) || $scope.user.awards == null )
+        $scope.user.awards = {};
 
     $scope.params = {};
     location.search.substr(1).split("&").forEach(function(item) 
@@ -134,11 +132,11 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
                 if ( !( award.name in $scope.awardsSettings ) )
                     $scope.awardsSettings[award.name] = 
                         { 'track': true, 'color': '#770000' };
-                if ( !( award.name in $scope.userAwards ) )
-                    $scope.userAwards[award.name] = {};
+                if ( !( award.name in $scope.user.awards ) )
+                    $scope.user.awards[award.name] = {};
                 award.values.forEach( function( av ) {
-                    if ( av.value in $scope.userAwards[award.name] ) {
-                        var uav = $scope.userAwards[award.name][av.value];
+                    if ( av.value in $scope.user.awards[award.name] ) {
+                        var uav = $scope.user.awards[award.name][av.value];
                         if ( award.byBand ) {
                             av.byBand = {};
                             for ( var band in uav ) {
@@ -307,7 +305,9 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
             if ( !iv.worked ) {
                 iv.worked = true;
                 createAward();                
-            }
+                if ( !$scope.activeAward.byBand )
+                    $scope.activeAward.worked++;
+           }
             copyCfm( iv, getUAV() );
             saveUserAwards();
         }

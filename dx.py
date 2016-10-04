@@ -543,23 +543,23 @@ class DX( object ):
 
 
     def updateAward( self, ad, av ):
-        if self.offDB:
-            return
         if not self.inDB:
             self.updateDB()
         if self.awards.has_key( ad['name'] ):
             if self.awards[ad['name']] == av:
                 return
-            dxdb.execute( """
-                update awards
-                set value = %(value)s
-                where callsign = %(callsign)s and award = %(award)s""",
-                { 'value': av, 'award': ad['name'], 'callsign': self.cs } )
+            if not self.offDB:
+                dxdb.execute( """
+                    update awards
+                    set value = %(value)s
+                    where callsign = %(callsign)s and award = %(award)s""",
+                    { 'value': av, 'award': ad['name'], 'callsign': self.cs } )
         else:
-            dxdb.execute( """
-                insert into awards
-                values ( %(callsign)s, %(award)s, %(value)s )""",
-                { 'value': av, 'award': ad['name'], 'callsign': self.cs } )
+            if not self.offDB:
+                dxdb.execute( """
+                    insert into awards
+                    values ( %(callsign)s, %(award)s, %(value)s )""",
+                    { 'value': av, 'award': ad['name'], 'callsign': self.cs } )
         dxdb.commit()
         self.awards[ad['name']] = av
 

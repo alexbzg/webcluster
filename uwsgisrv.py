@@ -30,6 +30,11 @@ logging.basicConfig( level = logging.DEBUG,
         datefmt='%Y-%m-%d %H:%M:%S' )
 logging.info( 'starting in test mode' )
 
+bands = { '160M': '1.8', '80M': '3.5', '40M': '7', \
+        '30M': '10', '14M': '20', '17M': '18', '15M': '21', \
+        '12M': '24', '10M': '28', '6M': '50', '2M': '144', \
+        '33CM': 'UHF', '23CM':'UHF', '13CM': 'UHF' }
+
 countries = {}
 for cty, cl in conf.items( 'countries' ):
     for code in cl.split( ',' ):
@@ -43,6 +48,10 @@ with open( appRoot + '/CountryCode.txt', 'r' ) as fcc:
             countryCodes[dxcc] = pfx
 countryStateAward = { 'Russia': 'RDA', 'Ukraine': 'URDA' }
 
+awardsDataJS = loadJSON( conf.get( 'web', 'root' ) + '/awards.json' )
+awardsData = {}
+for entry in awardsDataJS:
+    awardsData[entry['name']] = entry
 
 def checkRecaptcha( response ):
     rcData = urllib.urlencode( \
@@ -202,29 +211,24 @@ def application(env, start_response):
                 fl = False
                 if data.has_key( 'delete' ) and data['delete']:
                     if awardLookup:
-                        fl = dxdb.execute( """
-                            delete from user_awards
-                            where callsign = %(callsign)s and award = %(award)s and
-                                value = %(value)s""", params )
+                        fl = dxdb.paramDelete( 'user_awards', params )
                 else:
-                    params['confirmed'] = data['confirmed'] \
+                    updParams = {}
+                    updParams['confirmed'] = data['confirmed'] \
                             if data.has_key('confirmed') else None
-                    params['cfm_paper'] = data['cfm_paper'] \
+                    updParams['cfm_paper'] = data['cfm_paper'] \
                             if data.has_key('cfm_paper') else None
-                    params['cfm_eqsl'] = data['cfm_eqsl'] \
+                    updParams['cfm_eqsl'] = data['cfm_eqsl'] \
                             if data.has_key('cfm_eqsl') else None
-                    params['cfm_lotw'] = data['cfm_lotw'] \
+                    updParams['cfm_lotw'] = data['cfm_lotw'] \
                             if data.has_key('cfm_lotw') else None
-                    params['worked_cs'] = data['workedCS'] \
+                    updParams['worked_cs'] = data['workedCS'] \
                             if data.has_key( 'workedCS' ) else None
                     if awardLookup:
-                        fl = dxdb.execute( """
-                            update user_awards
-                            set confirmed = %(confirmed)s, worked_cs = %(worked_cs)s
-                            where callsign = %(callsign)s and award = %(award)s and
-                                value = %(value)s""", params )
+                        fl = dxdb.paramUpdate( 'user_awards', params, updParams )
                     else:
-                        fl = dxdb.getObject( 'user_awards', params, True )
+                        fl = dxdb.getObject( 'user_awards', \
+                                dict( params, **updParams ), True )
                 if fl:
                     dxdb.commit()
                     start_response( '200 OK', [('Content-Type','text/plain')])
@@ -371,10 +375,11 @@ def getUserAwards( callsign ):
                     'workedCS': item['worked_cs'],\
                     'cfm_paper': item['cfm_paper'], 'cfm_eqsl': item['cfm_eqsl'],\
                     'cfm_lotw': item['cfm_lotw'] }
-            r[item['award']][item['value']] = \
-                { 'confirmed': item['confirmed'], 'workedCS': item['worked_cs'],\
-                'cfm_paper': item['cfm_paper'], 'cfm_eqsl': item['cfm_eqsl'],\
-                'cfm_lotw': item['cfm_lotw'] }
+            else:
+                r[item['award']][item['value']] = \
+                    { 'confirmed': item['confirmed'], 'workedCS': item['worked_cs'],\
+                    'cfm_paper': item['cfm_paper'], 'cfm_eqsl': item['cfm_eqsl'],\
+                    'cfm_lotw': item['cfm_lotw'] }
         return r
     else:
         return None
@@ -431,6 +436,13 @@ def loadAdif( callsign, adif ):
             dx = DX( cs = cs, de = '', text = '', \
                     freq = float( freq ) if freq else None, \
                     time = '    ' )
+            mode = getAdifField( line, 'MODE' )
+            if 'PSK' in mode:
+                mode = 'PSK'
+            band = dx.band
+            bandData = getAdifField( line, 'BAND' ).upper()
+            if bands.has_key( bandData ):
+                band = bands[bandData]
             if dx.country == 'Russia' or dx.country == 'Ukraine':
                 district = getAdifField( line, 'CNTY' )
                 if not district or not reDistrict.match( district ):
@@ -440,83 +452,101 @@ def loadAdif( callsign, adif ):
                 if district and district != dx.district:
                     dx.district = district
                     dx.detectAwards()
-            if dx.country == '_USA':
-                region = getAdifField( line, 'STATE' )
-                district = getAdifField( line, 'CNTY' )
-                district = region + ' ' + district \
-                        if region and district \
-                        else None
-                if region and region != dx.region:
-                    if dx.region:
-                        dx.offDB = True
-                    dx.region = region
-                    dx.detectAwards()
-                if district and dx.district != district:
-                    if dx.district:
-                        dx.offDB = True
-                    dx.district = district
+            if dx.country == 'USA':
+                data = getAdifField( line, 'CNTY'  )
+                if data and ',' in data:
+                    region, district = data.split( ',', 1 )
+                    district = district.title()
+                    if ' Jd' in  district:
+                        district.replace( ' Jd', ' JD' )
+                    district = region + ' ' + district
+                    if region and district:
+                        if region != dx.region or district != dx.district:
+                            dx.offDB = True
+                            dx.region = region
+                            dx.district = district
+                            dx.detectAwards()
             if dx.awards:
                 cfm = {}
                 for ( cfmType, field ) in cfmFields.iteritems():
                     cfm[cfmType] = getAdifField( line, field ) == 'Y'
                 for ( award, value ) in dx.awards.iteritems():
+                    if awardsData[award].has_key('byBand') and \
+                            awardsData[award]['byBand'] and \
+                            (not band or not mode):
+                                continue
                     if not awards.has_key(award):
                         awards[award] = {}
-                    if awards[award].has_key(value):
-                        aw = awards[award][value]
-                        for cfmType in cfmFields.keys():
-                            if not aw[cfmType] and cfm[cfmType]:
-                                aw[cfmType] = True
-                        if len( aw['callsigns'] ) < 2 and \
-                            not cs in aw['callsigns']:
-                            aw['callsigns'].append( cs )
-                    else:
-                        awards[award][value] = { 'callsigns': [ cs, ] }    
-                        for cfmType in cfmFields.keys():
-                            awards[award][value][cfmType] = cfm[cfmType]
+                    if not awards[award].has_key(value):
+                        awards[award][value] = {}
+                    aw = awards[award][value]
+                    if awardsData[award].has_key('byBand') and awardsData[award]['byBand']:
+                        if not aw.has_key( band ):
+                            aw[band] = {}
+                        if not aw[band].has_key( mode ):
+                            aw[band][mode] = {}
+                        aw = aw[band][mode]
+                    for cfmType in cfmFields.keys():
+                        if not aw.has_key( cfmType ):
+                            aw[cfmType] = False
+                        if not aw[cfmType] and cfm[cfmType]:
+                            aw[cfmType] = True
+                    if not aw.has_key( 'callsigns' ):
+                        aw['callsigns'] = []
+                    if len( aw['callsigns'] ) < 2 and \
+                        not cs in aw['callsigns']:
+                        aw['callsigns'].append( cs )
     with open( '/var/www/adxc.73/adifAwardsDebug.json', 'w' ) as f:
         f.write( json.dumps( awards ) )
     commitFl = False
     if awards:
+
+        def updateAward( idParams, awState ):
+            updParams = {}
+            awLookup = dxdb.getObject( 'user_awards', idParams, False, True )
+            if awLookup:
+                updateFl = False
+                for cfmType in cfmFields.keys():
+                    if not awLookup[cfmType] and awState[cfmType]:
+                        updParams[cfmType] = True
+                        updateFl = True
+                csCount = 0 if not awLookup['worked_cs'] else \
+                        2 if ',' in awLookup['worked_cs'] else 1
+                if csCount < 2:
+                    workedCs = awLookup['worked_cs'] \
+                            if awLookup['worked_cs'] else ''
+                    for cs in awState['callsigns']:
+                        if not cs in workedCs:
+                            workedCs += ', ' + cs if workedCs else cs
+                            csCount += 1
+                            updateFl = True
+                            if csCount > 1:
+                                    break
+                    updParams['worked_cs'] = workedCs
+                if updateFl:                        
+                    dxdb.paramUpdate( 'user_awards', idParams, updParams )
+                    return True
+            else:
+                idParams['worked_cs'] = ', '.join( awState['callsigns'] )
+                for cfmType in cfmFields.keys():
+                    idParams[cfmType] = awState[cfmType]
+                dxdb.getObject( 'user_awards', idParams, True )
+                return True
+
         for award in awards.keys():
             for value in awards[award].keys():
                 awState = awards[award][value]
                 idParams = { 'callsign': callsign, \
                         'award': award,\
                         'value': value }
-                updParams = {}
-                awLookup = dxdb.getObject( 'user_awards', idParams, False, True )
-                if awLookup:
-                    updateFl = False
-                    for cfmType in cfmFields.keys():
-                        if not awLookup[cfmType] and awState[cfmType]:
-                            updParams[cfmType] = True
-                            updateFl = True
-                    csCount = 0 if not awLookup['worked_cs'] else \
-                            2 if ',' in awLookup['worked_cs'] else 1
-                    if csCount < 2:
-                        workedCs = awLookup['worked_cs'] \
-                                if awLookup['worked_cs'] else ''
-                        for cs in awState['callsigns']:
-                            if not cs in workedCs:
-                                workedCs += ', ' + cs if workedCs else cs
-                                csCount += 1
-                                updateFl = True
-                                if csCount > 1:
-                                        break
-                        updParams['worked_cs'] = workedCs
-                    if updateFl:
-                        dxdb.execute( """update user_awards
-                            set """ + paramStr( updParams, ', ' ) + \
-                            " where " + paramStr( idParams, ' and ' ), \
-                            dict( idParams, **updParams ) )
-                        commitFl = True
+                if awardsData[award].has_key('byBand') and awardsData[award]['byBand']:
+                    for band in awState:
+                        idParams['band'] = band
+                        for mode in awState[band]:
+                            idParams['mode'] = mode
+                            commitFl = updateAward( idParams, awState[band][mode] )
                 else:
-                    idParams['worked_cs'] = ', '.join( awState['callsigns'] )
-                    for cfmType in cfmFields.keys():
-                        idParams[cfmType] = awState[cfmType]
-                    dxdb.getObject( 'user_awards', idParams, True )
-                    commitFl = True
+                    commitFl = updateAward( idParams, awState )
 
     dxdb.updateObject( 'users', { 'callsign': callsign, 'last_adif_line': lastLine }, \
             'callsign' )
