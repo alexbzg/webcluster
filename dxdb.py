@@ -61,6 +61,14 @@ class dbConn:
                 " where " + paramStr( idParams, ' and ' ), \
                 idParams )
 
+    def paramUpdateInsert( self, table, idParams, updParams ):
+        lookup = self.getObject( table, idParams, False, True )
+        if lookup:
+            return self.paramUpdate( table, idParams, updParams )
+        else:
+            return self.getObject( table, dict( idParams, **updParams ), \
+                    True )
+
     def execute( self, sql, params = None ):
         cur = self.conn.cursor()
         try:

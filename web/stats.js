@@ -28,7 +28,7 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
         $http.post( '/uwsgi/userSettings',
             { 'token': $scope.user.token,
                 'award_value_worked_color': $scope.user.awardValueWorkedColor,
-                'award_value_confirmed_color': $scope.user.awardValueConfirmedColor 
+                'award_value_confirmed_color': $scope.user.awardValueConfirmedColor                
             } ).then( function( response ) {
                 console.log( response.data );
             } );
@@ -103,6 +103,26 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
                     award.confirmed++;
             });
         }
+        var statsSettings = { cfm: {}, 
+            modesFilter: angular.extend( {}, $scope.modesFilter ) };
+        $scope.cfm.forEach( function( type ) {
+            statsSettings.cfm[type.field] = type.enabled; 
+        });
+        var award = $scope.activeAward.name;
+        if ( !( award in $scope.user.awardsSettings ) )
+            $scope.user.awardsSettings[award] = {};
+        $scope.user.awardsSettings[award].stats_settings = statsSettings;
+        saveUserData( $scope.user );
+        if ( award ) {
+            $http.post( '/uwsgi/userSettings',
+                { 'token': $scope.user.token,
+                    'award': award,
+                    'stats_settings': statsSettings,
+                } ).then( function( response ) {
+                    console.log( response.data );
+                } );
+        }
+
     };
 
     $scope.modesFilterChanged = function() {
@@ -113,8 +133,27 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
         $scope.activeBand = null;
         $scope.activeMode = null;
         $scope.searchValue = null;
-        if ( $scope.activeAward.byBand )
-            $scope.modesFilterChanged();
+
+        $scope.modesFilter = {};
+        $scope.const.modes.forEach( function( mode ) {
+            $scope.modesFilter[mode] = true;
+        });
+        $scope.cfm = [ { field: 'cfm_paper', display: 'Paper', enabled: true },
+                    { field: 'cfm_eqsl', display: 'eQSL', enabled: true },
+                    { field: 'cfm_lotw', display: 'LOTW', enabled: true } ];
+        if ( $scope.activeAward.name in $scope.awardsSettings ) {
+            var as = $scope.awardsSettings[$scope.activeAward.name];
+            if ( 'stats_settings' in as && as.stats_settings != null ) {
+                var ss = as.stats_settings;
+                if ( 'cfm' in ss && ss.cfm != null ) 
+                    $scope.cfm.forEach( function( type ) {
+                        if ( type.field in ss.cfm )
+                            type.enabled = ss.cfm[type.field];
+                    });
+                if ( 'modesFilter' in ss && ss.modesFilter != null )
+                    $scope.modesFilter = angular.extend( {}, ss.modesFilter );
+            }
+        }
         $scope.cfmChanged();
     };
 
@@ -207,13 +246,13 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
     $scope.saveWorkedCS = function() {
         var iv = getIV();
         if ( iv.workedCS  ) {
-            if ( !iv.worked ) {
+/*            if ( !iv.worked ) {
                 iv.worked = true;
                 $scope.modifyActiveValue( 'worked' );
-            } else {
+            } else {*/
                 getUAV().workedCS = iv.workedCS;
                 saveUserAwards();
-            }
+           // }
         }
     }
 
@@ -298,6 +337,7 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
             } else {
                 deleteAward();
                 copyCfm( {}, iv );
+                iv.workedCS = null;
                 if ( !$scope.activeAward.byBand )
                     $scope.activeAward.worked--;
            }

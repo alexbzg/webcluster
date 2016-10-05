@@ -31,7 +31,7 @@ logging.basicConfig( level = logging.DEBUG,
 logging.info( 'starting in test mode' )
 
 bands = { '160M': '1.8', '80M': '3.5', '40M': '7', \
-        '30M': '10', '14M': '20', '17M': '18', '15M': '21', \
+        '30M': '10', '20M': '14', '14M': '20', '17M': '18', '15M': '21', \
         '12M': '24', '10M': '28', '6M': '50', '2M': '144', \
         '33CM': 'UHF', '23CM':'UHF', '13CM': 'UHF' }
 
@@ -157,30 +157,14 @@ def application(env, start_response):
             if pl.has_key( 'callsign' ):
                 callsign = pl['callsign']
         if callsign:
-            if data.has_key( 'award' ) and data.has_key( 'track' ) \
-                    and data.has_key( 'color' ):
-                params = { 'callsign': callsign, 'award': data['award'] }
-                dbRec = dxdb.getObject( 'users_awards_settings', \
-                    params, \
-                    False, True )
-                params['track'] = data['track']
-                params['color'] = data['color']
-                params['settings'] = json.dumps( data['settings'] ) \
-                        if data.has_key( 'settings' ) else None
-                sql = ''
-                if dbRec:
-                    sql = """
-                        update users_awards_settings
-                        set track = %(track)s, color = %(color)s, 
-                            settings = %(settings)s
-                        where callsign = %(callsign)s and
-                            award = %(award)s"""
-                else:
-                     sql = """
-                        insert into users_awards_settings
-                        values ( %(callsign)s, %(award)s, %(track)s, %(color)s,
-                            %(settings)s )"""
-                if dxdb.execute( sql, params ):
+            if data.has_key( 'award' ) and ( ( data.has_key( 'track' ) \
+                    and data.has_key( 'color' ) ) \
+                    or data.has_key( 'stats_settings' ) ) :
+                idParams = { 'callsign': callsign, 'award': data['award'] }
+                updParams = { param: json.dumps( data[param] ) \
+                    for param in [ 'track', 'color', 'settings', 'stats_settings' ] \
+                    if data.has_key( param ) }
+                if dxdb.paramUpdateInsert( 'users_awards_settings', idParams, updParams ):
                     dxdb.commit()
                     start_response( '200 OK', [('Content-Type','text/plain')])
                     return 'OK'
@@ -387,7 +371,7 @@ def getUserAwards( callsign ):
 def sendUserData( userData, start_response ):
     awardsSettings = cursor2dicts( \
             dxdb.execute( """
-                select award, track, color, settings
+                select award, track, color, settings, stats_settings
                 from users_awards_settings
                 where callsign = %(callsign)s """, \
                  userData ), True )
