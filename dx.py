@@ -30,7 +30,7 @@ for ad in awardsData:
 fieldRe = { 'district': re.compile( '[a-zA-Z]{2}[ -]+\d\d' ),\
         'gridsquare': re.compile( '[a-zA-Z0-9]{6}' ) }
 
-reCountry = re.compile("\s(\S+):$");
+reCountry = re.compile("\s\*?(\S+):$");
 rePfx = re.compile("(\(.*\))?(\[.*\])?");
 prefixes = [ {}, {} ]
 countries = {}
@@ -458,7 +458,7 @@ class DX( object ):
                                 data.has_key( 'county' ) else '' ) + \
                             ( data['county'] if data.has_key( 'county' ) else '' )
                 if data.has_key( 'grid' ):
-                    self.gridsquare = data['grid']
+                    self.gridsquare = data['grid'].upper()
                 self.updateDB()
 
     def doTextLookup( self, text = None ):

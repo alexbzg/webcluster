@@ -421,8 +421,6 @@ def loadAdif( callsign, adif ):
                     freq = float( freq ) if freq else None, \
                     time = '    ' )
             mode = getAdifField( line, 'MODE' )
-            if 'PSK' in mode:
-                mode = 'PSK'
             band = dx.band
             bandData = getAdifField( line, 'BAND' ).upper()
             if bands.has_key( bandData ):

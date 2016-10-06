@@ -22,7 +22,7 @@
         <script src="bootstrap-colorpicker-module.min.js"></script>
         <script src="userData.js"></script>
         <script src="testing.js"></script>
-        <script src="stats.js"></script>
+        <script src="stats_t.js"></script>
 
     </head>
     <body ng-controller="bodyCtrl" ng-cloak>
@@ -48,12 +48,12 @@
                         ng-model="user.awardValueWorkedColor"
                         style='background-color: {{user.awardValueWorkedColor}};'
                         ng-change="saveUserSettings()">&nbsp;</button>
-                     <span>{{activeAward.workedCount}}</span> worked<br/>
+                     <span>{{activeAward.worked}}</span> worked<br/>
                      <button colorpicker type="button" colorpicker-position="top" 
                         ng-model="user.awardValueConfirmedColor"
                         style='background-color: {{user.awardValueConfirmedColor}};'
                         ng-change="saveUserSettings()">&nbsp;</button>
-                     <span>{{activeAward.confirmedCount}}</span> confirmed
+                     <span>{{activeAward.confirmed}}</span> confirmed
 
                      <table id="view_cfm">
                         <tr>
@@ -105,9 +105,11 @@
         <table id="ABM_edit">
             <tr>
                 <td id="view">
+                    <span id="view_filter_note">View filter</span>
                     <table class="view_modes">
                         <tr>
-                            <td colspan="5" class="view_title">
+                            <td colspan="7" class="view_title">
+                            
                                 <button colorpicker type="button" colorpicker-position="top" 
                                     ng-model="user.awardValueWorkedColor"
                                     style='background-color: {{user.awardValueWorkedColor}};'
@@ -144,6 +146,7 @@
                     
                 </td>
                 <td id="edit_inputs">
+                    <span id="manual_edit_note">Manual edit</span>
                     <div>
 
                     <span id="selected_item">{{activeValue.value}} {{activeValue.desc}}</span>
@@ -226,13 +229,16 @@
 
     <table id="ABM_view" ng-show="activeAward.byBand">
         <tr ng-repeat="item in activeAward.values" ng-class-odd="odd">
-            <td class="unit_to_select" ng-click="setActive( item )">
+            <td class="unit_to_select" ng-click="setActive( item, null, null )">
                 <span>{{item.value}}</span> {{item.desc}}
             </td>
             <td class="band" ng-repeat="band in const.bands" 
-                ng-class="{worked: item.byBand[band].worked, confirmed: item.byBand[band].confirmed }"
-                ng-click="setActive( item, band )">
-            </td>
+                ng-click="setActive( item, band, null )">
+                <div ng-repeat="mode in item.byBand[band].workedModes | orderBy: ['confirmed', modePosition ]" 
+                    ng-style="{ 'background-color': mode.confirmed ? user.awardValueConfirmedColor : 
+                    ( mode.worked ? user.awardValueWorkedColor : null ) }" 
+                    ng-click="setActive( item, band, mode.mode );$event.stopPropagation();">{{mode.mode}}</div>
+           </td>
         </tr>
     </table>
 

@@ -42,7 +42,23 @@
     "getFields":{"web":1}, "fieldValues":"region",
     "valueColumns": {"value": 0, "desc": 1 },
     "groupColumns": {"value": 3}, "byMode": 1, "byBand": 1,
-     "lookups":[{"type":"value", "source":"field", "field":"region"}]}
+     "lookups":[{"type":"value", "source":"field", "field":"region"}]},
    
+  { "name": "WAIP", "fullName":"Worked All Italian Provinces", 
+     "link":"http://www.ari.it/index.php?option=com_content&view=article&id=1734%3Awaip-worked-all-italian-provinces&catid=242%3Aawards&Itemid=262&lang=it", "country": "Italy",
+    "valuesFile": "csv/waip.csv", "groupInValue": 0, 
+    "getFields":{"web":1}, "fieldValues":"region",
+    "valueColumns": {"value": 0, "desc": 1 },
+    "groupColumns": {"value": 3}, 
+     "lookups":[{"type":"value", "source":"field", "field":"region"}]},
+
+   {  "name": "WAIS", "fullName": "Worked All Italian Squares", "link":"http://www.aribusto.it/regolam_it.htm",
+    "country": "Italy", "valuesFile": "csv/wais.csv", "groupInValue": 1,  "keyAttr":"gridsquare",
+    "groupSeparator": "",
+    "valueColumns": {"value": 1, "keys": 2, "desc": 2 },
+    "groupColumns": {"value": 0 },
+    "getFields":{"web":1},
+    "lookups":[{"type":"key", "source":"field", "field":"gridsquare"}] }
+    
 
 ] 
