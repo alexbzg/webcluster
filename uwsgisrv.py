@@ -162,6 +162,7 @@ def application(env, start_response):
                     or data.has_key( 'stats_settings' ) ) :
                 idParams = { 'callsign': callsign, 'award': data['award'] }
                 updParams = { param: json.dumps( data[param] ) \
+                        if isinstance( data[param],dict ) else data[param] \
                     for param in [ 'track', 'color', 'settings', 'stats_settings' ] \
                     if data.has_key( param ) }
                 if dxdb.paramUpdateInsert( 'users_awards_settings', idParams, updParams ):

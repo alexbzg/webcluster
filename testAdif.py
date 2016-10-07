@@ -12,7 +12,7 @@ from common import appRoot, readConf, siteConf, loadJSON
 from dxdb import dbConn, cursor2dicts
 from dx import DX, getCountry
 
-import uwsgisrv 
+import uwsgisrv_t as uwsgisrv
 conf = siteConf()
 
 

@@ -36,7 +36,7 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
     
     $scope.const = { 
         'bands': [ '1.8', '3.5', '7', '10', '14', '18', '21', '24', '28', '50', '144' ],
-        'modes': [ 'CW', 'SSB', 'RTTY', 'PSK', 'JT65' ] };
+        'modes': [ 'CW', 'SSB', 'RTTY', 'PSK31', 'PSK63', 'PSK125', 'JT65' ] };
     $scope.stats = {};
 
     $scope.modesFilter = {};
@@ -56,8 +56,11 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
                     return true;
         } else {
             for ( var co = 0; co < $scope.cfmTypesCount; co++ )
-                if ( $scope.cfm[co].enabled && av[$scope.cfm[co].field] ) 
+                if ( $scope.cfm[co].enabled && av[$scope.cfm[co].field] ) {
+                    av.confirmed = true;
                     return true;
+                }
+            av.confirmed = false;
         }
         return false;
     }
@@ -223,6 +226,13 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
         $scope.activeValue = value;
         $scope.activeBand = band;
         $scope.activeMode = mode;
+    }
+
+    $scope.showPopup = function( value, band ){
+        if ( value == null )
+            $scope.popup = null;
+        else
+            $scope.popup = { value: value, band: band };
     }
 
     function saveUserAwards( noPost ) {

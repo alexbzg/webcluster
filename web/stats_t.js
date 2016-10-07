@@ -56,8 +56,11 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
                     return true;
         } else {
             for ( var co = 0; co < $scope.cfmTypesCount; co++ )
-                if ( $scope.cfm[co].enabled && av[$scope.cfm[co].field] ) 
+                if ( $scope.cfm[co].enabled && av[$scope.cfm[co].field] ) {
+                    av.confirmed = true;
                     return true;
+                }
+            av.confirmed = false;
         }
         return false;
     }
@@ -78,10 +81,6 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
                 src : src[$scope.cfm[co].field];
     }
 
-    $scope.modePosition = function( mode ) {
-        return $scope.const.modes.indexOf( mode.mode );
-    }
-
 
     $scope.cfmChanged = function() {
         var award = $scope.activeAward;
@@ -91,24 +90,10 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
                 $scope.activeAward.values.forEach( function( av ) {
                     if ( av.byBand && band in av.byBand ) {
                         var avb = av.byBand[band];
-                        avb.confirmed = false;
-                        avb.worked = false;
-                        avb.workedModes = [];
-                        for ( var mode in avb.byMode ) 
-                            if ( $scope.modesFilter[mode] ) {
-                                var avbm = avb.byMode[mode];
-                                if ( avbm.worked ) {
-                                    avb.workedModes.push( avbm );
-                                    if ( !avb.worked ) {
-                                        avb.worked = true;
-                                        $scope.stats[band].worked++;
-                                    }
-                                    if ( avbm.confirmed = isConfirmed( avbm ) && !avb.confirmed ) {
-                                        avb.confirmed = true;
-                                        $scope.stats[band].confirmed++;
-                                    }
-                                }
-                            }
+                        if ( avb.worked = isWorked( avb ) )
+                            $scope.stats[band].worked++;
+                        if ( avb.confirmed = isConfirmed( avb ) )
+                            $scope.stats[band].confirmed++;
                     }
                 });
             });
@@ -199,7 +184,7 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
                             for ( var band in uav ) {
                                 av.byBand[band] = { byMode: {} };
                                 for ( var mode in uav[band] ) {
-                                    av.byBand[band].byMode[mode] = { worked: true, mode: mode };
+                                    av.byBand[band].byMode[mode] = { worked: true };
                                     angular.extend( av.byBand[band].byMode[mode], uav[band][mode] );
                                 }
                             }
@@ -241,6 +226,13 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
         $scope.activeValue = value;
         $scope.activeBand = band;
         $scope.activeMode = mode;
+    }
+
+    $scope.showPopup = function( value, band ){
+        if ( value == null )
+            $scope.popup = null;
+        else
+            $scope.popup = { value: value, band: band };
     }
 
     function saveUserAwards( noPost ) {

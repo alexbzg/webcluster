@@ -683,16 +683,19 @@ table#ABM_edit td{
 table#ABM_edit td#view{
 	font-size: 14px;
 	color: #555;
-	vertical-align: middle;
-	padding-right: 30px;
 	border-right: 1px solid #ddd;
+	text-align: left;
+	padding-right: 10px;
 }
 table#ABM_edit table.view_modes{
 	margin: 5px auto;
 	border-collapse: collapse;
+	text-align: center;
 }
 table#ABM_edit table.view_modes td{
 	padding: 0 5px;
+	font-size: 12px;
+	width: 30px;
 }
 table#ABM_edit table.view_modes td.view_title{
 	font-size: 16px;
@@ -700,12 +703,11 @@ table#ABM_edit table.view_modes td.view_title{
 	border-bottom: 1px solid #777;
 	padding-top: 5px;
 }
-table#ABM_edit td span#view_filter_note{
+table#ABM_edit td#view span#view_filter_note{
 	font-size: 10px;
 	background-color: #aaa;
 	color: #fff;
 	padding: 0 5px;
-	float: left;
 }
 
 
@@ -765,10 +767,10 @@ table#ABM_fixed, table#ABM_view{
 }
 table#ABM_fixed td{
 	border: 1px solid #a6def8;
-	padding: 2px 7px;
+	padding: 2px 0px;
 }
 table#ABM_fixed td.band{
-	width: 7%;	
+	width: 77px;	
 	background-color: #0091c9;
 	text-align: center;
 	color: #fff;
@@ -794,14 +796,14 @@ table#ABM_fixed td.band_stat span{
 table#ABM_view{	margin: 370px auto; }
 table#ABM_view tr.odd{	background-color: #eff9fe;}
 table#ABM_view td{
-	padding: 2px;
+	padding: 2px 0;
 	border: 1px solid #a6def8;
 	vertical-align: middle;
 	text-align: center;
 	cursor: pointer;
 }
 table#ABM_view td.band{
-	width: 7%;	
+	width: 77px;	
 }
 table#ABM_view td.unit_to_select{
 	padding-left: 10px;
@@ -820,18 +822,27 @@ table#ABM_view td.worked{
 table#ABM_view td.confirmed{
 	background-color: #02b20e;
 }
-table#ABM_view td span{
-	display: inline-block;
+
+
+
+
+
+.popup{
+	position: absolute;
+	z-index: 150;
+	width: 70px;
 	padding: 2px;
-	margin: 2px;
 	font-size: 12px;
+	text-align: center;
+	border: 1px solid #ccc;
+	background-color: #fff;
+	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
 }
-
-
-
-
-
-
+.popup div{
+	padding: 2px;
+	margin: 1px 0;
+	background-color: #eee;
+}
 
 
 
@@ -960,6 +971,10 @@ table#award_info td#award_edit input.submit_btn {
 	font-weight: bold;
 	font-size: 20px;
 	color: #900;
+}
+#selected_unit_info span#code_info{
+	font-size: 14px;
+	color: #999;
 }
 
 span#wkd, span#cfm{

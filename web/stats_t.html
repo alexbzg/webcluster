@@ -233,14 +233,24 @@
                 <span>{{item.value}}</span> {{item.desc}}
             </td>
             <td class="band" ng-repeat="band in const.bands" 
-                ng-click="setActive( item, band, null )">
-                <div ng-repeat="mode in item.byBand[band].workedModes | orderBy: ['confirmed', modePosition ]" 
-                    ng-style="{ 'background-color': mode.confirmed ? user.awardValueConfirmedColor : 
-                    ( mode.worked ? user.awardValueWorkedColor : null ) }" 
-                    ng-click="setActive( item, band, mode.mode );$event.stopPropagation();">{{mode.mode}}</div>
+                ng-style="{ 'background-color': item.byBand[band].confirmed ? user.awardValueConfirmedColor : 
+                                    ( item.byBand[band].worked ? user.awardValueWorkedColor : null ) }"             
+                ng-click="setActive( item, band, null )"
+                ng-mouseover="showPopup( item, band )"
+                ng-mouseleave="showPopup( null )">
+                <div class="popup" ng-show="popup.value == item && popup.band == band">
+                    <div ng-repeat="mode in const.modes" 
+                        ng-click="setActive( item, band, mode ); $event.stopPropagation();"
+                        ng-style="{ 'background-color': item.byBand[band].byMode[mode].confirmed ? 
+                            user.awardValueConfirmedColor :                 
+                            ( item.byBand[band].byMode[mode].worked ? 
+                            user.awardValueWorkedColor : null ) }"             
+                        >{{mode}}</div>
+               </div>
            </td>
         </tr>
     </table>
+
 
 
 
