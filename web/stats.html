@@ -40,7 +40,7 @@
             <option value="">Select award</option>
         </select>
 
-        <div ng-show="!activeAward.byBand">
+        <div ng-if="!activeAward.byBand">
         <table id="award_info" ng-show="activeAward">
             <tr>
                 <td id="award_stat">
@@ -101,7 +101,7 @@
         </table>
         </div>
 
-        <div ng-show="activeAward.byBand">
+        <div ng-if="activeAward.byBand">
         <table id="ABM_edit">
             <tr>
                 <td id="view">
@@ -212,7 +212,7 @@
 
     </div>
 
-    <table id="award_progress" ng-show="!activeAward.byBand">
+    <table id="award_progress" ng-if="!activeAward.byBand">
         <tr ng-repeat="group in activeAward.orderedGroups">
             <td class="award_block">
                 {{group}}
@@ -227,7 +227,7 @@
         </tr>
     </table>
 
-    <table id="ABM_view" ng-show="activeAward.byBand">
+    <table id="ABM_view" ng-if="activeAward.byBand">
         <tr ng-repeat="item in activeAward.values" ng-class-odd="odd">
             <td class="unit_to_select" ng-click="setActive( item, null, null )">
                 <span>{{item.value}}</span> {{item.desc}}
@@ -236,9 +236,9 @@
                 ng-style="{ 'background-color': item.byBand[band].confirmed ? user.awardValueConfirmedColor : 
                                     ( item.byBand[band].worked ? user.awardValueWorkedColor : null ) }"             
                 ng-click="setActive( item, band, null )"
-                ng-mouseover="showPopup( item, band )"
-                ng-mouseleave="showPopup( null )">
-                <div class="popup" ng-show="popup.value == item && popup.band == band">
+                ng-mouseover="item.byBand[band].popup = true;"
+                ng-mouseleave="item.byBand[band].popup = false;">
+                <div class="popup" ng-show="item.byBand[band].popup">
                     <div ng-repeat="mode in const.modes" 
                         ng-click="setActive( item, band, mode ); $event.stopPropagation();"
                         ng-style="{ 'background-color': item.byBand[band].byMode[mode].confirmed ? 

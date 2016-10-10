@@ -320,7 +320,7 @@ class DX( object ):
         self.offDB = False
         self.awards = {}
         self.dxData = dxData
-        self.text = params['text']
+        self.text = params['text'].decode('utf-8','ignore').encode("utf-8")
         self.freq = params['freq']
 
         self.band = params['band'] if params.has_key( 'band' ) else None
@@ -650,7 +650,16 @@ class DXData:
     def toFile( self ):
         if self.file:
             with open( self.file, 'w' ) as fDxData:
-                fDxData.write( json.dumps( [ x.toDict() for x in self.data ] ) )
+                data = []
+                for x in self.data:
+                    try:
+                        json.dumps( x.toDict() ).encode( 'utf-8' )
+                        data.append( x.toDict() )
+                    except Exception as e:
+                        logging.exception( 'Non unicode character in dx' )
+                        logging.exception( x.toDict() )
+                        self.data.remove( x )
+                fDxData.write( json.dumps( data ) )
 
 
 
