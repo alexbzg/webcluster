@@ -9,6 +9,12 @@ listApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
     if ( !('lists' in $scope.user) || $scope.user.lists == null )
         $scope.user.lists = [];
 
+    $scope.logout = function() {
+        logoutUser();
+        $window.location.href = "http://adxcluster.com/login.html";
+    }
+
+
     $scope.params = {};
     location.search.substr(1).split("&").forEach(function(item) 
             {$scope.params[item.split("=")[0]] = decodeURIComponent( item.split("=")[1] )});
@@ -102,6 +108,7 @@ listApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
     }
 
     function saveItem( item ) {
+        saveUserData( $scope.user );
         $http.post( '/uwsgi/userSettings',
             { 'token': $scope.user.token,
                 'list_id': $scope.list.id,
@@ -110,7 +117,7 @@ listApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
                 'pfx': item.pfx
             } ).then( function( response ) {
                 console.log( response.data );
-            } );
+            }, saveError );
     };
 
     $scope.checkTitle = function() {
@@ -138,20 +145,30 @@ listApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
         });
     };
 
-    $scope.deleteItem = function( listItem ) {
-        if ( $window.confirm( 'Do you really want to remove callsign ' + listItem.callsign +
-                ( listItem.pfx ? '*' : '' ) +
+    $scope.deleteItem = function( item ) {
+        if ( $window.confirm( 'Do you really want to remove callsign ' + item.callsign +
+                ( item.pfx ? '*' : '' ) +
                 ' from the list?' ) ) {
-            var i = $scope.list.items.indexOf( listItem );
+            var i = $scope.list.items.indexOf( item );
             $scope.list.items.splice( i, 1 );
             updateAllSwitches();
             updateCallsigns();
-        }
+            saveUserData( $scope.user );
+            $http.post( '/uwsgi/userSettings',
+                { 'token': $scope.user.token,
+                    'list_id': $scope.list.id,
+                    'callsign': item.callsign,
+                    'delete': true
+                } ).then( function( response ) {
+                    console.log( response.data );
+                }, saveError );
+       }
       
     };
 
 
     $scope.itemChanged = function( item, field, value ) {
+        saveItem( item );
         if ( item.settings[field][value] )
             updateSwitch( field, value );
         else
@@ -160,7 +177,10 @@ listApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
 
     $scope.switch = function( field, value ) {
         $scope.list.items.forEach( function( item ) {
-            item.settings[field][value] = $scope.switches[field][value];
+            if ( item.settings[field][value] != $scope.switches[field][value] ) {
+                item.settings[field][value] = $scope.switches[field][value];
+                saveItem( item );
+            }
         });
     };
 });
