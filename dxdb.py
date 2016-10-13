@@ -95,6 +95,8 @@ class dbConn:
     def commit( self ):
         self.conn.commit()
 
+
+
     def getObject( self, table, params, create = False, 
             never_create = False ):
         sql = ''

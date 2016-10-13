@@ -70,6 +70,13 @@ def validEmail( address ):
     return reEmail.match( address )
 dxdb = None
 
+def spliceParams( data, params ):
+    return { param: json.dumps( data[param] ) \
+            if isinstance( data[param],dict ) else data[param] \
+        for param in params \
+        if data.has_key( param ) }
+
+
 def sendEmail( **email ):
     myAddress = conf.get( 'email', 'address' )
     msg = MIMEText( email['text'].encode( 'utf-8' ), 'plain', 'UTF-8' )
@@ -151,6 +158,8 @@ def application(env, start_response):
         dxdb = dbConn()
         data = json.loads( env['wsgi.input'].read( reqSize ) )
         error = ''
+        okResponse = ''
+        dbError = False
         callsign = None
         if data.has_key( 'token' ):
             pl = jwt.decode( data['token'], secret, algorithms=['HS256'] )
@@ -161,18 +170,13 @@ def application(env, start_response):
                     and data.has_key( 'color' ) ) \
                     or data.has_key( 'stats_settings' ) ) :
                 idParams = { 'callsign': callsign, 'award': data['award'] }
-                updParams = { param: json.dumps( data[param] ) \
-                        if isinstance( data[param],dict ) else data[param] \
-                    for param in [ 'track', 'color', 'settings', 'stats_settings' ] \
-                    if data.has_key( param ) }
+                updParams = spliceParams( data, \
+                    [ 'track', 'color', 'settings', 'stats_settings' ] )
                 if dxdb.paramUpdateInsert( 'users_awards_settings', idParams, updParams ):
                     dxdb.commit()
-                    start_response( '200 OK', [('Content-Type','text/plain')])
-                    return 'OK'
+                    okResponse = 'OK'
                 else:
-                    start_response( '500 Server Error', \
-                            [('Content-Type','text/plain')])
-                    return
+                    dbError = True
             elif data.has_key( 'adif' ):
                 adif = data['adif'].split( ',' )[1].decode( 'base64', 'strict' )
                 logging.debug( 'adif received' )
@@ -216,12 +220,9 @@ def application(env, start_response):
                                 dict( params, **updParams ), True )
                 if fl:
                     dxdb.commit()
-                    start_response( '200 OK', [('Content-Type','text/plain')])
-                    return 'OK'
+                    okResponse = 'OK'
                 else:
-                    start_response( '500 Server Error', \
-                            [('Content-Type','text/plain')])
-                    return
+                    dbError = True
             elif data.has_key( 'award_value_worked_color' ):
                 del data['token']
                 data['callsign'] = callsign
@@ -249,15 +250,55 @@ def application(env, start_response):
                             { 'callsign': callsign, field: data[field] },
                             'callsign' ):
                         dxdb.commit()
-                        start_response( '200 OK', [('Content-Type','text/plain')])
-                        return 'OK'
+                        okResponse = 'OK'
                     else:
-                        start_response( '500 Server Error', \
-                                [('Content-Type','text/plain')])
-                        return
+                        dbError = True
+            elif data.has_key( 'list_id' ):
+                if data['list_id'] == 'new':
+                    list = dxdb.getObject( 'users_lists',\
+                            { 'callsign': callsign, \
+                            'title': data['title'] if data.has_key( 'title' ) else None },\
+                            True )
+                    if list:
+                        start_response( '200 OK', [('Content-Type', 'application/json')] )
+                        return json.dumps( { 'list_id': list['id'] } )
+                    else:
+                        dbError = True
+                elif data.has_key( 'title' ) or data.has_key( 'track' ):
+                    if dxdb.paramUpdate( 'users_lists', { 'id': data['list_id'] }, \
+                            spliceParams( data, [ 'title', 'track', 'color' ] ) ):
+                        dxdb.commit()
+                        okResponse = 'OK'
+                    else:
+                        dbError = True
+                elif data.has_key( 'callsign' ):
+                    if data.has_key( 'delete' ):
+                        if dxdb.paramDelete( 'users_lists_items',\
+                            { 'list_id': data['list_id'], \
+                            'callsign': data['callsign'] } ):
+                            okResponse = 'OK'
+                        else:
+                            dbError = True
+                    else:
+                        if dxdb.paramUpdateInsert( 'users_lists_items', \
+                            { 'list_id': data['list_id'], \
+                                'callsign': data['callsign'] },\
+                            { 'settings': json.dumps( data['settings'] ), \
+                            'pfx': data['pfx'] } ):
+                            okResponse = 'OK'
+                        else:
+                            dbError = True
 
             elif not error:
                 error = 'Bad user settings'
+        if dbError:
+            start_response( '500 Server Error', \
+                    [('Content-Type','text/plain')])
+            return
+        if okResponse:
+            start_response( '200 OK', [('Content-Type','text/plain')])
+            return okResponse
+
         start_response( '400 Bad Request', [('Content-Type','text/plain')])
         return error
     elif env['PATH_INFO'] == '/uwsgi/recoverPassword':
@@ -376,13 +417,28 @@ def sendUserData( userData, start_response ):
                 from users_awards_settings
                 where callsign = %(callsign)s """, \
                  userData ), True )
+    lists = cursor2dicts( \
+            dxdb.execute( """
+                select id, title, track, color 
+                from users_lists 
+                where callsign = %(callsign)s """, \
+                userData ), True )
+    if lists:
+        lists = lists.values()
+        for list in lists:
+            list['items'] = cursor2dicts( \
+                dxdb.execute( """
+                    select * from users_lists_items
+                    where list_id = %(id)s """, \
+                    list ), True )
     toSend = { 'token': jwt.encode( { 'callsign': userData['callsign'] }, \
             secret, algorithm='HS256' ), 'callsign': userData['callsign'], \
             'email': userData['email'], \
             'lastAdifLine': userData['last_adif_line'], \
             'awardValueWorkedColor': userData['award_value_worked_color'], \
             'awardValueConfirmedColor': userData['award_value_confirmed_color'], \
-            'awards': getUserAwards( userData['callsign'] )}
+            'awards': getUserAwards( userData['callsign'] ),\
+            'lists': lists }
     if awardsSettings:
         toSend['awardsSettings'] = {}
         for item in awardsSettings:
