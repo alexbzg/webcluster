@@ -9,7 +9,7 @@ webDXapp.controller( 'bodyCtrl', function( $scope, $http, $interval, $window, $t
             if ( $scope.awardsSettings[award].settings != null ) {
                 var as = $scope.awardsSettings[award].settings;
                 for ( var field in as ) 
-                    if ( field != 'cfm' ) {
+                    if ( field != 'cfm' && field != 'sound' ) {
                         var fs = {};
                         as[field].forEach( function( item ) {
                             fs[item.name] = item.enabled;
@@ -114,8 +114,7 @@ webDXapp.controller( 'bodyCtrl', function( $scope, $http, $interval, $window, $t
 
     $scope.logout = function() {
         logoutUser();
-        $scope.user = null;
-        $scope.dxItems.forEach( awards );
+        $window.location.reload();
     }
 
     function awards( dx ) {
@@ -149,16 +148,29 @@ webDXapp.controller( 'bodyCtrl', function( $scope, $http, $interval, $window, $t
                             if ( $scope.user.awards != null 
                                 && name in $scope.user.awards &&
                                 value in $scope.user.awards[name] ) {
-                                var confirmed = false;
-                                for ( var cfmType in cfm )
-                                    if ( $scope.user.awards[name][value][cfmType] ) {
-                                        confirmed = true;
-                                        break;
-                                    }
-                                if ( confirmed )
-                                    continue;
-                                else
-                                    award.worked = true;
+                                var uav = $scope.user.awards[name][value];
+                                var fl = false;
+                                var byBand = $scope.awards[name].byBand;
+                                if ( byBand && dx.band in uav )
+                                    for ( var mode in uav[dx.band] )
+                                        if ( mode == dx.mode || 
+                                            ( dx.subMode != null && dx.subMode.indexOf( mode ) != -1 ) ) {
+                                            fl = true;
+                                            uav = uav[dx.band][mode];
+                                            continue;
+                                        }                                    
+                                if ( !$scope.awards[name].byBand || fl ) {
+                                    var confirmed = false;
+                                    for ( var cfmType in cfm )
+                                        if ( uav[cfmType] ) {
+                                            confirmed = true;
+                                            break;
+                                        }
+                                    if ( confirmed )
+                                        continue;
+                                    else
+                                        award.worked = true;
+                                }
                             }
                             award.color = $scope.awardsSettings[name].color;
                             fAwards.push( award );
@@ -179,9 +191,16 @@ webDXapp.controller( 'bodyCtrl', function( $scope, $http, $interval, $window, $t
    
 
     $scope.dxlm = null;
-    loadDX();
+    var urlAwards = testing ? '/debug/awards.json' : '/awards.json';
+    $http.get( urlAwards ).then( function( response ) {
+        $scope.awards = {}
+        response.data.forEach( function( item ) {
+            $scope.awards[item.name] = item;
+        });
+        loadDX();
 
-    $interval( loadDX, 1000 );
+        $interval( loadDX, 1000 );
+    });
 
     $scope.news = { 'lm': $window.localStorage.getItem( 'adxcluster-news' ),
         'html': null };

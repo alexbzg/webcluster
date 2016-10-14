@@ -67,7 +67,27 @@
                                     ng-change="awardSettingsChanged(setupAward)">
                             </td>
                         </tr>
-                    </table>
+                </table>
+                <table class="award_setup">
+                        <tr>
+                            <th id="sound" colspan="2">SOUND</th>
+                        </tr>
+                        <tr>
+                            <td class="sound">
+                                not WKD<br/>
+                                <input type="checkbox" 
+                                    ng-model="user.awardsSettings[setupAward].settings.sound.not"
+                                    ng-change="awardSettingsChanged(setupAward)">
+                            </td>
+                            <td class="sound">
+                                not CFM<br/>
+                                <input type="checkbox" 
+                                    ng-model="user.awardsSettings[setupAward].settings.sound.wkd"
+                                    ng-change="awardSettingsChanged(setupAward)">
+                            </td>
+                       </tr>
+                 </table>
+
 
                 </div>
             </td>
@@ -93,6 +113,16 @@
                     Аward's website
                 </th>
             </tr>
+            <tr>
+                <td colspan="6" class="country">
+                    USER LISTS
+                </td>
+            </tr>
+            <tr>
+                <td colspan="6">
+                    <a href="/list_setup.html">Create new list</a>
+                </td>
+            </tr>
             <tr ng-repeat="list in user.lists | orderBy: id">
                 <td class="track">
                     <input type="checkbox" ng-model="list.track" 
@@ -110,6 +140,7 @@
                 </td>
                 <td class="full_name">
                     List #{{$index + 1}}
+                    <input type="button" ng-click="deleteList( list )" value="Delete"/>
                 </td>
                 <td class="notification">
                     <a href="/list_setup.html?id={{list.id}}"><img src="/images/icon_setup.png"></a>
@@ -119,11 +150,6 @@
                 </td>
                 <td class="website">
                     <!--a href="{{award.link}}" target="_blank" title="Link to {{award.name}} website"><img src="/images/icon_weblink.png"></a-->
-                </td>
-            </tr>
-            <tr>
-                <td colspan="6">
-                    <a href="/list_setup.html">Create new list</a>
                 </td>
             </tr>
 

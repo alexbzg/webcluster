@@ -264,9 +264,10 @@ def application(env, start_response):
                         return json.dumps( { 'list_id': list['id'] } )
                     else:
                         dbError = True
-                elif data.has_key( 'title' ) or data.has_key( 'track' ):
+                elif data.has_key( 'title' ) or data.has_key( 'track' ) or \
+                        data.has_key( 'stats_settings' ):
                     if dxdb.paramUpdate( 'users_lists', { 'id': data['list_id'] }, \
-                            spliceParams( data, [ 'title', 'track', 'color' ] ) ):
+                            spliceParams( data, [ 'title', 'track', 'color', 'stats_settings' ] ) ):
                         dxdb.commit()
                         okResponse = 'OK'
                     else:
@@ -276,6 +277,7 @@ def application(env, start_response):
                         if dxdb.paramDelete( 'users_lists_items',\
                             { 'list_id': data['list_id'], \
                             'callsign': data['callsign'] } ):
+                            dxdb.commit()
                             okResponse = 'OK'
                         else:
                             dbError = True
@@ -285,10 +287,43 @@ def application(env, start_response):
                                 'callsign': data['callsign'] },\
                             { 'settings': json.dumps( data['settings'] ), \
                             'pfx': data['pfx'] } ):
+                            dxdb.commit()
                             okResponse = 'OK'
                         else:
                             dbError = True
-
+                elif data.has_key( 'value' ):
+                    params =  { 'list_id': data['list_id'], 'callsign': data['value'], \
+                        'band': data['band'] if data.has_key( 'band' ) else 'N/A',\
+                        'mode': data['mode'] if data.has_key( 'mode' ) else 'N/A',\
+                        }
+                    if data.has_key( 'delete' ) and data['delete']:
+                        if dxdb.getObject( 'users_lists_awards', params, \
+                            False, True ):
+                            if dxdb.paramDelete( 'users_lists_awards', params ):
+                                dxdb.commit()
+                                okResponse = 'OK'
+                            else:
+                                dbError = True
+                    else:
+                        if dxdb.paramUpdateInsert( 'users_lists_awards', params, \
+                            spliceParams( data, \
+                            ['cfm_paper', 'cfm_eqsl', 'cfm_lotw', 'worked_cs'] )):
+                            dxdb.commit()
+                            okResponse = 'OK'
+                        else:
+                            dbError = True
+                elif data.has_key( 'delete' ):
+                    if dxdb.execute( """delete from users_lists_awards
+                        where list_id = %(list_id)s""", data ) and \
+                        dxdb.execute( """delete from users_lists_items
+                        where list_id = %(list_id)s""", data ) and \
+                        dxdb.execute( """delete from users_lists
+                        where id = %(list_id)s""", data ):
+                        dxdb.commit()
+                        okResponse = 'OK'
+                    else:
+                        dbError = True
+    
             elif not error:
                 error = 'Bad user settings'
         if dbError:
@@ -410,6 +445,33 @@ def getUserAwards( callsign ):
     else:
         return None
 
+def getUserListsAwards( callsign ):
+    awards = cursor2dicts( \
+            dxdb.execute( """
+                select users_lists_awards.*
+                from users_lists_awards join users_lists on
+                    users_lists_awards.list_id = users_lists.id
+                where users_lists.callsign = %s """, \
+                 ( callsign, ) ), True )
+    if awards:
+        r = {}
+        for item in awards:
+            if not r.has_key( item['list_id'] ):
+                r[item['list_id']] = {}
+            if not r[item['list_id']].has_key( item['callsign'] ):
+                r[item['list_id']][item['callsign']] = {}
+            if not r[item['list_id']][item['callsign']].has_key( item['band'] ):
+                r[item['list_id']][item['callsign']][item['band']] = {}
+            r[item['list_id']][item['callsign']][item['band']][item['mode']] = \
+                { 'workedCS': item['worked_cs'],\
+                'cfm_paper': item['cfm_paper'], 'cfm_eqsl': item['cfm_eqsl'],\
+                'cfm_lotw': item['cfm_lotw'] }
+        return r
+    else:
+        return None
+
+   
+
 def sendUserData( userData, start_response ):
     awardsSettings = cursor2dicts( \
             dxdb.execute( """
@@ -438,6 +500,7 @@ def sendUserData( userData, start_response ):
             'awardValueWorkedColor': userData['award_value_worked_color'], \
             'awardValueConfirmedColor': userData['award_value_confirmed_color'], \
             'awards': getUserAwards( userData['callsign'] ),\
+            'listsAwards': getUserListsAwards( userData['callsign'] ),\
             'lists': lists }
     if awardsSettings:
         toSend['awardsSettings'] = {}

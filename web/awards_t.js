@@ -79,6 +79,22 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
 
     }
 
+    $scope.deleteList = function( list ) {
+        if ( $window.confirm( 'Do you really want to remove user list ' + list.title + '?' ) ) {
+            $http.post( '/uwsgi/userSettings',
+                { 'token': $scope.user.token,
+                    'list_id': list.id,
+                    'delete': true
+                } ).then( function( response ) {
+                    console.log( response.data );
+                } );
+            var i = $scope.user.lists.indexOf( list );
+            $scope.user.lists.splice( i, 1 );
+            saveUserData( $scope.user );
+        }
+
+    }
+
 
     var url = testing ? '/debug/awards.json' : '/awards.json';
     $http.get( url ).then( function( response ) {
