@@ -79,7 +79,7 @@
     </div> <!-- fixed div end-->
 
     <table id="list_edit" style="margin-top: 350px;">
-        <tr ng-repeat="item in list.items" ng-class-odd="odd">
+        <tr ng-repeat="item in list.items track by $index" ng-class-odd="odd">
             <td class="callsign">
                 {{item.callsign}}{{item.pfx ? '*' : ''}}
             </td>

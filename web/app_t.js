@@ -4,12 +4,11 @@ webDXapp.controller( 'bodyCtrl', function( $scope, $http, $interval, $window, $t
     var stateAw = { 'Russia': 'RDA', 'Ukraine': 'URDA' };
 
     if ( $scope.user = getUserData( $scope, $window ) ) {
-        $scope.awardsSettings = $scope.user.awardsSettings;
-        for ( var award in $scope.awardsSettings )
-            if ( $scope.awardsSettings[award].settings != null ) {
-                var as = $scope.awardsSettings[award].settings;
+        for ( var award in $scope.user.awardsSettings )
+            if ( $scope.user.awardsSettings[award].settings != null ) {
+                var as = $scope.user.awardsSettings[award].settings;
                 for ( var field in as ) 
-                    if ( field != 'cfm' ) {
+                    if ( field != 'cfm' && field != 'sound' ) {
                         var fs = {};
                         as[field].forEach( function( item ) {
                             fs[item.name] = item.enabled;
@@ -18,7 +17,11 @@ webDXapp.controller( 'bodyCtrl', function( $scope, $http, $interval, $window, $t
                     }
             }
                 
-        
+        if ( !$scope.user.lists )
+            $scope.user.lists = [];
+
+        if ( !$scope.user.listsAwards )
+            $scope.user.listsAwards = {};
             
         
     }
@@ -117,19 +120,50 @@ webDXapp.controller( 'bodyCtrl', function( $scope, $http, $interval, $window, $t
         $window.location.reload();
     }
 
+    function checkAward( uav, dx ) {
+        var fl = false;
+        if ( dx.band in uav )
+            for ( var mode in uav[dx.band] )
+                if ( mode == dx.mode || 
+                    ( dx.subMode != null && dx.subMode.indexOf( mode ) != -1 ) ) {
+                    fl = true;
+                    uav = uav[dx.band][mode];
+                    break;
+                }        
+        return fl;
+    }
+
+    function checkAwardCfm( uav, cfm ) {
+        var confirmed = false;
+        for ( var cfmType in cfm )
+            if ( uav[cfmType] ) {
+                confirmed = true;
+                break;
+            }
+        return confirmed;
+    }
+
+    function createCfm( as ) {
+        var cfm = { 'cfm_paper': 1, 'cfm_eqsl': 1, 'cfm_lotw': 1 };
+        if ( as.settings.cfm )
+            as.settings.cfm.forEach( function( cfmType ) {                                    
+                if ( !cfmType.enabled )
+                    delete cfm[cfmType.name];
+            });
+    }
+
     function awards( dx ) {
         if ( $scope.user != null && ( $scope.user.awards != null || 
-                    $scope.awardsSettings != null ) ) {
+                    $scope.user.awardsSettings != null ) ) {
             fAwards = [];
             for ( var name in dx.awards ) 
                 if ( dx.awards.hasOwnProperty( name ) ) {
                     var value = dx.awards[name];
                     var award = { award: name, value: value };
-                    var cfm = { 'cfm_paper': 1, 'cfm_eqsl': 1, 'cfm_lotw': 1 };
-                    if ( $scope.awardsSettings != null &&
-                            name in $scope.awardsSettings ) {
-                        var as = $scope.awardsSettings[name];
-                        if ( $scope.awardsSettings[name].track ) {
+                    if ( $scope.user.awardsSettings != null &&
+                            name in $scope.user.awardsSettings ) {
+                        var as = $scope.user.awardsSettings[name];
+                        if ( $scope.user.awardsSettings[name].track ) {
                             if ( as.settings != null ) {
                                 if ( dx.band in as.settings.bands && 
                                         !as.settings.bands[dx.band] )
@@ -140,10 +174,7 @@ webDXapp.controller( 'bodyCtrl', function( $scope, $http, $interval, $window, $t
                                 if ( dx.subMode in as.settings.modes &&
                                         !as.settings.modes[dx.subMode] )
                                     continue;
-                                as.settings.cfm.forEach( function( cfmType ) {                                    
-                                    if ( !cfmType.enabled )
-                                        delete cfm[cfmType.name];
-                                });
+                                var cfm = createCfm( as );
                             }
                             if ( $scope.user.awards != null 
                                 && name in $scope.user.awards &&
@@ -151,34 +182,54 @@ webDXapp.controller( 'bodyCtrl', function( $scope, $http, $interval, $window, $t
                                 var uav = $scope.user.awards[name][value];
                                 var fl = false;
                                 var byBand = $scope.awards[name].byBand;
-                                if ( byBand && dx.band in uav )
-                                    for ( var mode in uav[dx.band] )
-                                        if ( mode == dx.mode || 
-                                            ( dx.subMode && dxSubMode.indexOf( mode ) != -1 ) ) {
-                                            fl = true;
-                                            uav = uav[dx.band][mode];
-                                            continue;
-                                        }                                    
+                                if ( byBand )
+                                    var fl = checkAward( uav, dx );
                                 if ( !$scope.awards[name].byBand || fl ) {
-                                    var confirmed = false;
-                                    for ( var cfmType in cfm )
-                                        if ( uav[cfmType] ) {
-                                            confirmed = true;
-                                            break;
-                                        }
-                                    if ( confirmed )
+                                    if ( checkAwardCfm( uav, cfm ) )
                                         continue;
                                     else
                                         award.worked = true;
                                 }
                             }
-                            award.color = $scope.awardsSettings[name].color;
+                            award.color = $scope.user.awardsSettings[name].color;
                             fAwards.push( award );
                         }
                     } else
                         fAwards.push( award );
                 }
             dx.awards = fAwards;
+            $scope.user.lists.forEach( function( list ) {
+                if ( list.track )
+                    list.items.forEach( function( item ) {
+                        if ( dx.band in item.settings.bands && 
+                                !item.settings.bands[dx.band] )
+                            return;
+                        if ( dx.mode in item.settings.modes &&
+                                !item.settings.modes[dx.mode] )
+                            return;
+                        if ( dx.subMode in item.settings.modes &&
+                                !item.settings.modes[dx.subMode] )
+                            return;
+                        if ( item.callsign == dx.cs || ( item.pfx && dx.cs.indexOf( item.callsign ) == 0 ) ) {
+                            var worked = false;
+                            if ( list.id in $scope.user.listsAwards && item.callsign in 
+                                $scope.user.listsAwards[list.id] ) {
+                                var uav = $scope.user.listsAwards[list.id][item.callsign];
+                                if ( checkAward( uav, dx ) ) {
+                                    var cfm = createCfm( item );
+                                    if ( checkAwardCfm( uav, cfm ) )
+                                        return;
+                                    else
+                                        worked = true;
+                                }
+
+                            }
+                            dx.awards.push( { award: list.title, value: item.callsign,
+                                worked: worked, list_id: list.id } );
+                           
+                        }
+                    });
+            });
          } else {
             fAwards = [];
             for ( var name in dx.awards ) 

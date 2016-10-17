@@ -104,10 +104,9 @@
                 <th class="color_name">Color</th>
                 <th class="short_name"></th>
                 <th class="full_name">
-                    Full award's name
                 </th>
-                <th class="notification">
-                    Award's settings
+                <th class="settings">
+                    Settings
                 </th>
                 <th class="website">
                     Аward's website
@@ -115,12 +114,12 @@
             </tr>
             <tr>
                 <td colspan="6" class="country">
-                    USER LISTS
+                    User lists
                 </td>
             </tr>
             <tr>
                 <td colspan="6">
-                    <a href="/list_setup.html">Create new list</a>
+                    <a id="create_list" href="/list_setup.html">Create new list</a>
                 </td>
             </tr>
             <tr ng-repeat="list in user.lists | orderBy: id">
@@ -140,7 +139,7 @@
                 </td>
                 <td class="full_name">
                     List #{{$index + 1}}
-                    <input type="button" ng-click="deleteList( list )" value="Delete"/>
+                    <img src="/images/icon_close.png" ng-click="deleteList(list)" title="Delete list">
                 </td>
                 <td class="notification">
                     <a href="/list_setup.html?id={{list.id}}"><img src="/images/icon_setup.png"></a>

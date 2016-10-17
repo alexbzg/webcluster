@@ -55,26 +55,15 @@ listApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
                 updateSwitch( field, value );
     }
 
-    function updateCallsigns() {
-        $scope.callsigns = '';
-        $scope.list.items.forEach( function( item ) {
-            $scope.callsigns += item.callsign;
-            if ( item.pfx )
-                $scope.callsigns += '*';
-            $scope.callsigns += ' ';
-        });
-    }
-
-
     if ( $scope.params.id ) 
         $scope.list = $scope.user.lists.find( 
             function( item ) { return $scope.params.id == item.id; } );
 
     if ( $scope.list ) {
+        $scope.list.no = $scope.user.lists.indexOf( $scope.list ) + 1;
         if ( !$scope.list.items )
             $scope.list.items = [];
         updateAllSwitches();        
-        updateCallsigns();
     } else {
         var no = $scope.user.lists.length + 1;
         var list = { title: 'LIST' + no, no: no, items: [] }
@@ -127,8 +116,6 @@ listApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
 
     $scope.updateItems = function() {
         var css = $scope.callsigns.split( /[,; ]+/ );
-        $scope.list.items = $scope.list.items.filter( 
-                function( item ) { return css.indexOf( item.callsign ) > -1 } );
         css.forEach( function( cs ) {
             cs = cs.trim().toUpperCase();            
             var pfx = false;
@@ -143,6 +130,7 @@ listApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
                 saveItem( listItem );
             }
         });
+        $scope.callsigns = '';
     };
 
     $scope.deleteItem = function( item ) {
@@ -152,7 +140,6 @@ listApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
             var i = $scope.list.items.indexOf( item );
             $scope.list.items.splice( i, 1 );
             updateAllSwitches();
-            updateCallsigns();
             saveUserData( $scope.user );
             $http.post( '/uwsgi/userSettings',
                 { 'token': $scope.user.token,

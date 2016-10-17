@@ -197,23 +197,45 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
         }
     }
 
+    $scope.setActive = function ( value, band, mode ) {
+        $scope.activeValue = value;
+        $scope.activeBand = band;
+        $scope.activeMode = mode;
+    }
+   
+
     $scope.awardsValues = [];
     var listCo = 1;
     $scope.user.lists.forEach( function( list ) {
         var listAV = { fullName: 'List #' + listCo++, name: list.title, byBand: true,
             stats_settings: list.stats_settings, values: [], list_id: list.id, country: 'Aaaa' };
         $scope.awardsValues.push( listAV );
+        var active = {};
+        if ( $scope.params.list_id == list.id )
+            active.award = listAV;
         if ( list.items ) 
             list.items.forEach( function( item ) {
                 var itemAV = { value: item.callsign + ( item.pfx ? '*' : '' ),
                     'byBand': {} };
                 listAV.values.push( itemAV );
+                if ( active.award && active.award == listAV && 
+                        $scope.params.value == item.callsign )
+                    active.value = itemAV;
                 if ( list.id in $scope.user.listsAwards && 
                     item.callsign in $scope.user.listsAwards[list.id] )
                     fillAwardValue( $scope.user.listsAwards[list.id][item.callsign],
                             itemAV.byBand );
             });
+        if ( active.award ) {
+            $scope.activeAward = active.award;
+            $scope.activeAwardChanged();
+        }
+        if ( active.value )
+            $scope.setActive( active.value, $scope.params.band, $scope.params.mode );
+               
+ 
     });
+    
 
     $scope.loading = true;
     var url = testing ? '/debug/awardsValues.json' : '/awardsValues.json';
@@ -271,11 +293,6 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
         }
     };
 
-    $scope.setActive = function ( value, band, mode ) {
-        $scope.activeValue = value;
-        $scope.activeBand = band;
-        $scope.activeMode = mode;
-    }
 
     function saveUserAwards( noPost ) {
         saveUserData( $scope.user );

@@ -162,7 +162,11 @@ def application(env, start_response):
         dbError = False
         callsign = None
         if data.has_key( 'token' ):
-            pl = jwt.decode( data['token'], secret, algorithms=['HS256'] )
+            try:
+                pl = jwt.decode( data['token'], secret, algorithms=['HS256'] )
+            except jwt.exceptions.DecodeError, e:
+                start_response( '400 Bad Request', [('Content-Type','text/plain')])
+                return 'Login expired'
             if pl.has_key( 'callsign' ):
                 callsign = pl['callsign']
         if callsign:
