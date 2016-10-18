@@ -15,6 +15,8 @@ webDXapp.controller( 'bodyCtrl', function( $scope, $http, $interval, $window, $t
                         });
                         as[field] = fs;
                     }
+                if ( !('sound' in as) || as.sound == null ) 
+                    as.sound = { wkd: true, not: true };
             }
                 
         if ( !$scope.user.lists )
@@ -91,8 +93,14 @@ webDXapp.controller( 'bodyCtrl', function( $scope, $http, $interval, $window, $t
             $scope.lastDx.ts = dx.ts;
             if ( dx.cs != $scope.lastDx.cs ) {
                 $scope.lastDx.cs = dx.cs;
-                if ( !$scope.firstLoad && $scope.selector.sound )
-                    playSound();
+                if ( !$scope.firstLoad && $scope.selector.sound ) {
+                    var al = dx.awrds.length;
+                    for ( var co = 0; co < al; co++ )
+                        if ( dx.awards[co].sound ) {
+                            playSound();
+                            break;
+                        }
+                }
             }
         }
         return r;
@@ -192,6 +200,9 @@ webDXapp.controller( 'bodyCtrl', function( $scope, $http, $interval, $window, $t
                                 }
                             }
                             award.color = $scope.user.awardsSettings[name].color;
+                            if ( ( award.worked && as.settings.sound.wkd ) || 
+                                    ( !award.worked && as.settings.sound.not ) )
+                                award.sound = true;
                             fAwards.push( award );
                         }
                     } else
@@ -225,7 +236,10 @@ webDXapp.controller( 'bodyCtrl', function( $scope, $http, $interval, $window, $t
 
                             }
                             dx.awards.push( { award: list.title, value: item.callsign,
-                                worked: worked, list_id: list.id } );
+                                worked: worked, list_id: list.id, color: list.color,
+                                sound: ( worked && item.setting.sound.wkd ) || 
+                                    ( !worked && item.settings.sound.not )
+                            } );
                            
                         }
                     });

@@ -6,23 +6,26 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
 //        console.log( "no user data" );
         $window.location.href = "http://adxcluster.com/login.html";
 
-    if ( 'awardsSettings' in $scope.user )
-        $scope.awardsSettings = $scope.user.awardsSettings;
-    else
-        $scope.awardsSettings = {};
+    if ( !('awardsSettings' in $scope.user) || $scope.user.awardsSettings == null )
+        $scope.user.awardsSettings = {};
+
+    if ( !('lists' in $scope.user) || $scope.user.lists == null )
+        $scope.user.lists = [];
 
     function awardSettings( country ) {
         country.awards.forEach( function( award ) {
-            if ( !( award.name in $scope.awardsSettings ) )
-                $scope.awardsSettings[award.name] = { 'track': true, 'color': '#770000' };
-            if ( !( 'settings' in $scope.awardsSettings[award.name] ) || 
-                    $scope.awardsSettings[award.name].settings == null) {
-                $scope.awardsSettings[award.name].settings = {};
-                var s = $scope.awardsSettings[award.name].settings;
+            if ( !( award.name in $scope.user.awardsSettings ) )
+                $scope.user.awardsSettings[award.name] = { 'track': true, 'color': '#770000' };
+            if ( !( 'settings' in $scope.user.awardsSettings[award.name] ) || 
+                    $scope.user.awardsSettings[award.name].settings == null) {
+                $scope.user.awardsSettings[award.name].settings = {};
+                var s = $scope.user.awardsSettings[award.name].settings;
                 var st =
                 { bands: [ '1.8', '3.5', '7', '10', '14', '18', '21', '24', '28', '50', '144' ],
                     modes: [ 'CW', 'SSB', 'RTTY', 'PSK31', 'PSK63', 'PSK125', 'JT65' ],
-                    cfm: [ [ 'Paper', 'cfm_paper' ], [ 'eQSL', 'cfm_eqsl'], ['LOTW', 'cfm_lotw'] ] };
+                    cfm: [ [ 'Paper', 'cfm_paper' ], [ 'eQSL', 'cfm_eqsl'], ['LOTW', 'cfm_lotw'] ],
+                    sound: { wkd: true, not: true }
+                };
                 for ( var field in st )
                     if ( st.hasOwnProperty( field ) ) {
                         s[field] = [];
@@ -34,7 +37,13 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
                         });
                     }
             }
+            if ( !$scope.user.awardsSettings[award.name].settings.sound )
+                $scope.user.awardsSettings[award.name].settings.sound =
+                    { wkd: true, not: true };
+
+
         } );
+       
     }
 
     $scope.setupAward = null;
@@ -48,21 +57,52 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
     }
 
     $scope.awardSettingsChanged = function( award ) {
-        $scope.user.awardsSettings = $scope.awardsSettings;
         saveUserData( $scope.user );
         if ( award ) {
             $http.post( '/uwsgi/userSettings',
                 { 'token': $scope.user.token,
                     'award': award,
-                    'track': $scope.awardsSettings[award].track,
-                    'color': $scope.awardsSettings[award].color,
-                    'settings': $scope.awardsSettings[award].settings,
+                    'track': $scope.user.awardsSettings[award].track,
+                    'color': $scope.user.awardsSettings[award].color,
+                    'settings': $scope.user.awardsSettings[award].settings,
                 } ).then( function( response ) {
                     console.log( response.data );
                 } );
         }
 
     }
+
+    $scope.listChanged = function( list ) {
+        saveUserData( $scope.user );
+        if ( list ) {
+            $http.post( '/uwsgi/userSettings',
+                { 'token': $scope.user.token,
+                    'list_id': list.id,
+                    'track': list.track,
+                    'color': list.color,
+                } ).then( function( response ) {
+                    console.log( response.data );
+                } );
+        }
+
+    }
+
+    $scope.deleteList = function( list ) {
+        if ( $window.confirm( 'Do you really want to remove user list ' + list.title + '?' ) ) {
+            $http.post( '/uwsgi/userSettings',
+                { 'token': $scope.user.token,
+                    'list_id': list.id,
+                    'delete': true
+                } ).then( function( response ) {
+                    console.log( response.data );
+                } );
+            var i = $scope.user.lists.indexOf( list );
+            $scope.user.lists.splice( i, 1 );
+            saveUserData( $scope.user );
+        }
+
+    }
+
 
     var url = testing ? '/debug/awards.json' : '/awards.json';
     $http.get( url ).then( function( response ) {

@@ -54,7 +54,7 @@
             </span>
 
         </div>
-        <img src="/images/icon_select.png" title="Select desired bands and modes" 
+        <img src="/images/icon_select.png" title="Select bands and modes for view" 
             ng-click="showSelector = !showSelector"/>
     </div>
 
@@ -82,7 +82,7 @@
                 </td>
                 <td class="awards">
                     <a ng-repeat="award in item.awards" 
-                       href="/stats.html?award={{award.award}}&value={{award.value}}&band={{item.band}}&mode={{item.mode}}"><span 
+                       href="/stats.html?award={{award.award}}&value={{award.value}}&band={{item.band}}&mode={{item.mode}}&list_id={{award.list_id}}"><span 
                         class="award_name" ng-style="{'color': award.color}"
                         >{{award.award}}<img ng-show="award.worked" src="/images/icon_worked.png" 
                                 title="worked but not confirmed"/></span>

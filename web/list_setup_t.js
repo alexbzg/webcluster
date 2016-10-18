@@ -6,8 +6,10 @@ listApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
 //        console.log( "no user data" );
         $window.location.href = "http://adxcluster.com/login.html";
 
-    if ( !('lists' in $scope.user) || !$scope.user.lists )
+    if ( !('lists' in $scope.user) || !$scope.user.lists ) {
         $scope.user.lists = [];
+        saveUserData( $scope.user );
+    }
 
     $scope.logout = function() {
         logoutUser();
@@ -69,6 +71,7 @@ listApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
         var list = { title: 'LIST' + no, no: no, items: [] }
         $scope.user.lists.push( list );
         $scope.list = list;
+        saveUserData( $scope.user );
         saveList();
     }
     $scope.list.titleCache = $scope.list.title;

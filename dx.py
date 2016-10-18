@@ -620,11 +620,9 @@ class DXData:
             cs = m.group( 3 )
             country = getCountry( cs )
             freq = float( m.group(2) )
-            if country:
-                dx = DX( dxData = self, text = m.group(4), cs = cs, freq = freq, \
-                        de = m.group(1), time = m.group(5), country = country )
-                if not dx.checkEmpty():
-                    self.append( dx )
+            self.append( \
+                    DX( dxData = self, text = m.group(4), cs = cs, freq = freq, \
+                        de = m.group(1), time = m.group(5), country = country ) )
 
 
 

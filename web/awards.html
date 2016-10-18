@@ -36,7 +36,7 @@
                         <th id="band" colspan="11">Band (MHz)</th>
                     </tr>
                     <tr>
-                        <td class="band" ng-repeat="band in awardsSettings[setupAward].settings.bands 
+                        <td class="band" ng-repeat="band in user.awardsSettings[setupAward].settings.bands 
                             track by $index">
                             {{band.display}}<br/>
                             <input type="checkbox" ng-model="band.enabled" 
@@ -49,7 +49,7 @@
                         <th id="mode" colspan="7">Mode</th>
                     </tr>
                     <tr>
-                        <td class="mode" ng-repeat="mode in awardsSettings[setupAward].settings.modes">
+                        <td class="mode" ng-repeat="mode in user.awardsSettings[setupAward].settings.modes">
                             {{mode.display}}<br/>
                             <input type="checkbox" ng-model="mode.enabled"
                                 ng-change="awardSettingsChanged(setupAward)">
@@ -61,13 +61,33 @@
                             <th id="cfm" colspan="3">CFM</th>
                         </tr>
                         <tr>
-                            <td class="cfm" ng-repeat="cfm in awardsSettings[setupAward].settings.cfm">
+                            <td class="cfm" ng-repeat="cfm in user.awardsSettings[setupAward].settings.cfm">
                                 {{cfm.display}}<br/>
                                 <input type="checkbox" ng-model="cfm.enabled"
                                     ng-change="awardSettingsChanged(setupAward)">
                             </td>
                         </tr>
-                    </table>
+                </table>
+                <table class="award_setup">
+                        <tr>
+                            <th id="sound" colspan="2">SOUND</th>
+                        </tr>
+                        <tr>
+                            <td class="sound">
+                                not WKD<br/>
+                                <input type="checkbox" 
+                                    ng-model="user.awardsSettings[setupAward].settings.sound.not"
+                                    ng-change="awardSettingsChanged(setupAward)">
+                            </td>
+                            <td class="sound">
+                                not CFM<br/>
+                                <input type="checkbox" 
+                                    ng-model="user.awardsSettings[setupAward].settings.sound.wkd"
+                                    ng-change="awardSettingsChanged(setupAward)">
+                            </td>
+                       </tr>
+                 </table>
+
 
                 </div>
             </td>
@@ -84,15 +104,54 @@
                 <th class="color_name">Color</th>
                 <th class="short_name"></th>
                 <th class="full_name">
-                    Full award's name
                 </th>
-                <th class="notification">
-                    Award's settings
+                <th class="settings">
+                    Settings
                 </th>
                 <th class="website">
                     Аward's website
                 </th>
             </tr>
+            <tr>
+                <td colspan="6" class="country">
+                    User lists
+                </td>
+            </tr>
+            <tr>
+                <td colspan="6">
+                    <a id="create_list" href="/list_setup.html">Create new list</a>
+                </td>
+            </tr>
+            <tr ng-repeat="list in user.lists | orderBy: id">
+                <td class="track">
+                    <input type="checkbox" ng-model="list.track" 
+                        ng-change="listChanged(list)">
+                </td>
+                <td class="color_name">
+                    <button colorpicker type="button" colorpicker-position="top" id="color_list_{{list.id}}"
+                        ng-model="list.color" 
+                        style='background-color: {{list.color}};'
+                        ng-change="listChanged(list)">&nbsp;
+                    </button>
+                </td>
+                <td class="short_name" style='color: {{list.color}};'>
+                    {{list.title}}
+                </td>
+                <td class="full_name">
+                    List #{{$index + 1}}
+                    <img src="/images/icon_close.png" ng-click="deleteList(list)" title="Delete list">
+                </td>
+                <td class="notification">
+                    <a href="/list_setup.html?id={{list.id}}"><img src="/images/icon_setup.png"></a>
+  
+                    <!--
+                    <input type="checkbox" disabled><img src="/images/icon_sound.jpg" title="Sound notification"> <input type="checkbox" disabled><img src="/images/icon_telegram.jpg" title="Telegram message">  -->
+                </td>
+                <td class="website">
+                    <!--a href="{{award.link}}" target="_blank" title="Link to {{award.name}} website"><img src="/images/icon_weblink.png"></a-->
+                </td>
+            </tr>
+
             <tr ng-repeat-start="country in awardsList | orderBy: 'country'">
                 <td colspan="6" class="country">
                     {{country.country}}
@@ -100,17 +159,17 @@
             </tr>
             <tr ng-repeat="award in country.awards">
                 <td class="track">
-                    <input type="checkbox" ng-model="awardsSettings[award.name].track" 
+                    <input type="checkbox" ng-model="user.awardsSettings[award.name].track" 
                         ng-change="awardSettingsChanged(award.name)">
                 </td>
                 <td class="color_name">
                     <button colorpicker type="button" colorpicker-position="top" id="color_{{award.name}}"
-                        ng-model="awardsSettings[award.name].color" 
-                        style='background-color: {{awardsSettings[award.name].color}};'
+                        ng-model="user.awardsSettings[award.name].color" 
+                        style='background-color: {{user.awardsSettings[award.name].color}};'
                         ng-change="awardSettingsChanged(award.name)">&nbsp;
                     </button>
                 </td>
-                <td class="short_name" style='color: {{awardsSettings[award.name].color}};'>
+                <td class="short_name" style='color: {{user.awardsSettings[award.name].color}};'>
                     {{award.name}}
                 </td>
                 <td class="full_name">

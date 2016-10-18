@@ -1,0 +1,114 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"                                                
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" land="ru" xml:lang="en" ng-app="listApp">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <meta http-equiv="Content-Language" content="ru-ru"/>
+        <meta name="description" content="" />
+        <meta name="keywords" content="" />
+        <title>ADXcluster.com - List #1 - settings</title>
+        <link href="style.css" rel="stylesheet" type="text/css">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon">
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-sanitize.js"></script>
+        <script src="userData.js"></script>
+        <script src="bootstrap-colorpicker-module.min.js"></script>
+        <script src="testing.js"></script>
+        <script src="polyfill.js"></script>
+        <script src="list_setup_t.js"></script>
+
+    </head>
+    <body ng-controller="bodyCtrl">
+    <div id="fixed_top">
+   
+    <ng-include src="'menu.html'">
+    </ng-include>
+   
+    <div id="list_add_calls">
+        <span id="list_title">List #{{list.no}}</span> 
+        <span id="short_name">
+            Short title (up to 10 symbols) 
+            <input type="text" ng-model="list.title" ng-blur="checkTitle()">
+        </span><br/>
+        Enter the callsign for tracking. You may enter a list of callsigns separeted by spaces or commas.<br/>
+        <span class="note">Use * to track the range of callsigns. (For example, IT9* - to track all IT9 callsigns.)</span>
+        <table id="input_callsigns"><tr><td>
+            <textarea ng-model="callsigns"></textarea>
+        </td><td>
+            <input type="submit" id="submit_btn" value="OK" ng-click="updateItems();">
+        </td></tr></table>
+    </div>
+
+    <table id="list_edit">
+        <tr>
+            <th id="callsign" rowspan="2" class="border_right">&nbsp;</th>
+            <th id="band" colspan="11" class="border_right">Band</th>
+            <th id="mode" colspan="7" class="border_right">Mode</th>
+            <th id="sound" colspan="2" class="border_right">Sound</th>
+            <!--th id="mobile"  colspan="2" class="border_right">&nbsp;</th-->
+            <th id="delete" rowspan="2">&nbsp;</th>
+        </tr>
+        <tr>
+            <td class="band" ng-repeat="band in const.bands" ng-class="{border_right: $last}">
+                {{band}}<br/>
+                <input type="checkbox" ng-model="switches.bands[band]" 
+                                       ng-click="switch( 'bands', band );">
+            </td>
+            <td class="mode" ng-repeat="mode in const.modes" ng-class="{border_right: $last}">
+                {{mode}}<br/>
+                <input type="checkbox" ng-model="switches.modes[mode]"
+                    ng-click="switch( 'modes', mode )">
+            </td>
+            <td class="sound">
+                not&nbsp;WKD<br/>
+                <input type="checkbox" ng-model="switches.sound.not"
+                    ng-click="switch( 'sound', 'not' )">
+            </td>
+            <td class="sound border_right">
+                not&nbsp;CFM<br/><input type="checkbox" ng-model="switches.sound.wkd"
+                    ng-click="switch( 'sound', 'wkd' )">
+            </td>
+            <!--td class="mobile">not&nbsp;WKD<br/><input type="checkbox"></td>
+            <td class="mobile border_right">WKD<br/><input type="checkbox"></td-->
+        </tr>
+    </table>
+
+
+    </div> <!-- fixed div end-->
+
+    <table id="list_edit" style="margin-top: 350px;">
+        <tr ng-repeat="item in list.items track by $index" ng-class-odd="odd">
+            <td class="callsign">
+                {{item.callsign}}{{item.pfx ? '*' : ''}}
+            </td>
+            <td class="band" ng-repeat="band in const.bands" ng-class="{border_right: $last}">
+                <input type="checkbox" ng-model="item.settings.bands[band]" 
+                    ng-click="itemChanged( item, 'bands', band )">
+            </td>
+            <td class="mode" ng-repeat="mode in const.modes" ng-class="{border_right: $last}">
+                <input type="checkbox" ng-model="item.settings.modes[mode]" 
+                                       ng-click="itemChanged( item, 'modes', mode )">
+            </td>
+            <td class="sound"><input type="checkbox" ng-model="item.settings.sound.not"
+                 ng-click="itemChanged( item, 'sound', 'not' )"></td>
+            <td class="sound border_right"><input type="checkbox" ng-model="item.settings.sound.wkd"
+                 ng-click="itemChanged( item, 'sound', 'wkd' )"></td>
+            <!--td class="mobile"><input type="checkbox" ng-model="item.settings.mobile.not"></td>
+            <td class="mobile border_right"><input type="checkbox" ng-model="item.settings.mobile.wkd"></td-->
+            <td class="delete"><img src="/images/icon_close.png" ng-click="deleteItem(item)" title="Delete"></td>
+        </tr>
+    </table>
+
+
+
+
+<div id="counter">
+        <!-- Yandex.Metrika informer --> <a href="https://metrika.yandex.ru/stat/?id=38305355&amp;from=informer" target="_blank" rel="nofollow"><img src="https://informer.yandex.ru/informer/38305355/3_0_EFEFEFFF_EFEFEFFF_0_pageviews" style="width:88px; height:31px; border:0;" alt="Яндекс.Метрика" title="Яндекс.Метрика: данные за сегодня (просмотры, визиты и уникальные посетители)" onclick="try{Ya.Metrika.informer({i:this,id:38305355,lang:'ru'});return false}catch(e){}" /></a> <!-- /Yandex.Metrika informer --> <!-- Yandex.Metrika counter --> <script type="text/javascript"> (function (d, w, c) { (w[c] = w[c] || []).push(function() { try { w.yaCounter38305355 = new Ya.Metrika({ id:38305355, clickmap:true, trackLinks:true, accurateTrackBounce:true }); } catch(e) { } }); var n = d.getElementsByTagName("script")[0], s = d.createElement("script"), f = function () { n.parentNode.insertBefore(s, n); }; s.type = "text/javascript"; s.async = true; s.src = "https://mc.yandex.ru/metrika/watch.js"; if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f, false); } else { f(); } })(document, window, "yandex_metrika_callbacks"); </script> <noscript><div><img src="https://mc.yandex.ru/watch/38305355" style="position:absolute; left:-9999px;" alt="" /></div></noscript> <!-- /Yandex.Metrika counter -->
+    </div>
+
+
+    </body>
+</html>
+

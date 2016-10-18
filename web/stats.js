@@ -5,17 +5,22 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
     if ( !( $scope.user = getUserData() ) )    
         $window.location.href = "http://adxcluster.com/login.html";
 
-    if ( 'awardsSettings' in $scope.user )
-        $scope.awardsSettings = $scope.user.awardsSettings;
-    else
-        $scope.awardsSettings = {};
+    if ( !( 'awardsSettings' in $scope.user ) || $scope.user.awardsSettings == null )
+        $scope.user.awardsSettings = {};
 
     if ( !('awards' in $scope.user) || $scope.user.awards == null )
         $scope.user.awards = {};
 
+    if ( !('lists' in $scope.user) || $scope.user.lists == null )
+        $scope.user.lists = [];
+ 
+    if ( !('listsAwards' in $scope.user) || $scope.user.listsAwards == null )
+        $scope.user.listsAwards = {};
+  
     $scope.params = {};
     location.search.substr(1).split("&").forEach(function(item) 
-            {$scope.params[item.split("=")[0]] = decodeURIComponent( item.split("=")[1] )});
+            {$scope.params[item.split("=")[0]] = 
+                decodeURIComponent( item.split("=")[1] )});
 
 
     $scope.logout = function() {
@@ -28,14 +33,16 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
         $http.post( '/uwsgi/userSettings',
             { 'token': $scope.user.token,
                 'award_value_worked_color': $scope.user.awardValueWorkedColor,
-                'award_value_confirmed_color': $scope.user.awardValueConfirmedColor                
+                'award_value_confirmed_color': 
+                    $scope.user.awardValueConfirmedColor                
             } ).then( function( response ) {
                 console.log( response.data );
             } );
     };
     
     $scope.const = { 
-        'bands': [ '1.8', '3.5', '7', '10', '14', '18', '21', '24', '28', '50', '144' ],
+        'bands': [ '1.8', '3.5', '7', '10', '14', '18', '21', '24', '28', '50', 
+            '144' ],
         'modes': [ 'CW', 'SSB', 'RTTY', 'PSK31', 'PSK63', 'PSK125', 'JT65' ] };
     $scope.stats = {};
 
@@ -81,8 +88,22 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
                 src : src[$scope.cfm[co].field];
     }
 
+    function findActiveList() {
+        return $scope.user.lists.find( 
+            function( list ) { return list.id == $scope.activeAward.list_id; } );
+    }
 
-    $scope.cfmChanged = function() {
+
+    function createPostData() {
+        var data =  { 'token': $scope.user.token }
+        if ( $scope.activeAward.list_id )
+            data.list_id = $scope.activeAward.list_id;
+        else
+            data.award = $scope.activeAward.name;
+        return data;
+    }
+
+    $scope.cfmChanged = function( noSave ) {
         var award = $scope.activeAward;
         if ( award.byBand ) {
             $scope.const.bands.forEach( function( band ) {
@@ -106,29 +127,32 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
                     award.confirmed++;
             });
         }
-        var statsSettings = { cfm: {}, 
-            modesFilter: angular.extend( {}, $scope.modesFilter ) };
-        $scope.cfm.forEach( function( type ) {
-            statsSettings.cfm[type.field] = type.enabled; 
-        });
-        var award = $scope.activeAward.name;
-        if ( !( award in $scope.user.awardsSettings ) )
-            $scope.user.awardsSettings[award] = {};
-        $scope.user.awardsSettings[award].stats_settings = statsSettings;
-        saveUserData( $scope.user );
-        if ( award ) {
-            $http.post( '/uwsgi/userSettings',
-                { 'token': $scope.user.token,
-                    'award': award,
-                    'stats_settings': statsSettings,
-                } ).then( function( response ) {
-                    console.log( response.data );
-                } );
+        if ( !noSave ) {
+            var statsSettings = { cfm: {}, 
+                modesFilter: angular.extend( {}, $scope.modesFilter ) };
+            $scope.cfm.forEach( function( type ) {
+                statsSettings.cfm[type.field] = type.enabled; 
+            });
+            var award = $scope.activeAward.name;
+            if ( $scope.activeAward.list_id ) {
+                var activeList = findActiveList();
+                activeList.stats_settings = statsSettings;
+            } else {
+                if ( !( award in $scope.user.awardsSettings ) )
+                    $scope.user.awardsSettings[award] = {};
+                $scope.user.awardsSettings[award].stats_settings = statsSettings;
+            }
+            saveUserData( $scope.user );
+            var data = createPostData();
+            data.stats_settings = statsSettings;
+            if ( award ) {
+                $http.post( '/uwsgi/userSettings', data
+                    ).then( function( response ) {
+                        console.log( response.data );
+                    } );
+            }
         }
 
-    };
-
-    $scope.modesFilterChanged = function() {
     };
 
     $scope.activeAwardChanged = function() {
@@ -144,8 +168,10 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
         $scope.cfm = [ { field: 'cfm_paper', display: 'Paper', enabled: true },
                     { field: 'cfm_eqsl', display: 'eQSL', enabled: true },
                     { field: 'cfm_lotw', display: 'LOTW', enabled: true } ];
-        if ( $scope.activeAward.name in $scope.awardsSettings ) {
-            var as = $scope.awardsSettings[$scope.activeAward.name];
+        if ( $scope.activeAward.name in $scope.user.awardsSettings ||
+                $scope.activeAward.list_id ) {
+            var as = $scope.activeAward.list_id ? findActiveList() : 
+                $scope.user.awardsSettings[$scope.activeAward.name];
             if ( 'stats_settings' in as && as.stats_settings != null ) {
                 var ss = as.stats_settings;
                 if ( 'cfm' in ss && ss.cfm != null ) 
@@ -157,22 +183,73 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
                     $scope.modesFilter = angular.extend( {}, ss.modesFilter );
             }
         }
-        $scope.cfmChanged();
+        $scope.cfmChanged( true );
     };
+
+    function fillAwardValue( src, dst ) {
+        for ( var band in src ) {
+            dst[band] = { byMode: {} };
+            for ( var mode in src[band] ) {
+                dst[band].byMode[mode] = { worked: true };
+                angular.extend( dst[band].byMode[mode], 
+                        src[band][mode] );
+            }
+        }
+    }
+
+    $scope.setActive = function ( value, band, mode ) {
+        $scope.activeValue = value;
+        $scope.activeBand = band;
+        $scope.activeMode = mode;
+    }
+   
+
+    $scope.awardsValues = [];
+    var listCo = 1;
+    $scope.user.lists.forEach( function( list ) {
+        var listAV = { fullName: 'List #' + listCo++, name: list.title, byBand: true,
+            stats_settings: list.stats_settings, values: [], list_id: list.id, country: 'Aaaa' };
+        $scope.awardsValues.push( listAV );
+        var active = {};
+        if ( $scope.params.list_id == list.id )
+            active.award = listAV;
+        if ( list.items ) 
+            list.items.forEach( function( item ) {
+                var itemAV = { value: item.callsign + ( item.pfx ? '*' : '' ),
+                    'byBand': {} };
+                listAV.values.push( itemAV );
+                if ( active.award && active.award == listAV && 
+                        $scope.params.value == item.callsign )
+                    active.value = itemAV;
+                if ( list.id in $scope.user.listsAwards && 
+                    item.callsign in $scope.user.listsAwards[list.id] )
+                    fillAwardValue( $scope.user.listsAwards[list.id][item.callsign],
+                            itemAV.byBand );
+            });
+        if ( active.award ) {
+            $scope.activeAward = active.award;
+            $scope.activeAwardChanged();
+        }
+        if ( active.value )
+            $scope.setActive( active.value, $scope.params.band, $scope.params.mode );
+               
+ 
+    });
+    
 
     $scope.loading = true;
     var url = testing ? '/debug/awardsValues.json' : '/awardsValues.json';
     $http.get( url ).then( function( response ) {
             var active = {};
             $scope.loading = false;
-            $scope.awardsValues = response.data;
-            $scope.awardsValues.forEach( function( award ) {
+            response.data.forEach( function( award ) {
+                $scope.awardsValues.push( award );
                 award.worked = 0;
                 award.confirmed = 0;
                 if ( $scope.params.award == award.name )
                     active.award = award;
-                if ( !( award.name in $scope.awardsSettings ) )
-                    $scope.awardsSettings[award.name] = 
+                if ( !( award.name in $scope.user.awardsSettings ) )
+                    $scope.user.awardsSettings[award.name] = 
                         { 'track': true, 'color': '#770000' };
                 if ( !( award.name in $scope.user.awards ) )
                     $scope.user.awards[award.name] = {};
@@ -181,13 +258,7 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
                         var uav = $scope.user.awards[award.name][av.value];
                         if ( award.byBand ) {
                             av.byBand = {};
-                            for ( var band in uav ) {
-                                av.byBand[band] = { byMode: {} };
-                                for ( var mode in uav[band] ) {
-                                    av.byBand[band].byMode[mode] = { worked: true };
-                                    angular.extend( av.byBand[band].byMode[mode], uav[band][mode] );
-                                }
-                            }
+                            fillAwardValue( uav, av.byBand );
                         } else {
                             angular.extend( av, uav );
                             av.worked = true;
@@ -222,28 +293,14 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
         }
     };
 
-    $scope.setActive = function ( value, band, mode ) {
-        $scope.activeValue = value;
-        $scope.activeBand = band;
-        $scope.activeMode = mode;
-    }
-
-    $scope.showPopup = function( value, band ){
-        if ( value == null )
-            $scope.popup = null;
-        else
-            $scope.popup = { value: value, band: band };
-    }
 
     function saveUserAwards( noPost ) {
         saveUserData( $scope.user );
         var iv = getIV();
         if ( !noPost ) {
-            var data = 
-                { 'token': $scope.user.token,
-                    'award': $scope.activeAward.name,
-                    'value': $scope.activeValue.value,
-                    'workedCS': iv.workedCS };
+            var data = createPostData();
+            data.value = $scope.activeValue.value;
+            data.workedCS = iv.workedCS;
             copyCfm( iv, data );
             if ( $scope.activeAward.byBand ) {
                 data.band = $scope.activeBand;
@@ -267,7 +324,14 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
     }
 
     function createAward() {
-        var ua = $scope.user.awards[$scope.activeAward.name];
+        if ( $scope.activeAward.list_id ) {
+            var lid = $scope.activeAward.list_id;
+            if ( !( lid in $scope.user.listsAwards ) )
+                $scope.user.listsAwards[lid] = {};
+        }
+        var ua = $scope.activeAward.list_id ?
+            $scope.user.listsAwards[$scope.activeAward.list_id] :
+            $scope.user.awards[$scope.activeAward.name];
         if ( !( $scope.activeValue.value in ua ) )
             ua[$scope.activeValue.value] = {};
         var uav = ua[$scope.activeValue.value];
@@ -282,14 +346,13 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
     }
 
     function deleteAward() {
-        var postData = { 'token': $scope.user.token,
-                'award': $scope.activeAward.name,
-                'value': $scope.activeValue.value,
-                'delete': true
-                }; 
+        var postData = createPostData();
+        postData.value = $scope.activeValue.value,
+        postData.delete = true;
         if ( $scope.activeAward.byBand ) {
-            delete $scope.user.awards[$scope.activeAward.name][$scope.activeValue.value][
-                $scope.activeBand][$scope.activeMode];
+            var uav = $scope.activeAward.list_id ? $scope.user.listsAwards[$scope.activeAward.list_id] :
+                $scope.user.awards[$scope.activeAward.name]
+            delete uav [$scope.activeValue.value][$scope.activeBand][$scope.activeMode];
             postData.band = $scope.activeBand;
             postData.mode = $scope.activeMode;
         } else
@@ -304,9 +367,14 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
     }
 
     function getUAV() {
-        var uav = $scope.user.awards[$scope.activeAward.name][$scope.activeValue.value];
-        if ( $scope.activeAward.byBand )
-            uav = uav[$scope.activeBand][$scope.activeMode];
+        var uav;
+        if ( $scope.activeAward.list_id ) {
+            uav = $scope.user.listsAwards[$scope.activeAward.list_id][$scope.activeValue.value];
+        } else {
+            var uav = $scope.user.awards[$scope.activeAward.name][$scope.activeValue.value];
+            if ( $scope.activeAward.byBand )
+                uav = uav[$scope.activeBand][$scope.activeMode];
+        }
         return uav;
     }
 
