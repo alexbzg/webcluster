@@ -1,0 +1,72 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"                                                
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--div id="news" ng-show="news.html">
+    <div id="news_title">NEWS</div>
+    <div id="news_close">
+            <img src="/images/icon_close.png" title="Close" ng-click="news.close()"/> 
+    </div>
+    <span ng-bind-html="news.html"/>
+</div>
+<div id="bands_modes">
+    <div id="selectors_bands_modes" ng-show="showSelector">
+        <span class="band" ng-repeat="band in selector.bands track by $index"
+            ng-class="{active: band.enabled}">
+            <input type="checkbox" ng-model="band.enabled" 
+                ng-change="selectorChange()">{{band.name}}
+        </span><br/>
+        <span class="mode" ng-repeat="mode in selector.modes" ng-class="{active: mode.enabled}">
+            <input type="checkbox" ng-model="mode.enabled" 
+                ng-change="selectorChange()">{{mode.name}}
+        </span>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            
+        <span class="sound">
+            <input type="checkbox" ng-model="selector.sound"
+                ng-change="soundChange()">Sound
+        </span>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            
+        <span class="allSpots">
+            <input type="checkbox" ng-model="selector.allSpots"
+                ng-change="selectorChange()"/>All spots
+        </span>
+
+    </div>
+    <img src="/images/icon_select.png" title="Select bands and modes for view" 
+        ng-click="showSelector = !showSelector"/>
+</div-->
+
+<table id="cluster">
+    <tr>
+        <th class="time">{{vm.time}} <span>z</span></th>
+        <th class="freq">MHz</th>
+        <th class="mode">Mode</th>
+        <th class="callsign">Callsign</th>
+        <th class="awards">Awards</th> 
+        <th id="link_status">Text</th>
+        <th class="spotter">Spotter</th>
+    </tr>
+    <tr ng-repeat="item in vm.dx.items | filter: vm.dxFilter" 
+        ng-class-odd="'odd'" ng-class-even="'even'">
+        <td class="time">{{item.time}}</td>
+        <td class="freq">
+            {{item.freq.toFixed(1).substr(0, item.freq.toFixed(1).length - 5 )
+            }}<span>{{item.freq.toFixed(1).substr( -5 )}}</span>
+        </td>
+        <td class="mode">{{item.subMode ? item.subMode : item.mode}}</td>
+        <td class="callsign">
+            <a target="_blank" 
+                href="http://qrz.com/db/{{item.cs.toLowerCase()}}">{{ vm.replace0( item.cs ) }}</a>
+        </td>
+        <td class="awards">
+            <a ng-repeat="award in item.awards" 
+                href="/stats.html?award={{award.award}}&value={{award.value}}&band={{item.band}}&mode={{item.mode}}&list_id={{award.list_id}}"><span 
+                class="award_name" ng-style="{'color': award.color}"
+                >{{award.award}}<img ng-show="award.worked" src="/images/icon_worked.png" 
+                        title="worked but not confirmed"/></span>
+                {{ vm.replace0( award.value)}}<span ng-show="!$last">, </span></a>
+        </td>  
+        <td class="text">{{ vm.replace0( item.text )}}</td>
+        <td class="spotter">{{ vm.replace0( item.de )}}</td>
+    </tr>
+</table>
+
+
