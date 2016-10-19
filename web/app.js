@@ -79,7 +79,7 @@ webDXapp.controller( 'bodyCtrl', function( $scope, $http, $interval, $window, $t
 
     $scope.dxFilter = function( dx ) {
         var r = false;
-        if ( dx.awards.length > 0 ){
+        if ( dx.awards.length > 0 || $scope.selector.allSpots ){
             var band =  $scope.selector.bands.find( function( band ) {
                 return band.name == dx.band; } );
             if ( !band || band.enabled ) {
@@ -200,7 +200,7 @@ webDXapp.controller( 'bodyCtrl', function( $scope, $http, $interval, $window, $t
                                 }
                             }
                             award.color = $scope.user.awardsSettings[name].color;
-                            if ( ( award.worked && as.settings.sound.wkd ) || 
+                            if ( !as.settings || ( award.worked && as.settings.sound.wkd ) || 
                                     ( !award.worked && as.settings.sound.not ) )
                                 award.sound = true;
                             fAwards.push( award );
@@ -237,7 +237,7 @@ webDXapp.controller( 'bodyCtrl', function( $scope, $http, $interval, $window, $t
                             }
                             dx.awards.push( { award: list.title, value: item.callsign,
                                 worked: worked, list_id: list.id, color: list.color,
-                                sound: ( worked && item.setting.sound.wkd ) || 
+                                sound: ( worked && item.settings.sound.wkd ) || 
                                     ( !worked && item.settings.sound.not )
                             } );
                            

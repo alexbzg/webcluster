@@ -1,12 +1,12 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"                                                
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" land="ru" xml:lang="en" ng-app="adxcApp">
-    <head ng-controller="headController as c">
+    <head ng-controller="headController as vm">
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
         <meta http-equiv="Content-Language" content="ru-ru"/>
         <meta name="description" content="" />
         <meta name="keywords" content="" />
-        <title>{{c.head.title()}}</title>
+        <title>{{vm.head.title()}}</title>
         <link href="style.css" rel="stylesheet" type="text/css">
         <link rel="icon" href="/favicon.ico" type="image/x-icon">
         <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
@@ -18,14 +18,36 @@
         </style>
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-sanitize.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-route.js"></script>
-        <script src="polyfill.js"></script>
-        <script src="adxcApp.module.js"></script>
-        <script src="head.controller.js"></script>
-        <script src="head.service.js"></script>
+        <script src="/.js/lib/angular-ui-router.min.js"></script>
+        <script src="/.js/polyfill.js"></script>
+        <script src="/.js/adxcApp.module.js"></script>
+        <script src="/.js/head.controller.js"></script>
+        <script src="/.js/head.service.js"></script>
+        <script src="/.js/user.service.js"></script>
+        <script src="/.js/dx.service.js"></script>
+        <script src="/.js/menu.controller.js"></script>
+        <script src="/.js/cluster.controller.js"></script>
 
     </head>
     <body>
+        <div id="top">
+            <a href="/new"><img src="/images/ac_logo.jpg" border="0" /></a>
+            <div id="top_menu" ng-controller="menuController as vm">
+                <span id="callsign" ng-show="vm.user.loggedIn">
+                    {{vm.user.data.callsign}}</span>
+                <a ui-sref="login" ng-show="!vm.user.loggedIn">Login</a>
+                <a ui-sref="stats">Stats</a>
+                <a ui-sref="awards">Awards</a>
+                <a ui-sref="profile">Profile</a>
+                <a ui-sref="info" ng-show="!vm.user.loggedIn">Info</a>
+                <a ui-sref="contact" ng-show="vm.user">Contact</a>
+                <a href="" ng-click="vm.user.logout()" ng-show="vm.user.loggedIn">
+                    Logout</a>
+            </div>
+        </div>
+
+        <ui-view></ui-wiev>
+
     </body>
 </html>
 

@@ -41,8 +41,7 @@
                 ng-class="{active: band.enabled}">
                 <input type="checkbox" ng-model="band.enabled" 
                     ng-change="selectorChange()">{{band.name}}
-            </span>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </span><br/>
             <span class="mode" ng-repeat="mode in selector.modes" ng-class="{active: mode.enabled}">
                 <input type="checkbox" ng-model="mode.enabled" 
                     ng-change="selectorChange()">{{mode.name}}
@@ -51,6 +50,11 @@
             <span class="sound">
                 <input type="checkbox" ng-model="selector.sound"
                     ng-change="soundChange()">Sound
+            </span>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            
+            <span class="allSpots">
+                <input type="checkbox" ng-model="selector.allSpots"
+                    ng-change="selectorChange()"/>All spots
             </span>
 
         </div>
