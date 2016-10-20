@@ -6,33 +6,33 @@
             <img src="/images/icon_close.png" title="Close" ng-click="news.close()"/> 
     </div>
     <span ng-bind-html="news.html"/>
-</div>
+</div-->
 <div id="bands_modes">
-    <div id="selectors_bands_modes" ng-show="showSelector">
-        <span class="band" ng-repeat="band in selector.bands track by $index"
+    <div id="selectors_bands_modes" ng-show="vm.selector.show">
+        <span class="band" ng-repeat="band in vm.selector.bands track by $index"
             ng-class="{active: band.enabled}">
             <input type="checkbox" ng-model="band.enabled" 
-                ng-change="selectorChange()">{{band.name}}
+                ng-change="vm.selectorChange()">{{band.name}}
         </span><br/>
-        <span class="mode" ng-repeat="mode in selector.modes" ng-class="{active: mode.enabled}">
+        <span class="mode" ng-repeat="mode in vm.selector.modes" ng-class="{active: mode.enabled}">
             <input type="checkbox" ng-model="mode.enabled" 
-                ng-change="selectorChange()">{{mode.name}}
+                ng-change="vm.selectorChange()">{{mode.name}}
         </span>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            
         <span class="sound">
-            <input type="checkbox" ng-model="selector.sound"
-                ng-change="soundChange()">Sound
+            <input type="checkbox" ng-model="vm.selector.sound"
+                ng-change="vm.soundChange()">Sound
         </span>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            
         <span class="allSpots">
-            <input type="checkbox" ng-model="selector.allSpots"
-                ng-change="selectorChange()"/>All spots
+            <input type="checkbox" ng-model="vm.selector.allSpots"
+                ng-change="vm.selectorChange()"/>All spots
         </span>
 
     </div>
     <img src="/images/icon_select.png" title="Select bands and modes for view" 
-        ng-click="showSelector = !showSelector"/>
-</div-->
+        ng-click="vm.selector.show = !vm.selector.show"/>
+</div>
 
 <table id="cluster">
     <tr>
@@ -44,7 +44,7 @@
         <th id="link_status">Text</th>
         <th class="spotter">Spotter</th>
     </tr>
-    <tr ng-repeat="item in vm.dx.items | filter: vm.dxFilter" 
+    <tr ng-repeat="item in vm.dxFiltered" 
         ng-class-odd="'odd'" ng-class-even="'even'">
         <td class="time">{{item.time}}</td>
         <td class="freq">
@@ -58,7 +58,9 @@
         </td>
         <td class="awards">
             <a ng-repeat="award in item.awards" 
-                href="/stats.html?award={{award.award}}&value={{award.value}}&band={{item.band}}&mode={{item.mode}}&list_id={{award.list_id}}"><span 
+               ui-sref="stats( {award: award.award, value: award.value, band: item.band, 
+               mode: item.mode, list_id: award.list_id} )">
+            <span 
                 class="award_name" ng-style="{'color': award.color}"
                 >{{award.award}}<img ng-show="award.worked" src="/images/icon_worked.png" 
                         title="worked but not confirmed"/></span>

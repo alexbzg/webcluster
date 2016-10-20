@@ -244,7 +244,10 @@
                         ng-style="{ 'background-color': item.byBand[band].byMode[mode].confirmed ? 
                             user.awardValueConfirmedColor :                 
                             ( item.byBand[band].byMode[mode].worked ? 
-                            user.awardValueWorkedColor : null ) }"             
+                            user.awardValueWorkedColor : null ) }" 
+                        ng-class="{'hover': item.byBand[band].byMode[mode].hover }"
+                        ng-mouseenter="item.byBand[band].byMode[mode].hover = true"
+                        ng-mouseleave="item.byBand[band].byMode[mode].hover = false"
                         >{{mode}}</div>
                </div>
            </td>

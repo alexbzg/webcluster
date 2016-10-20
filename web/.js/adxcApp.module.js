@@ -16,8 +16,15 @@ function config( $stateProvider, $urlRouterProvider ) {
 
     var statsState = {
         name: 'stats',
-        url: '/stats',
-        template: '<h3>stats</h3>' };
+        url: 'stats',
+        templateUrl: '/.tmplts/stats.html',
+        params: {
+            award: null,
+            value: null,
+            band: null,
+            mode: null,
+            list_id: null }
+    };
 
     $stateProvider.state( mainState );
     $stateProvider.state( statsState );

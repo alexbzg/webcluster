@@ -9,11 +9,12 @@ function DXService( $http, User ) {
     var dx = { 
         items: null,
         load: load,
-        updateAwards: updateAwards
+        updateAwards: updateAwards,
+        onNewData: []
     };
     return dx;
 
-    function load( lastModified ) {
+    function load() {
         $http.get( url, { cache: false } ).then( function( response ) {
             if ( lastModified != response.headers( 'last-modified' ) ) {
                 dx.items = response.data.reverse();
@@ -22,6 +23,9 @@ function DXService( $http, User ) {
                 });
                 lastModified =  response.headers( 'last-modified' );
                 updateAwards();
+                dx.onNewData.forEach( function( callback ) {
+                    callback();
+                });
             } 
             return response;
         } );
@@ -38,7 +42,7 @@ function DXService( $http, User ) {
     function itemAwards( item ) {
         for ( var aN in item._awards ) {
             var aV = item._awards[aN];
-            var a = { award: aN, value: aV };
+            var a = { award: aN, value: aV, sound: true };
             if ( user.awards || user.awardsSettings ) {
             }
             item.awards.push( a );
