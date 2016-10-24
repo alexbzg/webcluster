@@ -129,16 +129,12 @@ webDXapp.controller( 'bodyCtrl', function( $scope, $http, $interval, $window, $t
     }
 
     function checkAward( uav, dx ) {
-        var fl = false;
         if ( dx.band in uav )
             for ( var mode in uav[dx.band] )
                 if ( mode == dx.mode || 
-                    ( dx.subMode != null && dx.subMode.indexOf( mode ) != -1 ) ) {
-                    fl = true;
-                    uav = uav[dx.band][mode];
-                    break;
-                }        
-        return fl;
+                    ( dx.subMode != null && dx.subMode.indexOf( mode ) != -1 ) ) 
+                    return uav[dx.band][mode];
+        return false;
     }
 
     function checkAwardCfm( uav, cfm ) {
@@ -153,11 +149,12 @@ webDXapp.controller( 'bodyCtrl', function( $scope, $http, $interval, $window, $t
 
     function createCfm( as ) {
         var cfm = { 'cfm_paper': 1, 'cfm_eqsl': 1, 'cfm_lotw': 1 };
-        if ( as.settings.cfm )
+        if ( as.settings && as.settings.cfm )
             as.settings.cfm.forEach( function( cfmType ) {                                    
                 if ( !cfmType.enabled )
                     delete cfm[cfmType.name];
             });
+        return cfm;
     }
 
     function awards( dx ) {
@@ -172,6 +169,7 @@ webDXapp.controller( 'bodyCtrl', function( $scope, $http, $interval, $window, $t
                             name in $scope.user.awardsSettings ) {
                         var as = $scope.user.awardsSettings[name];
                         if ( $scope.user.awardsSettings[name].track ) {
+                            var cfm = createCfm( as );
                             if ( as.settings != null ) {
                                 if ( dx.band in as.settings.bands && 
                                         !as.settings.bands[dx.band] )
@@ -182,7 +180,6 @@ webDXapp.controller( 'bodyCtrl', function( $scope, $http, $interval, $window, $t
                                 if ( dx.subMode in as.settings.modes &&
                                         !as.settings.modes[dx.subMode] )
                                     continue;
-                                var cfm = createCfm( as );
                             }
                             if ( $scope.user.awards != null 
                                 && name in $scope.user.awards &&
@@ -190,8 +187,8 @@ webDXapp.controller( 'bodyCtrl', function( $scope, $http, $interval, $window, $t
                                 var uav = $scope.user.awards[name][value];
                                 var fl = false;
                                 var byBand = $scope.awards[name].byBand;
-                                if ( byBand )
-                                    var fl = checkAward( uav, dx );
+                                if ( byBand && ( fl = checkAward( uav, dx ) ) )
+                                    uav = fl;
                                 if ( !$scope.awards[name].byBand || fl ) {
                                     if ( checkAwardCfm( uav, cfm ) )
                                         continue;

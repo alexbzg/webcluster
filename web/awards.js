@@ -6,10 +6,10 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
 //        console.log( "no user data" );
         $window.location.href = "http://adxcluster.com/login.html";
 
-    if ( !('awardsSettings' in $scope.user) || $scope.user.awardsSettings == null )
+    if ( !$scope.user.awardsSettings )
         $scope.user.awardsSettings = {};
 
-    if ( !('lists' in $scope.user) || $scope.user.lists == null )
+    if ( !$scope.user.lists )
         $scope.user.lists = [];
 
     function awardSettings( country ) {
@@ -28,7 +28,7 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
                 };
                 for ( var field in st )
                     if ( st.hasOwnProperty( field ) ) {
-                        s[field] = [];
+                        st[field] = [];
                         st[field].forEach( function( item ) {
                             if ( Array.isArray( item ) )
                                 s[field].push( { name: item[1], enabled: true, display: item[0] } );

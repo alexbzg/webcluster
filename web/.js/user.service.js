@@ -26,6 +26,17 @@ function UserService( $http, Storage ) {
             user.data = ud;
             user.loggedIn = Boolean( user.data.token );
         }
+        if ( !user.data )
+            user.data = {};
+        if ( !user.data.lists )
+            user.data.lists = [];
+
+        if ( user.data.listsAwards )
+            user.data.listsAwards = {};
+
+        if ( user.data.awardsSettings )
+            user.data.awardsSettings = {};
+       
     }
 
     function toStorage() {

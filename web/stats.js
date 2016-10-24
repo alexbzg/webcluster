@@ -5,16 +5,16 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
     if ( !( $scope.user = getUserData() ) )    
         $window.location.href = "http://adxcluster.com/login.html";
 
-    if ( !( 'awardsSettings' in $scope.user ) || $scope.user.awardsSettings == null )
+    if ( !$scope.user.awardsSettings )
         $scope.user.awardsSettings = {};
 
-    if ( !('awards' in $scope.user) || $scope.user.awards == null )
+    if ( !$scope.user.awards )
         $scope.user.awards = {};
 
-    if ( !('lists' in $scope.user) || $scope.user.lists == null )
+    if ( !$scope.user.lists )
         $scope.user.lists = [];
  
-    if ( !('listsAwards' in $scope.user) || $scope.user.listsAwards == null )
+    if ( !$scope.user.listsAwards )
         $scope.user.listsAwards = {};
   
     $scope.params = {};
