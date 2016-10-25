@@ -7,18 +7,22 @@
         <meta name="description" content="" />
         <meta name="keywords" content="" />
         <title>{{vm.head.title()}}</title>
-        <link href="style.css" rel="stylesheet" type="text/css">
+        <link href="/style.css" rel="stylesheet" type="text/css">
+        <link href="/.js/lib/colorpicker.min.css" rel="stylesheet" type="text/css">
         <link rel="icon" href="/favicon.ico" type="image/x-icon">
         <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-        <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans" 
+            rel="stylesheet">
         <style>
-            [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+            [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], 
+                .ng-cloak, .x-ng-cloak {
                   display: none !important;
             }
         </style>
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-sanitize.js"></script>
         <script src="/.js/lib/angular-ui-router.min.js"></script>
+        <script src="/.js/lib/bootstrap-colorpicker-module.min.js"></script>
         <script src="/.js/polyfill.js"></script>
         <script src="/.js/adxcApp.module.js"></script>
         <script src="/.js/head.controller.js"></script>
@@ -30,11 +34,13 @@
         <script src="/.js/dx.service.js"></script>
         <script src="/.js/menu.controller.js"></script>
         <script src="/.js/cluster.controller.js"></script>
+        <script src="/.js/awards.controller.js"></script>
+        <script src="/.js/listSetup.controller.js"></script>
 
     </head>
-    <body>
+    <body ng-cloak>
         <div id="top">
-            <a href="/new"><img src="/images/ac_logo.jpg" border="0" /></a>
+            <a ui-sref="main"><img src="/images/ac_logo.jpg" border="0" /></a>
             <div id="top_menu" ng-controller="menuController as vm">
                 <span id="callsign" ng-show="vm.user.loggedIn">
                     {{vm.user.data.callsign}}</span>
