@@ -1,0 +1,172 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"                                                
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<table id="setup_block" ng-show="vm.setupAward">
+    <tr>
+        <td>
+            <div id="award_setup">
+                <div id="news_close">
+                        <img src="/images/icon_close.png" title="Close" ng-click="vm.setupAward = null"/> 
+                </div>
+                <h3>{{vm.setupAward.name}} settings</h3>       
+                <table class="award_setup">
+                <tr>
+                    <th id="band" colspan="11">Band (MHz)</th>
+                </tr>
+                <tr>
+                    <td class="band" ng-repeat="band in vm.setupAward.settings.bands 
+                        track by $index">
+                        {{band.display}}<br/>
+                        <input type="checkbox" ng-model="band.enabled" 
+                            ng-change="vm.user.awardSettingsChanged(vm.setupAward)">
+                    </td>
+                </tr>
+            </table>
+            <table class="award_setup">
+                <tr>
+                    <th id="mode" colspan="7">Mode</th>
+                </tr>
+                <tr>
+                    <td class="mode" ng-repeat="mode in vm.setupAward.settings.modes">
+                        {{mode.display}}<br/>
+                        <input type="checkbox" ng-model="mode.enabled"
+                            ng-change="vm.user.awardSettingsChanged(vm.setupAward)">
+                    </td>
+                </tr>
+            </table>
+            <table class="award_setup">
+                    <tr>
+                        <th id="cfm" colspan="3">CFM</th>
+                    </tr>
+                    <tr>
+                        <td class="cfm" ng-repeat="cfm in vm.setupAward.settings.cfm">
+                            {{cfm.display}}<br/>
+                            <input type="checkbox" ng-model="cfm.enabled"
+                                ng-change="vm.user.awardSettingsChanged(vm.setupAward)">
+                        </td>
+                    </tr>
+            </table>
+            <table class="award_setup">
+                    <tr>
+                        <th id="sound" colspan="2">SOUND</th>
+                    </tr>
+                    <tr>
+                        <td class="sound">
+                            not WKD<br/>
+                            <input type="checkbox" 
+                                ng-model="vm.setupAward.settings.sound.not"
+                                ng-change="vm.user.awardSettingsChanged(vm.setupAward)">
+                        </td>
+                        <td class="sound">
+                            not CFM<br/>
+                            <input type="checkbox" 
+                                ng-model="vm.setupAward.settings.sound.wkd"
+                                ng-change="vm.user.awardSettingsChanged(vm.setupAward)">
+                        </td>
+                    </tr>
+                </table>
+
+
+            </div>
+        </td>
+    </tr>
+</table>
+
+        
+<div id="awards_list">
+    <table id="awards_list">
+        <tr>
+            <th class="track">Track</th>
+            <th class="color_name">Color</th>
+            <th class="short_name"></th>
+            <th class="full_name">
+            </th>
+            <th class="settings">
+                Settings
+            </th>
+            <th class="website">
+                Аward's website
+            </th>
+        </tr>
+        <tr>
+            <td colspan="6" class="country">
+                User lists
+            </td>
+        </tr>
+        <tr>
+            <td colspan="6">
+                <a id="create_list" ui-sref="listSetup">Create new list</a>
+            </td>
+        </tr>
+        <tr ng-repeat="list in vm.user.data.lists | orderBy: id">
+            <td class="track">
+                <input type="checkbox" ng-model="list.track" 
+                    ng-change="vm.user.listChanged(list)">
+            </td>
+            <td class="color_name">
+                <button colorpicker type="button" colorpicker-position="top" id="color_list_{{list.id}}"
+                    ng-model="list.color" 
+                    style='background-color: {{list.color}};'
+                    ng-change="vm.user.listChanged(list)">&nbsp;
+                </button>
+            </td>
+            <td class="short_name" style='color: {{list.color}};'>
+                {{list.title}}
+            </td>
+            <td class="full_name">
+                List #{{$index + 1}}
+                <img src="/images/icon_close.png" ng-click="vm.user.deleteList(list)" title="Delete list">
+            </td>
+            <td class="notification">
+                <a ui-href="listSetup( { id = list.id } )"><img src="/images/icon_setup.png"></a>
+
+                <!--
+                <input type="checkbox" disabled><img src="/images/icon_sound.jpg" title="Sound notification"> <input type="checkbox" disabled><img src="/images/icon_telegram.jpg" title="Telegram message">  -->
+            </td>
+            <td class="website">
+                <!--a href="{{award.link}}" target="_blank" title="Link to {{award.name}} website"><img src="/images/icon_weblink.png"></a-->
+            </td>
+        </tr>
+
+        <tr ng-repeat-start="country in vm.awards | orderBy: 'country'">
+            <td colspan="6" class="country">
+                {{country.country}}
+            </td>
+        </tr>
+        <tr ng-repeat="award in country.awards">
+            <td class="track">
+                <input type="checkbox" ng-model="vm.user.data.awardsSettings[award.name].track" 
+                    ng-change="vm.user.awardSettingsChanged(award)">
+            </td>
+            <td class="color_name">
+                <button colorpicker type="button" colorpicker-position="top" id="color_{{award.name}}"
+                    ng-model="vm.user.data.awardsSettings[award.name].color" 
+                    style='background-color: {{vm.user.data.awardsSettings[award.name].color}};'
+                    ng-change="vm.user.awardSettingsChanged(award)">&nbsp;
+                </button>
+            </td>
+            <td class="short_name" style='color: {{vm.user.data.awardsSettings[award.name].color}};'>
+                {{award.name}}
+            </td>
+            <td class="full_name">
+                {{award.fullName}}
+            </td>
+            <td class="notification">
+                <a href="" ng-click="vm.openSetup( award )"><img src="/images/icon_setup.png"></a>
+
+                <!--
+                <input type="checkbox" disabled><img src="/images/icon_sound.jpg" title="Sound notification"> <input type="checkbox" disabled><img src="/images/icon_telegram.jpg" title="Telegram message">  -->
+            </td>
+            <td class="website">
+                <a href="{{award.link}}" target="_blank" title="Link to {{award.name}} website"><img src="/images/icon_weblink.png"></a>
+            </td>
+        </tr>
+        <tr ng-repeat-end class="country_footer">
+                <td colspan="5" class="country">
+            </td>
+        </tr>
+    </table>
+    <input type="button" value="OK" ui-sref="/" id="button_ok"/>
+</div>
+<!--table id="loader" ng-show="vm.loading"><tr><td>Loading...<br/><img src="/images/loader.gif" title="Loading"></td></tr></table-->
+
+

@@ -2,7 +2,7 @@ angular
     .module( 'adxcApp' )
     .controller( 'clusterController', clusterController );
 
-function clusterController( $interval, $timeout, Storage, DxConst, DX ) {
+function clusterController( $interval, $timeout, Storage, DxConst, DX, Head ) {
 
     var vm = this;
     var selectorKey = 'adxcluster-selector';
@@ -22,6 +22,7 @@ function clusterController( $interval, $timeout, Storage, DxConst, DX ) {
     return vm;
 
     function activate() {
+        Head.setTitle( 'Awards DX Cluster by R7AB' );
         vm.selector = Storage.load( selectorKey, 'local' );
         if ( !vm.selector || !vm.selector.bands || !vm.selector.modes  ) {
             var resp = { 'bands': 'bandsAll', 'modes': 'modesSuper' };

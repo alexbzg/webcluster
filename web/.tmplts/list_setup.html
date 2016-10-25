@@ -1,0 +1,82 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"                                                
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<div id="fixed_top">
+
+    <div id="list_add_calls">
+        <span id="list_title">List #{{vm.list.no}}</span> 
+        <span id="short_name">
+            Short title (up to 10 symbols) 
+            <input type="text" ng-model="vm.list.title" ng-blur="vm.checkTitle()">
+        </span><br/>
+        Enter the callsign for tracking. You may enter a list of callsigns separeted by spaces or commas.<br/>
+        <span class="note">
+            Use * to track the range of callsigns. (For example, IT9* - to track all IT9 callsigns.)
+        </span>
+        <table id="input_callsigns"><tr><td>
+            <textarea ng-model="vm.callsigns"></textarea>
+        </td><td>
+            <input type="submit" id="submit_btn" value="OK" ng-click="vm.updateItems();">
+        </td></tr></table>
+    </div>
+
+    <table id="list_edit">
+        <tr>
+            <th id="callsign" rowspan="2" class="border_right">&nbsp;</th>
+            <th id="band" colspan="11" class="border_right">Band</th>
+            <th id="mode" colspan="7" class="border_right">Mode</th>
+            <th id="sound" colspan="2" class="border_right">Sound</th>
+            <!--th id="mobile"  colspan="2" class="border_right">&nbsp;</th-->
+            <th id="delete" rowspan="2">&nbsp;</th>
+        </tr>
+        <tr>
+            <td class="band" ng-repeat="band in vm.switchesList.bands" ng-class="{border_right: $last}">
+                {{band}}<br/>
+                <input type="checkbox" ng-model="vm.switches.bands[band]" 
+                                        ng-click="vm.switch( 'bands', band );">
+            </td>
+            <td class="mode" ng-repeat="mode in vm.switchesList.modes" ng-class="{border_right: $last}">
+                {{mode}}<br/>
+                <input type="checkbox" ng-model="vm.switches.modes[mode]"
+                    ng-click="vm.switch( 'modes', mode )">
+            </td>
+            <td class="sound">
+                not&nbsp;WKD<br/>
+                <input type="checkbox" ng-model="vm.switches.sound.not"
+                    ng-click="vm.switch( 'sound', 'not' )">
+            </td>
+            <td class="sound border_right">
+                not&nbsp;CFM<br/><input type="checkbox" ng-model="vm.switches.sound.wkd"
+                    ng-click="vm.switch( 'sound', 'wkd' )">
+            </td>
+            <!--td class="mobile">not&nbsp;WKD<br/><input type="checkbox"></td>
+            <td class="mobile border_right">WKD<br/><input type="checkbox"></td-->
+        </tr>
+    </table>
+
+
+</div> <!-- fixed div end-->
+
+<table id="list_edit" style="margin-top: 350px;">
+    <tr ng-repeat="item in vm.list.items track by $index" ng-class-odd="odd">
+        <td class="callsign">
+            {{item.callsign}}{{item.pfx ? '*' : ''}}
+        </td>
+        <td class="band" ng-repeat="band in vm.switchList.bands" ng-class="{border_right: $last}">
+            <input type="checkbox" ng-model="item.settings.bands[band]" 
+                ng-click="vm.itemChanged( item, 'bands', band )">
+        </td>
+        <td class="mode" ng-repeat="mode in vm.switchList.modes" ng-class="{border_right: $last}">
+            <input type="checkbox" ng-model="item.settings.modes[mode]" 
+                                    ng-click="vm.itemChanged( item, 'modes', mode )">
+        </td>
+        <td class="sound"><input type="checkbox" ng-model="item.settings.sound.not"
+                ng-click="vm.itemChanged( item, 'sound', 'not' )"></td>
+        <td class="sound border_right"><input type="checkbox" ng-model="item.settings.sound.wkd"
+                ng-click="vm.itemChanged( item, 'sound', 'wkd' )"></td>
+        <!--td class="mobile"><input type="checkbox" ng-model="item.settings.mobile.not"></td>
+        <td class="mobile border_right"><input type="checkbox" ng-model="item.settings.mobile.wkd"></td-->
+        <td class="delete"><img src="/images/icon_close.png" ng-click="vm.deleteItem(item)" title="Delete"></td>
+    </tr>
+</table>
+
+

@@ -20,7 +20,7 @@ function AwardsService($http) {
         }
 
         function getAwardsFailed(error) {
-            console.log('Awards XHR Failed for getAvengers.' + error.data);
+            console.log('Awards XHR Failed: ' + error.data);
         }
     }
 }

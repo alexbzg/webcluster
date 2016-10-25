@@ -1,5 +1,5 @@
 angular
-    .module( 'adxcApp', ['ui.router'] )
+    .module( 'adxcApp', ['ui.router', 'colorpicker.module'] )
     .config( config );
 
 function config( $stateProvider, $urlRouterProvider ) {
@@ -26,8 +26,28 @@ function config( $stateProvider, $urlRouterProvider ) {
             list_id: null }
     };
 
+     var awardsState = {
+        name: 'awards',
+        url: '/awards',
+        templateUrl: '/.tmplts/awards.html',
+        controller: 'awardsController',
+        controllerAs: 'vm'
+    };
+
+    var listSetupState = {
+        name: 'listSetup',
+        url: '/list_setup',
+        templateUrl: '/.tmplts/list_setup.html',
+        controller: 'listSetupController',
+        controllerAs: 'vm',
+        params: { id: null }
+    };
+  
+
     $stateProvider.state( mainState );
     $stateProvider.state( statsState );
+    $stateProvider.state( awardsState );
+    $stateProvider.state( listSetupState );
 
 
 }
