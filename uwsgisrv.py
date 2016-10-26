@@ -261,17 +261,21 @@ def application(env, start_response):
                 if data['list_id'] == 'new':
                     list = dxdb.getObject( 'users_lists',\
                             { 'callsign': callsign, \
-                            'title': data['title'] if data.has_key( 'title' ) else None },\
+                            'title': data['title'] if data.has_key( 'title' ) \
+                                else None },\
                             True )
                     if list:
-                        start_response( '200 OK', [('Content-Type', 'application/json')] )
+                        start_response( '200 OK', \
+                                [('Content-Type', 'application/json')] )
                         return json.dumps( { 'list_id': list['id'] } )
                     else:
                         dbError = True
                 elif data.has_key( 'title' ) or data.has_key( 'track' ) or \
-                        data.has_key( 'stats_settings' ):
+                        data.has_key( 'stats_settings' ) or \
+                        data.has_key( 'full_title' ):
                     if dxdb.paramUpdate( 'users_lists', { 'id': data['list_id'] }, \
-                            spliceParams( data, [ 'title', 'track', 'color', 'stats_settings' ] ) ):
+                            spliceParams( data, [ 'title', 'track', 'color', \
+                                'stats_settings', 'full_title' ] ) ):
                         dxdb.commit()
                         okResponse = 'OK'
                     else:
@@ -485,7 +489,7 @@ def sendUserData( userData, start_response ):
                  userData ), True )
     lists = cursor2dicts( \
             dxdb.execute( """
-                select id, title, track, color 
+                select id, title, track, color, full_title
                 from users_lists 
                 where callsign = %(callsign)s """, \
                 userData ), True )

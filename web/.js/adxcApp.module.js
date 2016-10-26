@@ -18,6 +18,8 @@ function config( $stateProvider, $urlRouterProvider ) {
         name: 'stats',
         url: 'stats',
         templateUrl: '/.tmplts/stats.html',
+        controller: 'statsController',
+        controllerAs: 'vm'
         params: {
             award: null,
             value: null,
@@ -36,11 +38,10 @@ function config( $stateProvider, $urlRouterProvider ) {
 
     var listSetupState = {
         name: 'listSetup',
-        url: '/list_setup',
+        url: '/list_setup/:id',
         templateUrl: '/.tmplts/list_setup.html',
         controller: 'listSetupController',
         controllerAs: 'vm',
-        params: { id: null }
     };
   
 

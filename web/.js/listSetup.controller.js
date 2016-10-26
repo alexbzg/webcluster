@@ -2,11 +2,17 @@ angular
     .module( 'adxcApp' )
     .controller( 'listSetupController', listSetupController );
 
-function listSetupController( $stateParams, DxConst, User, Head ) {    
+function listSetupController( $state, $stateParams, DxConst, User, Head ) {    
     var vm = this;
+    var titleCache = { title: '', full_title: '' };
     vm.user = User;
     vm.switchesList = { bands: DxConst.bands, modes: DxConst.modes };
     vm.switches = {};
+    vm.updateItems = updateItems;
+    vm.checkTitle = checkTitle;
+    vm.itemChanged = itemChanged;
+    vm.switch = _switch;
+    vm.deleteItem = deleteItem;
 
     activate();
     return vm;
@@ -15,17 +21,26 @@ function listSetupController( $stateParams, DxConst, User, Head ) {
         fillSwitches( vm.switches );
 
         if ( $stateParams.id ) 
-            vm.list = user.data.lists.find( 
+            vm.list = User.data.lists.find( 
                 function( item ) { return $stateParams.id == item.id; } );
 
         if ( vm.list ) {
-            vm.list.no = vm.user.lists.indexOf( $scope.list ) + 1;
+            vm.list.no = User.data.lists.indexOf( vm.list ) + 1;
             if ( !vm.list.items )
                 vm.list.items = [];
             updateAllSwitches();        
-        } else 
-            vm.list = User.createList();
-        vm.titleCache = vm.list.title;
+        } else {
+            User.createList()
+                .then( function( id ) {
+                    if ( id )
+                        $state.go( 'listSetup', { id: id } );
+                    else
+                        $state.go( 'awards' );
+                });
+            return;
+        }
+        for ( var field in titleCache )
+            titleCache[field] = vm.list[field];
 
         Head.setTitle( 'ADXCluster.com - List # ' + vm.list.no + ' - settings' );
     }
@@ -35,7 +50,8 @@ function listSetupController( $stateParams, DxConst, User, Head ) {
             if ( !( field in dst ) )
                 dst[field] = {};
             vm.switchesList[field].forEach( function( item ) {
-                dst[field][item] = true;
+                dst[field][item] = item in vm.switches[field] ? 
+                    vm.switches[field][item] : true;
             });
         }
         for ( var n in { 'sound': 1, 'mobile': 1 } )
@@ -59,11 +75,15 @@ function listSetupController( $stateParams, DxConst, User, Head ) {
     }
 
     function checkTitle() {
-        if ( vm.list.title != vm.titleCache ) {
-            vm.titleCache = vm.list.title;
+        var fl = false;
+        for ( var field in titleCache )
+            if ( titleCache[field] != vm.list[field] ) {
+                titleCache[field] = vm.list[field];
+                fl = true;
+            }
+        if (fl)
             User.saveList( vm.list );
-        }
-    };
+    }
 
     function updateItems() {
         var css = vm.callsigns.split( /[,; ]+/ );
@@ -78,18 +98,18 @@ function listSetupController( $stateParams, DxConst, User, Head ) {
                     !vm.list.items.find( function( item ) { 
                         return item.callsign == cs } ) ) {
                 var listItem = { callsign: cs, pfx: pfx, settings: {} };
-                angular.extend( listItem.settings, vm.switches );
+                fillSwitches( listItem.settings );
                 vm.list.items.push( listItem );
-                User.saveItem( listItem );
+                User.saveListItem( listItem, vm.list );
             }
         });
         vm.callsigns = '';
-    };
+    }
 
     function deleteItem( item ) {
         if ( User.deleteListItem( item, vm.list ) )
             updateAllSwitches();
-    };
+    }
 
 
     function itemChanged( item, field, value ) {
@@ -98,7 +118,7 @@ function listSetupController( $stateParams, DxConst, User, Head ) {
             updateSwitch( field, value );
         else
             vm.switches[field][value] = false;
-    };
+    }
 
     function _switch( field, value ) {
         vm.list.items.forEach( function( item ) {
@@ -107,7 +127,7 @@ function listSetupController( $stateParams, DxConst, User, Head ) {
                 User.saveListItem( item, vm.list );
             }
         });
-    };
+    }
   
 }
 

@@ -3,7 +3,9 @@
 <div id="fixed_top">
 
     <div id="list_add_calls">
-        <span id="list_title">List #{{vm.list.no}}</span> 
+        <span id="list_title">Full title
+            <input type="text" ng-model="vm.list.full_title" ng-blur="vm.checkTitle()">
+        </span> 
         <span id="short_name">
             Short title (up to 10 symbols) 
             <input type="text" ng-model="vm.list.title" ng-blur="vm.checkTitle()">
@@ -19,7 +21,7 @@
         </td></tr></table>
     </div>
 
-    <table id="list_edit">
+    <table class="list_edit">
         <tr>
             <th id="callsign" rowspan="2" class="border_right">&nbsp;</th>
             <th id="band" colspan="11" class="border_right">Band</th>
@@ -56,16 +58,16 @@
 
 </div> <!-- fixed div end-->
 
-<table id="list_edit" style="margin-top: 350px;">
+<table class="list_edit list_edit_fixed" style="margin-top: 350px;">
     <tr ng-repeat="item in vm.list.items track by $index" ng-class-odd="odd">
         <td class="callsign">
             {{item.callsign}}{{item.pfx ? '*' : ''}}
         </td>
-        <td class="band" ng-repeat="band in vm.switchList.bands" ng-class="{border_right: $last}">
+        <td class="band" ng-repeat="band in vm.switchesList.bands" ng-class="{border_right: $last}">
             <input type="checkbox" ng-model="item.settings.bands[band]" 
                 ng-click="vm.itemChanged( item, 'bands', band )">
         </td>
-        <td class="mode" ng-repeat="mode in vm.switchList.modes" ng-class="{border_right: $last}">
+        <td class="mode" ng-repeat="mode in vm.switchesList.modes" ng-class="{border_right: $last}">
             <input type="checkbox" ng-model="item.settings.modes[mode]" 
                                     ng-click="vm.itemChanged( item, 'modes', mode )">
         </td>

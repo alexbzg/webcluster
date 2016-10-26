@@ -97,7 +97,7 @@
                 <a id="create_list" ui-sref="listSetup">Create new list</a>
             </td>
         </tr>
-        <tr ng-repeat="list in vm.user.data.lists | orderBy: id">
+        <tr ng-repeat="list in vm.user.data.lists | orderBy: id track by $index">
             <td class="track">
                 <input type="checkbox" ng-model="list.track" 
                     ng-change="vm.user.listChanged(list)">
@@ -113,11 +113,11 @@
                 {{list.title}}
             </td>
             <td class="full_name">
-                List #{{$index + 1}}
+                {{list.full_title ? list.full_title : 'List #' + ( $index + 1 ) }}
                 <img src="/images/icon_close.png" ng-click="vm.user.deleteList(list)" title="Delete list">
             </td>
             <td class="notification">
-                <a ui-href="listSetup( { id = list.id } )"><img src="/images/icon_setup.png"></a>
+                <a ui-sref="listSetup( { id: list.id } )"><img src="/images/icon_setup.png"></a>
 
                 <!--
                 <input type="checkbox" disabled><img src="/images/icon_sound.jpg" title="Sound notification"> <input type="checkbox" disabled><img src="/images/icon_telegram.jpg" title="Telegram message">  -->

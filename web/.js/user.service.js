@@ -104,6 +104,7 @@ function UserService( $http, $window, Storage, Awards, DxConst  ) {
         console.log('User settings XHR Failed: ' + error.data);
         $window.alert( 'Error saving your settings to server.' + 
                 'Please try again later' );
+        return false;
     }
 
 
@@ -119,11 +120,12 @@ function UserService( $http, $window, Storage, Awards, DxConst  ) {
 
     function listChanged( list ) {
         toStorage();
-        toServer( { 
-                    'list_id': list.id,
-                    'track': list.track,
-                    'color': list.color,
-        } );
+        if ( list.id )
+            toServer( { 
+                        'list_id': list.id,
+                        'track': list.track,
+                        'color': list.color,
+            } );
     }
 
     function deleteList( list ) {
@@ -132,11 +134,12 @@ function UserService( $http, $window, Storage, Awards, DxConst  ) {
             var i = user.data.lists.indexOf( list );
             user.data.lists.splice( i, 1 );
             toStorage();
-            toServer( 
-                { 
-                    'list_id': list.id,
-                    'delete': true
-                } );
+            if ( list.id )
+                toServer( 
+                    { 
+                        'list_id': list.id,
+                        'delete': true
+                    } );
         }
 
     }
@@ -144,15 +147,21 @@ function UserService( $http, $window, Storage, Awards, DxConst  ) {
     function saveList( list ) {
         toStorage();
         if ( user.loggedIn )
-        toServer( {
+        return toServer( {
                 'list_id': list.id ? list.id : 'new',
+                'full_title': list.full_title,
                 'title': list.title } )
             .then( function( data ) { 
                 if ( !list.id ) {
-                    if ( 'list_id' in data )
+                    if ( 'list_id' in data ) {
                         list.id = data.list_id;
-                    else 
-                        saveError();
+                        return list.id;
+                    }
+                    else {
+                        serverError();
+                        return false;
+                    }
+
                 }
             });
 
@@ -160,12 +169,13 @@ function UserService( $http, $window, Storage, Awards, DxConst  ) {
 
     function saveListItem( item, list ) {
         toStorage();
-        toServer( {
-                'list_id': list.id,
-                'callsign': item.callsign,
-                'settings': item.settings,
-                'pfx': item.pfx
-        } );
+        if ( list.id )
+            toServer( {
+                    'list_id': list.id,
+                    'callsign': item.callsign,
+                    'settings': item.settings,
+                    'pfx': item.pfx
+            } );
     };
    
     function createList() {
@@ -177,21 +187,21 @@ function UserService( $http, $window, Storage, Awards, DxConst  ) {
             color: defaultColor, 
             track: true };
         user.data.lists.push( list );
-        saveList( list );
-        return list;
+        return saveList( list );
     }
 
-    function deleteListItem( list, item ) {
+    function deleteListItem( item, list ) {
         if ( $window.confirm( 'Do you really want to remove callsign ' + 
                 item.callsign + ( item.pfx ? '*' : '' ) + ' from the list?' ) ) {
             var i = list.items.indexOf( item );
             list.items.splice( i, 1 );
             toStorage();
-            toServer( {
-                    'list_id': list.id,
-                    'callsign': item.callsign,
-                    'delete': true
-            } );
+            if ( list.id )
+                toServer( {
+                        'list_id': list.id,
+                        'callsign': item.callsign,
+                        'delete': true
+                } );
             return true;
        } else
            return false;
