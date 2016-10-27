@@ -369,7 +369,8 @@ awardsApp.controller( 'bodyCtrl', function( $scope, $http, $window ) {
     function getUAV() {
         var uav;
         if ( $scope.activeAward.list_id ) {
-            uav = $scope.user.listsAwards[$scope.activeAward.list_id][$scope.activeValue.value];
+            uav = $scope.user.listsAwards[$scope.activeAward.list_id][$scope.activeValue.value
+                ][$scope.activeBand][$scope.activeMode];
         } else {
             var uav = $scope.user.awards[$scope.activeAward.name][$scope.activeValue.value];
             if ( $scope.activeAward.byBand )

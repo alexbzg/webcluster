@@ -15,7 +15,8 @@ function UserService( $http, $window, Storage, Awards, DxConst  ) {
         saveList: saveList,
         saveListItem: saveListItem,
         createList: createList,
-        deleteListItem: deleteListItem
+        deleteListItem: deleteListItem,
+        saveAwardStatsSettings: saveAwardStatsSettings
     };
     return user;
 
@@ -51,9 +52,16 @@ function UserService( $http, $window, Storage, Awards, DxConst  ) {
         if ( !user.data.awardsSettings )
             user.data.awardsSettings = {};
 
+        user.data.lists.forEach( function( list ) {
+            if ( !user.data.listsAwards[list.id] )
+                user.data.listsAwards[list.id] = {};
+        });
+
         Awards.getAwards()
             .then( function( data ) {
                 data.forEach( function( award ) {
+                    if ( !user.data.awards[award.name] )
+                        user.data.awards[award.name] = {};
                     if ( !user.data.awardsSettings[award.name] ) 
                         user.data.awardsSettings[award.name] = 
                             { 'track': true, 'color': defaultColor };
@@ -207,6 +215,54 @@ function UserService( $http, $window, Storage, Awards, DxConst  ) {
            return false;
 
     }
- 
+
+    function awardPostData( award ) {
+        var award = {};
+        if ( award.list_id )
+            data.list_id = award.list_id;
+        else
+            data.award = award.name;
+        return data;
+    }
+
+    function saveAwardStatsSettings( award ) {
+        toStorage();
+        var data = awardPostData( awards );
+        data.stats_settings = award.statsSettings;
+        toServer( data );
+    }
+
+    function createAward( award, value, band, mode ) {
+        var uav = award.list_id ?
+            user.data.listsAwards[award.list_id] :
+            user.data.awards[award.name];
+        if ( !uav[value] )
+            uav[value] = {};
+        if ( award.byBand ) {
+            uav = uav[value];
+            if ( !uav[band] )
+                uav[band] = {};
+            uav = uav[band];
+            uav[mode] = {};
+            uav = uav[mode];
+        }
+        return uav;
+    }
+
+    function saveAward( award, value, band, mode, data ) {}
+
+
+    function modifyAward( award, value, band, mode, data ) {
+        var uav =  award.list_id
+            uav = user.data.listsAwards[award.list_id];
+        } else {
+            uav = user.data.awards[award.name];
+        }
+        if ( !uav[value] )
+            uav[value] = {};
+        if ( award.byBand ) {
+
+
+    }
 }
 

@@ -36,6 +36,13 @@ def getSplitLine( file, fr, to = None ):
     else:
         return None
 
+def strIsInt(s):
+    try: 
+        int(s)
+        return True
+    except ValueError:
+        return False    
+
 for aw in awardsData:
     webAw = dict( aw )
     webAw['values'] = []
@@ -70,7 +77,10 @@ for aw in awardsData:
                 webAw['groups'][group] = getColumn( data, 'desc' )
             else:
                 av = {}
-                av['displayValue'] = getColumn( data, 'value' )
+                val = getColumn( data, 'value' )
+                if strIsInt( val ) and int( val ) < 10:
+                    val = '0' + val
+                av['displayValue'] = val
                 av['value'] = group + groupSeparator + av['displayValue'] if \
                     aw['groupInValue'] else av['displayValue']
                 av['group'] = group

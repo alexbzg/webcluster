@@ -11,7 +11,8 @@ function DxConstService() {
         modes: [ 'CW', 'SSB', 'RTTY', 'PSK31', 'PSK63', 'PSK125', 'JT65' ],
         modesSuper: [ 'CW', 'SSB', 'DIGI' ],
         cfm: [ [ 'Paper', 'cfm_paper' ], 
-            [ 'eQSL', 'cfm_eqsl'], ['LOTW', 'cfm_lotw'] ]
+            [ 'eQSL', 'cfm_eqsl'], ['LOTW', 'cfm_lotw'] ]        
     };
+    dxConst.cfmCount = dxConst.cfm.length;
     return dxConst;
 }

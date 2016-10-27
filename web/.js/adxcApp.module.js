@@ -19,7 +19,7 @@ function config( $stateProvider, $urlRouterProvider ) {
         url: 'stats',
         templateUrl: '/.tmplts/stats.html',
         controller: 'statsController',
-        controllerAs: 'vm'
+        controllerAs: 'vm',
         params: {
             award: null,
             value: null,
