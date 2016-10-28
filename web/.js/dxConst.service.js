@@ -14,5 +14,6 @@ function DxConstService() {
             [ 'eQSL', 'cfm_eqsl'], ['LOTW', 'cfm_lotw'] ]        
     };
     dxConst.cfmCount = dxConst.cfm.length;
+    dxConst.modesCount = dxConst.modes.length;
     return dxConst;
 }

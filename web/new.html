@@ -31,6 +31,7 @@
         <script src="/.js/user.service.js"></script>
         <script src="/.js/dxConst.service.js"></script>
         <script src="/.js/awards.service.js"></script>
+        <script src="/.js/userAward.factory.js"></script>
         <script src="/.js/dx.service.js"></script>
         <script src="/.js/menu.controller.js"></script>
         <script src="/.js/cluster.controller.js"></script>
@@ -50,7 +51,7 @@
                 <a ui-sref="awards">Awards</a>
                 <a ui-sref="profile">Profile</a>
                 <a ui-sref="info" ng-show="!vm.user.loggedIn">Info</a>
-                <a ui-sref="contact" ng-show="vm.user">Contact</a>
+                <a ui-sref="contact" ng-show="vm.user.loggedIn">Contact</a>
                 <a href="" ng-click="vm.user.logout()" ng-show="vm.user.loggedIn">
                     Logout</a>
             </div>

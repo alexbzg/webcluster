@@ -50,19 +50,20 @@
                                 {{vm.activeValue.desc}}</span><br/>
                             <span id="wkd">
                                 <u>Worked</u>
-                                <input type="checkbox" name="unit_worked" ng-model="vm.activeValue.worked" 
+                                <input type="checkbox" name="unit_worked" 
+                                    ng-model="vm.activeValue.userAward.worked" 
                                     ng-change="vm.modifyActiveValue( 'worked' )">
                             </span> 
                             <span id="cfm">
                                 <u>Confirmed</u>:
                                 <span ng-repeat="type in vm.cfm">
-                                    <input type="checkbox" ng-model="vm.activeValue[type.field]"
+                                    <input type="checkbox" ng-model="vm.activeValue.userAward[type.field]"
                                         ng-change="vm.modifyActiveValue( 'confirmed' )">
                                     {{type.display}} &nbsp;
                                 </span> 
                             </span>
                             <input type="text" id="wkd_calls" placeholder="worked callsigns" 
-                                ng-model="vm.activeValue.workedCS"/>
+                                ng-model="vm.activeValue.userAward.workedCS"/>
                             <input type="submit" class="submit_btn" name="save_award_unit_info" value="Save"
                                 ng-click="vm.saveWorkedCS()"/>
                         </div>
@@ -155,8 +156,9 @@
                             </span> 
                         </span>
                         <input type="text" id="wkd_calls" placeholder="worked callsigns" 
-                            ng-model="vm.activeValue[vm.activeBand][vm.activeMode]"/>
+                            ng-model="vm.workedCS"/>
                         <input type="submit" class="submit_btn" name="save_award_unit_info" value="Save"
+                            ng-disabled="!vm.activeValue[vm.activeBand][vm.activeMode].worked"
                             ng-click="vm.saveWorkedCS()"/>
                     </span>
 
@@ -192,7 +194,7 @@
                 ng-repeat="item in vm.activeAward.values | filter: { 'group': group }" 
                 ng-click="vm.setActive( item )"
                 ng-style="{ 'background-color': item.confirmed ? vm.user.data.awardValueConfirmedColor : 
-                ( item.worked ? vm.user.data.awardValueWorkedColor : null ) }">{{item.displayValue}}</div>
+                ( item.userAward ? vm.user.data.awardValueWorkedColor : null ) }">{{item.displayValue}}</div>
         </td>
     </tr>
 </table>
@@ -206,17 +208,17 @@
             ng-style="{ 'background-color': item[band].confirmed ? vm.user.data.awardValueConfirmedColor : 
                                 ( item[band].worked ? vm.user.data.awardValueWorkedColor : null ) }"     
             ng-click="vm.setActive( item, band, null )"
-            ng-mouseover="vm.popup = item[band];"
-            ng-mouseleave="vm.popup = null;">
-            <div class="popup" ng-show="vm.popup == item[band]">
+            ng-mouseover="vm.popup = {item: item, band: band }"
+            ng-mouseleave="vm.popup = null">
+            <div class="popup" ng-show="vm.popup.item == item && vm.popup.band == band"
                 <div ng-repeat="mode in vm.const.modes" 
                     ng-click="vm.setActive( item, band, mode ); $event.stopPropagation();"
-                    ng-style="{ 'background-color': item[band][mode].confirmed() ? 
+                    ng-style="{ 'background-color': item[band][mode].confirmed ? 
                         vm.user.data.awardValueConfirmedColor :                 
-                        ( item[band][mode].worked() ? 
+                        ( item[band][mode] ? 
                         vm.user.data.awardValueWorkedColor : null ) }" 
-                    ng-class="{'hover': vm.hover == item[band][mode] }"
-                    ng-mouseenter="vm.hover = item[band][mode]"
+                    ng-class="{'hover': false }"
+                    ng-mouseenter="vm.hover = mode"
                     ng-mouseleave="vm.hover = null"
                     >{{mode}}</div>
             </div>
@@ -227,6 +229,6 @@
 
 
 
-<table id="loader" ng-show="loading"><tr><td>Loading...<br/><img src="/images/loader.gif" title="Loading"></td></tr></table>
+<table id="loader" ng-show="vm.loading"><tr><td>Loading...<br/><img src="/images/loader.gif" title="Loading"></td></tr></table>
 
 

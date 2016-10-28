@@ -16,7 +16,7 @@ function config( $stateProvider, $urlRouterProvider ) {
 
     var statsState = {
         name: 'stats',
-        url: 'stats',
+        url: '/stats',
         templateUrl: '/.tmplts/stats.html',
         controller: 'statsController',
         controllerAs: 'vm',
