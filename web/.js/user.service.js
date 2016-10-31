@@ -45,8 +45,12 @@ function UserService( $http, $window, Storage, Awards, DxConst  ) {
 
         if ( !user.data )
             user.data = {};
+
         if ( !user.data.lists )
             user.data.lists = [];
+
+        if ( !user.data.awards )
+            user.data.awards = {};
 
         if ( !user.data.listsAwards )
             user.data.listsAwards = {};

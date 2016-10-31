@@ -210,14 +210,14 @@
             ng-click="vm.setActive( item, band, null )"
             ng-mouseover="vm.popup = {item: item, band: band }"
             ng-mouseleave="vm.popup = null">
-            <div class="popup" ng-show="vm.popup.item == item && vm.popup.band == band"
+            <div class="popup" ng-show="vm.popup.item == item && vm.popup.band == band">
                 <div ng-repeat="mode in vm.const.modes" 
                     ng-click="vm.setActive( item, band, mode ); $event.stopPropagation();"
                     ng-style="{ 'background-color': item[band][mode].confirmed ? 
                         vm.user.data.awardValueConfirmedColor :                 
                         ( item[band][mode] ? 
                         vm.user.data.awardValueWorkedColor : null ) }" 
-                    ng-class="{'hover': false }"
+                    ng-class="{'hover': vm.hover == mode }"
                     ng-mouseenter="vm.hover = mode"
                     ng-mouseleave="vm.hover = null"
                     >{{mode}}</div>

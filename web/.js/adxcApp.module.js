@@ -44,6 +44,14 @@ function config( $stateProvider, $urlRouterProvider ) {
         controllerAs: 'vm',
     };
   
+    var profileState = {
+        name: 'profile',
+        url: '/profile',
+        templateUrl: '/profile.html',
+        controller: 'profileController',
+        controllerAs: 'vm',
+    };
+
 
     $stateProvider.state( mainState );
     $stateProvider.state( statsState );

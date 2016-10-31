@@ -469,6 +469,11 @@ class DX( object ):
                 fieldValues[ self.country ].has_key( field ):
                 for m in fieldRe[field].finditer( text ):
                     v = m.group( 0 ).upper()
+                    if field == 'district':
+                        oldDistrict = self.district
+                        self.district = v
+                        if oldDistrict != self.district:
+                            break
                     if v in fieldValues[self.country][field]:
                         setattr( self, field, v )
                     elif fieldValuesSubst[ self.country ].has_key( field ) and \
