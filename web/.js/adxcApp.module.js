@@ -47,7 +47,7 @@ function config( $stateProvider, $urlRouterProvider ) {
     var profileState = {
         name: 'profile',
         url: '/profile',
-        templateUrl: '/profile.html',
+        templateUrl: '/.tmplts/profile.html',
         controller: 'profileController',
         controllerAs: 'vm',
     };
@@ -57,6 +57,7 @@ function config( $stateProvider, $urlRouterProvider ) {
     $stateProvider.state( statsState );
     $stateProvider.state( awardsState );
     $stateProvider.state( listSetupState );
+    $stateProvider.state( profileState );
 
 
 }

@@ -1,0 +1,41 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"                                                
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<div id="profile">
+    <!-- <h4>{{user.callsign}}</h4> -->
+    <div id="profile_settings">
+        <div id="profile_menu">
+            <a ng-click="vm.show = { uploadAdif: true, changeEmail: false, changePwd: false }">Upload ADIF log</a>
+            <a ng-click="vm.show = { uploadAdif: false, changeEmail: true, changePwd: false }">Change email</a>
+            <a ng-click="vm.show = { uploadAdif: false, changeEmail: false, changePwd: true }">Change password</a>
+        </div>
+        <form id="upload_adif" ng-show="vm.show.uploadAdif" ng-submit="vm.uploadADIF()">
+            Upload ADIF log<br>
+            <input type="file" name="adiflog" size="chars" id="adifFile" 
+                custom-change="vm.adifFileChanged"/><br/>
+            <input type="submit" id="submit_btn" name="change_psw" value="Upload" 
+                ng-disabled="!vm.user.loggedIn || !vm.adif"/><br/>
+            <span ng-show="vm.user.data.lastAdifLine">Last loaded QSO: {{vm.user.data.lastAdifLine}}</span>
+        </form>
+        <form id="profile_call" ng-show="vm.show.changeEmail">
+            Email<br>
+            <input type="text" name="email" ng-model="vm.email"><br/>
+            <input type="button" id="submit_btn" name="save_email" value="Save"
+                ng-click="vm.changeEmail()"
+                ng-disabled="!vm.user.loggedIn || !vm.validateEmail()">                
+        </form>
+        <form id="new_pass" method="post" ng-show="vm.show.changePwd">
+            Current password<br/>
+            <input type="password" name="old_pass" ng-model="vm.oldPwd"><br/>
+            New password<br/>
+            <input type="password" name="new_pass" ng-model="vm.newPwd"><br/>
+            <input type="button" id="submit_btn" name="change_psw" value="Change password"
+                    ng-click="vm.changePassword()" 
+                    ng-disabled="!vm.user.loggedIn || 
+                        (!vm.oldPwd || vm.oldPwd.length < 6 ) || 
+                        (!vm.newPwd || vm.newPwd.length < 6 )">                
+        </form>
+    </div> 
+
+</div>
+
+<loading-screen></loading-screen>

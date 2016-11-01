@@ -29,6 +29,11 @@ input#submit_btn{
    	box-shadow: 3px 3px 10px rgba(0,0,0,0.2); /* Параметры тени */
     border: 1px solid #a6def8;
     border-radius: 5px;
+    cursor: pointer;
+}
+input#submit_btn:disabled{
+    background-color: #ccc;
+    cursor: default;
 }
 button{
 	width: 25px;
@@ -321,7 +326,7 @@ form#login{
     font: 16px Arial, Helvetica, sans-serif; 
     text-align: center;
     width: 50%;
-    margin: 10px auto;
+    margin: 70px auto 10px auto;
     background-color: #fff;
 	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
 	padding: 20px;
@@ -387,7 +392,7 @@ form#login #login_register a:hover, form#login #login_recovery a:hover{
 
 #profile_settings{
 	width: 70%;
-	margin: 10px auto 50px auto;
+	margin: 80px auto 50px auto;
 	padding: 10px;
 	background-color: #fff;
 	text-align: center;
@@ -1115,7 +1120,7 @@ form#new_pass input{
 
 form#contact{
 	width: 500px;
-	margin: 50px auto 150px auto;
+	margin: 70px auto 150px auto;
     padding: 20px;
 	background-color: #fff;
     border: 1px solid #ccc;
@@ -1155,7 +1160,7 @@ form#contact textarea{
 
 #about{
 	width: 70%;
-	margin: 50px auto 50px auto;
+	margin: 70px auto 50px auto;
     padding: 20px 50px;
 	background-color: #fff;
     border: 1px solid #ccc;

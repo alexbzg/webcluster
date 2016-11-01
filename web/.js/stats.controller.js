@@ -2,7 +2,7 @@ angular
     .module( 'adxcApp' )
     .controller( 'statsController', statsController );
 
-function statsController( $stateParams, DxConst, User, Head, Awards, UserAwardFactory ) {    
+function statsController( $stateParams, DxConst, User, Head, Awards, UserAwardFactory, LoadingScreen ) {    
     var vm = this;
     vm.user = User;
     vm.const = DxConst;
@@ -50,7 +50,7 @@ function statsController( $stateParams, DxConst, User, Head, Awards, UserAwardFa
                 });
         });
     
-        vm.loading = true;
+        LoadingScreen.on();
         Awards.getAwards( true )
             .then( function( data ) {
                 data.forEach( function( award ) {
@@ -77,8 +77,8 @@ function statsController( $stateParams, DxConst, User, Head, Awards, UserAwardFa
                             }
                         }
                     });
-                vm.loading = false;
             });
+            LoadingScreen.off();
         });
     }
 

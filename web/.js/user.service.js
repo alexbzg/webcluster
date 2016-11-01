@@ -2,7 +2,7 @@ angular
     .module( 'adxcApp' )
     .service( 'User', UserService );
 
-function UserService( $http, $window, Storage, Awards, DxConst  ) {
+function UserService( $http, $window, Storage, Awards, DxConst, LoadingScreen  ) {
     var storageKey = 'adxcluster-user';
     var defaultColor = '#770000';
     var user = { 
@@ -18,7 +18,10 @@ function UserService( $http, $window, Storage, Awards, DxConst  ) {
         deleteListItem: deleteListItem,
         saveAwardStatsSettings: saveAwardStatsSettings,
         awardPostData: awardPostData,
-        saveData: saveData
+        saveData: saveData,
+        uploadADIF: uploadADIF,
+        changeEmail: changeEmail,
+        changePassword: changePassword
     };
     return user;
 
@@ -71,15 +74,16 @@ function UserService( $http, $window, Storage, Awards, DxConst  ) {
                     if ( !user.data.awardsSettings[award.name] ) 
                         user.data.awardsSettings[award.name] = 
                             { 'track': true, 'color': defaultColor };
-                    if ( !user.data.awardsSettings[award.name].settings ) {
+                    if ( !user.data.awardsSettings[award.name].settings )
                         user.data.awardsSettings[award.name].settings = {};
                         var s = user.data.awardsSettings[award.name].settings;
-                        var st =
-                        { bands: DxConst.bands,
-                            modes: DxConst.modes,
-                            cfm: DxConst.cfm
-                        };
-                        for ( var field in st ) {
+                    var st =
+                    { bands: DxConst.bands,
+                        modes: DxConst.modes,
+                        cfm: DxConst.cfm
+                    };
+                    for ( var field in st ) 
+                        if ( !s[field] ) {
                             s[field] = [];
                             st[field].forEach( function( item ) {
                                 if ( Array.isArray( item ) )
@@ -90,7 +94,6 @@ function UserService( $http, $window, Storage, Awards, DxConst  ) {
                                         enabled: true, display: item } );
                             });
                         }
-                    }
                     if ( !user.data.awardsSettings[award.name].settings.sound )
                         user.data.awardsSettings[award.name].settings.sound =
                             { wkd: true, not: true };
@@ -230,6 +233,26 @@ function UserService( $http, $window, Storage, Awards, DxConst  ) {
         return data;
     }
 
+    function changeEmail( newEmail ) {
+        return saveData( { email: newEmail } )
+            .then( function() {
+                user.data.email = newEmail;
+                return true;
+            });
+    }
+
+    function changePassword( newPwd, oldPwd ) {
+        if ( user.loggedIn ) 
+            return $http.post( '/uwsgi/userSettings', 
+                    { token: user.data.token,
+                    password: newPwd,
+                    oldPassword: oldPwd
+                    })
+            .then( function() {
+                return true;
+            })
+    }
+
 
 
     function saveAwardStatsSettings( award ) {
@@ -240,9 +263,26 @@ function UserService( $http, $window, Storage, Awards, DxConst  ) {
 
     function saveData( data ) {
         toStorage();
-        toServer( data );
-            
-
+        return toServer( data );
     }
+
+    
+    function uploadADIF( file ) {
+        return $http({
+            method: 'POST',
+            url: "/uwsgi/userSettings",
+            headers: { 'Content-Type': false,
+                'Content-Encoding': 'gzip'},
+            data: { token: user.data.token, adif: file }})
+            .then(
+                function( response ) {
+                    if ( response.data.awards )
+                        user.data.awards = response.data.awards;
+                    user.data.lastAdifLine = response.data.lastAdifLine;
+                    toStorage();
+                    return Boolean( response.data.awards );
+                });
+    };
+   
 }
 
