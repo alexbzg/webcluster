@@ -1,0 +1,17 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"                                                
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<form id="contact" method="post">
+    <input type="text" name="contact_email" placeholder="Your email" ng-model="vm.email.from">
+    <br>
+    <textarea name="contact_text" placeholder="Your text" ng-model="vm.email.text"></textarea>
+    <div id="recaptcha"
+            vc-recaptcha
+            theme="'light'"
+            key="'6LeDVCQTAAAAAN3QgmsJzIi-mQP5nx9p5Pc6Nj4k'"
+            on-create="vm.recaptchaWidgetId = widgetId"
+            on-success="vm.email.recaptcha = response"
+            on-expire="rcExpired()">
+    </div>
+    <input type="button" id="submit_btn" name="contact_btn" value="Send" ng-click="vm.sendEmail()"
+    ng-show="vm.sendButtonVisible()">
+</form>
