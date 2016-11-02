@@ -57,8 +57,6 @@ function statsController( $stateParams, DxConst, User, Head, Awards, UserAwardFa
                     vm.awards.push( award );
                     award.worked = 0;
                     award.confirmed = 0;
-                    if ( $stateParams.award == award.name )
-                        active.award = award;
                     award.values.forEach( function( av ) {
                         if ( User.data.awards[award.name][av.value] ) {
                             var uav = User.data.awards[award.name][av.value];
@@ -79,6 +77,26 @@ function statsController( $stateParams, DxConst, User, Head, Awards, UserAwardFa
                     });
             });
             LoadingScreen.off();
+            if ( $stateParams.award ) {
+                var award = vm.awards.find( function( award ) {
+                    return ( $stateParams.list_id && 
+                            ( award.list_id == $stateParams.list_id ) ) ||
+                        ( !$stateParams.list_id && 
+                          ( award.name == $stateParams.award ) );
+                });
+                if ( award ) {
+                    vm.activeAward = award;
+                    activeAwardChanged();
+                    if ( $stateParams.value ) {
+                        var value = award.values.find( function( av ) {
+                            return av.value == $stateParams.value;
+                        });
+                        if ( value )
+                            setActive( value, $stateParams.activeBand, 
+                                    $stateParams.activeMode );
+                    }
+                }
+            }
         });
     }
 
@@ -133,7 +151,7 @@ function statsController( $stateParams, DxConst, User, Head, Awards, UserAwardFa
         } else {
             award.confirmed = 0;
             award.values.forEach( function( av ) {
-                if ( av.confirmed = valueConfirmed( av ) )
+                if ( av.userAward && ( av.confirmed = valueConfirmed( av.userAward ) ) )
                     award.confirmed++;
             });
         }

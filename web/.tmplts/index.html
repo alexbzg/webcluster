@@ -8,7 +8,7 @@
     <span ng-bind-html="news.html"/>
 </div-->
 <div id="bands_modes">
-    <div id="selectors_bands_modes" ng-show="vm.selector.show">
+    <div id="selectors_bands_modes" ng-show="vm.showSelector">
         <span class="band" ng-repeat="band in vm.selector.bands track by $index"
             ng-class="{active: band.enabled}">
             <input type="checkbox" ng-model="band.enabled" 
@@ -31,7 +31,7 @@
 
     </div>
     <img src="/images/icon_select.png" title="Select bands and modes for view" 
-        ng-click="vm.selector.show = !vm.selector.show"/>
+        ng-click="vm.showSelector = !vm.showSelector"/>
 </div>
 
 <table id="cluster">

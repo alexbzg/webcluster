@@ -105,11 +105,11 @@
             <td class="color_name">
                 <button colorpicker type="button" colorpicker-position="top" id="color_list_{{list.id}}"
                     ng-model="list.color" 
-                    style='background-color: {{list.color}};'
+                    ng-style="{ 'background-color': list.color}"
                     ng-change="vm.user.listChanged(list)">&nbsp;
                 </button>
             </td>
-            <td class="short_name" style='color: {{list.color}};'>
+            <td class="short_name" ng-style="{'color': list.color}">
                 {{list.title}}
             </td>
             <td class="full_name">
@@ -140,11 +140,11 @@
             <td class="color_name">
                 <button colorpicker type="button" colorpicker-position="top" id="color_{{award.name}}"
                     ng-model="vm.user.data.awardsSettings[award.name].color" 
-                    style='background-color: {{vm.user.data.awardsSettings[award.name].color}};'
+                    ng-style="{ 'background-color': vm.user.data.awardsSettings[award.name].color }"
                     ng-change="vm.user.awardSettingsChanged(award)">&nbsp;
                 </button>
             </td>
-            <td class="short_name" style='color: {{vm.user.data.awardsSettings[award.name].color}};'>
+            <td class="short_name" ng-style="{'color': vm.user.data.awardsSettings[award.name].color}">
                 {{award.name}}
             </td>
             <td class="full_name">
@@ -165,7 +165,9 @@
             </td>
         </tr>
     </table>
-    <input type="button" value="OK" ui-sref="/" id="button_ok"/>
+    <a ui-sref="main">
+        <input type="button" value="OK" id="button_ok"/>
+    </a>
 </div>
 <!--table id="loader" ng-show="vm.loading"><tr><td>Loading...<br/><img src="/images/loader.gif" title="Loading"></td></tr></table-->
 

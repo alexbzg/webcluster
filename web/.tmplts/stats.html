@@ -16,12 +16,12 @@
                 <td id="award_stat">
                     <button colorpicker type="button" colorpicker-position="top" 
                         ng-model="vm.user.data.awardValueWorkedColor"
-                        style='background-color: {{vm.user.data.awardValueWorkedColor}};'
+                        ng-style="{ 'background-color': vm.user.data.awardValueWorkedColor }"
                         ng-change="saveUserSettings()">&nbsp;</button>
                         <span>{{vm.activeAward.worked}}</span> worked<br/>
                         <button colorpicker type="button" colorpicker-position="top" 
                         ng-model="vm.user.data.awardValueConfirmedColor"
-                        style='background-color: {{vm.user.data.awardValueConfirmedColor}};'
+                        ng-style="{ 'background-color': vm.user.data.awardValueConfirmedColor }"
                         ng-change="vm.user.saveUserSettings()">&nbsp;</button>
                         <span>{{vm.activeAward.confirmed}}</span> confirmed
 
@@ -83,7 +83,7 @@
                             
                                 <button colorpicker type="button" colorpicker-position="top" 
                                     ng-model="vm.user.data.awardValueWorkedColor"
-                                    style='background-color: {{vm.user.data.awardValueWorkedColor}};'
+                                    ng-style="{'background-color': vm.user.data.awardValueWorkedColor}"
                                     ng-change="vm.saveUserSettings()">&nbsp;</button>
                                 Worked
                             </td>
@@ -101,7 +101,7 @@
                             <td colspan="3" class="view_title">
                                 <button colorpicker type="button" colorpicker-position="top" 
                                     ng-model="vm.user.data.awardValueConfirmedColor"
-                                    style='background-color: {{vm.user.data.awardValueConfirmedColor}};'
+                                    ng-style="{'background-color': vm.user.data.awardValueConfirmedColor}"
                                     ng-change="vm.saveUserSettings()">&nbsp;</button>
                                 Confirmed
                             </td>

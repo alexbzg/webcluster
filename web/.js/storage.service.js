@@ -5,7 +5,9 @@ angular
 function StorageService( $window ) {
     var _storage = {
         load: load,
-        save: save };
+        save: save,
+        remove: remove
+    };
     return _storage;
 
     function storage( type ) {
@@ -39,7 +41,10 @@ function StorageService( $window ) {
         s[key] = JSON.stringify( data );
     }
 
-
+    function remove( key, storageN ) {
+        var s = storage( storageN );
+        s.removeItem( key );
+    }
 
     
 }

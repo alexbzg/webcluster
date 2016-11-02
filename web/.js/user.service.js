@@ -2,7 +2,8 @@ angular
     .module( 'adxcApp' )
     .service( 'User', UserService );
 
-function UserService( $http, $window, Storage, Awards, DxConst, LoadingScreen  ) {
+function UserService( $http, $window, $q, Storage, Awards, DxConst, 
+        LoadingScreen  ) {
     var storageKey = 'adxcluster-user';
     var defaultColor = '#770000';
     var user = { 
@@ -21,13 +22,13 @@ function UserService( $http, $window, Storage, Awards, DxConst, LoadingScreen  )
         saveData: saveData,
         uploadADIF: uploadADIF,
         changeEmail: changeEmail,
-        changePassword: changePassword
+        changePassword: changePassword,
+        login: login,
+        logout: logout,
+        loggedIn: loggedIn
     };
     return user;
 
-    function login( loginData ) {
-    }
-    
     function fromStorage() {
         var ud;
         var storages = {'local': true, 'session': false };
@@ -39,9 +40,12 @@ function UserService( $http, $window, Storage, Awards, DxConst, LoadingScreen  )
 
         if ( ud ) {
             user.data = ud;
-            user.loggedIn = Boolean( user.data.token );
         }
         init();
+    }
+
+    function loggedIn() {
+        return Boolean( user.data.token );
     }
 
     function init() {
@@ -61,9 +65,20 @@ function UserService( $http, $window, Storage, Awards, DxConst, LoadingScreen  )
         if ( !user.data.awardsSettings )
             user.data.awardsSettings = {};
 
+        if ( !user.data.token )
+            user.data.remember = true;
+
+        if ( !user.data.awardValueWorkedColor )
+            user.data.awardValueWorkedColor = '#0091c9';
+        if ( !user.data.awardValueConfirmedColor )
+            user.data.awardValueConfirmedColor = '#02b20e';
+
+
         user.data.lists.forEach( function( list ) {
             if ( !user.data.listsAwards[list.id] )
                 user.data.listsAwards[list.id] = {};
+            if ( !list.color )
+                list.color = defaultColor;
         });
 
         Awards.getAwards()
@@ -73,7 +88,7 @@ function UserService( $http, $window, Storage, Awards, DxConst, LoadingScreen  )
                         user.data.awards[award.name] = {};
                     if ( !user.data.awardsSettings[award.name] ) 
                         user.data.awardsSettings[award.name] = 
-                            { 'track': true, 'color': defaultColor };
+                            { 'track': true, 'color': award.color ? award.color : defaultColor };
                     if ( !user.data.awardsSettings[award.name].settings )
                         user.data.awardsSettings[award.name].settings = {};
                         var s = user.data.awardsSettings[award.name].settings;
@@ -162,26 +177,34 @@ function UserService( $http, $window, Storage, Awards, DxConst, LoadingScreen  )
 
     function saveList( list ) {
         toStorage();
-        if ( user.loggedIn )
-        return toServer( {
-                'list_id': list.id ? list.id : 'new',
-                'full_title': list.full_title,
-                'title': list.title } )
-            .then( function( data ) { 
-                if ( !list.id ) {
-                    if ( 'list_id' in data ) {
-                        list.id = data.list_id;
-                        return list.id;
-                    }
-                    else {
-                        serverError();
-                        return false;
-                    }
+        if ( user.data.token )
+            return toServer( {
+                    'list_id': list.id ? list.id : 'new',
+                    'full_title': list.full_title,
+                    'title': list.title } )
+                .then( function( data ) { 
+                    if ( !list.id ) {
+                        if ( 'list_id' in data ) {
+                            list.id = data.list_id;
+                            return list.id;
+                        }
+                        else {
+                            serverError();
+                            return false;
+                        }
 
-                }
-            });
+                    }
+                });
+        else 
+            if ( !list.id ) {
+                list.id = '_' + user.data.lists.length;
+                return $q.when( {} )
+                    .then( function() { return list.id; } );
+                     
+            }
 
-    };
+
+    }
 
     function saveListItem( item, list ) {
         toStorage();
@@ -242,7 +265,7 @@ function UserService( $http, $window, Storage, Awards, DxConst, LoadingScreen  )
     }
 
     function changePassword( newPwd, oldPwd ) {
-        if ( user.loggedIn ) 
+        if ( user.data.token ) 
             return $http.post( '/uwsgi/userSettings', 
                     { token: user.data.token,
                     password: newPwd,
@@ -253,6 +276,23 @@ function UserService( $http, $window, Storage, Awards, DxConst, LoadingScreen  )
             })
     }
 
+    function login( userData, remember ) {
+        return $http.post( '/uwsgi/login', userData )
+            .then( function( response ) {
+                user.data = response.data;
+                user.data.remember = remember;
+                init();
+                toStorage();
+                return true;
+            });
+    }
+   
+    function logout() {
+        Storage.remove( storageKey, 'local' );
+        Storage.remove( storageKey, 'session' );
+        user.data = {};
+        init();
+    }
 
 
     function saveAwardStatsSettings( award ) {

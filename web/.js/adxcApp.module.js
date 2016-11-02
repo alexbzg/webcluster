@@ -1,5 +1,5 @@
 angular
-    .module( 'adxcApp', ['ui.router', 'colorpicker.module'] )
+    .module( 'adxcApp', ['ui.router', 'colorpicker.module', 'vcRecaptcha'] )
     .config( config );
 
 function config( $stateProvider, $urlRouterProvider ) {
@@ -52,12 +52,36 @@ function config( $stateProvider, $urlRouterProvider ) {
         controllerAs: 'vm',
     };
 
+    var loginState = {
+        name: 'login',
+        url: '/login',
+        templateUrl: '/.tmplts/login.html',
+        controller: 'loginController',
+        controllerAs: 'vm',
+    };
 
+    var contactState = {
+        name: 'contact',
+        url: '/contact',
+        templateUrl: '/.tmplts/contact.html',
+        controller: 'contactController',
+        controllerAs: 'vm',
+    };
+
+    var infoState = {
+        name: 'info',
+        url: '/info',
+        templateUrl: '/.tmplts/info.html'
+    };
+
+    $stateProvider.state( loginState );
     $stateProvider.state( mainState );
     $stateProvider.state( statsState );
     $stateProvider.state( awardsState );
     $stateProvider.state( listSetupState );
     $stateProvider.state( profileState );
+    $stateProvider.state( contactState );
+    $stateProvider.state( infoState );
 
 
 }

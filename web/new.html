@@ -19,11 +19,14 @@
                   display: none !important;
             }
         </style>
+        <script src="//www.google.com/recaptcha/api.js?render=explicit&onload=vcRecaptchaApiLoaded" async defer>
+        </script>        
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-sanitize.js"></script>
+        <script src="/.js/lib/angular-recaptcha.min.js"></script>        
         <script src="/.js/lib/angular-ui-router.min.js"></script>
         <script src="/.js/lib/bootstrap-colorpicker-module.min.js"></script>
         <script src="/.js/polyfill.js"></script>
+        <script src="/.js/common.js"></script>
         <script src="/.js/adxcApp.module.js"></script>
         <script src="/.js/head.controller.js"></script>
         <script src="/.js/head.service.js"></script>
@@ -42,21 +45,23 @@
         <script src="/.js/listSetup.controller.js"></script>
         <script src="/.js/stats.controller.js"></script>
         <script src="/.js/profile.controller.js"></script>
+        <script src="/.js/login.controller.js"></script>
+        <script src="/.js/contact.controller.js"></script>
 
     </head>
     <body ng-cloak>
         <div id="top">
             <a ui-sref="main"><img src="/images/ac_logo.jpg" border="0" /></a>
             <div id="top_menu" ng-controller="menuController as vm">
-                <span id="callsign" ng-show="vm.user.loggedIn">
+                <span id="callsign" ng-show="vm.user.loggedIn()">
                     {{vm.user.data.callsign}}</span>
-                <a ui-sref="login" ng-show="!vm.user.loggedIn">Login</a>
+                <a ui-sref="info" ng-show="!vm.user.loggedIn()">Info</a>
                 <a ui-sref="stats">Stats</a>
                 <a ui-sref="awards">Awards</a>
                 <a ui-sref="profile">Profile</a>
-                <a ui-sref="info" ng-show="!vm.user.loggedIn">Info</a>
-                <a ui-sref="contact" ng-show="vm.user.loggedIn">Contact</a>
-                <a href="" ng-click="vm.user.logout()" ng-show="vm.user.loggedIn">
+                        <a ui-sref="contact">Contact</a>
+                <a ui-sref="login" ng-show="!vm.user.loggedIn()">Login</a>
+                <a href="" ng-click="vm.user.logout()" ng-show="vm.user.loggedIn()">
                     Logout</a>
             </div>
         </div>

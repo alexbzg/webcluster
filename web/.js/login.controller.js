@@ -2,13 +2,9 @@ angular
     .module( 'adxcApp' )
     .controller( 'loginController', loginController );
 
-var rcCallback;
-var rcExpired;
-
-function profileController( $scope, $state, User, Head ) {    
+function loginController( $scope, $state, vcRecaptchaService, User, Head ) {    
     var vm = this;    
-    rcCallback = _rcCallback;
-    rcExpired = _rcExpired;
+    rcExpired = rcExpired;
     vm.login = login;
     vm.loginButtonVisible = loginButtonVisible;
 
@@ -16,7 +12,7 @@ function profileController( $scope, $state, User, Head ) {
     return vm;
 
     function init() {
-        if ( User.loggedIn ) {
+        if ( User.loggedIn() ) {
             $state.go( 'main' );
             return;
         }
@@ -24,39 +20,27 @@ function profileController( $scope, $state, User, Head ) {
         vm.user = { 'callsign': '', 'password': '', 'register': false,
                     'recaptcha': false, 'email': '' };
         vm.remember = false;
+        Head.setTitle( 'ADXCluster.com - Login' );
     }
 
-    function _rcCallback( response ) {
-        vm.user.recaptcha = response;
-        $scope.$apply();
-    }
-
-    function _rcExpired = function() {
+    function rcExpired() {
         vm.user.recaptcha = '';
-        $scope.$apply();
+        vcRecaptchaService.reload(vm.widgetId);
     }
 
     function login() {
-        User.login( vm.user )
+        User.login( vm.user, vm.remember )
             .then( function( r ) {
                 if ( r )
                     $state.go( 'main' );
+            })
+            .catch( function( r ) {
+                vcRecaptchaService.reload(vm.widgetId);
+                if ( r.status == "500" || r.status == "502" )
+                    alert( 'Server error. Please try again later' );
                 else
-                    grecaptcha.reset();
+                    alert( r.data );
             });
-
-        $http.post( '/uwsgi/login', $scope.user ).then( function( response ) {
-            userData = response.data;
-            userData['remember'] = $scope.remember;
-            saveUserData( userData );
-            $window.location.href = "http://adxcluster.com";
-        }, function( response ) {
-            grecaptcha.reset();
-             if ( response.status == "500" || response.status == "502" )
-                alert( 'Server error. Please try again later' );
-            else
-                alert( response.data );
-       });
     }
    
 

@@ -78,7 +78,7 @@ for aw in awardsData:
             else:
                 av = {}
                 val = getColumn( data, 'value' )
-                if strIsInt( val ) and int( val ) < 10:
+                if strIsInt( val ) and len( val ) < 2:
                     val = '0' + val
                 av['displayValue'] = val
                 av['value'] = group + groupSeparator + av['displayValue'] if \
