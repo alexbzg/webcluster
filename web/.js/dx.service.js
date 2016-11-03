@@ -18,7 +18,7 @@ function DXService( $http, User, Awards ) {
         });
 
     var dx = { 
-        items: null,
+        items: [],
         load: load,
         updateAwards: updateAwards,
         onNewData: []
@@ -27,20 +27,22 @@ function DXService( $http, User, Awards ) {
     return dx;
 
     function load() {
-        $http.get( url, { cache: false } ).then( function( response ) {
-            if ( lastModified != response.headers( 'last-modified' ) ) {
-                dx.items = response.data.reverse();
-                dx.items.forEach( function( item ) {
-                    item._awards = angular.extend( {}, item.awards );
-                });
-                lastModified =  response.headers( 'last-modified' );
-                updateAwards();
-                dx.onNewData.forEach( function( callback ) {
-                    callback();
-                });
-            } 
-            return response;
-        } );
+        return $http.get( url, { cache: false } )
+            .then( function( response ) {
+                if ( lastModified != response.headers( 'last-modified' ) ) {
+                    dx.items = response.data.reverse();
+                    dx.items.forEach( function( item ) {
+                        item._awards = angular.extend( {}, item.awards );
+                    });
+                    lastModified =  response.headers( 'last-modified' );
+                    updateAwards();
+                    /*dx.onNewData.forEach( function( callback ) {
+                        callback();
+                    });*/
+                    return true;
+                } 
+                return false;
+            } );
     }
 
     function createCfm( as ) {

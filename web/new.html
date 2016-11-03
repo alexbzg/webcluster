@@ -39,6 +39,7 @@
         <script src="/.js/loadingScreen.service.js"></script>
         <script src="/.js/loadingScreen.directive.js"></script>
         <script src="/.js/customChange.directive.js"></script>
+        <script src="/.js/buttonColorPicker.directive.js"></script>
         <script src="/.js/menu.controller.js"></script>
         <script src="/.js/cluster.controller.js"></script>
         <script src="/.js/awards.controller.js"></script>
@@ -50,9 +51,14 @@
 
     </head>
     <body ng-cloak>
-        <div id="top">
+        <div id="top" ng-controller="menuController as vm">
             <a ui-sref="main"><img src="/images/ac_logo.jpg" border="0" /></a>
-            <div id="top_menu" ng-controller="menuController as vm">
+
+            <div id="unlogged_user_info" ng-show="!vm.user.loggedIn()">
+                <b>Unregistered user</b>.<br/>Data and settings <u>will not be saved</u> on the server. 
+            </div>
+
+            <div id="top_menu" >
                 <span id="callsign" ng-show="vm.user.loggedIn()">
                     {{vm.user.data.callsign}}</span>
                 <a ui-sref="info" ng-show="!vm.user.loggedIn()">Info</a>

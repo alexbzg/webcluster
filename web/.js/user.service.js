@@ -25,7 +25,8 @@ function UserService( $http, $window, $q, Storage, Awards, DxConst,
         changePassword: changePassword,
         login: login,
         logout: logout,
-        loggedIn: loggedIn
+        loggedIn: loggedIn,
+        saveUserSettings: saveUserSettings
     };
     return user;
 
@@ -148,6 +149,12 @@ function UserService( $http, $window, $q, Storage, Awards, DxConst,
                     'settings': user.data.awardsSettings[award.name].settings,
         } );
     }
+
+    function saveUserSettings() {
+        saveData( { 'award_value_worked_color': user.data.awardValueWorkedColor,
+            'award_value_confirmed_color': user.data.awardValueConfirmedColor });
+    }
+    
 
     function listChanged( list ) {
         toStorage();

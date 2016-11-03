@@ -38,14 +38,21 @@ function clusterController( $interval, $timeout, $scope, Storage, DxConst, DX, H
             }
         }
 
-        DX.onNewData.push( dxFilter );
-
-        DX.load();
-        vm.dxReload = $interval( DX.load, 1000 );
+        dxFilter();
+        loadDX();
+        vm.dxReload = $interval( loadDX, 1000 );
 
         updateTime();
 
         $scope.$on( '$destroy', onDestroy );
+    }
+
+    function loadDX() {
+        DX.load()
+            .then( function( r ) {
+                if ( r )
+                    dxFilter();
+            });
     }
 
     function onDestroy() {

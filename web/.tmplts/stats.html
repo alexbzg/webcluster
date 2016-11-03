@@ -14,18 +14,18 @@
         <table id="award_info" ng-show="vm.activeAward">
             <tr>
                 <td id="award_stat">
-                    <button colorpicker type="button" colorpicker-position="top" 
+                    <button-color-picker value="vm.user.data.awardValueWorkedColor"
+                        change="vm.user.saveUserSettings()"></button-color-picker>
+                    <!--button colorpicker type="button" colorpicker-position="top" 
                         ng-model="vm.user.data.awardValueWorkedColor"
                         ng-style="{ 'background-color': vm.user.data.awardValueWorkedColor }"
-                        ng-change="saveUserSettings()">&nbsp;</button>
-                        <span>{{vm.activeAward.worked}}</span> worked<br/>
-                        <button colorpicker type="button" colorpicker-position="top" 
-                        ng-model="vm.user.data.awardValueConfirmedColor"
-                        ng-style="{ 'background-color': vm.user.data.awardValueConfirmedColor }"
-                        ng-change="vm.user.saveUserSettings()">&nbsp;</button>
-                        <span>{{vm.activeAward.confirmed}}</span> confirmed
+                        ng-change="saveUserSettings()">&nbsp;</button-->
+                    <span>{{vm.activeAward.worked}}</span> worked<br/>
+                    <button-color-picker value="vm.user.data.awardValueConfirmedColor"
+                        change="vm.user.saveUserSettings()"></button-color-picker>
+                    <span>{{vm.activeAward.confirmed}}</span> confirmed
 
-                        <table id="view_cfm">
+                    <table id="view_cfm">
                         <tr>
                             <th colspan="3">View CFM</th>
                         </tr>
@@ -35,7 +35,7 @@
                                 {{type.display}}
                             </td>
                         </tr>
-                        </table>
+                    </table>
                     
                 </td>
                 <td id="award_edit">                
@@ -80,11 +80,8 @@
                     <table class="view_modes">
                         <tr>
                             <td colspan="7" class="view_title">
-                            
-                                <button colorpicker type="button" colorpicker-position="top" 
-                                    ng-model="vm.user.data.awardValueWorkedColor"
-                                    ng-style="{'background-color': vm.user.data.awardValueWorkedColor}"
-                                    ng-change="vm.saveUserSettings()">&nbsp;</button>
+                                <button-color-picker value="vm.user.data.awardValueWorkedColor"
+                                    change="vm.user.saveUserSettings()"></button-color-picker>
                                 Worked
                             </td>
                         </tr>
@@ -99,10 +96,8 @@
                     <table class="view_modes">
                         <tr>
                             <td colspan="3" class="view_title">
-                                <button colorpicker type="button" colorpicker-position="top" 
-                                    ng-model="vm.user.data.awardValueConfirmedColor"
-                                    ng-style="{'background-color': vm.user.data.awardValueConfirmedColor}"
-                                    ng-change="vm.saveUserSettings()">&nbsp;</button>
+                               <button-color-picker value="vm.user.data.awardValueConfirmedColor"
+                                    change="vm.user.saveUserSettings()"></button-color-picker>
                                 Confirmed
                             </td>
                         </tr>

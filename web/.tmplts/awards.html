@@ -103,11 +103,8 @@
                     ng-change="vm.user.listChanged(list)">
             </td>
             <td class="color_name">
-                <button colorpicker type="button" colorpicker-position="top" id="color_list_{{list.id}}"
-                    ng-model="list.color" 
-                    ng-style="{ 'background-color': list.color}"
-                    ng-change="vm.user.listChanged(list)">&nbsp;
-                </button>
+                <button-color-picker value="list.color"
+                    change="vm.user.listChanged(list)"></button-color-picker>
             </td>
             <td class="short_name" ng-style="{'color': list.color}">
                 {{list.title}}
@@ -138,11 +135,8 @@
                     ng-change="vm.user.awardSettingsChanged(award)">
             </td>
             <td class="color_name">
-                <button colorpicker type="button" colorpicker-position="top" id="color_{{award.name}}"
-                    ng-model="vm.user.data.awardsSettings[award.name].color" 
-                    ng-style="{ 'background-color': vm.user.data.awardsSettings[award.name].color }"
-                    ng-change="vm.user.awardSettingsChanged(award)">&nbsp;
-                </button>
+                <button-color-picker value="vm.user.data.awardsSettings[award.name].color"
+                    change="vm.user.awardSettingsChanged(award)"></button-color-picker>
             </td>
             <td class="short_name" ng-style="{'color': vm.user.data.awardsSettings[award.name].color}">
                 {{award.name}}

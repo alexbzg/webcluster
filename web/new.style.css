@@ -1216,3 +1216,15 @@ table#loader td{
 #counter a{
 	color: #777;
 }
+
+
+#unlogged_user_info{
+	position: fixed;
+	top: 7px;
+	left: 200px;
+	font-size: 12px;
+	padding: 5px;
+	background-color: #f00;
+	color: #fff;
+	border: 1px solid #fff;
+}
