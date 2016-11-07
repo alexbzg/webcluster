@@ -2,7 +2,7 @@ angular
     .module( 'adxcApp' )
     .service( 'DX', DXService );
 
-function DXService( $http, User, Awards ) {
+function DXService( $rootScope, $http, User, Awards, Notify ) {
     var url = '/dxdata.json';
     var lastModified = null;
     var user = User.data;
@@ -21,10 +21,18 @@ function DXService( $http, User, Awards ) {
         items: [],
         load: load,
         updateAwards: updateAwards,
-        onNewData: []
+        onUpdate: onUpdate
     };
 
+    User.onLogIO( function() {
+        user = User.data;
+        updateAwards() } );
+
     return dx;
+
+    function onUpdate( callback, scope ) {
+        Notify.notify( 'dx-update', callback, scope );
+    }
 
     function load() {
         return $http.get( url, { cache: false } )
@@ -48,7 +56,7 @@ function DXService( $http, User, Awards ) {
     function createCfm( as ) {
         var cfm = { 'cfm_paper': 1, 'cfm_eqsl': 1, 'cfm_lotw': 1 };
         if ( as && as.settings && as.settings.cfm )
-            as.settings.cfm.forEach( function( cfmType ) {                                    
+            as.settings.cfm.forEach( function( cfmType ) {
                 if ( !cfmType.enabled )
                     delete cfm[cfmType.name];
             });
@@ -62,6 +70,7 @@ function DXService( $http, User, Awards ) {
             itemAwards( item );
             itemListAwards( item );
         });
+        $rootScope.$emit( 'dx-update' );
     }
 
     function checkAward( uav, dx ) {
@@ -161,7 +170,8 @@ function DXService( $http, User, Awards ) {
                             }
 
                         }
-                        item.awards.push( { award: list.title, value: listItem.callsign,
+                        item.awards.push( { award: list.title, 
+                            value: listItem.callsign,
                             worked: worked, list_id: list.id, color: list.color,
                             sound: ( worked && listItem.settings.sound.wkd ) || 
                                 ( !worked && listItem.settings.sound.not )

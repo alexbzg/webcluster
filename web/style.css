@@ -29,6 +29,11 @@ input#submit_btn{
    	box-shadow: 3px 3px 10px rgba(0,0,0,0.2); /* Параметры тени */
     border: 1px solid #a6def8;
     border-radius: 5px;
+    cursor: pointer;
+}
+input#submit_btn:disabled{
+    background-color: #ccc;
+    cursor: default;
 }
 button{
 	width: 25px;
@@ -53,10 +58,13 @@ input.select_color::-webkit-color-swatch-wrapper {
 
 
 #top{
+	position: fixed;
 	width: 98%;
-	margin: 0 auto;
+	top: 0;
+	left: 1%;
 	padding: 10px 1% 0 1%;
 	background-color: #eee;
+	z-index: 200;
 }
 #top_menu{
 	float: right;
@@ -89,7 +97,7 @@ input.select_color::-webkit-color-swatch-wrapper {
 
 #news{
 	width: 70%;
-	margin: 20px auto 0 auto;
+	margin: 70px auto 0 auto;
 	padding: 10px 20px 5px 20px;
 	background-color: #fffeb3;
 	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
@@ -131,33 +139,38 @@ input.select_color::-webkit-color-swatch-wrapper {
 	width: 90%;
 	margin: 0;
 	position: relative;
-	margin: 0 auto;
+	margin: 70px auto 0 auto;
 }
 #selectors_bands_modes{
 	text-align: center;
 	background-color: #fff;
-	padding: 15px;
+	padding: 5px;
 	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
 	font-size: 18px;
 	font-weight: bold;
 	margin-top: 10px;
 	color: #bbb;
+	line-height: 36px;
 }
 #selectors_bands_modes input{
 	margin-right: 0px;
 }
 #selectors_bands_modes span.band{
-	margin-right: 15px;
+	margin-right: 20px;
 }
 #selectors_bands_modes span.active{
 	color: #000;
 }
 #selectors_bands_modes span.mode{
-	margin-right: 15px;
 	color: #283a90 ;
+	margin-right: 20px;
 }
 #selectors_bands_modes span.sound{
 	color: #006600;
+	margin: 0 100px;
+}
+#selectors_bands_modes span.allSpots{
+	color: #770000;
 }
 #bands_modes img{
 	position: absolute;
@@ -313,7 +326,7 @@ form#login{
     font: 16px Arial, Helvetica, sans-serif; 
     text-align: center;
     width: 50%;
-    margin: 10px auto;
+    margin: 70px auto 10px auto;
     background-color: #fff;
 	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
 	padding: 20px;
@@ -379,7 +392,7 @@ form#login #login_register a:hover, form#login #login_recovery a:hover{
 
 #profile_settings{
 	width: 70%;
-	margin: 10px auto 50px auto;
+	margin: 80px auto 50px auto;
 	padding: 10px;
 	background-color: #fff;
 	text-align: center;
@@ -437,11 +450,11 @@ table#setup_block td{
 	position: relative;
 }
 table.award_setup{
+	display: inline-block;
 	background-color: #fff;
 	border-collapse: collapse;
-	margin: 0px auto;
+	margin: 20px 50px;
 	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
-	margin: 20px auto;
 }
 table.award_setup th{
 	padding: 2px 7px;
@@ -468,7 +481,7 @@ table.award_setup td{
 
 #awards_list{
 	width: 900px;
-	margin: 0 auto;
+	margin: 70px auto;
 }
 table#awards_list{
 	width: 100%;
@@ -525,19 +538,22 @@ table#awards_list td.short_name{
 table#awards_list td.full_name, table#awards_list th.full_name{
 	text-align: left;
 }
-table#awards_list td.notification{
-	width: 90px;
-	vertical-align: middle;
+
+table#awards_list td.full_name img{
+	float: right;
+	cursor: pointer;
+	width: 25px;
 }
-table#awards_list td.notification img{
-	margin-right: 10px;
-}
-table#awards_list td.notification input{
-	margin: 0;
-	padding: 0;
-}
-table#awards_list td.website{
+table#awards_list td.website, table#awards_list th.settings{
 	width: 80px;
+}
+
+a#create_list{
+	font-weight: bold;
+	color: #00b;
+	font-size: 18px;
+	display: inline-block;
+	margin: 7px 0;
 }
 
 input#button_ok {
@@ -570,7 +586,7 @@ input#button_ok {
 #list_add_calls{
 	width: 1060px;
 	background-color: #fff;
-	padding: 20px;
+	padding: 20px 20px 10px 20px;
 	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
 	margin: 20px auto;
 }
@@ -587,12 +603,34 @@ input#button_ok {
 	width: 150px;
 	text-align: center;
 }
-#list_add_calls textarea{
-	width: 100%;
-	margin: 10px 0;
+#list_add_calls span.note{
+	font-size: 14px;
+	color: #777;
 }
 
-table#list_edit{
+#list_add_calls table#input_callsigns{
+	width: 1020px;
+}
+#list_add_calls table#input_callsigns td{
+	text-align: center;
+	vertical-align: top;
+}
+#list_add_calls textarea{
+	width: 960px;
+	margin: 5px 0 0 0;
+	text-align: left;
+}
+#list_add_calls input#submit_btn{
+	width: 60px;
+	height: 40px;
+	margin: 5px 20px 0 20px;
+	display: inline-block;
+}
+
+
+
+
+table.list_edit{
 	width: 1100px;
 	background-color: #fff;
 	border-collapse: collapse;
@@ -601,57 +639,65 @@ table#list_edit{
 	margin: 0 auto;
 	text-align: center;
 }
-table#list_edit th{
+table.list_edit th{
 	padding: 2px 0;
 	border: 1px solid #a6def8;
 }
-table#list_edit th#mode, table#list_edit th#band, table#list_edit th#sound, table#list_edit th#mobile{
+table.list_edit th#mode, table.list_edit th#band, table.list_edit th#sound, table.list_edit th#mobile{
 	background-color: #0091c9;
 	color: #fff;
 }
-table#list_edit th#delete{
-	width: 50px;	
+table.list_edit th#delete{
+	width: 30px;	
 }
 
-table#list_edit td{
+table.list_edit td{
 	padding: 2px 0px;
 	font-size: 12px;
 	border: 1px solid #a6def8;
 	color: #000;
 }
-table#list_edit td.band, table#list_edit td.mobile{
+table.list_edit td.band, table.list_edit td.mobile{
 	width: 33px;
 }
-table#list_edit td.mode{
+table.list_edit td.mode{
 	width: 40px;
 }
-table#list_edit td.sound, table#list_edit td.mobile{
+table.list_edit td.sound, table.list_edit td.mobile{
 	width: 50px;
 }
 
-table#list_edit td.callsign{
+table.list_edit td.callsign{
 	font-size: 16px;
 	padding-left: 10px;
 	text-align: left;
 	border-right: 3px solid #a6def8;
 }
-table#list_edit td.delete{
+table.list_edit td.delete{
 	width: 30px;
 	padding: 0;
 	cursor: pointer;
 	vertical-align: middle;
 }
-table#list_edit td.delete img{
+table.list_edit td.delete img{
 	width: 20px;
 	margin: 3px 0 0 0;
 }
-table#list_edit tr.odd{	background-color: #eff9fe; }
-table#list_edit th.border_right, table#list_edit td.border_right{	border-right: 3px solid #a6def8; }
+table.list_edit tr.odd{	background-color: #eff9fe; }
+table.list_edit th.border_right, table.list_edit td.border_right{	border-right: 3px solid #a6def8; }
 .grey{color: #aaa;}
 
 
+table.list_edit_fixed{
+	margin-top: 350px;
+}
 
-
+@-moz-document url-prefix()
+{
+table.list_edit_fixed{
+	margin-top: 370px;
+}
+}
 
 
 
@@ -840,8 +886,11 @@ table#ABM_view td.confirmed{
 }
 .popup div{
 	padding: 2px;
-	margin: 1px 0;
+	border: 1px solid #fff;
 	background-color: #eee;
+}
+.popup div.hover{
+	border: 1px solid #0091c9;
 }
 
 
@@ -860,7 +909,7 @@ table#ABM_view td.confirmed{
 	top: 0;
 	left: 0;
 	width: 100%;
-	padding: 0;
+	padding: 50px 0 0 0;
 	margin: 0;
 	background-color: #eee;
 }
@@ -1071,7 +1120,7 @@ form#new_pass input{
 
 form#contact{
 	width: 500px;
-	margin: 50px auto 150px auto;
+	margin: 70px auto 150px auto;
     padding: 20px;
 	background-color: #fff;
     border: 1px solid #ccc;
@@ -1111,8 +1160,8 @@ form#contact textarea{
 
 #about{
 	width: 70%;
-	margin: 50px auto 50px auto;
-    padding: 20px;
+	margin: 70px auto 50px auto;
+    padding: 20px 50px;
 	background-color: #fff;
     border: 1px solid #ccc;
 	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
@@ -1166,4 +1215,16 @@ table#loader td{
 }
 #counter a{
 	color: #777;
+}
+
+
+#unlogged_user_info{
+	position: fixed;
+	top: 7px;
+	left: 200px;
+	font-size: 12px;
+	padding: 5px;
+	background-color: #f00;
+	color: #fff;
+	border: 1px solid #fff;
 }

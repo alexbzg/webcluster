@@ -1,5 +1,5 @@
 angular
-    .module( 'adxcApp', ['ui.router', 'colorpicker.module', 'vcRecaptcha'] )
+    .module( 'adxcApp', [ 'ngSanitize', 'ui.router', 'colorpicker.module', 'vcRecaptcha'] )
     .config( config );
 
 function config( $stateProvider, $urlRouterProvider ) {

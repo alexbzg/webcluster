@@ -2,7 +2,8 @@ angular
     .module( 'adxcApp' )
     .controller( 'clusterController', clusterController );
 
-function clusterController( $interval, $timeout, $scope, Storage, DxConst, DX, Head ) {
+function clusterController( $interval, $timeout, $scope, 
+        Storage, DxConst, DX, Head, News ) {
 
     var vm = this;
     var selectorKey = 'adxcluster-selector';
@@ -12,10 +13,13 @@ function clusterController( $interval, $timeout, $scope, Storage, DxConst, DX, H
     var lastTs = null;
 
     vm.dx = DX;
+    vm.news = News;
     vm.dxFiltered = [];
     vm.replace0 = replace0;
     vm.selectorChange = selectorChange;
     vm.soundChange = soundChange;
+
+    DX.onUpdate( dxFilter, $scope );
 
     activate();
 
@@ -39,20 +43,12 @@ function clusterController( $interval, $timeout, $scope, Storage, DxConst, DX, H
         }
 
         dxFilter();
-        loadDX();
-        vm.dxReload = $interval( loadDX, 1000 );
+        DX.load();
+        vm.dxReload = $interval( DX.load, 1000 );
 
         updateTime();
 
         $scope.$on( '$destroy', onDestroy );
-    }
-
-    function loadDX() {
-        DX.load()
-            .then( function( r ) {
-                if ( r )
-                    dxFilter();
-            });
     }
 
     function onDestroy() {
@@ -146,7 +142,6 @@ function clusterController( $interval, $timeout, $scope, Storage, DxConst, DX, H
         var hr = n.getUTCHours();
         if ( hr < 10 ) hr = "0" + hr;
         vm.time = hr + ':' + min;
-        console.log( 'updateTime()' );
         vm.updateTime = $timeout( updateTime, ( 60 - n.getUTCSeconds() ) * 1000 );
     }
    

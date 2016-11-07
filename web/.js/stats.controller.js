@@ -2,7 +2,8 @@ angular
     .module( 'adxcApp' )
     .controller( 'statsController', statsController );
 
-function statsController( $stateParams, DxConst, User, Head, Awards, UserAwardFactory, LoadingScreen ) {    
+function statsController( $scope, $stateParams, DxConst, User, Head, Awards, 
+        UserAwardFactory, LoadingScreen ) {    
     var vm = this;
     vm.user = User;
     vm.const = DxConst;
@@ -11,6 +12,8 @@ function statsController( $stateParams, DxConst, User, Head, Awards, UserAwardFa
     vm.modifyActiveValue = modifyActiveValue;
     vm.setActive = setActive;
     vm.stats = {};
+
+    User.onLogIO( activate, $scope );
 
     activate();
     return vm;
@@ -151,7 +154,8 @@ function statsController( $stateParams, DxConst, User, Head, Awards, UserAwardFa
         } else {
             award.confirmed = 0;
             award.values.forEach( function( av ) {
-                if ( av.userAward && ( av.confirmed = valueConfirmed( av.userAward ) ) )
+                if ( av.userAward && 
+                        ( av.confirmed = valueConfirmed( av.userAward ) ) )
                     award.confirmed++;
             });
         }
@@ -180,6 +184,8 @@ function statsController( $stateParams, DxConst, User, Head, Awards, UserAwardFa
         vm.activeBand = null;
         vm.activeMode = null;
         vm.searchValue = null;
+        if ( !vm.activeAward )
+            return;
 
         vm.modesFilter = {};
         DxConst.modes.forEach( function( mode ) {
@@ -270,7 +276,8 @@ function statsController( $stateParams, DxConst, User, Head, Awards, UserAwardFa
                 'confirmed': bandConfirmed( iv ) };
         } else {
             iv = vm.activeValue;
-            state = { 'confirmed': valueConfirmed( iv.userAward ) };
+            state = { 'confirmed': iv.userAward && 
+                valueConfirmed( iv.userAward ) };
         }
         for ( var field in state ) {
             if ( !( field in iv ) )

@@ -3,11 +3,10 @@ angular
     .service( 'User', UserService );
 
 function UserService( $http, $window, $q, Storage, Awards, DxConst, 
-        LoadingScreen  ) {
+        LoadingScreen, $rootScope, Notify  ) {
     var storageKey = 'adxcluster-user';
     var defaultColor = '#770000';
     var user = { 
-        login: login,
         fromStorage: fromStorage,
         toStorage: toStorage,
         awardSettingsChanged: awardSettingsChanged,
@@ -26,9 +25,14 @@ function UserService( $http, $window, $q, Storage, Awards, DxConst,
         login: login,
         logout: logout,
         loggedIn: loggedIn,
-        saveUserSettings: saveUserSettings
+        saveUserSettings: saveUserSettings,
+        onLogIO: onLogIO
     };
     return user;
+
+    function onLogIO( callback, scope ) {
+        Notify.notify( 'user-log-io', callback, scope );
+    }
 
     function fromStorage() {
         var ud;
@@ -89,7 +93,8 @@ function UserService( $http, $window, $q, Storage, Awards, DxConst,
                         user.data.awards[award.name] = {};
                     if ( !user.data.awardsSettings[award.name] ) 
                         user.data.awardsSettings[award.name] = 
-                            { 'track': true, 'color': award.color ? award.color : defaultColor };
+                            { 'track': true, 
+                            'color': award.color ? award.color : defaultColor };
                     if ( !user.data.awardsSettings[award.name].settings )
                         user.data.awardsSettings[award.name].settings = {};
                         var s = user.data.awardsSettings[award.name].settings;
@@ -193,6 +198,7 @@ function UserService( $http, $window, $q, Storage, Awards, DxConst,
                     if ( !list.id ) {
                         if ( 'list_id' in data ) {
                             list.id = data.list_id;
+                            toStorage();
                             return list.id;
                         }
                         else {
@@ -205,8 +211,11 @@ function UserService( $http, $window, $q, Storage, Awards, DxConst,
         else 
             if ( !list.id ) {
                 list.id = '_' + user.data.lists.length;
+                toStorage();
                 return $q.when( {} )
-                    .then( function() { return list.id; } );
+                    .then( function() { 
+                        return list.id; 
+                    } );
                      
             }
 
@@ -290,6 +299,7 @@ function UserService( $http, $window, $q, Storage, Awards, DxConst,
                 user.data.remember = remember;
                 init();
                 toStorage();
+                $rootScope.$emit('user-log-io');
                 return true;
             });
     }
@@ -299,6 +309,7 @@ function UserService( $http, $window, $q, Storage, Awards, DxConst,
         Storage.remove( storageKey, 'session' );
         user.data = {};
         init();
+        $rootScope.$emit('user-log-io');
     }
 
 

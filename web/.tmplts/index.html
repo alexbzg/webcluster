@@ -1,12 +1,12 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"                                                
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<!--div id="news" ng-show="news.html">
+<div id="news" ng-show="vm.news.html()">
     <div id="news_title">NEWS</div>
     <div id="news_close">
-            <img src="/images/icon_close.png" title="Close" ng-click="news.close()"/> 
+            <img src="/images/icon_close.png" title="Close" ng-click="vm.news.close()"/> 
     </div>
-    <span ng-bind-html="news.html"/>
-</div-->
+    <span ng-bind-html="vm.news.html()"/>
+</div>
 <div id="bands_modes">
     <div id="selectors_bands_modes" ng-show="vm.showSelector">
         <span class="band" ng-repeat="band in vm.selector.bands track by $index"
