@@ -14,13 +14,12 @@ args = vars( argparser.parse_args() )
 
 
 conf = siteConf()
-webRoot = conf.get( 'web', 'root' ) 
-dir = webRoot + ( '/debug' if args['t'] else '' )
-awardsData = loadJSON( dir + '/awards.json' )
+webRoot = conf.get( 'web', ( 'test_' if args['t'] else '' ) + 'root' ) 
+awardsData = loadJSON( webRoot + '/awards.json' )
 if not awardsData:
     print 'No awards data!'
 else:
-    print 'Processing ' + dir + '/awards.json'
+    print 'Processing ' + webRoot + '/awards.json'
 awards = []
 webAwards = []
 
@@ -45,6 +44,7 @@ def strIsInt(s):
 
 for aw in awardsData:
     webAw = dict( aw )
+    print aw['name']
     webAw['values'] = []
     webAw['groups'] = {}
     aw['values'] = {}
@@ -81,8 +81,9 @@ for aw in awardsData:
                 if strIsInt( val ) and len( val ) < 2:
                     val = '0' + val
                 av['displayValue'] = val
-                av['value'] = group + groupSeparator + av['displayValue'] if \
-                    aw['groupInValue'] else av['displayValue']
+                av['value'] = group + groupSeparator + av['displayValue'] \
+                    if aw.has_key( 'groupInValue' ) and aw['groupInValue'] \
+                    else av['displayValue']
                 av['group'] = group
                 if columns['value'].has_key( 'desc' ):
                     av['desc'] = getColumn( data, 'desc' )
@@ -111,10 +112,10 @@ for aw in awardsData:
     webAwards.append( webAw )
 
 
-with open( dir + '/awardsValues.json', 'w' ) as fav:
+with open( webRoot + '/awardsValues.json', 'w' ) as fav:
     fav.write( json.dumps( webAwards ) )
 
-with open( dir + '/awardsData.json', 'w' ) as fav:
+with open( webRoot + '/awardsData.json', 'w' ) as fav:
     fav.write( json.dumps( awards ) )
 
 
