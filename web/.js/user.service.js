@@ -26,12 +26,17 @@ function UserService( $http, $window, $q, Storage, Awards, DxConst,
         logout: logout,
         loggedIn: loggedIn,
         saveUserSettings: saveUserSettings,
-        onLogIO: onLogIO
+        onLogIO: onLogIO,
+        onAwardsStatsChange: onAwardsStatsChange
     };
     return user;
 
     function onLogIO( callback, scope ) {
         Notify.notify( 'user-log-io', callback, scope );
+    }
+
+    function onAwardsStatsChange( callback, scope ) {
+        Notify.notify( 'user-awards-stats-change', callback, scope );
     }
 
     function fromStorage() {
@@ -153,6 +158,8 @@ function UserService( $http, $window, $q, Storage, Awards, DxConst,
                     'color': user.data.awardsSettings[award.name].color,
                     'settings': user.data.awardsSettings[award.name].settings,
         } );
+        $rootScope.$emit('user-awards-stats-change');
+
     }
 
     function saveUserSettings() {
@@ -169,6 +176,9 @@ function UserService( $http, $window, $q, Storage, Awards, DxConst,
                         'track': list.track,
                         'color': list.color,
             } );
+        $rootScope.$emit('user-awards-stats-change');
+   
+           
     }
 
     function deleteList( list ) {
@@ -183,6 +193,8 @@ function UserService( $http, $window, $q, Storage, Awards, DxConst,
                         'list_id': list.id,
                         'delete': true
                     } );
+            $rootScope.$emit('user-awards-stats-change');
+
         }
 
     }
@@ -218,6 +230,7 @@ function UserService( $http, $window, $q, Storage, Awards, DxConst,
                     } );
                      
             }
+        $rootScope.$emit('user-awards-stats-change');
 
 
     }
@@ -231,12 +244,15 @@ function UserService( $http, $window, $q, Storage, Awards, DxConst,
                     'settings': item.settings,
                     'pfx': item.pfx
             } );
+        $rootScope.$emit('user-awards-stats-change');
+
     };
    
     function createList() {
         var no = user.data.lists.length + 1;
         var list = { 
             title: 'LIST' + no, 
+            full_title: 'List #' + no,
             no: no, 
             items: [], 
             color: defaultColor, 
@@ -257,6 +273,7 @@ function UserService( $http, $window, $q, Storage, Awards, DxConst,
                         'callsign': item.callsign,
                         'delete': true
                 } );
+            $rootScope.$emit('user-awards-stats-change');
             return true;
        } else
            return false;
@@ -338,7 +355,10 @@ function UserService( $http, $window, $q, Storage, Awards, DxConst,
                         user.data.awards = response.data.awards;
                     user.data.lastAdifLine = response.data.lastAdifLine;
                     toStorage();
-                    return Boolean( response.data.awards );
+                    if ( response.data.awards ) {
+                        $rootScope.$emit('user-awards-stats-change');
+                        return true;
+                    } else return false;
                 });
     };
    

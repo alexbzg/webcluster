@@ -95,8 +95,8 @@ function statsController( $scope, $stateParams, DxConst, User, Head, Awards,
                             return av.value == $stateParams.value;
                         });
                         if ( value )
-                            setActive( value, $stateParams.activeBand, 
-                                    $stateParams.activeMode );
+                            setActive( value, $stateParams.band, 
+                                    $stateParams.mode );
                     }
                 }
             }
@@ -238,10 +238,10 @@ function statsController( $scope, $stateParams, DxConst, User, Head, Awards,
         }
     }
 
-    function createAward() {
+    function createAward( skipSave ) {
         var data = activeUserAward();
         var ua = UserAwardFactory( vm.activeAward, vm.activeValue.value,
-                        vm.activeBand, vm.activeMode ); 
+                        vm.activeBand, vm.activeMode, skipSave ); 
         ua.copy( data );
         if ( vm.activeAward.byBand )
             vm.activeValue[vm.activeBand][vm.activeMode] = ua;
@@ -314,7 +314,7 @@ function statsController( $scope, $stateParams, DxConst, User, Head, Awards,
            }
         } else {
             if ( !ua.worked ) {
-                createAward();                
+                createAward( true );                
                 if ( !vm.activeAward.byBand )
                     vm.activeAward.worked++;
            }

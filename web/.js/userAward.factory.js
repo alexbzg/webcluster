@@ -2,7 +2,7 @@ angular
     .module( 'adxcApp' )
     .factory( 'UserAwardFactory', UserAwardFactory );
 
-function UserAwardFactory( User, DxConst ) {
+function UserAwardFactory( $rootScope, User, DxConst ) {
     var props = [ 'workedCS' ];
     DxConst.cfm.forEach( function( item ) {
         props.push( item[1] );
@@ -11,7 +11,7 @@ function UserAwardFactory( User, DxConst ) {
 
     return createUserAward;
 
-    function createUserAward( award, value, band, mode ) {
+    function createUserAward( award, value, band, mode, skipSave ) {
         
 
         var ua = { award: award,
@@ -59,7 +59,7 @@ function UserAwardFactory( User, DxConst ) {
                     }
                 } });
             });
-            if ( saveFl )
+            if ( saveFl && !skipSave )
                 save();
         }
 
@@ -84,6 +84,8 @@ function UserAwardFactory( User, DxConst ) {
             data.delete = true;
             delete ua.prnt[ua.key];
             User.saveData( data );
+            $rootScope.$emit('user-awards-stats-change');
+
         }
 
         function save() {
@@ -93,6 +95,8 @@ function UserAwardFactory( User, DxConst ) {
                     Boolean( ua[prop] );
             });
             User.saveData( data );
+            $rootScope.$emit('user-awards-stats-change');
+
         }
 
     }

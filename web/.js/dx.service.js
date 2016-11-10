@@ -10,8 +10,7 @@ function DXService( $rootScope, $http, User, Awards, Notify ) {
     var cfm = {};
     Awards.getAwards()
         .then( function( data ) {
-            awards = data;
-            awards.forEach( function( award ) {
+            data.forEach( function( award ) {
                 award.cfm = createCfm( user.awardsSettings[award.name] );
                 awards[award.name] = award;
             });
@@ -27,6 +26,8 @@ function DXService( $rootScope, $http, User, Awards, Notify ) {
     User.onLogIO( function() {
         user = User.data;
         updateAwards() } );
+
+    User.onAwardsStatsChange( updateAwards );
 
     return dx;
 
@@ -103,14 +104,14 @@ function DXService( $rootScope, $http, User, Awards, Notify ) {
                     var as = user.awardsSettings[aN];
                     if ( as.track ) {
                         if ( as.settings != null ) {
-                            if ( dx.band in as.settings.bands && 
-                                    !as.settings.bands[dx.band] )
+                            if ( item.band in as.settings.bands && 
+                                    !as.settings.bands[item.band] )
                                 continue;
-                            if ( dx.mode in as.settings.modes &&
-                                    !as.settings.modes[dx.mode] )
+                            if ( item.mode in as.settings.modes &&
+                                    !as.settings.modes[item.mode] )
                                 continue;
-                            if ( dx.subMode in as.settings.modes &&
-                                    !as.settings.modes[dx.subMode] )
+                            if ( item.subMode in as.settings.modes &&
+                                    !as.settings.modes[item.subMode] )
                                 continue;
                         }
                         a.color = as.color;
@@ -147,13 +148,13 @@ function DXService( $rootScope, $http, User, Awards, Notify ) {
             if ( list.track )
                 list.items.forEach( function( listItem ) {
                     if ( item.band in listItem.settings.bands && 
-                            !listItem.settings.bands[dx.band] )
+                            !listItem.settings.bands[item.band] )
                         return;
                     if ( item.mode in listItem.settings.modes &&
-                            !listItem.settings.modes[dx.mode] )
+                            !listItem.settings.modes[item.mode] )
                         return;
                     if ( dx.subMode in listItem.settings.modes &&
-                            !listItem.settings.modes[dx.subMode] )
+                            !listItem.settings.modes[item.subMode] )
                         return;
                     if ( listItem.callsign == item.cs || ( listItem.pfx && 
                                 item.cs.indexOf( listItem.callsign ) == 0 ) ) {
@@ -161,7 +162,7 @@ function DXService( $rootScope, $http, User, Awards, Notify ) {
                         if ( list.id in user.listsAwards && listItem.callsign in 
                             user.listsAwards[list.id] ) {
                             var uav = user.listsAwards[list.id][listItem.callsign];
-                            if ( checkAward( uav, item ) ) {
+                            if ( uav = checkAward( uav, item ) ) {
                                 var cfm = createCfm( listItem );
                                 if ( checkAwardCfm( uav, cfm ) )
                                     return;

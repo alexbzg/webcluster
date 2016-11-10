@@ -176,7 +176,8 @@ def application(env, start_response):
                 idParams = { 'callsign': callsign, 'award': data['award'] }
                 updParams = spliceParams( data, \
                     [ 'track', 'color', 'settings', 'stats_settings' ] )
-                if dxdb.paramUpdateInsert( 'users_awards_settings', idParams, updParams ):
+                if dxdb.paramUpdateInsert( 'users_awards_settings', idParams, 
+                        updParams ):
                     dxdb.commit()
                     okResponse = 'OK'
                 else:
@@ -199,10 +200,10 @@ def application(env, start_response):
                     'mode': data['mode'] if data.has_key( 'mode' ) else 'N/A',\
                     }
                 
-                awardLookup = dxdb.getObject( 'user_awards', params, \
-                    False, True )
                 fl = False
                 if data.has_key( 'delete' ) and data['delete']:
+                    awardLookup = dxdb.getObject( 'user_awards', params, \
+                        False, True )
                     if awardLookup:
                         fl = dxdb.paramDelete( 'user_awards', params )
                 else:
@@ -217,11 +218,7 @@ def application(env, start_response):
                             if data.has_key('cfm_lotw') else None
                     updParams['worked_cs'] = data['workedCS'] \
                             if data.has_key( 'workedCS' ) else None
-                    if awardLookup:
-                        fl = dxdb.paramUpdate( 'user_awards', params, updParams )
-                    else:
-                        fl = dxdb.getObject( 'user_awards', \
-                                dict( params, **updParams ), True )
+                    fl = dxdb.paramUpdateInsert( 'user_awards', params, updParams )
                 if fl:
                     dxdb.commit()
                     okResponse = 'OK'

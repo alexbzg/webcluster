@@ -11,7 +11,7 @@ from common import appRoot, readConf, siteConf, loadJSON
 from dxdb import dxdb, cursor2dicts
 
 conf = siteConf()
-webRoot = conf.get( 'web', 'root' )
+webRoot = conf.get( 'web', ( 'test_' if '_t' in __name__ else '' ) + 'root' )
 
 awardsData = loadJSON( webRoot + '/awardsData.json' )
 
@@ -343,7 +343,7 @@ class DX( object ):
             if modeByMap:
                 for ( mode, aliases ) in DX.modes.iteritems():
                     if modeByMap in aliases:
-                        self.setMode( mode, alias )
+                        self.setMode( mode, modeByMap )
                         break
 
 
@@ -512,7 +512,8 @@ class DX( object ):
         else:
             logging.debug( 'creating new db callsign record' )
             dxdb.getObject( 'callsigns', \
-                    { 'callsign': self.cs, 'region': self.district, \
+                    { 'callsign': self.cs, 'region': self.region, \
+                    'district': self.district,\
                     'qth': self.gridsquare, 'qrz_data_loaded': self.qrzData, \
                     'country': self.country }, \
                     True )
@@ -582,12 +583,16 @@ class DX( object ):
                 r = v.split( ' ' )[0]
                 if r in fieldValues[ 'USA' ]['region']:
                     self.region = r
+                    self.updateDB()
+        elif self.country == 'Japan':
+            v = value
         else:
             if value:
                 v = value.replace( ' ', '' )
-                m = DX.reState0.match( v )
-                if m:
-                    v = m.group( 1 ) + '-' + m.group( 2 )
+                if self.country in ( 'Russia', 'Ukraine' ):
+                    m = DX.reState0.match( v )
+                    if m:
+                        v = m.group( 1 ) + '-' + m.group( 2 )
         if v and fieldValuesSubst[ self.country ].has_key( 'district' ) and \
             fieldValuesSubst[ self.country ]['district'].has_key( v ):
             v = fieldValuesSubst[ self.country ]['district'][v]
@@ -602,6 +607,7 @@ class DX( object ):
             dxdb.commit()
         if self._district != v:
             self._district = v
+            self.updateDB()
 
 
 

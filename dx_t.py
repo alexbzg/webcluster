@@ -11,9 +11,10 @@ from common import appRoot, readConf, siteConf, loadJSON
 from dxdb import dxdb, cursor2dicts
 
 conf = siteConf()
-webRoot = conf.get( 'web', 'root' )
+print __file__
+webRoot = conf.get( 'web', ( 'test_' if '_t' in __name__ else '' ) + 'root' )
 
-awardsData = loadJSON( webRoot + '/debug/awardsData.json' )
+awardsData = loadJSON( webRoot + '/awardsData.json' )
 
 fieldValues = {}
 fieldValuesSubst = {}
@@ -30,7 +31,7 @@ for ad in awardsData:
 fieldRe = { 'district': re.compile( '[a-zA-Z]{2}[ -]+\d\d' ),\
         'gridsquare': re.compile( '[a-zA-Z0-9]{6}' ) }
 
-reCountry = re.compile("\s(\S+):$");
+reCountry = re.compile("\s\*?(\S+):$");
 rePfx = re.compile("(\(.*\))?(\[.*\])?");
 prefixes = [ {}, {} ]
 countries = {}
@@ -317,9 +318,10 @@ class DX( object ):
 
         self._district = None
         self.region = None
+        self.offDB = False
         self.awards = {}
         self.dxData = dxData
-        self.text = params['text']
+        self.text = params['text'].decode('utf-8','ignore').encode("utf-8")
         self.freq = params['freq']
 
         self.band = params['band'] if params.has_key( 'band' ) else None
@@ -342,7 +344,7 @@ class DX( object ):
             if modeByMap:
                 for ( mode, aliases ) in DX.modes.iteritems():
                     if modeByMap in aliases:
-                        self.setMode( mode, alias )
+                        self.setMode( mode, modeByMap )
                         break
 
 
@@ -457,7 +459,7 @@ class DX( object ):
                                 data.has_key( 'county' ) else '' ) + \
                             ( data['county'] if data.has_key( 'county' ) else '' )
                 if data.has_key( 'grid' ):
-                    self.gridsquare = data['grid']
+                    self.gridsquare = data['grid'].upper()
                 self.updateDB()
 
     def doTextLookup( self, text = None ):
@@ -468,6 +470,11 @@ class DX( object ):
                 fieldValues[ self.country ].has_key( field ):
                 for m in fieldRe[field].finditer( text ):
                     v = m.group( 0 ).upper()
+                    if field == 'district':
+                        oldDistrict = self.district
+                        self.district = v
+                        if oldDistrict != self.district:
+                            break
                     if v in fieldValues[self.country][field]:
                         setattr( self, field, v )
                     elif fieldValuesSubst[ self.country ].has_key( field ) and \
@@ -495,6 +502,8 @@ class DX( object ):
             return True
 
     def updateDB( self ):
+        if self.offDB:
+            return
         if self.inDB:
             logging.debug( 'updating db callsign record' )
             dxdb.updateObject( 'callsigns',
@@ -504,7 +513,8 @@ class DX( object ):
         else:
             logging.debug( 'creating new db callsign record' )
             dxdb.getObject( 'callsigns', \
-                    { 'callsign': self.cs, 'state': self.district, \
+                    { 'callsign': self.cs, 'region': self.region, \
+                    'district': self.district,\
                     'qth': self.gridsquare, 'qrz_data_loaded': self.qrzData, \
                     'country': self.country }, \
                     True )
@@ -545,16 +555,18 @@ class DX( object ):
         if self.awards.has_key( ad['name'] ):
             if self.awards[ad['name']] == av:
                 return
-            dxdb.execute( """
-                update awards
-                set value = %(value)s
-                where callsign = %(callsign)s and award = %(award)s""",
-                { 'value': av, 'award': ad['name'], 'callsign': self.cs } )
+            if not self.offDB:
+                dxdb.execute( """
+                    update awards
+                    set value = %(value)s
+                    where callsign = %(callsign)s and award = %(award)s""",
+                    { 'value': av, 'award': ad['name'], 'callsign': self.cs } )
         else:
-            dxdb.execute( """
-                insert into awards
-                values ( %(callsign)s, %(award)s, %(value)s )""",
-                { 'value': av, 'award': ad['name'], 'callsign': self.cs } )
+            if not self.offDB:
+                dxdb.execute( """
+                    insert into awards
+                    values ( %(callsign)s, %(award)s, %(value)s )""",
+                    { 'value': av, 'award': ad['name'], 'callsign': self.cs } )
         dxdb.commit()
         self.awards[ad['name']] = av
 
@@ -572,12 +584,16 @@ class DX( object ):
                 r = v.split( ' ' )[0]
                 if r in fieldValues[ 'USA' ]['region']:
                     self.region = r
+                    self.updateDB()
+        elif self.country == 'Japan':
+            v = value
         else:
             if value:
                 v = value.replace( ' ', '' )
-                m = DX.reState0.match( v )
-                if m:
-                    v = m.group( 1 ) + '-' + m.group( 2 )
+                if self.country in ( 'Russia', 'Ukraine' ):
+                    m = DX.reState0.match( v )
+                    if m:
+                        v = m.group( 1 ) + '-' + m.group( 2 )
         if v and fieldValuesSubst[ self.country ].has_key( 'district' ) and \
             fieldValuesSubst[ self.country ]['district'].has_key( v ):
             v = fieldValuesSubst[ self.country ]['district'][v]
@@ -592,6 +608,7 @@ class DX( object ):
             dxdb.commit()
         if self._district != v:
             self._district = v
+            self.updateDB()
 
 
 
@@ -615,11 +632,9 @@ class DXData:
             cs = m.group( 3 )
             country = getCountry( cs )
             freq = float( m.group(2) )
-            if country:
-                dx = DX( dxData = self, text = m.group(4), cs = cs, freq = freq, \
-                        de = m.group(1), time = m.group(5), country = country )
-                if not dx.checkEmpty():
-                    self.append( dx )
+            self.append( \
+                    DX( dxData = self, text = m.group(4), cs = cs, freq = freq, \
+                        de = m.group(1), time = m.group(5), country = country ) )
 
 
 
@@ -645,7 +660,16 @@ class DXData:
     def toFile( self ):
         if self.file:
             with open( self.file, 'w' ) as fDxData:
-                fDxData.write( json.dumps( [ x.toDict() for x in self.data ] ) )
+                data = []
+                for x in self.data:
+                    try:
+                        json.dumps( x.toDict() ).encode( 'utf-8' )
+                        data.append( x.toDict() )
+                    except Exception as e:
+                        logging.exception( 'Non unicode character in dx' )
+                        logging.exception( x.toDict() )
+                        self.data.remove( x )
+                fDxData.write( json.dumps( data ) )
 
 
 
