@@ -41,7 +41,7 @@
                 <td id="award_edit">                
                     <form ng-submit="vm.findValue()">
                         {{vm.activeAward.name}} code 
-                        <input type="text" name="award_option" ng-model="searchExpr"> 
+                        <input type="text" name="award_option" ng-model="vm.searchExpr"> 
                         <input type="submit" class="submit_btn" name="award_unit_search" value="OK">
                     </form>
                         <div id="selected_unit_info" ng-show="vm.activeValue">

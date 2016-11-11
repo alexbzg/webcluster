@@ -36,18 +36,19 @@ def getSplitLine( file, fr = 0, to = None ):
     else:
         return None
 
-columns = { 'callsign' : 0, 'region': 2, 'district': 3 }
+columns = { 'id': { 'callsign' : 0 }, 'upd' { 'region': 2, 'district': 3 } }
 kuColumn = 5
 
 with open( webRoot + '/csv/ja_callbook.csv', 'r' ) as file:
-    params = { 'country': 'Japan' }
+    params = { 'id': {}, 'upd': { 'country': 'Japan' } }
     data = getSplitLine( file )
     while data:
-        for ( field, column ) in columns.iteritems():
-            params[field] = data[column]
+        for type in columns:
+            for ( field, column ) in columns[type].iteritems():
+                params[type][field] = data[column]
 
-        if not jcc['values'].has_key( params['region'].upper() + ' ' + \
-                params['district'] ):
+        if not jcc['values'].has_key( params['upd']['region'].upper() + ' ' + \
+                params['upd']['district'] ):
             params['district'] = ''
             params['region'] = ''
 

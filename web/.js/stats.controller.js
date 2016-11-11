@@ -11,6 +11,7 @@ function statsController( $scope, $stateParams, DxConst, User, Head, Awards,
     vm.activeAwardChanged = activeAwardChanged;
     vm.modifyActiveValue = modifyActiveValue;
     vm.setActive = setActive;
+    vm.findValue = findValue;
     vm.stats = {};
 
     User.onLogIO( activate, $scope );
@@ -223,17 +224,20 @@ function statsController( $scope, $stateParams, DxConst, User, Head, Awards,
     }
    
     function findValue() {
-        var search = vm.searchExpr.toUpperCase()
-            .replace( /\s/g, '' ).replace( /\u00D8/g, '0' );
         var eg = vm.activeAward.values[0].value;
+        var search = vm.searchExpr.toUpperCase().replace( /\u00D8/g, '0' );
+        if ( search.includes( ' ' ) && !eg.includes( ' ' ) )
+            search = search.replace( / /g, '' );
         if ( !search.includes( '-' ) && eg.includes( '-' ) ) {
             var hpos = eg.indexOf( '-' );
             search = [search.slice( 0, hpos ), '-', search.slice( hpos )].join('');
         } else if ( search.includes( '-' ) && !eg.includes( '-' ) )
             search = search.replace( /-/g, '' );
         if ( found = vm.activeAward.values.find( 
-            function( x ) { return x.value === search; } ) ) {
-            vm.setActiveValue( found );
+            function( x ) { 
+                return x.value.toUpperCase() === search || 
+                   ( x.desc && x.desc.toUpperCase() === search ); } ) ) {
+            vm.setActive( found );
             vm.searchValue = null;
         }
     }
