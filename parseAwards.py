@@ -48,12 +48,12 @@ for aw in awardsData:
     webAw['values'] = []
     webAw['groups'] = {}
     aw['values'] = {}
-    if aw.has_key( 'keyAttr' ):
-        aw['byKey'] = {}
     columns = { 'group' : aw['groupColumns'] if aw.has_key( 'groupColumns' ) \
             else { 'value': 0, 'desc': 2 }, \
         'value': aw['valueColumns'] if aw.has_key( 'valueColumns' ) \
             else { 'value': 1, 'desc': 2, 'keys': 3 } }
+    if columns['value'].has_key( 'keys' ):
+        aw['byKey'] = {}
     groupSeparator = aw['groupSeparator'] if aw.has_key( 'groupSeparator' )\
             else '-'
 
@@ -89,7 +89,7 @@ for aw in awardsData:
                     av['desc'] = getColumn( data, 'desc' )
                 webAw['values'].append( av )
                 aw['values'][av['value']] = {'lookups':[]}
-                if aw.has_key( 'keyAttr' ):
+                if columns['value'].has_key( 'keys' ):
                     for key in getColumn( data, 'keys' ).split( ',' ):
                         if key:
                             aw['byKey'][key.strip()] = av['value']
@@ -109,7 +109,8 @@ for aw in awardsData:
                 data = getSplitLine( file, 0 )
     
     awards.append( aw )
-    webAwards.append( webAw )
+    if not aw.has_key( 'noStats' ):
+        webAwards.append( webAw )
 
 
 with open( webRoot + '/awardsValues.json', 'w' ) as fav:

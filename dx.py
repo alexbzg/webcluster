@@ -30,8 +30,9 @@ for ad in awardsData:
 fieldRe = { 'district': re.compile( '[a-zA-Z]{2}[ -]+\d\d' ),\
         'gridsquare': re.compile( '[a-zA-Z0-9]{6}' ) }
 
-reCountry = re.compile("\s\*?(\S+):$");
-rePfx = re.compile("(\(.*\))?(\[.*\])?");
+reCountry = re.compile("\s\*?(\S+):$")
+rePfx = re.compile("(\(.*\))?(\[.*\])?")
+reGermanyDOK = re.compile("DOK.*?[:\-\s]([a-zA-Z])-? ?(\d\d)")
 prefixes = [ {}, {} ]
 countries = {}
 for cty, cl in conf.items( 'countries' ):
@@ -97,13 +98,16 @@ class QRZComLink:
                 logging.error( 'Http response body: ' + r.read() )
             task.deferLater( reactor, 60*10, self.getSessionID )
 
-    def getData( self, cs ):
+    def getData( self, cs, bio = False ):
         if self.sessionID:
             r, rBody = None, None
+            type = 'html' if bio else 'callsign'
             try:
                 r = urllib2.urlopen( 'http://xmldata.qrz.com/xml/current/?s=' \
-                        + self.sessionID + ';callsign=' + cs )
+                        + self.sessionID + ';' + type + '=' + cs )
                 rBody = r.read()
+                if bio:
+                    return rBody
                 rDict = xmltodict.parse( rBody )
                 if rDict['QRZDatabase'].has_key( 'Callsign' ):
                     return rDict['QRZDatabase']['Callsign']
@@ -356,15 +360,15 @@ class DX( object ):
         self.inDB = False
 
         if params.has_key( 'ts' ):
+            self.inDB = True
             self.ts = params['ts']
             self.time = params['time']
-            self.district = params['district'] if params.has_key( 'state' ) \
+            self._district = params['district'] if params.has_key( 'state' ) \
                     else None
             self.region = params['region'] if params.has_key( 'region' ) \
                     else None
             self.gridsquare = params['gridsquare'] if params.has_key( 'qth' ) \
                     else None
-            self.inDB = True
             self.awards = params['awards'] if params.has_key( 'awards' ) else {}
 
         else:
@@ -379,10 +383,10 @@ class DX( object ):
                     False, True )
 
             if csLookup:
-                self.region = csLookup['region']
-                self.district = csLookup['district']
-                self.gridsquare = csLookup['qth']
                 self.inDB = True
+                self.region = csLookup['region']
+                self._district = csLookup['district']
+                self.gridsquare = csLookup['qth']
                 self.qrzData = csLookup['qrz_data_loaded']
                 logging.debug( 'callsign found in db' )
                 awLookup = cursor2dicts( dxdb.execute( """ 
@@ -449,16 +453,27 @@ class DX( object ):
             data = qrzComLink.getData( self.cs )
             if data:
                 self.qrzData = True
-                if data.has_key( 'state' ):
-                    self.state = data['state']
-                if data.has_key( 'state' ) or data.has_key( 'county' ):
-                    self.district = ( data['state'] \
-                            if data.has_key( 'state' ) else '' ) + \
-                            ( ' ' if data.has_key( 'state' ) and \
-                                data.has_key( 'county' ) else '' ) + \
-                            ( data['county'] if data.has_key( 'county' ) else '' )
-                if data.has_key( 'grid' ):
-                    self.gridsquare = data['grid'].upper()
+                if self.country == 'USA':
+                    if data.has_key( 'state' ):
+                        self.state = data['state']
+                    if data.has_key( 'state' ) or data.has_key( 'county' ):
+                        self.district = ( data['state'] \
+                                if data.has_key( 'state' ) else '' ) + \
+                                ( ' ' if data.has_key( 'state' ) and \
+                                    data.has_key( 'county' ) else '' ) + \
+                                ( data['county'] if data.has_key( 'county' ) \
+                                    else '' )
+                    if data.has_key( 'grid' ):
+                        self.gridsquare = data['grid'].upper()
+                elif self.country == 'Germany':
+                    if data.has_key( 'bio' ):
+                        bio = qrzComLink.getData( self.cs, True )
+                        if bio:
+                            for m in reGermanyDOK.finditer( bio ):
+                                v = m.group( 1 ).upper() + m.group( 2 )
+                                self.district = v
+                                if self.district == v:
+                                    break
                 self.updateDB()
 
     def doTextLookup( self, text = None ):
@@ -504,13 +519,11 @@ class DX( object ):
         if self.offDB:
             return
         if self.inDB:
-            logging.debug( 'updating db callsign record' )
             dxdb.updateObject( 'callsigns',
               { 'callsign': self.cs, 'qth': self.gridsquare, \
                       'district': self.district, 'region': self.region,\
                       'qrz_data_loaded': self.qrzData }, 'callsign' )
         else:
-            logging.debug( 'creating new db callsign record' )
             dxdb.getObject( 'callsigns', \
                     { 'callsign': self.cs, 'region': self.region, \
                     'district': self.district,\
@@ -584,7 +597,7 @@ class DX( object ):
                 if r in fieldValues[ 'USA' ]['region']:
                     self.region = r
                     self.updateDB()
-        elif self.country == 'Japan':
+        elif self.country in ( 'Japan', 'Germany' ):
             v = value
         else:
             if value:

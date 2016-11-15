@@ -49,17 +49,18 @@ with open( webRoot + '/csv/ja_callbook.csv', 'r' ) as file:
 
         if not jcc['values'].has_key( params['upd']['region'].upper() + ' ' + \
                 params['upd']['district'] ):
-            params['district'] = ''
-            params['region'] = ''
+            params['upd']['district'] = ''
+            params['upd']['region'] = ''
 
         ku = ''
         if len( data ) >= kuColumn:
-            for kuPfx in ( params['region'], params['district'] ):
+            for kuPfx in ( params['upd']['region'], params['upd']['district'] ):
                 if waku['values'].has_key( kuPfx + ' ' + data[kuColumn] ):
                     ku = kuPfx + ' ' + data[kuColumn]
 
-        if params['district'] or params['region'] or ku:
-            params['region'] = params['region'].upper()
+        if params['upd']['district'] or params['upd']['region'] or ku:
+            params['upd']['region'] = params['region'].upper()
+            params['district'] = params['region
             if not dxdb.getObject( 'callsigns', { 'callsign': params['callsign'] }, \
                     False, True ):
                 dxdb.getObject( 'callsigns', params, True )
