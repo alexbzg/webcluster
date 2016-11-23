@@ -18,6 +18,6 @@ conf = siteConf()
 
 uwsgisrv.dxdb = dbConn()
 
-with open( '/var/www/adxc.73/debug/fullAdif.adi', 'r' ) as f:
+with open( '/var/www/adxc.73/debug/debug.adi', 'r' ) as f:
     adif = f.read()
     uwsgisrv.loadAdif( 'CCCC', adif )

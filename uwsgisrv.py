@@ -2,7 +2,7 @@
 #coding=utf-8
 from common import appRoot, readConf, siteConf, loadJSON
 from dxdb import cursor2dicts, dbConn, paramStr
-from dx import DX
+import dx as dxMod
 
 import json, smtplib, urllib2, urllib, os, base64, jwt, re, logging, time, urlparse
 
@@ -526,7 +526,9 @@ def getAdifField( line, field ):
 
 
 def loadAdif( callsign, adif ):
+    logging.debug( 'ADIF parsing start. Callsign: ' + callsign )
     awards = {}
+    dxMod.dxdb = dxdb
     eoh = False
     adif = adif.upper().replace( '\r', '' ).replace( '\n', '' )
     adif = adif.split( '<EOH>' )[1]
@@ -542,7 +544,7 @@ def loadAdif( callsign, adif ):
             lastLine = getAdifField( line, 'QSO_DATE' ) + ' ' + \
                     getAdifField( line, 'TIME_ON' ) + ' ' + cs
             freq = getAdifField( line, 'FREQ' )
-            dx = DX( cs = cs, de = '', text = '', \
+            dx = dxMod.DX( cs = cs, de = '', text = '', \
                     freq = float( freq ) if freq else None, \
                     time = '    ' )
             mode = getAdifField( line, 'MODE' )
@@ -578,6 +580,9 @@ def loadAdif( callsign, adif ):
                 for ( cfmType, field ) in cfmFields.iteritems():
                     cfm[cfmType] = getAdifField( line, field ) == 'Y'
                 for ( award, value ) in dx.awards.iteritems():
+                    if awardsData[award].has_key( 'noStats' ) and \
+                        awardsData[award]['noStats']:
+                        continue
                     if awardsData[award].has_key('byBand') and \
                             awardsData[award]['byBand'] and \
                             (not band or not mode):
@@ -587,7 +592,8 @@ def loadAdif( callsign, adif ):
                     if not awards[award].has_key(value):
                         awards[award][value] = {}
                     aw = awards[award][value]
-                    if awardsData[award].has_key('byBand') and awardsData[award]['byBand']:
+                    if awardsData[award].has_key('byBand') and \
+                            awardsData[award]['byBand']:
                         if not aw.has_key( band ):
                             aw[band] = {}
                         if not aw[band].has_key( mode ):
@@ -603,8 +609,7 @@ def loadAdif( callsign, adif ):
                     if len( aw['callsigns'] ) < 2 and \
                         not cs in aw['callsigns']:
                         aw['callsigns'].append( cs )
-    with open( '/var/www/adxc.73/adifAwardsDebug.json', 'w' ) as f:
-        f.write( json.dumps( awards ) )
+    logging.debug( 'ADIF parsed' )
     commitFl = False
     if awards:
 

@@ -8,7 +8,9 @@ from twisted.python import log
 import sys, decimal, re, datetime, os, logging, time, json, urllib2, xmltodict
 
 from common import appRoot, readConf, siteConf, loadJSON
-from dxdb import dxdb, cursor2dicts
+from dxdb import dbConn, cursor2dicts
+
+dxdb = dbConn()
 
 conf = siteConf()
 webRoot = conf.get( 'web', ( 'test_' if '_t' in __name__ else '' ) + 'root' )
@@ -388,7 +390,6 @@ class DX( object ):
                 self._district = csLookup['district']
                 self.gridsquare = csLookup['qth']
                 self.qrzData = csLookup['qrz_data_loaded']
-                logging.debug( 'callsign found in db' )
                 awLookup = cursor2dicts( dxdb.execute( """ 
                     select award, value 
                     from awards
