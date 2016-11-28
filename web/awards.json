@@ -53,6 +53,26 @@
         {"type":"value","source":"text","re":"[a-zA-Z0-9]{4}"},
         {"type":"key","source":"text","re":"[a-zA-Z0-9]{6}"}] },
 
+    {  "name": "YUAFA", "fullName": "Serbian AirField Award", "link":"http://iafa.hamlogs.net/yuafa/",
+    "country": "Serbia", "valuesFile": "csv/yuafa.csv", "groupInValue": 0, "color":"#900202", 
+    "keyAttr":"gridsquare",
+    "getFields":{"web":1},
+    "valueColumns": {"value": 0, "desc": 1, "keys": 2 },
+    "groupColumns": {"value": 3 },
+   
+     "lookups":[{"type":"key", "source":"field", "field":"gridsquare"}]},
+
+
+    {  "name": "Russia", "fullName": "Russia Award", "link":"http://news.srr.ru/?page_id=620",
+    "country": "Russia", "valuesFile": "csv/russia.csv", "groupInValue": 0, "color":"#900202", 
+    "byBand":1,
+    "getFields":{"text":0, "web":0},
+    "valueColumns": {"value": 0, "desc": 1, "keys": 2 },
+    "groupColumns": {"value": 3 },
+    "lookups":[{"type":"key","source":"text","field":"cs",
+        "re":"(?<=[A-Z])[0-9][A-Z](?!.*\\/)"}] },
+       
+
      {  "name": "Vulkaneifel", "fullName": "Vulkaneifel-Trophy", 
          "link":"http://www.ov-k34.de/vulkaneifel-trophy.html",
     "country": "Germany", "valuesFile": "csv/vulkaneifel.csv", 

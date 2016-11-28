@@ -10,7 +10,7 @@ import sys, decimal, re, datetime, os, logging, time, json, urllib2, xmltodict, 
 
 from common import appRoot, readConf, siteConf, loadJSON
 from dxdb import dbConn, cursor2dicts
-from dx import DX
+from dx_t import DX
 
 conf = siteConf()
 
@@ -22,7 +22,7 @@ while 1:
     td = loadJSON( '/var/www/adxc.73/dxdata.json' )
     for i in td:
         del i['ts']
-        if i['country'] == 'Italy':
+        if i['country'] == 'Russia':
             tm = i['time']
             aw = DX( **i ).toDict()
             aw['time'] = tm

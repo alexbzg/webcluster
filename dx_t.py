@@ -288,6 +288,8 @@ class DX( object ):
                         float( m.group(2) ) ] )
 
     def toDict( self ):
+        if self.isBeacon:
+            return { 'beacon': True }
         return {
             'cs': self.cs,
             'text': self.text,
@@ -318,7 +320,7 @@ class DX( object ):
                 self.subMode = alias
 
     def __init__( self, dxData = None, **params ):
-
+        self.isBeacon = False
         self._district = None
         self.region = None
         self.offDB = False
@@ -326,6 +328,14 @@ class DX( object ):
         self.dxData = dxData
         self.text = params['text'].decode('utf-8','ignore').encode("utf-8")
         self.freq = params['freq']
+        self.cs = params['cs']
+        self.de = params['de']
+
+        txt = self.text.lower()
+        if 'ncdxf' in txt or 'beacon' in txt or 'bcn' in txt or '/B' in self.cs:
+            self.isBeacon = True
+            return
+       
 
         self.band = params['band'] if params.has_key( 'band' ) else None
         self.mode = params['mode'] if params.has_key( 'mode' ) else None
@@ -345,6 +355,9 @@ class DX( object ):
         if not self.mode and self.freq:
             modeByMap = findDiap( DX.modesMap, self.freq )
             if modeByMap:
+                if modeByMap == 'BCN':
+                    self.isBeacon = True
+                    return
                 for ( mode, aliases ) in DX.modes.iteritems():
                     if modeByMap in aliases:
                         self.setMode( mode, modeByMap )
@@ -352,8 +365,6 @@ class DX( object ):
 
 
         
-        self.cs = params['cs']
-        self.de = params['de']
         self.country = params['country'] if params.has_key( 'country' ) \
                 else getCountry( self.cs )
         self.qrzData = False
@@ -499,7 +510,7 @@ class DX( object ):
                    
 
     def onQRZdata( self, data ):
-        logging.debug( 'query received ' +  self.cs )
+    #    logging.debug( 'query received ' +  self.cs )
         if data:
             if data.has_key( 'qthloc' ) and data['qthloc'] and not self.gridsquare:
                 self.gridsquare = data['qthloc']            
@@ -551,7 +562,9 @@ class DX( object ):
                 
                 for l in ad['lookups']:                
                     if l['source'] == 'text':
-                        for m in re.finditer( l['re'], self.text ):
+                        text = getattr( self, l['field'] ) if l.has_key( 'field' ) \
+                                else self.text
+                        for m in re.finditer( l['re'], text ):
                             v = m.group(0).upper()
                             av = checkAwardValue( ad, l, v )
                     elif l['source'] == 'field' and getattr( self, l['field'] ):
@@ -651,6 +664,8 @@ class DXData:
 
 
     def append( self, dxItem, new = True ):
+        if dxItem.isBeacon:
+            return
         if new:
             self.data[:] = [ x for x in self.data \
                     if x.ts > dxItem.ts - 1800 and \

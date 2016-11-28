@@ -92,7 +92,7 @@ for aw in awardsData:
                 if columns['value'].has_key( 'keys' ):
                     for key in getColumn( data, 'keys' ).split( ',' ):
                         if key:
-                            aw['byKey'][key.strip()] = av['value']
+                            aw['byKey'][key.strip().upper()] = av['value']
             data = getSplitLine( file, 0 )
         webAw['values'].sort( key = lambda x: x['value'] )
         webAw['orderedGroups'] = webAw['groups'].keys() if webAw['groups'] \
