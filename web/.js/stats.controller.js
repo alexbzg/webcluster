@@ -81,7 +81,7 @@ function statsController( $scope, $stateParams, DxConst, User, Head, Awards,
                     });
             });
             LoadingScreen.off();
-            if ( $stateParams.award ) {
+            if ( $stateParams.award || $stateParams.list_id ) {
                 var award = vm.awards.find( function( award ) {
                     return ( $stateParams.list_id && 
                             ( award.list_id == $stateParams.list_id ) ) ||

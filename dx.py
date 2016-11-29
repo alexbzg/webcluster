@@ -262,6 +262,7 @@ def findDiap( diaps, value ):
 
 class DX( object ):
     reState0 = re.compile( '(\w+)\s*-?\s*0*(\d\d)' )
+    reFranceDC = re.compile( '(?<=\n)\d{5}(?=[^\n]*\(FRANCE\)<)' )
     bands = [ [ '1.8', 1800, 2000 ],
             [ '3.5', 3500, 4000 ],
             [ '7', 7000, 7300 ],
@@ -460,6 +461,24 @@ class DX( object ):
             self.doTextLookup( rBody )
             self.qrzData = True
             self.updateDB()
+        elif self.country == 'France':
+            r = urllib2.urlopen( \
+                'http://nomenclature.r-e-f.org/index.php?req='\
+                    + self.cs )
+            rBody = r.read()
+            m = DX.reFranceDC.search( rBody )
+            if m:
+                idx = m.group(0)
+                if idx.startswith( '200' ) or idx.startswith( '201' ):
+                    idx = '201'
+                elif idx.startswith( '202' ):
+                    idx = '202'
+                else:
+                    idx = idx[0:2]
+                self.district = idx
+                self.qrzData = True
+                self.updateDB()
+
         else:
             data = qrzComLink.getData( self.cs )
             if data:
@@ -510,7 +529,7 @@ class DX( object ):
                    
 
     def onQRZdata( self, data ):
-        logging.debug( 'query received ' +  self.cs )
+    #    logging.debug( 'query received ' +  self.cs )
         if data:
             if data.has_key( 'qthloc' ) and data['qthloc'] and not self.gridsquare:
                 self.gridsquare = data['qthloc']            
@@ -619,12 +638,14 @@ class DX( object ):
                     m = DX.reState0.match( v )
                     if m:
                         v = m.group( 1 ) + '-' + m.group( 2 )
-        if v and fieldValuesSubst[ self.country ].has_key( 'district' ) and \
+        if v and fieldValues.has_key( self.country ) and \
+            fieldValuesSubst[ self.country ].has_key( 'district' ) and \
             fieldValuesSubst[ self.country ]['district'].has_key( v ):
             v = fieldValuesSubst[ self.country ]['district'][v]
-        elif v and fieldValues[ self.country ].has_key( 'district' ):
-            if not v in fieldValues[ self.country ]['district']:
-                return
+        elif v and fieldValues.has_key( self.country) \
+            and fieldValues[ self.country ].has_key( 'district' ) and \
+            not v in fieldValues[ self.country ]['district']:
+            return
         if self._district and self._district != v and self.awards:
             self.awards.clear()
             dxdb.execute( """

@@ -80,6 +80,10 @@
             <th class="short_name"></th>
             <th class="full_name">
             </th>
+            <th class="stats">
+                Stats
+            </th>
+           
             <th class="settings">
                 Settings
             </th>
@@ -113,6 +117,12 @@
                 {{list.full_title ? list.full_title : 'List #' + ( $index + 1 ) }}
                 <img src="/images/icon_close.png" ng-click="vm.user.deleteList(list)" title="Delete list">
             </td>
+            <td class="stats">
+                <a ui-sref="stats( { list_id: list.id } )">
+                    <img src="/images/icon_stats.png" title="List stats">
+                </a>
+            </td>
+           
             <td class="notification">
                 <a ui-sref="listSetup( { id: list.id } )"><img src="/images/icon_setup.png"></a>
 
@@ -144,6 +154,12 @@
             <td class="full_name">
                 {{award.fullName}}
             </td>
+            <td class="stats">
+                <a ui-sref="stats( { award: award.name } )">
+                    <img src="/images/icon_stats.png" title="Award stats">
+                </a>
+            </td>
+           
             <td class="notification">
                 <a href="" ng-click="vm.openSetup( award )"><img src="/images/icon_setup.png"></a>
 

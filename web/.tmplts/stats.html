@@ -10,6 +10,10 @@
         <option value="">Select award</option>
     </select>
 
+    <!--div class="awardTitle">
+        {{vm.activeAward.fullName + ' (' + vm.activeAward.name + ')'}}
+    </div-->
+
     <div ng-if="!vm.activeAward.byBand">
         <table id="award_info" ng-show="vm.activeAward">
             <tr>
