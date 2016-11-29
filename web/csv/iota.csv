@@ -1,0 +1,1175 @@
+AF;;AFRICA ;;;
+;1;Agalega Islands  ( 3B6 );3B6 ;1;
+;2;Amsterdam & St Paul Islands  ( FT*Z );FT*Z ;1;
+;3;Ascension Island  ( ZD8 );ZD8 ;1;
+;4;Canary Islands  ( EA8 );EA8 ;1;
+;5;Cape Verde – Leeward Islands  ( D4 );D4 ;;2
+;6;Diego Garcia Island  ( VQ9 );VQ9 ;;2
+;7;Comoro Islands  ( D6 );D6 ;1;
+;8;Crozet Islands  ( FT*W );FT*W ;1;
+;9;Europa Island  ( FT*E );FT*E ;1;
+;10;Bioco (Fernando Poo) Island  ( 3C );3C ;;
+;11;Glorioso Islands  ( FT*G );FT*G ;1;
+;12;Juan De Nova Island  ( FT*J );FT*J ;1;
+;13;Madagascar (Main Island Only)  ( 5R );5R ;;2
+;14;Madeira Archipelago  ( CT3 );CT3 ;;2
+;15;Saint Brandon Islands  ( 3B7 );3B7 ;1;
+;16;Reunion Island  ( FR );FR ;;2
+;17;Rodrigues Island  ( 3B9 );3B9 ;1;
+;18;Pantelleria Island  ( IH9 );IH9 ;1;
+;19;Pelagie Islands  ( IG9 );IG9 ;1;
+;20;Bijagos Archipelago  ( J5 );J5 ;;
+;21;Prince Edward & Marion Islands  ( ZS8 );ZS8 ;1;
+;22;St Helena Island  ( ZD7 );ZD7 ;1;
+;23;Sao Tome Island  ( S9 );S9 ;;2
+;24;Seychelles – Inner Islands  ( S7 );S7 ;;
+;25;Aldabra Islands  ( S7 );S7 ;;
+;26;Cosmoledo Islands  ( S7 );S7 ;;
+;27;Mayotte Island  ( FH );FH ;1;
+;28;Socotra group  ( 7O );7O ;;
+;29;Tristan Da Cunha Islands  ( ZD9 );ZD9 ;;2
+;30;Gough Island  ( ZD9 );ZD9 ;;2
+;31;Tromelin Island  ( FT*T );FT*T ;1;
+;32;Zanzibar Island  ( 5H );5H ;;
+;33;Amirante Islands  ( S7 );S7 ;;
+;35;Farquhar Islands  ( S7 );S7 ;;
+;36;Chafarinas Islands  ( EA9 );EA9 ;;2
+;37;Northern/Western Province group  ( 9L );9L ;;
+;38;Dahlak Archipelago  ( E3 );E3 ;;
+;39;Annobon (Pagalu) Island  ( 3C0 );3C0 ;1;
+;40;Coast Province North group  ( 5Z );5Z ;;
+;41;Egmont group  ( VQ9 );VQ9 ;;2
+;42;Alboran Island  ( EA9 );EA9 ;;2
+;43;Estuaire Province group  ( TR );TR ;;
+;44;Principe Island  ( S9 );S9 ;;2
+;45;Senegal North group  ( 6W );6W ;;
+;46;Desertas Islands  ( CT3 );CT3 ;;2
+;47;Selvagens Islands  ( CT3 );CT3 ;;2
+;48;Kerguelen Islands  ( FT*X );FT*X ;1;
+;49;Mauritius Island  ( 3B8 );3B8 ;1;
+;50;Dakhlet Nouadhibou/Inchiri Region group  ( 5T );5T ;;
+;51;Guinee-Maritime Province South group  ( 3X );3X ;;
+;52;Indian Ocean Coast South group  ( T5 );T5 ;;
+;53;Gulf Of Tadjoura group  ( J2 );J2 ;;2
+;54;Mafia Island  ( 5H );5H ;;
+;56;Southern Province group  ( 9L );9L ;;
+;57;Madagascar's Coastal Islands West  ( 5R );5R ;;2
+;58;Salomon group  ( VQ9 );VQ9 ;;2
+;59;Strait of Mandab group  ( J2 );J2 ;;2
+;60;The Gambia group  ( C5 );C5 ;;
+;61;Cabo Delgado District group  ( C9 );C9 ;;
+;62;Suakin Archipelago  ( ST );ST ;;
+;63;Pemba Island  ( 5H );5H ;;
+;64;Western Cape Province South West group  ( ZS );ZS ;;
+;65;Safi/Essaouira/Agadir Region group  ( CN );CN ;;
+;66;Gaza/Maputo District group  ( C9 );C9 ;;
+;67;Coast Province South group  ( 5Z );5Z ;;
+;68;Western Sahara South group  ( CN, S0 );CN, S0 ;;
+;69;Alhucemas Island  ( EA9 );EA9 ;;2
+;70;Karas Region group  ( V5 );V5 ;;
+;72;Inhambane District group  ( C9 );C9 ;;
+;73;Sfax Region group  ( 3V );3V ;;
+;74;Lindi/Mtwara Region group  ( 5H );5H ;;
+;75;Dar Es Salaam/Pwani Region group  ( 5H );5H ;;
+;76;Bayelsa/Rivers/Akwa Ibom etc States group  ( 5N );5N ;;
+;77;Western Cape Province South group  ( ZS );ZS ;;
+;78;Senegal South group  ( 6W );6W ;;
+;79;Eastern Cape Province group  ( ZS );ZS ;;
+;80;Red Sea Coast North group  ( E3 );E3 ;;
+;81;Red Sea Coast South group  ( E3 );E3 ;;
+;82;Rio Muni Province group  ( 3C );3C ;;
+;83;Gabes/Medenine Region group  ( 3V );3V ;;
+;84;Ghana group  ( 9G );9G ;;
+;85;Western Cape Province North West group  ( ZS );ZS ;;
+;86;Cape Verde – Windward Islands  ( D4 );D4 ;;2
+;87;Tanga Region group  ( 5H );5H ;;
+;88;Nampula District group  ( C9 );C9 ;;
+;89;Ogooue-Maritime Province group  ( TR );TR ;;
+;90;Madagascar's Coastal Islands East  ( 5R );5R ;;2
+;91;Jendouba/Bizerte/Tunis/Nabeul Reg group  ( 3V );3V ;;
+;92;Sousse/Monastir/Mahdia Region group ( 3V );3V ;;
+;93;Guinea-Bissau Coastal Region group  ( J5 );J5 ;;
+;94;Mediterranean Sea Coast West group  ( 7X );7X ;;
+;95;Cameroon group  ( TJ );TJ ;;
+;96;Guinee-Maritime Province North group  ( 3X );3X ;;
+;97;Mediterranean Sea Coast Centre group  ( 7X );7X ;;
+;98;Sofala District group  ( C9 );C9 ;;
+;99;Matruh Region group  ( SU );SU ;;
+;100;Bas-Congo Province group  ( 9Q );9Q ;;
+;101;Red Sea Coast North group  ( SU );SU ;;
+;102P;Erongo/Hardap Region group  ( V5 );V5 ;;
+;103;Zambezia District group  ( C9 );C9 ;;
+;104;Mediterranean Sea Coast East group  ( 7X );7X ;;
+;105P;Nyanga Province group  ( TR );TR ;;
+;106P;Cote D'Ivoire group  ( TU );TU ;;
+;107P;Cuanza Sul/Benguela Province group  ( D2 );D2 ;;
+;108P;Namibe Province group  ( D2 );D2 ;;
+;109;Nile Delta and Sinai Region group  ( SU );SU ;;
+;110P;Red Sea Coast South group  ( SU );SU ;;
+;111P;Liberia group  ( EL );EL ;;
+;112P;Mediterranean Sea Coast Centre group  ( 5A );5A ;;
+;113P;Mediterranean Sea Coast East group  ( 5A );5A ;;
+;114P;Halaib Triangle group  ( ST );ST ;;
+;115P;Red Sea State group  ( ST );ST ;;
+;116P;Gulf of Aden West group  ( T5 );T5 ;;
+;117P;Gulf of Aden East group  ( T5 );T5 ;;
+;118P;Mediterranean Sea Coast group  ( CN );CN ;;
+;119P;Coetivy Island  ( S7 );S7 ;;
+AN;;ANTARCTICA ;;;
+;1;Graham Land West (Adelaide Island) g.  ( );;;
+;2;Bouvet Island  ( 3Y );3Y ;;2
+;3;Heard Island  ( VK0 );VK0 ;;2
+;4;Peter 1 Island  ( 3Y );3Y ;;2
+;5;Macquarie Island  ( VK0 );VK0 ;;2
+;6;Graham Land West (Biscoe Islands) group  ( );;;
+;7;South Georgia Island  ( VP8 );VP8 ;;2
+;8;South Orkney Islands  ( );;;
+;9;South Sandwich Islands  ( VP8 );VP8 ;;2
+;10;South Shetland Islands  ( );;;
+;11;Ross Island group  ( );;;
+;12;Graham Land West (Palmer Archip) group  ( );;;
+;13;Trinity Peninsula group  ( );;;
+;14;Berkner Island  ( );;;
+;15;Queen Maud Land (Prince Harald etc) g.  ( );;;
+;16;Antarctica (Main Island Only)  ( );;;
+;17;Adelie Land group  ( );;;
+;18;Palmer Land West (Alexander Island) g.  ( );;;
+;019P;Balleny Islands  ( );;;
+;020P;Scott Island  ( );;;
+;021P;Shag Rocks, South Georgia Island  ( VP8 );VP8 ;;2
+AS;;ASIA ;;;
+;1;Andaman Islands  ( VU );VU ;;
+;2;Bahrain Island  ( A9 );A9 ;;2
+;3;Sri Lanka Island (Main Island Only)  ( 4S );4S ;;2
+;4;Cyprus Island (Main Island Only)  ( 5B, ZC );5B, ZC ;;
+;5;Kara Sea Coast West group  ( R0B );R0B ;;
+;6;Hong Kong group  ( VR2 );VR2 ;;2
+;7;Honshu Island (Main Island Only)  ( JA* );JA* ;;2
+;8;North Izu Islands  ( JA1 );JA1 ;;2
+;9;Red Sea Coast group  ( 7O );7O ;;
+;10;Zufar Region group  ( A4 );A4 ;;
+;11;Laccadive Islands  ( VU );VU ;;
+;12;Kyushu's Coastal Islands  ( JA6 );JA6 ;;2
+;13;Maldive Islands  ( 8Q );8Q ;1;
+;14;Ash Sharqiyah/Al Wusta Region group  ( A4 );A4 ;;
+;15;Pinang State group  ( 9M2 );9M2 ;;2
+;16;Gulf Of Aden West group  ( 7O );7O ;;
+;17;Okinawa Islands  ( JA6 );JA6 ;;2
+;18;Sakhalin Island (Main Island Only)  ( R0F );R0F ;;
+;19;Singapore Island  ( 9V );9V ;;2
+;20;Taiwan Island (Main Island Only)  ( BV );BV ;;2
+;21;Trucial Coast group  ( A6 );A6 ;;
+;22;Medvezh'i (Bear) Islands  ( R0Q );R0Q ;;
+;23;Amami Islands  ( JA6 );JA6 ;;2
+;24;Yaeyama Islands  ( JA6 );JA6 ;;2
+;25;Kuril'skiye (Kuril) Islands  ( R0F );R0F ;;
+;26;Cheju-do Province (Cheju Island) group  ( HL4 );HL4 ;;
+;27;Vrangelya (Wrangel) Island  ( R0K );R0K ;;
+;28;Anzhu Islands  ( R0Q );R0Q ;;
+;29;Lyakhovskiye Islands  ( R0Q );R0Q ;;
+;30;Kazan (Volcano) Islands  ( JD );JD ;;2
+;31;Chichi/Haha/Muko (Bonin) Islands  ( JD );JD ;;2
+;32;Osumi Islands  ( JA6 );JA6 ;;2
+;33;Nicobar Islands  ( VU );VU ;;
+;36;Iki/Tsushima Islands  ( JA6 );JA6 ;;2
+;37;Koshikijima Islands  ( JA6 );JA6 ;;2
+;38;East Siberian Sea Coast group  ( R0K );R0K ;;
+;39;Komandorskiye (Commander) Islands  ( R0Z );R0Z ;;
+;40;Goto Islands  ( JA6 );JA6 ;;2
+;41;Oki Islands  ( JA4 );JA4 ;;2
+;42;Severnaya Zemlya (North Land)  ( R0B );R0B ;;
+;43;South Izu Islands  ( JA1 );JA1 ;;2
+;44;Sea of Okhotsk Coast Centre group  ( R0C );R0C ;;
+;45;Kyongsang-bukto Prov (Ullung Island) g.  ( HL5 );HL5 ;;
+;46;Pahang/Johor State East group  ( 9M2 );9M2 ;;2
+;47;Daito Islands  ( JA6 );JA6 ;;2
+;48;De Longa Islands  ( R0Q );R0Q ;;
+;49;Tokara Islands  ( JA6 );JA6 ;;2
+;50;Sergeya Kirova Islands  ( R0B );R0B ;;
+;51;Spratly Islands  ( );;;
+;53;Malay Peninsula West group  ( HS );HS ;;
+;54;Laptev Sea Coast West group  ( R0B );R0B ;;
+;55;Vize Island  ( R0B );R0B ;;
+;56;Danjo Islands  ( JA6 );JA6 ;;2
+;57;Uyedineniya Island  ( R0B );R0B ;;
+;58;Perlis/Kedah State group  ( 9M2 );9M2 ;;2
+;59;Sea of Okhotsk Coast group  ( R0I );R0I ;;
+;60;Cholla-namdo Province group  ( HL4 );HL4 ;;
+;61;Ratmanova (Big Diomede) Island  ( R0K );R0K ;;
+;62;Habomai Islands  ( R0F );R0F ;;
+;63;Laptev Sea Coast East group  ( R0B );R0B ;;
+;64;Bering Sea Coast group  ( R0X );R0X ;;
+;65;Chukchi Sea Coast East group  ( R0K );R0K ;;
+;66;Sea of Japan Coast group  ( R0L );R0L ;;
+;67;Uji & Kusagaki Islands  ( JA6 );JA6 ;;2
+;68;Kara Sea Coast Centre group  ( R0B );R0B ;;
+;69;Iony Island  ( R0C );R0C ;;
+;70;East Siberian Sea Coast East group  ( R0Q );R0Q ;;
+;71;Bering Sea Coast North group  ( R0K );R0K ;;
+;72;Perak State group  ( 9M2 );9M2 ;;2
+;73;Kelantan/Terengganu State group  ( 9M2 );9M2 ;;2
+;74;Selangor/Negeri Sembilan State group  ( 9M2 );9M2 ;;2
+;75;Macau group  ( XX );XX ;;2
+;76;Shikoku Island  ( JA5 );JA5 ;;2
+;77;Kyushu Island (Main Island Only)  ( JA6 );JA6 ;;2
+;78;Hokkaido Island (Main Island Only)  ( JA8 );JA8 ;;2
+;79;Miyako Islands  ( JA6 );JA6 ;;2
+;80;Ch'ungch'ong-namdo Province group  ( HL3 );HL3 ;;
+;81;Kyongsang-bukto/Kyongsang-namdo g.  ( HL5 );HL5 ;;
+;82;Laptev Sea Coast Centre group  ( R0Q );R0Q ;;
+;83;Kara Sea Coast East group  ( R9K );R9K ;;
+;84;Cheju-do Province (Ch'uja Islands) group  ( HL4 );HL4 ;;
+;85;Cholla-namdo Province (Soan Islands) g.  ( HL4 );HL4 ;;
+;86;Izvestiy TS.I.K. Islands  ( R0B );R0B ;;
+;87;Arkticheskogo Instituta Islands  ( R0B );R0B ;;
+;88;Qatar group  ( A7 );A7 ;;
+;89;Kara Sea Coast West group  ( R9K );R9K ;;
+;90;Kyonggi-do Province (Tokchok Islands)  ( HL2 );HL2 ;;
+;91;Sea of Okhotsk Coast group  ( R0X );R0X ;;
+;92;Bering Sea Coast South group  ( R0K );R0K ;;
+;93;Cholla-namdo Province (Huksan Islands)  ( HL4 );HL4 ;;
+;94;Hainan Province (Hainan Island) group  ( BY7 );BY7 ;;
+;95;Bering Sea Coast group  ( R0Z );R0Z ;;
+;96;Karnataka State group  ( VU );VU ;;
+;97;Melaka/Johor State West group  ( 9M2 );9M2 ;;2
+;98;Aydin/Mugla Province group  ( TA );TA ;;
+;99;Canakkale/Balikesir/Izmir Province group  ( TA );TA ;;
+;100;Israel group  ( 4X );4X ;;
+;101;Malay Peninsula East group  ( HS );HS ;;
+;102;Kinmen (Quemoy) Island  ( BV );BV ;;2
+;103;P'enghu (Pescadores) Islands  ( BV );BV ;;2
+;104;Kara Sea Coast East group  ( R0B );R0B ;;
+;105;Kyonggi-do Province group  ( HL2 );HL2 ;;
+;106;Minicoy Island  ( VU );VU ;;
+;107;Gulf of Thailand North group  ( HS );HS ;;
+;108;Lebanon group  ( OD );OD ;;
+;109;Obskaya Gulf group  ( R9K );R9K ;;
+;110;Tungsha (Pratas) Island  ( BQ9 );BQ9 ;1;
+;111;The Gulf group  ( HZ );HZ ;;
+;112;Al Batinah/Masqat Region group  ( A4 );A4 ;;
+;113;Matsu Islands  ( BV );BV ;;2
+;114;Sea of Okhotsk Coast South group  ( R0C );R0C ;;
+;115;Antalya Province group  ( TA );TA ;;
+;116;Huang Yan Island (Scarborough Reef)  ( BS7 );BS7 ;1;
+;117;Honshu's Coastal Islands  ( JA* );JA* ;;2
+;118;Kuwait group  ( 9K );9K ;;
+;119;Musandam Region group  ( A4 );A4 ;;
+;120;Cyprus's Coastal Islands  ( 5B );5B ;;
+;121;Nordenshel'da Archipelago  ( R0B );R0B ;;
+;122;Kyonggi-do Province West group  ( HL2 );HL2 ;;
+;123;Icel/Adana/Hatay Province group  ( TA );TA ;;
+;124;Gulf of Oman group  ( A6 );A6 ;;
+;125;Gulf of Thailand North East group  ( HS );HS ;;
+;126;Malay Peninsula South West group  ( HS );HS ;;
+;127;Chittagong Region group  ( S2 );S2 ;;
+;128;Gulf of Thailand group  ( 3W );3W ;;
+;129;Guangdong Province East group  ( BY7 );BY7 ;;
+;130;South China Sea Coast South group  ( 3W );3W ;;
+;131;Guangdong Province West group  ( BY7 );BY7 ;;
+;132;Gulf of Tongking North group  ( 3W );3W ;;
+;133;Cambodia group  ( XU );XU ;;
+;134;Hebei/Tianjin Province group  ( BY3 );BY3 ;;
+;135;Jiangsu Province group  ( BY4 );BY4 ;;
+;136;Shanghai Province group  ( BY4 );BY4 ;;
+;137;Zhejiang Province North group  ( BY5 );BY5 ;;
+;138;Fujian Province group  ( BY5 );BY5 ;;
+;139;Guangxi Autonomous Region group  ( BY7 );BY7 ;;
+;140;Khulna/Barisal Region group  ( S2 );S2 ;;
+;141;Zhejiang Province South group  ( BY5 );BY5 ;;
+;142;Sea of Okhotsk Coast group  ( R0Z );R0Z ;;
+;143;Hainan Province (Xisha Islands) group  ( BY7 );BY7 ;;
+;144;Tenasserim Region South group  ( XZ );XZ ;;
+;145;Malay Peninsula South East group  ( HS );HS ;;
+;146;Shandong Province North East group  ( BY4 );BY4 ;;
+;147;Hokkaido's Coastal Islands  ( JA8 );JA8 ;;2
+;148;Cholla-bukto Province group  ( HL4 );HL4 ;;
+;149;Sakhalin's Coastal Islands  ( R0F );R0F ;;
+;150;Shandong Province South group  ( BY4 );BY4 ;;
+;151;Liaoning Province West group  ( BY2 );BY2 ;;
+;152;Laptev Sea Coast West group  ( R0Q );R0Q ;;
+;153;West Bengal State group  ( VU );VU ;;
+;154;Black Sea Coast East group  ( TA );TA ;;
+;155;Taiwan's Coastal Islands  ( BV );BV ;;2
+;156;Ushakova Island  ( R0B );R0B ;;
+;157;South China Sea Coast Centre group  ( 3W );3W ;;
+;158;Liaoning Province East group  ( BY2 );BY2 ;;
+;159;Black Sea Coast West group  ( TA );TA ;;
+;160;Shandong Province North West group  ( BY4 );BY4 ;;
+;161;Kerala State group  ( VU );VU ;;
+;162;South China Sea Coast North group  ( 3W );3W ;;
+;163;Laptev Sea Coast East group  ( R0Q );R0Q ;;
+;164;East Siberian Sea Coast West group  ( R0Q );R0Q ;;
+;165;Arakan Region group  ( XZ );XZ ;;
+;166;Hormozgan Province group  ( EP );EP ;;
+;167;Irrawaddy/Yangon/Pegu Region group  ( XZ );XZ ;;
+;168;Kangwon-do Province group  ( HL2 );HL2 ;;
+;169;Maharashtra State group  ( VU );VU ;;
+;170;Shelikhova Bay group  ( R0I );R0I ;;
+;171;Sri Lanka's Coastal Islands  ( 4S );4S ;;2
+;172;Sea of Okhotsk Coast North group  ( R0C );R0C ;;
+;173;Tamil Nadu State group  ( VU );VU ;;
+;174;Chukchi Sea Coast West group  ( R0K );R0K ;;
+;175;Gujarat State West group  ( VU );VU ;;
+;176P ;Gujarat State East group  ( VU );VU ;;
+;177;Goa State group  ( VU );VU ;;
+;178P ;Andhra Pradesh State North group  ( VU );VU ;;
+;179P ;Orissa State group  ( VU );VU ;;
+;180P ;Balochistan Province group  ( AP );AP ;;
+;181P ;Sindh Province group  ( AP );AP ;;
+;182P ;Mon Region group  ( XZ );XZ ;;
+;183P ;Tenasserim Region North group  ( XZ );XZ ;;
+;184P ;Preparis Channel group  ( XZ );XZ ;;
+;185;Gulf of Tongking South group  ( 3W );3W ;;
+;186;Syria group  ( YK );YK ;;
+;187P ;Gulf of Aden East group  ( 7O );7O ;;
+;188P ;Khuzestan Province group  ( EP );EP ;;
+;189P ;Bushehr Province group  ( EP );EP ;;
+;190;Red Sea Coast North (Tabuk Province) g.  ( HZ );HZ ;;
+;191;Red Sea Coast Centre (Al Madinah etc) g.  ( HZ );HZ ;;
+;192;Red Sea Coast South (Jizan Province) g.  ( HZ );HZ ;;
+;193;Farasan Islands  ( HZ );HZ ;;
+;194P ;Senkaku Islands  ( JA6 );JA6 ;;2
+;195P ;P'yongan-Bukto/P'yongan-Namdo Prov g.  ( P5 );P5 ;;
+;196P ;Nam'p'o-si/Hwanghae-Namdo Prov group  ( P5 );P5 ;;
+;197P ;Hamgyong-Bukto/Hamgyong-Namdo Prov  ( P5 );P5 ;;
+;198P ;Kangwon-Do Province group  ( P5 );P5 ;;
+;199;Andhra Pradesh State South group  ( VU );VU ;;
+;200;Shikoku’s Coastal Islands  ( JA5 );JA5 ;;2
+;201;Sea of Marmara Islands  ( TA );TA ;;
+;202P ;Hawar Islands  ( A9 );A9 ;;2
+;203P ;Shelikhova Bay group  ( R0X );R0X ;;
+EU;;EUROPE ;;;
+;1;Dodecanese (Dodekanisos)  ( SV5 );SV5 ;1;
+;2;Aland Islands  ( OH0 );OH0 ;1;
+;3;Eastern group  ( CU1, 2 );CU1, 2 ;;2
+;4;Balearic Islands  ( EA6 );EA6 ;;
+;5;Great Britain (Main Island Only)  ( G, GM, GW);G, GM, GW;;
+;6;Aran Islands  ( EI );EI ;;2
+;7;Blasket Islands  ( EI );EI ;;2
+;8;Inner Hebrides  ( GM, MM );GM, MM ;;2
+;9;Orkney  ( GM, MM );GM, MM ;;2
+;10;Outer Hebrides  ( GM, MM );GM, MM ;;2
+;11;Isles of Scilly  ( G, M );G, M ;;
+;12;Shetland  ( GM, MM );GM, MM ;;2
+;13;Jersey  ( GJ, MJ );GJ, MJ ;;2
+;14;Corsica (Corse) Island (Main Island Only)  ( TK );TK ;;2
+;15;Crete (Kriti) Island (Main Island Only)  ( SV9 );SV9 ;;2
+;16;Dalmatia South group  ( 9A );9A ;;
+;17;Eolie (Lipari) Islands  ( I*9 );I*9 ;;2
+;18;Faroe Islands  ( OY );OY ;1;
+;19;Franz Josef Land  ( RI1FJ );RI1FJ ;;2
+;20;Gotland County (Gotland Island) group  ( SM1 );SM1 ;1;
+;21;Iceland (Main Island Only)  ( TF );TF ;;2
+;22;Jan Mayen Island  ( JX );JX ;1;
+;23;Malta group  ( 9H );9H ;1;
+;24;Sardinia (Sardegna) (Main Island Only)  ( I*0 );I*0 ;;2
+;25;Sicily (Sicilia) (Main Island Only)  ( I*9 );I*9 ;;2
+;26;Spitsbergen Island (Main Island Only)  ( JW );JW ;;2
+;27;Bear Island (Bjornoya)  ( JW );JW ;;2
+;28;Toscana (Tuscany) Region group  ( I*5 );I*5 ;;2
+;29;Sjaelland Archipelago  ( OZ );OZ ;;
+;30;Bornholm Island  ( OZ );OZ ;;
+;31;Campania Region group  ( I*8 );I*8 ;;2
+;32;Poitou-Charentes Region group  ( F );F ;;
+;33;Vesteralen Islands/Troms County S group  ( LA );LA ;;
+;34;Hiiumaa/Saaremaa/Laanemaa County g.  ( ES0);ES0;;2
+;35;Novaya Zemlya  ( R1O );R1O ;;
+;36;Sor-Trondelag/More Og Romsdal Cty N g.  ( LA );LA ;;
+;37;Kalmar County group  ( SM7 );SM7 ;;
+;38;Noord Holland/Friesland/Groningen Pr g.  ( PA );PA ;;
+;39;Chausey Islands  ( F );F ;;
+;40;Estremadura Province group  ( CT );CT ;;
+;41;Maddalena Archipelago  ( I*0 );I*0 ;;2
+;42;Schleswig-Holstein State North West g.  ( DL );DL ;;
+;43;Goteborg Och Bohus/Halland County g.  ( SM6 );SM6 ;;
+;44;Finnmark County West group  ( LA );LA ;;
+;45;Lazio Region group  ( I*0 );I*0 ;;2
+;46;Troms County group  ( LA );LA ;;
+;47;Niedersachsen State group  ( DL );DL ;;
+;48;Bretagne (Morbihan) Region group  ( F );F ;;
+;49;North Aegean Islands  ( SV );SV ;;
+;50;Puglia (Foggia) Region group  ( I*7 );I*7 ;;2
+;51;Ustica Island  ( I*9 );I*9 ;;2
+;52;Ipeiros/Dytiki Ellas Region group  ( SV );SV ;;
+;53;Market Reef  ( OJ0);OJ0;1;
+;54;Egadi Islands  ( I*9 );I*9 ;;2
+;55;Sogn og Fjordane etc County group  ( LA );LA ;;
+;56;More Og Romsdal County Centre group  ( LA );LA ;;
+;57;Mecklenburg-Vorpommern State group  ( DL );DL ;;
+;58;Provence-Cote D'Azur (Alpes-Marit) g.  ( F );F ;;
+;59;St Kilda  ( GM, MM );GM, MM ;;2
+;60;Sterea Ellas Region group  ( SV );SV ;;
+;61;Vest Agder To Ostfold County group  ( LA );LA ;;
+;62;Nordland/Nord-Trondelag County group  ( LA );LA ;;
+;63;Spitsbergen's Coastal Islands  ( JW );JW ;;2
+;64;Pays De La Loire Region group  ( F );F ;;
+;65;Bretagne (Finistere North West) Region g.  ( F );F ;;
+;66;Solovetskiye Islands  ( R1O );R1O ;;
+;67;Kyklades (Cyclades)  ( SV );SV ;;
+;68;Bretagne (Finistere South West) Region g.  ( F );F ;;
+;69;Columbretes Islands  ( EA5 );EA5 ;;
+;70;Provence-Cote D'Azur (Var) Region group  ( F );F ;;
+;71;Vestmannaeyjar (Westman Islands)  ( TF7 );TF7 ;;2
+;72;Thessalia Region group  ( SV );SV ;;
+;73;Puglia (Taranto) Region group  ( I*7 );I*7 ;;2
+;74;Bretagne (Cotes-D'Armor Centre) Region  ( F );F ;;
+;75;Peloponnisos (Argolis)/Attiki Region group  ( SV );SV ;;
+;76;Lofoten Islands  ( LA );LA ;;
+;77;La Coruna/Lugo Province group  ( EA1 );EA1 ;;
+;78;Gerona Province group  ( EA3 );EA3 ;;
+;79;More Og Romsdal County South group  ( LA );LA ;;
+;80;Pontevedra Province group  ( EA1 );EA1 ;;
+;81;Basse-Normandie (Manche East) Region  ( F );F ;;
+;82;Barents Sea Coast West group  ( R1Z );R1Z ;;
+;83;Liguria Region group  ( I*1 );I*1 ;;2
+;84;Uppsala/Stockholm County group  ( SM5, 0 );SM5, 0 ;;
+;85;Kolguev Island  ( R1P );R1P ;;
+;86;Pechorskoye Sea Coast East group  ( R1P );R1P ;;
+;87;Vasternorrland County group  ( SM3 );SM3 ;;
+;88;Kattegat group  ( OZ );OZ ;;
+;89;Western group  ( CU8, 9 );CU8, 9 ;;2
+;90;Palagruza Island  ( 9A );9A ;;
+;91;Puglia (Lecce/Brindisi/Bari) Region group  ( I*7 );I*7 ;;2
+;92;Summer Isles  ( GM, MM );GM, MM ;;2
+;93;Alicante/Murcia Province group  ( EA5 );EA5 ;;
+;94;Bretagne (Finistere South) Region group  ( F );F ;;
+;95;Provence-Cote D'Azur (B’ches-Du-Rhone)  ( F );F ;;
+;96;Lansi-Suomi (Turku) Province group  ( OH1 );OH1 ;;
+;97;Etela-Suomi (Uusimaa) Province group  ( OH2 );OH2 ;;
+;99;Les Minquiers Islands  ( GJ, MJ );GJ, MJ ;;2
+;100;Cerbicales Islands  ( TK );TK ;;2
+;101;Lansi-Suomi (Vaasa) Province group  ( OH6 );OH6 ;;
+;102;Pechorskoye Sea Coast Centre group  ( R1P );R1P ;;
+;103;Saltee Islands  ( EI );EI ;;2
+;104;Sanguinaires Islands  ( TK );TK ;;2
+;105;Bretagne (Finistere North) Region group  ( F );F ;;
+;106;St Tudwal's Islands  ( GW, MW );GW, MW ;;2
+;107;Bretagne (Cotes-D'Armor West) Region g.  ( F );F ;;
+;108;Treshnish Isles  ( GM, MM );GM, MM ;;2
+;109;Farne Islands  ( G, M );G, M ;;
+;110;Istra group  ( 9A );9A ;;
+;111;Monach Islands  ( GM, MM );GM, MM ;;2
+;112;Shiant Islands  ( GM, MM );GM, MM ;;2
+;113;Peloponnisos (Lakonia)/Kythira Region g.  ( SV );SV ;;
+;114;Guernsey group  ( GU, MU );GU, MU ;1;
+;115; Ireland  ( EI, GI, MI);EI, GI, MI;;2
+;116;Isle of Man  ( GD, MD );GD, MD ;1;
+;117;Gulf of Finland North group  ( R1A-C );R1A-C ;;
+;118;Flannan Isles  ( GM, MM );GM, MM ;;2
+;119;White Sea Coast East group  ( R1O );R1O ;;
+;120;English Coastal Islands  ( G, M );G, M ;;
+;121;Irish Coastal Islands  ( EI );EI ;;2
+;122;Northern Irish Coastal Islands  ( GI, MI );GI, MI ;1;
+;123;Scottish Coastal Islands  ( GM, MM );GM, MM ;;2
+;124;Welsh Coastal Islands  ( GW, MW );GW, MW ;;2
+;125;Jylland West group  ( OZ );OZ ;;
+;126;Lappi Province group  ( OH9 );OH9 ;;
+;127;Schleswig-Holstein State South West g.  ( DL );DL ;;
+;128;Schleswig-Holstein State East group  ( DL );DL ;;
+;129;Usedom (Uznam) Island  ( DL, SP1 );DL, SP1 ;;
+;130;Friuli-Venezia Giulia Region group  ( I*3 );I*3 ;;2
+;131;Veneto Region group  ( I*3 );I*3 ;;2
+;132;Szczecin/Koszalin Province group  ( SP1 );SP1 ;;
+;133;Gulf of Finland South group  ( R1A-C );R1A-C ;;
+;134;Bilbao/San Sebastian (Basque) Prov g.  ( EA2 );EA2 ;;
+;135;Vasterbotten County group  ( SM2 );SM2 ;;
+;136;Kvarner group  ( 9A );9A ;;
+;137;Skane County group  ( SM7 );SM7 ;;
+;138;Blekinge County group  ( SM7 );SM7 ;;
+;139;Norrbotten County group  ( SM2 );SM2 ;;
+;140;Etela-Suomi (Kymi) Province group  ( OH5 );OH5 ;;
+;141;Finnmark County East group  ( LA );LA ;;
+;142;Oviedo/Santander Province group  ( EA1 );EA1 ;;
+;143;Cadiz/Huelva Province group  ( EA7 );EA7 ;;
+;144;Calabria/Basilicata Region group  ( I*8 );I*8 ;;2
+;145;Algarve Province group  ( CT );CT ;;
+;146;Zuid Holland/Zeeland Province group  ( PA );PA ;;
+;147;White Sea Coast group  ( R1N );R1N ;;
+;148;Languedoc-Roussillon Region group  ( F );F ;;
+;149;Tallinn & Harjumaa/Virumaa County g.  ( ES1, 2, 4 );ES1, 2, 4 ;;
+;150;Minho/Douro Lit/Beira Litoral Province g.  ( CT );CT ;;
+;151;Castellon/Valencia Province group  ( EA5 );EA5 ;;
+;152;Almeria/Granada/Malaga Province group  ( EA7 );EA7 ;;
+;153;White Sea Coast West group  ( R1O );R1O ;;
+;156;Basse-Normandie (Manche West) Reg g.  ( F );F ;;
+;157;Bretagne (Cotes-D'Armor East etc) Reg  ( F );F ;;
+;158;Peloponnisos (Messinia) Region group  ( SV );SV ;;
+;159;Aquitaine Region group  ( F );F ;;
+;160;Barents Sea Coast group  ( R1P );R1P ;;
+;161;Barents Sea Coast East group  ( R1Z );R1Z ;;
+;162;White Sea Coast group  ( R1Z );R1Z ;;
+;163;Montenegro group  ( 4O );4O ;;
+;164;Corsica's Coastal Islands  ( TK );TK ;;2
+;165;Sardinia's Coastal Islands  ( I*0 );I*0 ;;2
+;166;Sicily's Coastal Islands  ( I*9 );I*9 ;;2
+;167;Baixo Alentejo Province group  ( CT );CT ;;
+;168;Iceland's Coastal Islands  ( TF );TF ;;2
+;169;Albania group  ( ZA );ZA ;;
+;170;Dalmatia North group  ( 9A );9A ;;
+;171;Jylland North group  ( OZ );OZ ;;
+;172;Jylland East & Fyn group  ( OZ );OZ ;;
+;173;Lansi-Suomi (Pori) Province group  ( OH1 );OH1 ;;
+;174;Makedonia/Thraki Region group  ( SV );SV ;;
+;175;Central group  ( CU3-7 );CU3-7 ;;2
+;176;Gavleborg County group  ( SM3 );SM3 ;;
+;177;Sodermanland/Ostergotland County g.  ( SM5 );SM5 ;;
+;178;Parnumaa County/Saaremaa Cty Sth g.  ( ES0);ES0;;2
+;179;Mykolayiv/Kherson Obl: Black Sea Coast  ( UR );UR ;;
+;180;Respublika Krym: Black Sea Coast group  ( UR );UR ;;
+;181;Bulgaria group  ( LZ );LZ ;;
+;182;Odes'ka Obl: Black Sea Coast group  ( UR );UR ;;
+;183;Sacalinu Mare Island  ( YO );YO ;;
+;184;Oulu Province group  ( OH8 );OH8 ;;
+;185;Krasnodarskiy Kray: Black Sea Coast g.  ( R6A-D );R6A-D ;;
+;186;Turkey group  ( TA );TA ;;
+;187;Crete's Coastal Islands  ( SV9 );SV9 ;;2
+;188;Pechorskoye Sea Coast West group  ( R1P );R1P ;;
+;189;Isle of Rockall  ( GM, MM );GM, MM ;;2
+;190P ;Viktoriya Island  ( RI1FJ );RI1FJ ;;2
+;191;Fericirii Island  ( YO, UR );YO, UR ;;
+NA;;NORTH AMERICA ;;;
+;1;Great Bahama Bank group  ( C6 );C6 ;;2
+;2;Caicos Islands  ( VP5 );VP5 ;;2
+;3;Turks Islands  ( VP5 );VP5 ;;2
+;4;North Slope County Centre group  ( KL );KL ;;
+;5;Bermuda Islands  ( VP9 );VP9 ;;2
+;6;Nunavut (Victoria Island) group  ( VE8, VY0);VE8, VY0;;
+;7;Nunavut (Southampton Island) group  ( VY0 );VY0 ;;2
+;8;Nunavut (Ellesmere Island) group  ( VY0 );VY0 ;;2
+;9;Nunavut (Devon Island) group  ( VY0 );VY0 ;;2
+;10;NS Province (Cape Breton Island) group  ( VE1 );VE1 ;;
+;11;Clipperton Island  ( FO );FO ;;2
+;12;Coco's Island  ( TI9 );TI9 ;1;
+;13;Caribbean Sea Coast Centre group  ( YN );YN ;;
+;14;NB Province South group  ( VE9 );VE9 ;;
+;15;Cuba (Main Island Only)  ( CO, KG4 );CO, KG4 ;;2
+;16;Cayman Islands  ( ZF );ZF ;1;
+;17;Baja California State South West group  ( XE2 );XE2 ;;
+;18;Greenland (Main Island Only)  ( OX );OX ;;2
+;19;Kodiak group  ( KL );KL ;;
+;20;Aves Island  ( YV0 );YV0 ;1;
+;21;Barbados  ( 8P );8P ;1;
+;22;Anguilla  ( VP2E );VP2E ;1;
+;23;British Virgin Islands  ( VP2V );VP2V ;1;
+;24;Grenada  ( J3 );J3 ;;2
+;25;The Grenadines  ( J8 );J8 ;;2
+;26;NY State group  ( W2 );W2 ;;
+;27;Newfoundland Island (Main Island Only)  ( VO1 );VO1 ;;2
+;28;Pribilof Islands  ( KL );KL ;;
+;29;Prince Edward Island  ( VY2 );VY2 ;;2
+;30;Revillagigedo Islands  ( XF4 );XF4 ;;2
+;31;RI State group  ( W1 );W1 ;;
+;32;St Pierre & Miquelon  ( FP );FP ;;2
+;33;San Andres Island  ( HK0 );HK0 ;;2
+;34;FL State Centre West group  ( W4 );W4 ;;
+;35;Santanilla (Swan) Islands  ( HR );HR ;;
+;36;BC Province (Vancouver Island) group  ( VE7 );VE7 ;;
+;37;Near Islands (Semichi Islands) group  ( KL );KL ;;
+;38;QC Province (La Madeleine Islands) group  ( VE2 );VE2 ;;
+;39;Andreanof Islands  ( KL );KL ;;
+;40;St Lawrence Island  ( KL );KL ;;
+;41;Alexander Archipelago  ( KL );KL ;;
+;42;Valdez Cordova County West group  ( KL );KL ;;
+;43;Nunavut (Sverdrup Islands) group  ( VY0 );VY0 ;;2
+;44;NFLD Province (Labrador) South group  ( VO2 );VO2 ;;2
+;45;Quintana Roo State North group  ( XE3 );XE3 ;;
+;46;MA State South group  ( W1 );W1 ;;
+;47;Nunavut (Baffin Island) group (Main Island)  ( VY0 );VY0 ;;2
+;48;Bimini Islands  ( C6 );C6 ;;2
+;49;Providencia Island  ( HK0 );HK0 ;;2
+;50;North Slope County East group  ( KL );KL ;;
+;51;BC Province (Haida Gwaii) group  ( VE7 );VE7 ;;
+;52;FL State South West (Collier/Monroe) g.  ( W4 );W4 ;;
+;53;Trinity Islands  ( KL );KL ;;
+;54;Berry Islands  ( C6 );C6 ;;2
+;55;ME State East group  ( W1 );W1 ;;
+;56;La Juventud Island group  ( CO4 );CO4 ;1;
+;57;Bahia Islands  ( HR );HR ;;
+;58;GA State group  ( W4 );W4 ;;
+;59;Fox Islands  ( KL );KL ;;
+;60;Valle/Choluteca Department group  ( HR );HR ;;
+;61;BC Province North group  ( VE7 );VE7 ;;
+;62;FL State (Florida Keys) group  ( W4 );W4 ;;
+;63;Sable Island  ( CY0 );CY0 ;1;
+;64;Near Islands (Agattu & Attu) group  ( KL );KL ;;
+;65;WA State North group  ( W7 );W7 ;;
+;66;CA State South (Orange/San Diego) group  ( W6 );W6 ;;
+;67;NC State East group  ( W4 );W4 ;;
+;68;NB Province North group  ( VE9 );VE9 ;;
+;69;FL State South West (Charlotte/Lee) g.  ( W4 );W4 ;;
+;70;Rat Islands  ( KL );KL ;;
+;71;Chiriqui/Veraguas South Province group  ( HP );HP ;;
+;72;Panama/Darien Province group  ( HP );HP ;;
+;73;Corozal/Belize District group  ( V3 );V3 ;;2
+;74;Nunivak Island  ( KL );KL ;;
+;75;BC Province (Gulf Islands) group  ( VE );VE ;;
+;76;FL State North West (Jefferson etc) group  ( W4 );W4 ;;
+;77;QC Province (Anticosti Island) group  ( VE2 );VE2 ;;
+;78;Baja California Sur State South West g.  ( XE2 );XE2 ;;
+;79;FL State (Dry Tortugas Islands) group  ( W4 );W4 ;;
+;80;Little Bahama Bank group  ( C6 );C6 ;;2
+;81;NS Province East group  ( VE1 );VE1 ;;
+;82;MS State group  ( W5 );W5 ;;
+;83;VA State group  ( W4 );W4 ;;
+;84;QC Province (St Lawrence Gulf) East g.  ( VE2 );VE2 ;;
+;85;FL State North West (Bay to Wakulla) g.  ( W4 );W4 ;;
+;86;Ciego De Avila/Camaguey Province N g.  ( CO7 );CO7 ;;2
+;87;Shumagin Islands  ( KL );KL ;;
+;88;Bocas Del Toro Province group  ( HP );HP ;;
+;89;LA State East group  ( W5 );W5 ;;
+;90;Quintana Roo State Centre group  ( XE3 );XE3 ;;
+;91;BC Province South group  ( VE7 );VE7 ;;
+;92;TX State West group  ( W5 );W5 ;;
+;93;Pinar Del Rio/La Habana Province group  ( CO1-3 );CO1-3 ;;2
+;94;St Paul Island  ( CY9 );CY9 ;1;
+;95;Desecheo Island  ( KP5 );KP5 ;1;
+;96;Hispaniola (Main Island Only)  ( HH, HI );HH, HI ;;2
+;97;Jamaica  ( 6Y );6Y ;1;
+;98;Navassa Island  ( KP1 );KP1 ;1;
+;99;Puerto Rico  ( KP3, 4 );KP3, 4 ;1;
+;100;Antigua & Barbuda  ( V2 );V2 ;1;
+;101;Dominica  ( J7 );J7 ;1;
+;102;Guadeloupe  ( FG );FG ;;2
+;103;Montserrat  ( VP2M );VP2M ;1;
+;104;St Kitts & Nevis  ( V4 );V4 ;1;
+;105;St Martin (Sint Maarten)  ( FS, PJ7 );FS, PJ7 ;;2
+;106;Virgin Islands  ( KP2 );KP2 ;1;
+;107;Martinique  ( FM );FM ;1;
+;108;St Lucia  ( J6 );J6 ;1;
+;109;St Vincent  ( J8 );J8 ;;2
+;110;SC State group  ( W4 );W4 ;;
+;111;NJ State group  ( W2 );W2 ;;
+;112;NC State West group  ( W4 );W4 ;;
+;113;South Bahamas group  ( C6 );C6 ;;2
+;114;Les Saintes Islands  ( FG );FG ;;2
+;115;Clarion Island  ( XF4 );XF4 ;;2
+;116;Puntarenas Province West group  ( TI8 );TI8 ;;
+;117;Puntarenas Province East group  ( TI8 );TI8 ;;
+;118;BC Province (Dundas Islands) group  ( VE7 );VE7 ;;
+;119;LA State Centre group  ( W5 );W5 ;;
+;120;LA State West group  ( W5 );W5 ;;
+;121;Dillingham/Bristol Bay County group  ( KL );KL ;;
+;122;Dominican Republic's Coastal Islands  ( HI );HI ;1;
+;123;Turneffe Islands  ( V3 );V3 ;;2
+;124;Baja California Sur State South East group  ( XE2 );XE2 ;;
+;125;QC Province (St Lawrence Gulf) West g.  ( VE2 );VE2 ;;
+;126;NS Province South group  ( VE1 );VE1 ;;
+;127;NS Province West group  ( VE1 );VE1 ;;
+;128;QC Province (St Lawrence Waterway) g.  ( VE2 );VE2 ;;
+;129;NWT (Banks Island) group  ( VE8 );VE8 ;;
+;130;Nunavut (Baffin's Coastal Islands) East g.  ( VY0 );VY0 ;;2
+;131;Nunavut (Kitikmeot Region) East Centre g.  ( VY0 );VY0 ;;2
+;132;Bajo Nuevo & Serranilla Bank Cays  ( HK0 );HK0 ;;2
+;133;Serrana Bank & Roncador Cays  ( HK0 );HK0 ;;2
+;134;Greenland's Coastal Islands North West  ( OX );OX ;;2
+;135;Campeche State group  ( XE3 );XE3 ;;
+;136;CT State group  ( W1 );W1 ;;
+;137;ME State West group  ( W1 );W1 ;;
+;138;FL State North East group  ( W4 );W4 ;;
+;139;MD State East group  ( W3 );W3 ;;
+;140;MD State West group  ( W3 );W3 ;;
+;141;FL State South East group  ( W4 );W4 ;;
+;142;FL State North West (Escambia etc) group  ( W4 );W4 ;;
+;143;TX State East group  ( W5 );W5 ;;
+;144;CA State South (Santa Barbara to LA) group  ( W6 );W6 ;;
+;145;Sint Eustatius & Saba Islands  ( PJ5, 6 );PJ5, 6 ;1;
+;146;St-Barthelemy Island  ( FJ );FJ ;1;
+;147;The Grenadines  ( J3 );J3 ;;2
+;148;MA State North group  ( W1 );W1 ;;
+;149;Haiti's Coastal Islands  ( HH );HH ;;2
+;150;Little Diomede Island  ( KL );KL ;;
+;151;Greenland's Coastal Islands South East  ( OX );OX ;;2
+;152;Nome County North group  ( KL );KL ;;
+;153;Yucatan State group  ( XE3 );XE3 ;;
+;154;NS Province North group  ( VE1 );VE1 ;;
+;155;Limon Province group  ( TI6 );TI6 ;;
+;156;Nunavut (Hudson Bay - QC Coast) NW g.  ( VY0 );VY0 ;;2
+;157;Valdez Cordova County East group  ( KL );KL ;;
+;158;Kenai - Cook Inlet group  ( KL );KL ;;
+;159;Nunavut (King George Islands) group  ( VY0 );VY0 ;;2
+;160;Cortes/Atlantida/Colon Department group  ( HR );HR ;;
+;161;Skagway-Yakutat County group  ( KL );KL ;;
+;162;Baja California State North West group  ( XE2 );XE2 ;;
+;163;Baja California State East group  ( XE2 );XE2 ;;
+;164;Baja California Sur State North West group  ( XE2 );XE2 ;;
+;165;Baja California Sur State North East group  ( XE2 );XE2 ;;
+;166;Sonora State South group  ( XE2 );XE2 ;;
+;167;Sonora State North group  ( XE2 );XE2 ;;
+;168;LA State South East group  ( W5 );W5 ;;
+;169;WA State West group  ( W7 );W7 ;;
+;170;San Blas Province group  ( HP );HP ;;
+;171;Sinaloa State group  ( XE2 );XE2 ;;
+;172;North Slope County North group  ( KL );KL ;;
+;173;Nunavut (Hudson Bay - QC Coast) South g.  ( VY0 );VY0 ;;2
+;174;Nunavut (Foxe Basin) group  ( VY0 );VY0 ;;2
+;175;Nunavut (Kitikmeot Region) West Centre g.  ( VY0 );VY0 ;;2
+;176;QC Province (St Lawrence Gulf) Centre g.  ( VE2 );VE2 ;;
+;177;QC Province (Gaspe Peninsula) group  ( VE2 );VE2 ;;
+;178;CA State Centre (Sonoma to Santa Cruz) g.  ( W6 );W6 ;;
+;179;Guadalupe Island  ( XE2 );XE2 ;;
+;180;Stann Creek/Toledo District group  ( V3 );V3 ;;2
+;181;BC Province (Estevan group)  ( VE7 );VE7 ;;
+;182;NWT (Inuvik Region) East group  ( VE8 );VE8 ;;
+;183;Guerrero State group  ( XE3 );XE3 ;;
+;184;CA State North group  ( W6 );W6 ;;
+;185;Nunavut (Keewatin Region) group  ( VY0 );VY0 ;;2
+;186;Nunavut (Hudson Bay - Manitoba Coast) g.  ( VY0 );VY0 ;;2
+;187;CA State Centre (Monterey etc) group  ( W6 );W6 ;;
+;188;Oaxaca State group  ( XE3 );XE3 ;;
+;189;Nayarit/Jalisco State group  ( XE1 );XE1 ;;
+;190;El Salvador group  ( YS );YS ;;
+;191;Guanacaste Province group  ( TI7 );TI7 ;;
+;192;NWT (Inuvik Region) West group  ( VE8 );VE8 ;;
+;193;Yukon Territory group  ( VY1 );VY1 ;;2
+;194;NFLD Province (Labrador) North group  ( VO2 );VO2 ;;2
+;195;Nunavut (Hudson Bay - QC Coast) Centre g  ( VY0 );VY0 ;;2
+;196;Nunavut (Belcher Islands) group  ( VY0 );VY0 ;;2
+;197;Kenai Peninsula County group  ( KL );KL ;;
+;198;Newfoundland's Coastal Islands  ( VO1 );VO1 ;;2
+;199;St Martin's Coastal Islands  ( FS );FS ;;2
+;200;Quintana Roo State South group  ( XE3 );XE3 ;;
+;201;Ciego De Avila/Camaguey Province Sth g.  ( CO7 );CO7 ;;2
+;202;Colon/Veraguas North Province group  ( HP );HP ;;
+;203;Los Santos/Herrera/Cocle Province group  ( HP );HP ;;
+;204;Matanzas to Sancti Spiritus Province g.  ( CO5, 6 );CO5, 6 ;;2
+;205;NFLD Province (Labrador) Centre group  ( VO2 );VO2 ;;2
+;206;Barren Islands  ( KL );KL ;;
+;207;Nunavut (Hudson Bay - ONT Coast) Sth g.  ( VY0 );VY0 ;;2
+;208;Nunavut (Kitikmeot Region) East group  ( VY0 );VY0 ;;2
+;209;Caribbean Sea Coast South group  ( YN );YN ;;
+;210;Nome County Centre group  ( KL );KL ;;
+;211;Oregon State group  ( W7 );W7 ;;
+;212;Pacific Ocean Coast group  ( YN );YN ;;
+;213;Alabama State group  ( W4 );W4 ;;
+;214;Nome County South group  ( KL );KL ;;
+;215;Northwest Arctic County group  ( KL );KL ;;
+;216;Northern Alaska Peninsula West group  ( KL );KL ;;
+;217;New Hampshire State group  ( W1 );W1 ;;
+;218;Las Tunas to Santiago de Cuba Prov g.  ( CO8 );CO8 ;;2
+;219;Cay Sal Bank Cays  ( C6 );C6 ;;2
+;220;Greenland's Coastal Islands South West  ( OX );OX ;;2
+;221;Veracruz State North group  ( XE1 );XE1 ;;
+;222;Southern Alaska Peninsula West group  ( KL );KL ;;
+;223;Gracias a Dios Department group  ( HR );HR ;;
+;224;Veracruz State South group  ( XE1 );XE1 ;;
+;225;Nunavut (Prince of Wales & Somerset) g.  ( VY0 );VY0 ;;2
+;226;Colima/Michoacan State group  ( XE1 );XE1 ;;
+;227;Nunavut (Kitikmeot Region) West group  ( VY0 );VY0 ;;2
+;228;Caribbean Sea Coast North group  ( YN );YN ;;
+;229;Nunavut (Hudson Bay – QC Coast) NE g.  ( VY0 );VY0 ;;2
+;230;Nunavut (Ottawa Islands) group  ( VY0 );VY0 ;;2
+;231;Nunavut (Hudson Bay - ONT Coast) Nth  ( VY0 );VY0 ;;2
+;232;St Matthew Island  ( KL );KL ;;
+;233;Delarof Islands  ( KL );KL ;;
+;234;Islands of Four Mountains  ( KL );KL ;;
+;235;Semidi Islands  ( KL );KL ;;
+;236;Sanak Islands  ( KL );KL ;;
+;237;Southern Alaska Peninsula East group  ( KL );KL ;;
+;238;Southern Alaska Peninsula Centre group  ( KL );KL ;;
+;239;Northern Alaska Peninsula East group  ( KL );KL ;;
+;240;Bethel County group  ( KL );KL ;;
+;241;Wade-Hampton County group  ( KL );KL ;;
+;242;North Slope County West group  ( KL );KL ;;
+;243;Greenland's Coastal Islands North East  ( OX );OX ;;2
+;244P ;Marias Islands  ( XE1 );XE1 ;;
+;245P ;Rocas Alijos Islands  ( XE2 );XE2 ;;
+;246;Tamaulipas State group  ( XE2 );XE2 ;;
+;247P ;Sint Maarten’s Coastal Islands  ( PJ7 );PJ7 ;1;
+;248P ;Melville Island ( VE8, VY0);VE8, VY0;;
+OC;;OCEANIA ;;;
+;1;Australia (Main Island Only)  ( VK );VK ;;
+;2;Christmas Island  ( VK9 );VK9 ;;2
+;3;Cocos (Keeling) Islands  ( VK9 );VK9 ;;2
+;4;Lord Howe Island  ( VK9 );VK9 ;;2
+;5;Norfolk Island  ( VK9 );VK9 ;;2
+;6;Tasmania (Main Island Only)  ( VK7 );VK7 ;;
+;7;Willis Islands  ( VK9 );VK9 ;;2
+;8;Bismarck Archipelago  ( P2 );P2 ;;2
+;9;Palau Islands  ( T8 );T8 ;;2
+;10;Pohnpei Islands  ( V6 );V6 ;;2
+;11;Chuuk Islands  ( V6 );V6 ;;2
+;12;Yap Islands  ( V6 );V6 ;;2
+;13;Rarotonga Island  ( E5 );E5 ;;2
+;14;Manihiki Atoll  ( E5 );E5 ;;2
+;15;Tuvalu Islands  ( T2 );T2 ;1;
+;16;Viti Levu & Vanua Levu group  ( 3D2 );3D2 ;;2
+;17;Gilbert Islands  ( T30 );T30 ;1;
+;18;Banaba (Ocean) Island  ( T33 );T33 ;1;
+;19;Hawaiian Islands  ( KH6, 7 );KH6, 7 ;;2
+;20;Kure Atoll  ( KH7K );KH7K ;;2
+;21;Java (Jawa) Island (Main Island Only)  ( YB0-3 );YB0-3 ;;2
+;22;Bali Island  ( YB9 );YB9 ;;2
+;23;Johnston Atoll  ( KH3 );KH3 ;1;
+;24;Kiritimati (Christmas) Island  ( T32 );T32 ;;2
+;25;Admiralty Islands  ( P2 );P2 ;;2
+;26;Guam Island  ( KH2 );KH2 ;1;
+;27;Marquesas Islands  ( FO );FO ;;2
+;28;Ralik Chain  ( V7 );V7 ;;2
+;29;Ratak Chain  ( V7 );V7 ;;2
+;30;Midway Islands  ( KH4 );KH4 ;1;
+;31;Nauru  ( C2 );C2 ;1;
+;32;New Caledonia Island  ( FK );FK ;;2
+;33;Loyalty Islands  ( FK );FK ;;2
+;34;New Guinea (Main Island Only)  ( P2, YB9 );P2, YB9 ;;
+;35;New Hebrides  ( YJ );YJ ;;2
+;36;NZ North Island (Main Island Only)  ( ZL );ZL ;;2
+;37;Campbell Island  ( ZL9 );ZL9 ;;2
+;38;Chatham Islands  ( ZL7 );ZL7 ;1;
+;39;Kermadec Islands  ( ZL8 );ZL8 ;1;
+;40;Niue Island  ( E6 );E6 ;1;
+;41;Ninigo group  ( P2 );P2 ;;2
+;42;Luzon Island (Main Island Only)  ( DU1-4 );DU1-4 ;;2
+;43;Phoenix Islands  ( T31 );T31 ;1;
+;44;Pitcairn Island  ( VP6 );VP6 ;;2
+;45;Tutuila Island  ( KH8 );KH8 ;;2
+;46;Windward Islands  ( FO );FO ;;2
+;47;Solomon Islands  ( H44 );H44 ;;2
+;48;Tokelau Islands  ( ZK3 );ZK3 ;1;
+;49;Tongatapu group  ( A3 );A3 ;;2
+;50;Rurutu & Rimatara Islands  ( FO );FO ;;2
+;51;Rapa & Marotiri Islands  ( FO );FO ;;2
+;52;Duke of Gloucester Islands  ( FO );FO ;;2
+;53;Wake Island  ( KH9 );KH9 ;1;
+;54;Wallis Islands  ( FW );FW ;;2
+;55;French Frigate Shoals  ( KH6, 7 );KH6, 7 ;;2
+;56;Henderson Island  ( VP6 );VP6 ;;2
+;57;Maupihaa group  ( FO );FO ;;2
+;58;D'Entrecasteaux Reefs  ( FK );FK ;;2
+;59;Kosrae (Kusaie) Island  ( V6 );V6 ;;2
+;60;Rotuma Island  ( 3D2 );3D2 ;;2
+;62;Pukapuka Atoll  ( FO );FO ;;2
+;63;Gambier Islands  ( FO );FO ;;2
+;64;Vava'u group  ( A3 );A3 ;;2
+;65;Reef (Swallow) Islands  ( H40 );H40 ;;2
+;66;Tuamotu Archipelago  ( FO );FO ;;2
+;67;Leeward Islands ( FO );FO ;;2
+;68;Snares Islands  ( ZL );ZL ;;2
+;69;Lihir group  ( P2 );P2 ;;2
+;70;Seram group  ( YB8 );YB8 ;;2
+;71;WA State (N Coast) West group  ( VK6 );VK6 ;;
+;72;Mellish Reef  ( VK9 );VK9 ;;2
+;73;Minami Torishima (Marcus Island)  ( JD );JD ;;2
+;74;Auckland Islands  ( ZL9 );ZL9 ;;2
+;75;Riau Islands  ( YB5 );YB5 ;;2
+;76;Sula Islands  ( YB8 );YB8 ;;2
+;77;Manua Islands  ( KH8 );KH8 ;;2
+;78;Ulithi Atoll  ( V6 );V6 ;;2
+;79;Belep Islands  ( FK );FK ;;2
+;80;Suwarrow Atoll (Suvorov)  ( E5 );E5 ;;2
+;81;Jarvis Island  ( KH5 );KH5 ;;2
+;82;Penrhyn Atoll (Tongareva)  ( E5 );E5 ;;2
+;83;Aitutaki group  ( E5 );E5 ;;2
+;84;Tabuaeran & Teraina Islands  ( T32 );T32 ;;2
+;85;Palmyra Atoll  ( KH5 );KH5 ;;2
+;86;Northern Mariana Islands  ( KH0 );KH0 ;1;
+;87;Enewetak (Eniwetok) Atoll  ( V7 );V7 ;;2
+;88;Borneo (Main Island Only)  ( 9M,V8,YB7);9M,V8,YB7;;2
+;89;Baker & Howland Islands  ( KH1 );KH1 ;1;
+;90;Calamian group  ( DU1 );DU1 ;;2
+;91;Polillo Islands  ( DU1 );DU1 ;;2
+;92;Babuyan Islands  ( DU2 );DU2 ;;2
+;93;Batan Islands  ( DU2 );DU2 ;;2
+;94;Disappointment Islands  ( FO );FO ;;2
+;95;Lau group  ( 3D2 );3D2 ;;2
+;96;Kingman Reef  ( KH5K );KH5K ;1;
+;97;Samoa Islands  ( 5W );5W ;1;
+;98;Pukapuka Atoll (Danger Islands)  ( E5 );E5 ;;2
+;99;Tabar Islands  ( P2 );P2 ;;2
+;100;Nendo Island  ( H40 );H40 ;;2
+;101;Feni Islands  ( P2 );P2 ;;2
+;102;Tanga Islands  ( P2 );P2 ;;2
+;103;St Matthias group  ( P2 );P2 ;;2
+;104;Banks Islands  ( YJ );YJ ;;2
+;105;Cagayan De Sulu group  ( DU8 );DU8 ;;2
+;106;Natuna Besar Islands  ( YB5 );YB5 ;;2
+;107;Lingga Islands  ( YB5 );YB5 ;;2
+;108;Anambas Islands  ( YB5 );YB5 ;;2
+;109;Natuna Selatan Islands  ( YB5 );YB5 ;;2
+;110;Torres Islands  ( YJ );YJ ;;2
+;111;Shepherd Islands  ( YJ );YJ ;;2
+;112;Conway Reef (Ceva-I-Ra)  ( 3D2 );3D2 ;;2
+;113;Actaeon group  ( FO );FO ;;2
+;114;Raivavae Island  ( FO );FO ;;2
+;115;Trobriand Islands  ( P2 );P2 ;;2
+;116;D'Entrecasteaux Islands  ( P2 );P2 ;;2
+;117;Louisiade Archipelago  ( P2 );P2 ;;2
+;118;Futuna Islands  ( FW );FW ;;2
+;119;Jolo group  ( DU8 );DU8 ;;2
+;120;Cuyo Islands  ( DU1 );DU1 ;;2
+;121;Mamanuca (Mamanutha) group  ( 3D2 );3D2 ;;2
+;122;Tambelan Islands  ( YB5 );YB5 ;;2
+;123;Niuafo'ou Island  ( A3 );A3 ;;2
+;124;Palmerston Atoll  ( E5 );E5 ;;2
+;125;Semirara Islands  ( DU6 );DU6 ;1;
+;126;Lubang Islands  ( DU1 );DU1 ;;2
+;127;Rennell Island  ( H44 );H44 ;;2
+;128;Palawan Island  ( DU1 );DU1 ;;2
+;129;Visayan Islands  ( DU5-7 );DU5-7 ;;2
+;130;Mindanao Island (Main Island Only)  ( DU8, 9 );DU8, 9 ;;2
+;131;King George Islands  ( FO );FO ;;2
+;132;East Yap group  ( V6 );V6 ;;2
+;133;Sabah's Coastal Islands  ( 9M6 );9M6 ;;2
+;134;NZ South Island (Main Island Only)  ( ZL );ZL ;;2
+;135;North Solomon Islands  ( P2 );P2 ;;2
+;136;VIC State Centre group  ( VK3 );VK3 ;;
+;137;QLD State (S Coast) South group  ( VK4 );VK4 ;;
+;138;QLD State (Torres Strait) group  ( VK4 );VK4 ;;
+;139;SA State East Centre group  ( VK5 );VK5 ;;
+;140;WA State (NW Coast) West group  ( VK6 );VK6 ;;
+;141;NT (Gulf of Carpentaria) North group  ( VK8 );VK8 ;;
+;142;QLD State (S Coast) Centre group  ( VK4 );VK4 ;;
+;143;Sumatra Island (Main Island Only)  ( YB4-6 );YB4-6 ;;2
+;144;Bangka & Belitung Islands  ( YB4 );YB4 ;;2
+;145;Halmahera group  ( YB8 );YB8 ;;2
+;146;Celebes Island (Main Island Only)  ( YB8 );YB8 ;;2
+;147;West Papua’s Coastal Islands North  ( YB9 );YB9 ;;2
+;148;Timor Island (Main Island Only)  ( YB9, 4W );YB9, 4W ;;2
+;149;New Georgia Islands  ( H44 );H44 ;;2
+;150;Tenggara Barat Islands  ( YB9 );YB9 ;;2
+;151;Tenggara Timur Islands  ( YB9 );YB9 ;;2
+;152;Tubuai Island  ( FO );FO ;;2
+;153;PNG's Coastal Islands South  ( P2 );P2 ;;2
+;154;WA State (N Coast) East group  ( VK6 );VK6 ;;
+;155;West Chuuk group  ( V6 );V6 ;;2
+;156;Yasawa group  ( 3D2 );3D2 ;;2
+;157;Banda Islands  ( YB8 );YB8 ;;2
+;158;Florida Islands  ( H44 );H44 ;;2
+;159;Mangaia Island  ( E5 );E5 ;;2
+;160;QLD State (S Coast) North group  ( VK4 );VK4 ;;
+;161;Nias & Batu Islands  ( YB6 );YB6 ;;2
+;162;Shortland Islands  ( H44 );H44 ;;2
+;163;Vanikolo & Utupua Islands  ( H40 );H40 ;;2
+;164;WA State (SW Coast) South group  ( VK6 );VK6 ;;
+;165;Sarawak's Coastal Islands  ( 9M8 );9M8 ;;2
+;166;Kalimantan's Coastal Islands East  ( YB7 );YB7 ;;2
+;167;Kapingamarangi Atoll  ( V6 );V6 ;;2
+;168;Russell Islands  ( H44 );H44 ;;2
+;169;Ha'apai group  ( A3 );A3 ;;2
+;170;WA State (S Coast) East Centre group  ( VK6 );VK6 ;;
+;171;QLD State (N Coast) South group  ( VK4 );VK4 ;;
+;172;QLD State (N Coast) Centre group  ( VK4 );VK4 ;;
+;173;NT (Arafura Sea Coast) West group  ( VK8 );VK8 ;;
+;174;Tawi Tawi group  ( DU8 );DU8 ;;2
+;175;Sarangani Islands  ( DU9 );DU9 ;;2
+;176;Chesterfield Islands  ( FK );FK ;;2
+;177;Seribu Islands  ( YB0 );YB0 ;;2
+;178;Tikopia & Anuta Islands  ( H40 );H40 ;;2
+;179;Duff Islands  ( H40 );H40 ;;2
+;180;Ngulu Atoll  ( V6 );V6 ;;2
+;181;Witu Islands  ( P2 );P2 ;;2
+;182;Ducie Island  ( VP6 );VP6 ;;2
+;183;WA State (SW Coast) Centre group  ( VK6 );VK6 ;;
+;184;Brunei's Coastal Islands  ( V8 );V8 ;;2
+;185;NT (Arafura Sea Coast) East group  ( VK8 );VK8 ;;
+;186;Karimunjawa Islands  ( YB2 );YB2 ;;2
+;187;QLD State (N Coast) North group  ( VK4 );VK4 ;;
+;188;Pangutaran group  ( DU8 );DU8 ;;2
+;189;Ringgold Isles  ( 3D2 );3D2 ;;2
+;190;Rose Atoll  ( KH8 );KH8 ;;2
+;191;Niuatoputapu Island  ( A3 );A3 ;;2
+;192;Ontong Java Atoll  ( H44 );H44 ;;2
+;193;WA State (S Coast) West Centre group  ( VK6 );VK6 ;;
+;194;NSW State North group  ( VK2 );VK2 ;;
+;195;Furneaux group  ( VK7 );VK7 ;;
+;196;VIC State East group  ( VK3 );VK3 ;;
+;197;Bawean Island  ( YB3 );YB3 ;;2
+;198;NT (Gulf of Carpentaria) South group  ( VK8 );VK8 ;;
+;199;WA State (NW Coast) Centre group  ( VK6 );VK6 ;;
+;200;Swains Island  ( KH8 );KH8 ;;2
+;201;North Island's Coastal Islands ( ZL );ZL ;;2
+;202;Calagua Islands  ( DU4 );DU4 ;;2
+;203;South Island's Coastal Islands  ( ZL );ZL ;;2
+;204;Enggano Island  ( YB4 );YB4 ;;2
+;205;Woodlark group  ( P2 );P2 ;;2
+;206;WA State (SW Coast) North group  ( VK6 );VK6 ;;
+;207;Cagayan Islands  ( DU1 );DU1 ;;2
+;208;Banggai Islands  ( YB8 );YB8 ;;2
+;209;Talaud Islands  ( YB8 );YB8 ;;2
+;210;Sangihe Islands  ( YB8 );YB8 ;;2
+;211;Houtman Abrolhos  ( VK6 );VK6 ;;
+;212;NSW State Centre group  ( VK2 );VK2 ;;
+;213;Togian Islands  ( YB8 );YB8 ;;2
+;214;WA State (NW Coast) East group  ( VK6 );VK6 ;;
+;215;Mentawai Islands  ( YB5 );YB5 ;;2
+;216;Ashmore & Cartier Islands  ( VK9 );VK9 ;;2
+;217;Kangean Islands  ( YB3 );YB3 ;;2
+;218;Matthew & Hunter Islands  ( FK );FK ;;2
+;219;Tukangbesi Islands  ( YB8 );YB8 ;;2
+;220;SA State West group  ( VK5 );VK5 ;;
+;221;Kai Islands  ( YB8 );YB8 ;;2
+;222;Obi Islands  ( YB8 );YB8 ;;2
+;223;NSW State South group  ( VK2 );VK2 ;;
+;224;Tanimbar Islands  ( YB8 );YB8 ;;2
+;225;Turtle Islands  ( DU8 );DU8 ;;2
+;226;Mwokil & Pingelap Atolls  ( V6 );V6 ;;2
+;227;QLD State (Gulf of Carpentaria) South g.  ( VK4 );VK4 ;;
+;228;SA State East group  ( VK5 );VK5 ;;
+;229;NT (Arafura Sea Coast) Centre group  ( VK8 );VK8 ;;
+;230;Rowley Shoals  ( VK );VK ;;
+;231;Green Islands  ( P2 );P2 ;;2
+;232;Timor-Leste's Coastal Islands  ( 4W );4W ;1;
+;233;Tasmania's Coastal Islands  ( VK7 );VK7 ;;
+;234;Browse Island, WA Outliers  ( VK );VK ;;
+;235;Mindanao's Coastal Islands  ( DU8, 9 );DU8, 9 ;;2
+;236;Celebes's Coastal Islands  ( YB8 );YB8 ;;2
+;237;Java's Coastal Islands  ( YB0-3 );YB0-3 ;;2
+;238;Pukarua & Reao Atolls  ( FO );FO ;;2
+;239;West Papua’s Coastal Islands West  ( YB9 );YB9 ;;2
+;240;PNG's Coastal Islands East  ( P2 );P2 ;;2
+;241;Timor Barat's Coastal Islands  ( YB9 );YB9 ;;2
+;242;Bonerate & Taka' Bonerate Islands  ( YB8 );YB8 ;;2
+;243;WA State (S Coast) West group  ( VK6 );VK6 ;;
+;244;Luzon's Coastal Islands  ( DU1-4 );DU1-4 ;;2
+;245;Sumatra's Coastal Islands North  ( YB5, 6 );YB5, 6 ;;2
+;246;Leti & Sermata Islands  ( YB8 );YB8 ;;2
+;247;Sabalana & Tengah Islands  ( YB8 );YB8 ;;2
+;248;Sonsorol Islands  ( T8 );T8 ;;2
+;249;Aru Islands  ( YB8 );YB8 ;;2
+;250;Masalembu Islands  ( YB3 );YB3 ;;2
+;251;Victoria State West group  ( VK3 );VK3 ;;
+;252;Kalimantan's Coastal Islands West  ( YB7 );YB7 ;;2
+;253;Hall Islands  ( V6 );V6 ;;2
+;254;Mortlock Islands  ( V6 );V6 ;;2
+;255;QLD State (Gulf of Carpentaria) North g.  ( VK4 );VK4 ;;
+;256;Kilinailau (Tulun) Islands  ( P2 );P2 ;;2
+;257;Nuguria Islands  ( P2 );P2 ;;2
+;258;PNG's Coastal Islands North  ( P2 );P2 ;;2
+;259;Nukuoro Atoll  ( V6 );V6 ;;2
+;260;Oroluk Atoll  ( V6 );V6 ;;2
+;261;SA State West Centre group  ( VK5 );VK5 ;;
+;262;Sumatra's Coastal Islands South  ( YB4, 5 );YB4, 5 ;;2
+;263;Taongi Atoll  ( V7 );V7 ;;2
+;264;Maria Island  ( FO );FO ;;2
+;265;Coral Sea Islands Territory South  ( VK9 );VK9 ;;2
+;266;WA State (N Coast) Centre group  ( VK6 );VK6 ;;
+;267;Coral Sea Islands Territory North  ( VK9 );VK9 ;;2
+;268;Laut Kecil Islands  ( YB7 );YB7 ;;2
+;269;Karimata Islands  ( YB7 );YB7 ;;2
+;270;Simeulue and Banyak Islands  ( YB6 );YB6 ;;2
+;271;Babar Islands  ( YB8 );YB8 ;;2
+;272;Barat Daya Islands  ( YB8 );YB8 ;;2
+;273;Gorong and Watubela Islands  ( YB8 );YB8 ;;2
+;274P;Lucipara and Penyu Islands  ( YB8 );YB8 ;;2
+;275;West Papua’s Coastal Islands South  ( YB9 );YB9 ;;2
+;276;Mapia Islands  ( YB9 );YB9 ;;2
+;277;Sorol Atoll  ( V6 );V6 ;;2
+;278;Ujelang Atoll  ( V7 );V7 ;;2
+;279;Malden Island  ( T32 );T32 ;;2
+;280;Starbuck Island  ( T32 );T32 ;;2
+;281;Caroline Island  ( T32 );T32 ;;2
+;282;Vostok and Flint Islands  ( T32 );T32 ;;2
+;283;Tauu Islands  ( P2 );P2 ;;2
+;284;Nukumanu Islands  ( P2 );P2 ;;2
+;285;Sikaiana Atoll  ( H44 );H44 ;;2
+;286P;Antipodes Islands  ( ZL );ZL ;;2
+;287P;Bounty Islands  ( ZL );ZL ;;2
+;288P;Nihoa Island  ( KH6, 7 );KH6, 7 ;;2
+;288P;Necker Island  ( KH6, 7 );KH6, 7 ;;2
+;288P;Gardner Pinnacles  ( KH6, 7 );KH6, 7 ;;2
+;288P;Laysan Island  ( KH6, 7 );KH6, 7 ;;2
+;288P;Lisianski Island  ( KH6, 7 );KH6, 7 ;;2
+;288P;Pearl and Hermes Atoll  ( KH6, 7 );KH6, 7 ;;2
+;294P;Sandy Island  ( VK );VK ;;
+;295;Sebatik Island  ( 9M6, YB7);9M6, YB7;;2
+;296P;Tobi and Helen Islands  ( T8 );T8 ;;2
+SA;;SOUTH AMERICA;;;
+;1;Easter Island  ( CE0 );CE0 ;;2
+;2;Falkland Islands  ( VP8 );VP8 ;;2
+;3;Fernando De Noronha Archipelago  ( PY0F );PY0F ;1;
+;4;Galapagos Islands  ( HC8 );HC8 ;1;
+;5;Juan Fernandez Archipelago  ( CE0 );CE0 ;;2
+;6;Bonaire Island  ( PJ4 );PJ4 ;1;
+;7;Malpelo Island  ( HK0 );HK0 ;;2
+;8;Tierra Del Fuego  ( LU, CE8 );LU, CE8 ;;
+;9;Tobago Island  ( 9Y );9Y ;;2
+;10;Trindade & Martin Vaz Islands  ( PY0T );PY0T ;1;
+;11;Trinidad Island  ( 9Y );9Y ;;2
+;12;Nueva Esparta State group  ( YV7 );YV7 ;;
+;13;San Felix & San Ambrosio Islands  ( CE0 );CE0 ;;2
+;14;St Peter & St Paul Rocks  ( PY0S );PY0S ;1;
+;15;Los Monjes Archipelago  ( YV5 );YV5 ;;
+;16;Maranhao State Centre group  ( PR8 );PR8 ;;
+;17;Cauca/Valle Division group  ( HK5 );HK5 ;;
+;18;Los Lagos Region South group  ( CE7 );CE7 ;;
+;19;Abrolhos Archipelago  ( PY6 );PY6 ;;
+;20;French Guiana group  ( FY );FY ;1;
+;21;Buenos Aires (Bahia Blanca) Province g.  ( LU );LU ;;
+;22;Buenos Aires (Bahia Anegada) Prov g.  ( LU );LU ;;
+;23;Bahia State North group  ( PY6 );PY6 ;;
+;24;Sao Paulo State West group  ( PY2 );PY2 ;;
+;25;Piaui State group  ( PS8 );PS8 ;;
+;26;Santa Catarina State Centre group  ( PP5 );PP5 ;;
+;27;Santa Catarina State North group  ( PP5 );PP5 ;;
+;28;Sao Paulo State East group  ( PY2 );PY2 ;;
+;29;Rio De Janeiro State West group  ( PY1 );PY1 ;;
+;30;San Jose/Montevideo/Canelones Dept g.  ( CX );CX ;;
+;31;Wollaston & Hermite Islands  ( CE9 );CE9 ;;2
+;32;Ultima Esperanza Province North group  ( CE8 );CE8 ;;
+;33;Manabi Province group  ( HC4 );HC4 ;;
+;34;Guayas/El Oro Province group  ( HC2, 3 );HC2, 3 ;;
+;35;Los Roques Islands  ( YV5 );YV5 ;;
+;36;Aruba Island  ( P4 );P4 ;1;
+;37;Blanquilla group  ( YV5 );YV5 ;;
+;38;Atol Das Rocas  ( PY0R );PY0R ;1;
+;39;Maldonado/Rocha Department group  ( CX );CX ;;
+;40;Bolivar/Atlantico Division group  ( HK1 );HK1 ;;
+;41;Maranhao State West group  ( PR8 );PR8 ;;
+;42;Para State West group  ( PY8 );PY8 ;;
+;43;Aisen Region North group  ( CE7 );CE7 ;;
+;44;La Tortuga Island  ( YV5 );YV5 ;;
+;45;Amapa State group  ( PQ8 );PQ8 ;;
+;46;Pernambuco State group  ( PY7 );PY7 ;;
+;47;Parana State group  ( PY5 );PY5 ;;
+;48;Sucre State East group  ( YV7 );YV7 ;;
+;49;Tierra Del Fuego's Coastal Islands  ( LU );LU ;;
+;50;Antartica Chilena Province group  ( CE9 );CE9 ;;2
+;51;Las Aves Islands  ( YV5 );YV5 ;;
+;52;Lima Department group  ( OA4 );OA4 ;;
+;53;Aisen Region South group  ( CE7 );CE7 ;;
+;54;Orchila Island  ( YV5 );YV5 ;;
+;55;Buenos Aires (Delta Del Parana) Prov g.  ( LU );LU ;;
+;56;Esmeraldas Province group  ( HC4 );HC4 ;;
+;57;Colonia Department group  ( CX );CX ;;
+;58;Carabobo/Aragua/DF/Miranda State group  ( YV4, 5 );YV4, 5 ;;
+;59;Los Testigos group  ( YV5 );YV5 ;;
+;60;Para State East group  ( PY8 );PY8 ;;
+;61;La Araucania Reg/Los Lagos Reg North g.  ( CE6 );CE6 ;;
+;62;Bahia State South group  ( PY6 );PY6 ;;
+;63;Monagas/Delta Amacuro State group  ( YV8 );YV8 ;;
+;64;Aisen Region Centre group  ( CE7 );CE7 ;;
+;65;Chubut Province South group  ( LU );LU ;;
+;66;Zulia State group  ( YV1 );YV1 ;;
+;67;Espirito Santo State group  ( PP1 );PP1 ;;
+;68;Guyana group  ( 8R );8R ;;
+;69;Antofagasta Region group  ( CE1 );CE1 ;;
+;70;Bio-Bio Region group  ( CE5 );CE5 ;;
+;71;Sao Paulo State Centre group  ( PY2 );PY2 ;;
+;72;Maranhao State East group  ( PR8 );PR8 ;;
+;73;Ica Department group  ( OA5 );OA5 ;;
+;74;Ancash Department group  ( OA3 );OA3 ;;
+;75;La Libertad Department group  ( OA2 );OA2 ;;
+;76;Tumbes/Piura/Lambayeque Department g.  ( OA1 );OA1 ;;
+;77;Rio De Janeiro State East group  ( PY1 );PY1 ;;
+;78;Cordoba/Sucre Division group  ( HK1 );HK1 ;;
+;79;Rio De Janeiro State Centre group  ( PY1 );PY1 ;;
+;80;Bahia State Centre group  ( PY6 );PY6 ;;
+;81;Narino Division group  ( HK8 );HK8 ;;
+;82;Magdalena/Guajira Division group  ( HK2 );HK2 ;;
+;83;Salas y Gomez Island  ( CE0 );CE0 ;;2
+;84;Choco Division South group  ( HK4 );HK4 ;;
+;85;Atacama Region group  ( CE1 );CE1 ;;
+;86;Coquimbo/Valparaiso Region group  ( CE2 );CE2 ;;
+;87;Santa Cruz Province North group  ( LU );LU ;;
+;88;Santa Catarina State South group  ( PP5 );PP5 ;;
+;89;Falcon State group  ( YV1 );YV1 ;;
+;90;Anzoategui State/Sucre State West group  ( YV5-7 );YV5-7 ;;
+;91;Magallanes Province group  ( CE8 );CE8 ;;
+;92;Suriname group  ( PZ );PZ ;;
+;93;Choco Division North/Antioquia Division g.  ( HK4 );HK4 ;;
+;94;Ultima Esperanza Province South group  ( CE8 );CE8 ;;
+;95;O'Higgins/Maule Region group  ( CE4 );CE4 ;;
+;96;Chubut Province North group  ( LU );LU ;;
+;97;Diego Ramirez Islands  ( CE9 );CE9 ;;2
+;98;Arequipa/Moquegua/Tacna Department g.  ( OA6 );OA6 ;;
+;99;Curacao Island  ( PJ2 );PJ2 ;1;
+;100P ;Arica and Parinacota/Tarapaca Region g.  ( CE1 );CE1 ;;

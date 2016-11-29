@@ -73,7 +73,7 @@
         "re":"(?<=[A-Z])[0-9][A-Z](?!.*\\/)"}] },
        
 
-     {  "name": "Vulkaneifel", "fullName": "Vulkaneifel-Trophy", 
+     {  "name": "Vulkaneifel", "fullName": "Vulkaneifel-Trophy (no stats)", 
          "link":"http://www.ov-k34.de/vulkaneifel-trophy.html",
     "country": "Germany", "valuesFile": "csv/vulkaneifel.csv", 
     "groupInValue": 0, "color":"#900202", "noStats": 1,
@@ -92,6 +92,15 @@
     "lookups":[{"type":"key", "source":"field", "field":"cs"},
         {"type":"value","source":"text","re":"[a-zA-Z]\\d\\d"}] },
 
+    {  "name": "WEIC", "fullName": "Worked EI Counties Award", 
+        "link":"http://www.irts.ie/cgi/st.cgi?weic", "color":"#dc9816",
+    "country": "Ireland", "valuesFile": "csv/weic.csv", "groupInValue": 0,  
+    "keyAttr":"cs", "getFields":{"text":0, "web":1},
+    "valueColumns": {"value": 0, "keys": 1 },
+    "groupColumns": {"value": 3 },
+    "lookups":[{"type":"key", "source":"field", "field":"cs"}] },
+
+        
     {  "name": "OK-CA", "fullName": "OK Counties Award", 
         "link":"http://www.crk.cz/ENG/AWARDE", "color":"#13952e",
     "country": "Czech Republic", "valuesFile": "csv/okca.csv", "groupInValue": 0,  
@@ -99,6 +108,24 @@
     "valueColumns": {"value": 0, "desc": 1, "keys": 2 },
     "groupColumns": {"value": 3 },
     "lookups":[{"type":"key", "source":"field", "field":"cs"}] },
+
+    { "name": "DDFM", "fullName":"Diplôme des Départements Français", 
+     "link":"http://ddfm.free.fr/english/english.html", "country": "France",
+    "valuesFile": "csv/ddfm.csv", "groupInValue": 0, "color":"#0004ba", 
+    "getFields":{"web":1},
+    "valueColumns": {"value": 0, "keys": 1 },
+    "groupColumns": {"value": 3}, "byMode": 1, "byBand": 1,
+     "lookups":[{"type":"key", "source":"field", "field":"district"}]},
+ 
+    { "name": "DPF", "fullName":"Diplôme des Provinces Françaises", 
+     "link":"http://ddfm.free.fr/english/english.html", "country": "France",
+    "valuesFile": "csv/dpf.csv", "groupInValue": 0, "color":"#0004ba", 
+    "getFields":{"web":1}, 
+    "valueColumns": {"value": 0, "desc":1, "keys": 2 },
+    "groupColumns": {"value": 3}, "byMode": 1, "byBand": 1,
+     "lookups":[{"type":"key", "source":"field", "field":"district"}]},
+   
+  
        
   { "name": "WAS", "fullName":"Worked All States Award", 
      "link":"http://www.arrl.org/was", "country": "USA",
@@ -122,7 +149,7 @@
     "valuesFile": "csv/waip.csv", "groupInValue": 0, "color":"#9a1cdb",
     "getFields":{"web":1}, "fieldValues":"region",
     "valueColumns": {"value": 0, "desc": 1 },
-    "groupColumns": {"value": 3}, 
+    "groupColumns": {"value": 3}, "byMode": 1, "byBand": 1,
      "lookups":[{"type":"value", "source":"field", "field":"region"}]},
 
    {  "name": "WAIS", "fullName": "Worked All Italian Squares", "link":"http://www.aribusto.it/regolam_it.htm",

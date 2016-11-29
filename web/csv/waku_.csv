@@ -1,0 +1,175 @@
+Sapporo (0101);010101;Chuo
+;010102;Kita
+;010103;Higashi
+;010104;Shiroishi
+;010105;Toyohira
+;010106;Minami
+;010107;Nishi
+;010108;Atsubetsu
+;010109;Teine
+;010110;Kiyota
+Sendai (0601);60101;Aoba
+;060102;Miyagino
+;060103;Wakabayashi
+;060104;Taihaku
+;060105;Izumi
+Niigata (0801);080101;Kita    
+;080102;Higashi 
+;080103;Chuo    
+;080104;Konan   
+;080105;Akiha   
+;080106;Minami  
+;080107;Nishi   
+;080108;Nishikan
+Yokohama (1101);110101;Tsurumi
+;110102;Kanagawa
+;110103;Nishi
+;110104;Naka
+;110105;Minami
+;110106;Hodogaya
+;110107;Isogo
+;110108;Kanazawa
+;110109;Kohoku
+;110110;Totsuka
+;110111;Konan
+;110112;Asahi
+;110113;Midori
+;110114;Seya
+;110115;Sakae
+;110116;Izumi
+;110117;Aoba
+;110118;Tsuzuki
+Kawasaki (1103);110301;Kawasaki
+;110302;Saiwai
+;110303;Nakahara
+;110304;Takatsu
+;110305;Tama
+;110306;Miyamae
+;110307;Asao
+Sagamihara (1110);111001;Midori
+;111002;Chuou
+;111003;Minami
+Chiba (1201);120101;Chuo
+;120102;Hanamigawa
+;120103;Inage
+;120104;Wakaba
+;120105;Midori
+;120106;Mihama
+Saitama (1344);134401;Nishi
+;134402;Kita
+;134403;Omiya
+;134404;Minuma
+;134405;Chuo
+;134406;Sakura
+;134407;Urawa
+;134408;Minami
+;134409;Midori
+;134410;Iwatsuki
+Shizuoka (1801);180101;Aoi
+;180102;Suruga
+;180103;Shimizu
+Hamamatsu (1802);180201;Naka    
+;180202;Higashi 
+;180203;Nishi   
+;180204;Minami  
+;180205;Kita    
+;180206;Hamakita
+;180207;Tenryu  
+Nagoya (2001);200101;Chikusa
+;200102;Higashi
+;200103;Kita
+;200104;Nishi
+;200105;Nakamura
+;200106;Naka
+;200107;Showa
+;200108;Mizuho
+;200109;Atsuta
+;200110;Nakagawa
+;200111;Minato
+;200112;Minami
+;200113;Moriyama
+;200114;Midori
+;200115;Meito
+;200116;Tenpaku
+Kyoto (2201);220101;Kita
+;220102;Kamigyo
+;220103;Sakyo
+;220104;Nakagyo
+;220105;Higashiyama
+;220106;Shimogyo
+;220107;Minami
+;220108;Ukyo
+;220109;Fushimi
+;220110;Yamashina
+;220111;Nishikyo
+Osaka (2501);250101;Kita
+;250102;Miyakojima
+;250103;Fukushima
+;250104;Konohana
+;250106;Nishi
+;250107;Minato
+;250108;Taisho
+;250109;Tennoji
+;250111;Naniwa
+;250113;Nishiyodogawa
+;250114;Higashiyodogawa
+;250115;Higashinari
+;250116;Ikuno
+;250117;Asahi
+;250118;Joto
+;250119;Abeno
+;250120;Sumiyoshi
+;250121;Higashisumiyoshi
+;250122;Nishinari
+;250123;Yodogawa
+;250124;Tsurumi
+;250125;Suminoe
+;250126;Hirano
+;250127;Chuo
+Sakai (2502);250201;Sakai
+;250202;Naka
+;250203;Higashi
+;250204;Nishi
+;250205;Minami
+;250206;Kita
+;250207;Mihara
+Kobe (2701);270101;Higashinada
+;270102;Nada
+;270103;Hyogo
+;270104;Nagata
+;270105;Suma
+;270106;Tarumi
+;270107;Kita
+;270108;Chuo
+;270109;Nishi
+Okayama (3101);310101;Kita
+;310102;Naka
+;310103;Higashi
+;310104;Minami
+Hiroshima (3501);350101;Naka
+;350102;Higashi
+;350103;Minami
+;350104;Nishi
+;350105;Asaminami
+;350106;Asakita
+;350107;Aki
+;350108;Saeki
+Fukuoka (4001);400101;Higashi
+;400102;Hakata
+;400103;Chuo
+;400104;Minami
+;400105;Nishi
+;400106;Jonan
+;400107;Sawara
+Kitakyushu (4021);402101;Moji
+;402102;Wakamatsu
+;402103;Tobata
+;402104;Kokurakita
+;402105;Kokuraminami
+;402106;Yahatahigashi
+;402107;Yahatanishi
+Kumamoto (4301);430101;Chuo
+;430102;Higashi
+;430103;Nishi
+;430104;Minami
+;430105;Kita

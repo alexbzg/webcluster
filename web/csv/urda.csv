@@ -1,0 +1,785 @@
+CH;;UR5C — CHERKASY REGION;
+;01;Cherkasy, Prydniprovs'kyi district;СH-01
+;02;Cherkasy, Sosnivs'kyi district;CH-02
+;03;Vatutine;CH-03
+;04;Horodyshche district;CH-04
+;05;Drabiv district;CH-05
+;06;Zhashkiv district;CH-06
+;07;Zvenyhorodka district;CH-07
+;08;Zolotonosha ;CH-08
+;09;Zolotonosha district;CH-09
+;10;Kamianka district;CH-10
+;11;Kaniv ;CH-11
+;12;Kaniv district;CH-12
+;13;Katerynopil' district;CH-13
+;14;Korsun'-Shevchenkivs'kyi district;CH-14
+;15;Lysianka district;CH-15
+;16;Man'kivka district;CH-16
+;17;Monastyryshche district;CH-17
+;18;Smila ;CH-18
+;19;Smila district;CH-19
+;20;Tal'ne district;CH-20
+;21;Uman' ;CH-21
+;22;Uman' district;CH-22
+;23;Khrystynivka district;CH-23
+;24;Cherkasy district;CH-24
+;25;Chyhyryn district;CH-25
+;26;Chornobai district;CH-26
+;27;Shpola district;CH-27
+CN;;UR5Y — CHERNIVTSI REGION;
+;01;Chernivtsi, Shevchenkovs'kiy district;CN-01
+;02;Chernivtsi, Pershotravnevyi district;CN-02
+;03;Chernivtsi, Sadhors'kyi district;CN-03
+;04;Vyzhnytsia district;CN-04
+;05;Hertsa district;CN-05
+;06;Hlyboka district;CN-06
+;07;Zastavna district;CN-07
+;08;Kel'mentsi district;CN-08
+;09;Kitsman' district;CN-09
+;10;Novodnistrovs'k ;CN-10
+;11;Novoselytsia district;CN-11
+;12;Pytyla district;CN-12
+;13;Sokyriany district;CN-13
+;14;Storozhynets' district;CN-14
+;15;Hotyn district;CN-15
+CR;;UR5R — CHERNIHIV REGION;
+;01;Chernihiv, Desnians'kyi district;CR-01
+;02;Chernihiv, Novozavods'kyi district;CR-02
+;03;Bakhmach district;CR-03
+;04;Bobrovyts'a district;CR-04
+;05;Borzna district;CR-05
+;06;Varva district;CR-06
+;07;Horodnia district;CR-07
+;08;Ichnia district;CR-08
+;09;Kozelets' district;CR-09
+;10;Korop district;CR-10
+;11;Koriukivka district;CR-11
+;12;Kulykivka district;CR-12
+;13;Mena district;CR-13
+;14;Nizhyn ;CR-14
+;15;Nizhyn district;CR-15
+;16;Novhorod-Sivers'ky district;CR-16
+;17;Nosivka district;CR-17
+;18;Pryluky ;CR-18
+;19;Pryluky districkt;CR-19
+;20;Ripky district;CR-20
+;21;Semenivka district;CR-21
+;22;Sosnytsia district;CR-22
+;23;Sribne district;CR-23
+;24;Talalaivka district;CR-24
+;25;Chernihiv district;CR-25
+;26;Shchors district;CR-26
+;27;Slavutych city;CR-27
+DN;;UR5E — DNIPRO REGION;
+;01;Dnipro, Amur-Nyzhn'odniprovs'kyi district;DN-01
+;02;Dnipro, Babushkins'kyi district;DN-02
+;03;Dnipro, Zhovtnevyi district;DN-03
+;04;Dnipro, Idustrial'nyi district;DN-04
+;05;Dnipro, Kirovs'kyi district;DN-05
+;06;Dnipro, Chervonohvardijs'kyi district;DN-06
+;07;Dnipro, Lenins'kyi district;DN-07
+;08;Dnipro, Samars'kyi district;DN-08
+;09;Apostolove district;DN-09
+;10;Vasyl'kivka district;DN-10
+;11;Verkhn'odniprovs'k district;DN-11
+;12;Vil'nohirs'k district;DN-12
+;13;Dnipridzerzhyns'k Bahlejs'kyi district;DN-13
+;14;Dnipropetrovs'k, district;DN-14
+;15;Zhovti Vody district;DN-15
+;16;Kryvyi Rih Dzerzhyns'kyi;DN-16
+;17;Kryvyi Rih district;DN-17
+;18;Krynychky district;DN-18
+;19;Mahdalynivka district;DN-19
+;20;Marhanets' ;DN-20
+;21;Mezhova district;DN-21
+;22;Nikopol' ;DN-22
+;23;Nikopol' district;DN-23
+;24;Novomoskovs'k ;DN-24
+;25;Novomoskovs'k district;DN-25
+;26;Ordzhonikidze ;DN-26
+;27;Pavlohrad ;DN-27
+;28;Pavlohrad district;DN-28
+;29;Pershotravens'k ;DN-29
+;30;Petrykivka district;DN-30
+;31;Petropavlivka district;DN-31
+;32;Pokrovs'ke district;DN-32
+;33;Piatykhatky district;DN-33
+;34;Synel'nykove ;DN-34
+;35;Synel'nykove district;DN-35
+;36;Solone district;DN-36
+;37;Sofiivka district;DN-37
+;38;Ternivka ;DN-38
+;39;Ternivka district;DN-39
+;40;Tomakivka district;DN-40
+;41;Tsarychanka district;DN-41
+;42;Shyroke district;DN-42
+;43;Iurivka district;DN-43
+;44;Dnipridzerzhyns'k, Zavodskyi district;DN-44
+;45;Dnipridzerzhyns'k, Dniprovs'kyi district;DN-45
+;46;Kryvyi Rih Dolhintsevs'kyi district;DN-46
+;47;Kryvyi Rih Zhovtnevyi district;DN-47
+;48;Kryvyi Rih Inhulets'kyi district;DN-48
+;49;Kryvyi Rih Saksahans'kyi district;DN-49
+;50;Kryvyi Rih Ternivs'kyi district;DN-50
+;51;Kryvyi Rih Tsentral'no-mis'kyi district;DN-51
+DO;;UR5I — DONETS'K REGION;
+;01;Donets'k, Budjonivs'kyi district;DO-01
+;02;Donets'k, Voroshylovs'kyi district;DO-02
+;03;Donets'k, Kalinins'kyi district;DO-03
+;04;Donets'k, Kyivs'kyi district;DO-04
+;05;Donets'k, Kirovs'kyi district;DO-05
+;06;Donets'k, Kuybyshevs'kyi district;DO-06
+;07;Donets'k, Lenins'kyi district;DO-07
+;08;Donets'k, Petrovs'kyi district;DO-08
+;09;Donets'k, Proletars'kyi district;DO-09
+;10;Avdiivka ;DO-10
+;11;Oleksandrivka district;DO-11
+;12;Amvrosiivka district;DO-12
+;13;Artemove ;DO-13
+;14;Artemivs'k district;DO-14
+;15;Velyka Novosilka district;DO-15
+;16;Volnovakha district;DO-16
+;17;Volodars'k district;DO-17
+;18;Horlivka, Tsentral'no-mis'kyi district;DO-18
+;19;Debal'tseve ;DO-19
+;20;Dzerzhyns'k ;DO-20
+;21;Dymytrov ;DO-21
+;22;Dobropillia ;DO-22
+;23;Dobropillia district;DO-23
+;24;Dokuchaievs'k ;DO-24
+;25;Druzhkivka ;DO-25
+;26;Ienakieve ;DO-26
+;27;Zhdanivka ;DO-27
+;28;Kirovs'ke ;DO-28
+;29;Kostiantynivka ;DO-29
+;30;Kostiantynivka district;DO-30
+;31;Kramators'k ;DO-31
+;32;Krasny Lyman;DO-32
+;33;Krasny Lyman district;DO-33
+;34;Krasnoarmiis'k ;DO-34
+;35;Krasoarmiis'k district;DO-35
+;36;Makiyivka, Tsentral'no-mis'kyi district;DO-36
+;37;Manhush district;DO-37
+;38;Maryinka district;DO-38
+;39;Mariupol', Zhovtnevyi district;DO-39
+;40;Novoazovs'k district;DO-40
+;41;Novohrodivka ;DO-41
+;42;Selydove ;DO-42
+;43;Slovians'k ;DO-43
+;44;Slovians'k district;DO-44
+;45;Snizhne ;DO-45
+;46;Starobesheve district;DO-46
+;47;Tel'manove district;DO-47
+;48;Torez ;DO-48
+;49;Vuhledar district;DO-49
+;50;Khartsyz'k ;DO-50
+;51;Shakhtars'k ;DO-51
+;52;Shakhtars'k district;DO-52
+;53;Iasynuvata ;DO-53
+;54;Iasynuvata district;DO-54
+;55;Horlivka Kalinins'kyi district;DO-55
+;56;Horlivka, Nikitovs'kyi district;DO-56
+;57;Makiivka ;DO-57
+;58;Makiivka district;DO-58
+;59;Mariupol', Il'ichovskyi district;DO-59
+;60;Mariupol', Ordzhonikidzevs'kyi district;DO-60
+;61;Mariupol', Prymors'kyi district;DO-61
+;62;Makiivka, Chervonogvardiis'kyi district;DO-62
+;63;Makiivka, Kirovs'kyi district;DO-63
+HA;;UR5L — KHARKIV REGION;
+;01;Kharkiv, Dzerzhyns'kyi district;HA-01
+;02;Kharkiv, Kyivs'kyi district;HA-02
+;03;Kharkiv, Kominternivs'kyi district;HA-03
+;04;Kharkiv, Lenins'kyi district;HA-04
+;05;Kharkiv, Moscows'kyi district;HA-05
+;06;Kharkiv, Zhovtnevyi district;HA-06
+;07;Kharkiv, Ordzhonikidzevs'kyi district;HA-07
+;08;Kharkiv, Phrunzens'kyi district;HA-08
+;09;Kharkiv, Chervonozavods'kyi district;HA-09
+;10;Balakliia district;HA-10
+;11;Barvinkove district;HA-11
+;12;Blyzniuky district;HA-12
+;13;Bohodukhiv district;HA-13
+;14;Borova district;HA-14
+;15;Valky district;HA-15
+;16;Velyky Burluk district;HA-16
+;17;Vovchans'k district;HA-17
+;18;Dvorichna district;HA-18
+;19;Derhachi district;HA-19
+;20;Zachepylivka district;HA-20
+;21;Zmiyiv district;HA-21
+;22;Zolochiv district;HA-22
+;23;Izium ;HA-23
+;24;Izium district;HA-24
+;25;Kehychivka district;HA-25
+;26;Kolomak district;HA-26
+;27;Krasnohrad district;HA-27
+;28;Krasnokuts'k district;HA-28
+;29;Kupians'k ;HA-29
+;30;Kupians'k district;HA-30
+;31;Lozova ;HA-31
+;32;Lozova district;HA-32
+;33;Liubotyn ;HA-33
+;34;Nova Vodolaha district;HA-34
+;35;Pervomais'kyi ;HA-35
+;36;Pervomais'kyi district;HA-36
+;37;Pechenihy district;HA-37
+;38;Sakhnovshchyna district;HA-38
+;39;Kharkiv district;HA-39
+;40;Chuhuyiv ;HA-40
+;41;Chuhuyiv district;HA-41
+;42;Shevchenkove district;HA-42
+HE;;UR5G — KHERSON REGION;
+;01;Kherson, Dniprovs'kyi district;HE-01
+;02;Kherson, Komsomol's'kyi district;HE-02
+;03;Kherson, Suvorovs'kyi district;HE-03
+;04;Beryslav district;HE-04
+;05;Bilozerka district;HE-05
+;06;Velyka Lepetykha district;HE-06
+;07;Velyka Oleksandrivka district;HE-07
+;08;Verkhniy Rohachyk district;HE-08
+;09;Vysokopillia district;HE-09
+;10;Heniches'k district;HE-10
+;11;Hola Prystan' district;HE-11
+;12;Hornostayivka district;HE-12
+;13;Ivanivka district;HE-13
+;14;Kalanchak district;HE-14
+;15;Kakhovka ;HE-15
+;16;Kakhovka district;HE-16
+;17;Nyzhni Sirohozy district;HE-17
+;18;Nova Kakhovka;HE-18
+;19;Novovorontsovka district;HE-19
+;20;Novotroyits'ke district;HE-20
+;21;Skadovs'k district;HE-21
+;22;Tsiurupyns'k district;HE-22
+;23;Chaplynka district;HE-23
+HM;;UR5T — KHMEL'NYTS'KYI REGION;
+;01;Khmel'nyts'kyi ;HM-01
+;02;Bilohiria district;HM-02
+;03;Vin'kivtsi district;HM-03
+;04;Volochys'k district;HM-04
+;05;Horodok district;HM-05
+;06;Derazhnia district;HM-06
+;07;Dunayivtsi district;HM-07
+;08;Iziaslav district;HM-08
+;09;Kamianets'-Podil's'kyi ;HM-09
+;10;Kamianets'-Podil's'kyi district;HM-10
+;11;Krasyliv district;HM-11
+;12;Letychiv district;HM-12
+;13;Netishyn ;HM-13
+;14;Nova Ushytsia district;HM-14
+;15;Polonne district;HM-15
+;16;Slavuta ;HM-16
+;17;Slavuta district;HM-17
+;18;Starokostiantyniv ;HM-18
+;19;Starokostiantyniv district;HM-19
+;20;Stara Syniava district;HM-20
+;21;Teofipol' district;HM-21
+;22;Khmel'nyts'kyi district;HM-22
+;23;Chemerivtsi district;HM-23
+;24;Shepetivka ;HM-24
+;25;Shepetivka district;HM-25
+;26;Iarmolyntsi district;HM-26
+IF;;UR5S — IVANO-FRANKIVS'K REGION;
+;01;Ivano-Frankivs'k ;IF-01
+;02;Bohorodchany district;IF-02
+;03;Bolekhiv ;IF-03
+;05;Verkhovyna district;IF-05
+;06;Halych district;IF-06
+;07;Horodenka district;IF-07
+;08;Dolyna district;IF-08
+;09;Kalush ;IF-09
+;10;Lalysh district;IF-10
+;11;Kolomyia ;IF-11
+;12;Kolomyia district;IF-12
+;13;Kosiv district;IF-13
+;14;Nadvirna district;IF-14
+;15;Rohatyn district;IF-15
+;16;Rozhniativ district;IF-16
+;17;Sniatyn district;IF-17
+;18;Tysmenytsia district;IF-18
+;19;Tlumach district;IF-19
+;20;Iaremcha ;IF-20
+KI;;UR5V — KIROVOHRAD REGION;
+;01;Kirovohrad, Kirovs'kyi district;KI-01
+;02;Kirovohrad, Lenins'kyi district;KI-02
+;03;Oleksandriia ;KI-03
+;04;Oleksandriia district;KI-04
+;05;Oleksandrivka district;KI-05
+;06;Bobrynets' district;KI-06
+;07;Haivoron district;KI-07
+;08;Holovanivs'k district;KI-08
+;09;Dobrovelychkivka district;KI-09
+;10;Dolyns'ka district;KI-10
+;11;Znamianka ;KI-11
+;12;Znamianka district;KI-12
+;13;Kirovohrad district;KI-13
+;14;Kompaniyivka district;KI-14
+;15;Mala Vyska district;KI-15
+;16;Novhorodka district;KI-16
+;17;Novoarkhanhel's'k district;KI-17
+;18;Novomyrhorod district;KI-18
+;19;Novoukrayinka district;KI-19
+;20;Vil'shanka district;KI-20
+;21;Onufriyivka district;KI-21
+;22;Petrove district;KI-22
+;23;Svitlovods'k ;KI-23
+;24;Svitlovods'k district;KI-24
+;25;Ul'ianovka district;KI-25
+;26;Ustyninka district;KI-26
+KO;;UR5U — KYIV REGION;
+;01;Bila Tserkva;KO-01
+;02;Baryshivka district;KO-02
+;03;Bila Tserkva district;KO-03
+;04;Berzan' district;KO-04
+;05;Bohuslav district;KO-05
+;06;Boryspil' ;KO-06
+;07;Boryspil' district;KO-07
+;08;Borodianka district;KO-08
+;09;Brovary ;KO-09
+;10;Brovary district;KO-10
+;11;Vasyl'kiv ;KO-11
+;12;Vasyl'kiv district;KO-12
+;13;Vyshhorod district;KO-13
+;14;Volodarka district;KO-14
+;15;Zhurivka district;KO-15
+;16;Ivankiv district;KO-16
+;17;Irpin' ;KO-17
+;18;Kaharlyk district;KO-18
+;19;Kyivo-Sviatoshyns'ky district;KO-19
+;20;Makariv district;KO-20
+;21;Myronivka district;KO-21
+;22;Obukhiv district;KO-22
+;23;Pereiaslav-Khmel'nyts'kyi ;KO-23
+;24;Pereiaslav-Khmel'nyts'kyi district;KO-24
+;25;Polis'ke district;KO-25
+;26;Chernobyls'kyi district;КО-26
+;27;Rokytne district;KO-27
+;28;Rzhyshchiv ;KO-28
+;29;Skvyra district;KO-29
+;30;Stavyshche district;KO-30
+;31;Tarashcha district;KO-31
+;32;Tetiyiv district;KO-32
+;33;Fastiv ;KO-33
+;34;Fastiv district;KO-34
+;35;Iahotyn district;KO-35
+KR;;UU — CRIMEAN REPUBLIC;
+;01;Simferopol', Zaliznychnyi district;KR-01
+;02;Simferopol', Kyivs'kyi district;KR-02
+;03;Simferopol', Tsentral'nyi district;KR-03
+;04;Alushta ;KR-04
+;05;Armians'k ;KR-05
+;06;Bakhchysarai district;KR-06
+;07;Bilohirs'k district;KR-07
+;08;Dzhankoi ;KR-08
+;09;Dzhankoi district;KR-09
+;10;Ievpatoriia ;KR-10
+;11;Kerch ;KR-11
+;12;Kirovs'ke district;KR-12
+;13;Krasnohvardiis'ke district;KR-13
+;14;Krasnoperekops'k ;KR-14
+;15;Krasnoperekops'k district;KR-15
+;16;Lenine district;KR-16
+;17;Nyzhniohirs'kyi district;KR-17
+;18;Pervomais'ke district;KR-18
+;19;Rozdol'ne district;KR-19
+;20;Saky ;KR-20
+;21;Saky district;KR-21
+;22;Simferopol' district;KR-22
+;23;Soviets'kyi district;KR-23
+;24;Sudak ;KR-24
+;25;Feodosiia ;KR-25
+;26;Chornomors'ke district;KR-26
+;27;Yalta ;KR-27
+KV;;UR5U — KYIV CITY;
+;01;Kyiv, Holosiivs'kyi district;KV-01
+;02;Kyiv, Darnyts'kyi district;KV-02
+;03;Kyiv. Desnians'kyi district;KV-03
+;04;Kyiv, Dniprovs'kyi district;KV-04
+;05;Kyiv, Obolons'kyi district;KV-05
+;06;Kyiv, Pechers'kyi district;KV-06
+;07;Kyiv, Podols'kyi district;KV-07
+;08;Kyiv, Sviatoshyns'kyi district;KV-08
+;09;Kyiv, Solomens'kyi district;KV-09
+;10;Kyiv, Shevchenkivs'kyi district;KV-10
+LU;;UR5M — LUHANS'K REGION;
+;01;Luhans'k, Artemivs'kyi district;LU-01
+;02;Luhans'k, Zhovtnevyi district;LU-02
+;03;Luhans'k, Kamenobrods'kyi district;LU-03
+;04;Luhans'k, Lenins'kyi district;LU-04
+;05;Alchevs'k ;LU-05
+;06;Antratsyt ;LU-06
+;07;Antratsyt district;LU-07
+;08;Bilovods'k district;LU-08
+;09;Brianka ;LU-09
+;10;Bilikurakyne district;LU-10
+;11;Kirovs'k ;LU-11
+;12;Krasnodon ;LU-12
+;13;Krasnodon district;LU-13
+;14;Krasny Luch;LU-14
+;15;Kreminna district;LU-15
+;16;Lysychans'k ;LU-16
+;17;Lutuhyne district;LU-17
+;18;Markivka district;LU-18
+;19;Milove district;LU-19
+;20;Novoajdar district;LU-20
+;21;Novopskov district;LU-21
+;22;Pervomais'k ;LU-22
+;23;Pereval's'k district;LU-23
+;24;Popasna district;LU-24
+;25;Roven'ky ;LU-25
+;26;Rubizhne ;LU-26
+;27;Svatove district;LU-27
+;28;Sverdlovs'k ;LU-28
+;29;Sverdlovs'k district;LU-29
+;30;Sieverodonets'k ;LU-30
+;31;Slovianoserbs'k district;LU-31
+;32;Stanychno-Luhans'ke district;LU-32
+;33;Starobil's'k district;LU-33
+;34;Stakhanov ;LU-34
+;35;Troyits'ke district;LU-35
+LV;;UR5W — L'VIV REGION;
+;01;L'viv, Halyts'kyi district;LV-01
+;02;L'viv, Zaliznychnyi district;LV-02
+;03;L'viv, Lychakivs'kyi district;LV-03
+;04;L'viv, Sykhivs'kyi district;LV-04
+;05;L'viv, Frankivs'kyi district;LV-05
+;06;L'viv, Shevchenkivs'kyi district;LV-06
+;07;Boryslav ;LV-07
+;08;Brody district;LV-08
+;09;Bus'k district;LV-09
+;10;Horodok dostrict;LV-10
+;11;Drohobych ;LV-11
+;12;Drohobych district;LV-12
+;13;Zhydachiv district;LV-13
+;14;Zhovkva district;LV-14
+;15;Zolochiv district;LV-15
+;16;Kamianka-Buz'ka district;LV-16
+;17;Mykolayiv district;LV-17
+;18;Mostys'ka district;LV-18
+;19;Peremyshliany district;LV-19
+;20;Pustomyty district;LV-20
+;21;Radekhiv district;LV-21
+;22;Sambir ;LV-22
+;23;Sambir district;LV-23
+;24;Skole district;LV-24
+;25;Sokal' district;LV-25
+;26;Staryi Sambir district;LV-26
+;27;Stryi ;LV-27
+;28;Stryi district;LV-28
+;29;Truskavets' ;LV-29
+;30;Turka district;LV-30
+;31;Chervonohrad ;LV-31
+;32;Iavoriv district;LV-32
+;33;Morshyn ;LV-33
+NI;;UR5Z — MYKOLAYIV REGION;
+;01;Mykolayiv, Zavods'kyi district;NI-01
+;02;Mykolayiv, Korabel'nyi district;NI-02
+;03;Mykolayiv, Lenins'kyi district;NI-03
+;04;Mykolayiv, Tsentral'nyi district;NI-04
+;05;Arbuzynka district;NI-05
+;06;Bashtanka district;NI-06
+;07;Berezanka district;NI-07
+;08;Bereznehuvate district;NI-08
+;09;Brats'ke district;NI-09
+;10;Veselynove district;NI-10
+;11;Voznesens'k ;NI-11
+;12;Voznesens'k district;NI-12
+;13;Vradiyivka district;NI-13
+;14;Domanivka district;NI-14
+;15;Ielanets' district;NI-15
+;16;Zhovtnevy district;NI-16
+;17;Kazanka district;NI-17
+;18;Kryve Ozero district;NI-18
+;19;Mykolayiv district;NI-19
+;20;Novyi Buh district;NI-20
+;21;Nova Odesa district;NI-21
+;22;Ochakiv ;NI-22
+;23;Ochakiv district;NI-23
+;24;Pervomais'k ;NI-24
+;25;Pervomais'k district;NI-25
+;26;Snihurivka district;NI-26
+;27;Iuzhnoukrayins'k ;NI-27
+OD;;UR5F — ODESA REGION;
+;03;Odesa, Kyivs'kyi district;OD-03
+;05;Odesa, Malinovs'kyi district;OD-05
+;06;Odesa, Prymors'kyi district;OD-06
+;07;Odesa, Suvorovs'kyi district;OD-07
+;09;Anan'yiv district;OD-09
+;10;Artsyz district;OD-10
+;11;Balta district;OD-11
+;12;Berezivka district;OD-12
+;13;Bilhorod-Dnistrovs'kyi ;OD-13
+;14;Bilhorod-Dnistrovs'kyi district;OD-14
+;15;Biliayivka district;OD-15
+;16;Bolhrad district;OD-16
+;17;Velyka Mykhailivka district;OD-17
+;18;Ivanivka district;OD-18
+;19;Izmayil ;OD-19
+;20;Izmayil district;OD-20
+;21;Illichivs'k ;OD-21
+;22;Kiliia district;OD-22
+;23;Kodyma district;OD-23
+;24;Kominternivs'ke district;OD-24
+;25;Kotovs'k ;OD-25
+;26;Kotovs'k district;OD-26
+;27;Krasni Okny district;OD-27
+;28;Liubashivka district;OD-28
+;29;Mykolayivka district;OD-29
+;30;Ovidiopol' district;OD-30
+;31;Reni district;OD-31
+;32;Rozdil'na district;OD-32
+;33;Savran' district;OD-33
+;34;Sarata district;OD-34
+;35;Tarutyne district;OD-35
+;36;Tatarbunary district;OD-36
+;37;Teplodar ;OD-37
+;38;Frunzivka district;OD-38
+;39;Shyriaieve district;OD-39
+;40;Iuzhne ;OD-40
+PO;;UR5H — POLTAVA REGION;
+;01;Poltava, Kyivs'kyi district;PO-01
+;02;Poltava, Lenins'kyi district;PO-02
+;03;Poltava, Zhovtnevyi district;PO-03
+;04;Velyka Bahachka district;PO-04
+;05;Hadiach district;PO-05
+;06;Hlobyne district;PO-06
+;07;Hrebinka district;PO-07
+;08;Dykan'ka district;PO-08
+;09;Zin'kiv district;PO-09
+;10;Karlivka district;PO-10
+;11;Kobeliaky district;PO-11
+;12;Kozel'shchyna district;PO-12
+;13;Komsomol's'k ;PO-13
+;14;Kotel'va district;PO-14
+;15;Kremenchuk, Avtozavods'ky district;PO-15
+;16;Kremenchuk, Kryukovs'ky district;PO-16
+;17;Kremenchuk district;PO-17
+;18;Lokhvytsia district;PO-18
+;19;Lubny ;PO-19
+;20;Lubny district;PO-20
+;21;Mashivka district;PO-21
+;22;Myrhorod ;PO-22
+;23;Myrhorod district;PO-23
+;24;Novi Sanzhary district;PO-24
+;25;Orzhytsia district;PO-25
+;26;Pyriatyn district;PO-26
+;27;Poltava district;PO-27
+;28;Reshetylivka district;PO-28
+;29;Semenivka district;PO-29
+;30;Khorol district;PO-30
+;31;Chornukhy district;PO-31
+;32;Chutove district;PO-32
+;33;Shyshaky district;PO-33
+RI;;UR5K — RIVNE REGION;
+;01;Rivne ;RI-01
+;02;Berezne district;RI-02
+;03;Volodymyrets' district;RI-03
+;04;Hoshcha district;RI-04
+;05;Demydivka district;RI-05
+;06;Dubno ;RI-06
+;07;Dubno district;RI-07
+;08;Dubrovytsia district;RI-08
+;09;Zarichne district;RI-09
+;10;Zdolbuniv district;RI-10
+;11;Korets' district;RI-11
+;12;Kostopil' district;RI-12
+;13;Kuznetsovs'k ;RI-13
+;14;Mlyniv district;RI-14
+;15;Ostroh ;RI-15
+;16;Ostroh district;RI-16
+;17;Radyvyliv district;RI-17
+;18;Rivne district;RI-18
+;19;Rokytne district;RI-19
+;20;Sarny district;RI-20
+SL;;UU9 — SEVASTOPOL' CITY;
+;01;Sevastopol', Gagarins'kyi district;SL-01
+;02;Sevastopol', Lenins'kyi district;SL-02
+;03;Sevastopol', Nakhimovs'kyi district;SL-03
+;04;Sevastopol' ;SL-04
+SU;;UR5A — SUMY REGION;
+;01;Sumy, Zarichnyi district;SU-01
+;02;Sumy, Kovpakivs'kyi district;SU-02
+;03;Okhtyrka ;SU-03
+;04;Okhtyrka district;SU-04
+;05;Bilopillia district;SU-05
+;06;Buryn' district;SU-06
+;07;Velyka Pysarivka district;SU-07
+;08;Hlukhiv ;SU-08
+;09;Hlukhiv district;SU-09
+;10;Konotop ;SU-10
+;11;Konotop district;SU-11
+;12;Krasnopillia district;SU-12
+;13;Krolevets' district;SU-13
+;14;Lebedyn ;SU-14
+;15;Lebedyn district;SU-15
+;16;Lypova Dolyna district;SU-16
+;17;Nedryhailiv district;SU-17
+;18;Putyvl' district;SU-18
+;19;Romny ;SU-19
+;20;Romny district;SU-20
+;21;Seredyna-Buda district;SU-21
+;22;Sumy district;SU-22
+;23;Trostianets' district;SU-23
+;24;Shostka ;SU-24
+;25;Shostka district;SU-25
+;26;Iampil' district;SU-26
+TE;;UR5B — TERNOPIL' REGION;
+;01;Ternopil' ;TE-01
+;02;Berezany district;TE-02
+;03;Borshchiv district;TE-03
+;04;Buchach district;TE-04
+;05;Husiatyn district;TE-05
+;06;Zalishchyky district;TE-06
+;07;Zbarazh district;TE-07
+;08;Zboriv district;TE-08
+;09;Kozova district;TE-09
+;10;Kremenets' district;TE-10
+;11;Lanivtsi district;TE-11
+;12;Monastyrys'k district;TE-12
+;13;Pidvolochys'k district;TE-13
+;14;Pidhajtsi district;TE-14
+;15;Terebovlia district;TE-15
+;16;Ternopil' district;TE-16
+;17;Chortkiv district;TE-17
+;18;Shums'k district;TE-18
+;19;Chotrkiv city;ТЕ-19
+;20;Berezhany city;ТЕ-20
+;21;Kremenets city;ТЕ-21
+VI;;UR5N — VINNYTSIA REGION;
+;01;Vinnytsia, Zamostians'kyi district;VI-01
+;02;Vinnytsia, Lenins'kyi district;VI-02
+;03;Vinnytsia, Starohorods'kyi district;VI-03
+;04;Bar district;VI-04
+;05;Bershad' district;VI-05
+;06;Vinnytsia district;VI-06
+;07;Haisyn district;VI-07
+;08;Zhmerynka ;VI-08
+;09;Zhmerynka district;VI-09
+;10;Illintsi district;VI-10
+;11;Kalynivka district;VI-11
+;12;Koziatyn ;VI-12
+;13;Koziatyn district;VI-13
+;14;Kryzhopil' district;VI-14
+;15;Ladyzhyn district;VI-15
+;16;Lypovets' district;VI-16
+;17;Lityn district;VI-17
+;18;Mohyliv-Podil's'kyi ;VI-18
+;19;Mohyliv-Podil's'kyi district;VI-19
+;20;Murovani Kurylivtsi district;VI-20
+;21;Nemyriv district;VI-21
+;22;Orativ district;VI-22
+;23;Pishchanka district;VI-23
+;24;Pohrebyshche district;VI-24
+;25;Teplyk district;VI-25
+;26;Tyvriv district;VI-26
+;27;Tomashpil' district;VI-27
+;28;Trostianets' district;VI-28
+;29;Tul'chyn district;VI-29
+;30;Khmil'nyk ;VI-30
+;31;Khmil'nyk district;VI-31
+;32;Chernivtsi district;VI-32
+;33;Chechel'nyk district;VI-33
+;34;Sharhorod district;VI-34
+;35;Iampil' district;VI-35
+VO;;UR5P — VOLYN REGION;
+;01;Luts'k ;VO-01
+;02;Volodymyr-Volyns'kyi ;VO-02
+;03;Volodymyr-Volyns'kyi district;VO-03
+;04;Horokhiv district;VO-04
+;05;Ivanychi district;VO-05
+;06;Kamin'-Kashyrs'kyi district;VO-06
+;07;Kivertsi district;VO-07
+;08;Kovel' ;VO-08
+;09;Kovel' district;VO-09
+;10;Lokachi district;VO-10
+;11;Luts'k district;VO-11
+;12;Liubeshiv district;VO-12
+;13;Liuboml' district;VO-13
+;14;Manevychi district;VO-14
+;15;Novovolyns'k ;VO-15
+;16;Ratne district;VO-16
+;17;Rozhyshche district;VO-17
+;18;Stara Vyzhivka district;VO-18
+;19;Turiis'k district;VO-19
+;20;Shats'k district;VO-20
+ZA;;UR5D — ZAKARPATSKA REGION;
+;01;Uzhhorod ;ZA-01
+;02;Berehove ;ZA-02
+;03;Berehove district;ZA-03
+;04;Velykyi-Bereznyi district;ZA-04
+;05;Vynohradiv district;ZA-05
+;06;Volovets' district;ZA-06
+;07;Irshava district;ZA-07
+;08;Mizhhiria district;ZA-08
+;09;Mukacheve ;ZA-09
+;10;Mukacheve district;ZA-10
+;11;Perechyn district;ZA-11
+;12;Rakhiv district;ZA-12
+;13;Svaliava district;ZA-13
+;14;Tiachiv district;ZA-14
+;15;Uzhhorod ;ZA-15
+;16;Khust ;ZA-16
+;17;Khust district;ZA-17
+;18;Chop ;ZA-18
+ZH;;UR5X — ZHYTOMYR REGION;
+;01;Zhytomyr, Bohuns'kyi district;ZH-01
+;02;Zhytomyr, Korolevs'kyi district;ZH-02
+;03;Andrushivka district;ZH-03
+;04;Baranivka district;ZH-04
+;05;Berdychiv ;ZH-05
+;06;Berdychiv distict;ZH-06
+;07;Brusyliv district;ZH-07
+;08;Volodars'k-Volyns'kyi district;ZH-08
+;09;Romanovs'ky district;ZH-09
+;10;Iemil'chyne district;ZH-10
+;11;Zhytomyr district;ZH-11
+;12;Korosten' ;ZH-12
+;13;Korosten' district;ZH-13
+;14;Korostyshiv district;ZH-14
+;15;Luhyny district;ZH-15
+;16;Liubar district;ZH-16
+;17;Malyn district;ZH-17
+;18;Narodychi district;ZH-18
+;19;Novohrad-Volyns'kyi ;ZH-19
+;20;Novohrad-Volyns'kyi district;ZH-20
+;21;Ovruch district;ZH-21
+;22;Olevs'k district;ZH-22
+;23;Popil'nia district;ZH-23
+;24;Radomyshl' district;ZH-24
+;25;Ruzhyn district;ZH-25
+;26;Chervonoarmiis'k district;ZH-26
+;27;Cherniakhiv district;ZH-27
+;28;Chudniv district;ZH-28
+ZP;;UR5Q — ZAPORIZHZHIA REGION;
+;01;Zaporizhzhia, Zhovtnevyi district;ZP-01
+;02;Zaporizhzhia, Zavods'kyi distict;ZP-02
+;03;Zaporizhzhia, Komunars'kyi district;ZP-03
+;04;Zaporizhzhia, Lenins'kyi district;ZP-04
+;05;Zaporizhzhia, Ordzhonikidzevs'kyi district;ZP-05
+;06;Zaporizhzhia, Khortyts'kyi district;ZP-06
+;07;Zaporizhzhia, Shevchenkivs'kyi district;ZP-07
+;08;Iakymivka district;ZP-08
+;09;Berdians'k ;ZP-09
+;10;Berdians'k district;ZP-10
+;11;Vasylivka district;ZP-11
+;12;Velyka Bilozerka district;ZP-12
+;13;Vesele district;ZP-13
+;14;Vil'nians'k district;ZP-14
+;15;Huliaipole district;ZP-15
+;16;Zaporizhzhia district;ZP-16
+;17;Kamianka-Dniprovs'ka district;ZP-17
+;18;Kuibysheve district;ZP-18
+;19;Melitopol' ;ZP-19
+;20;Melitopol' district;ZP-20
+;21;Mykhailivka district;ZP-21
+;22;Novomykolayivka district;ZP-22
+;23;Orikhiv district;ZP-23
+;24;Polohy district;ZP-24
+;25;Pryazovs'ke district;ZP-25
+;26;Prymors'k district;ZP-26
+;27;Rozivka district;ZP-27
+;28;Tokmak ;ZP-28
+;29;Tokmak district;ZP-29
+;30;Chernihivka district;ZP-30
+;31;Enerhodar ;ZP-31
