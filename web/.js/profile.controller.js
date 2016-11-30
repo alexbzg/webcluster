@@ -2,7 +2,7 @@ angular
     .module( 'adxcApp' )
     .controller( 'profileController', profileController );
 
-function profileController( $scope, User, Head, LoadingScreen ) {    
+function profileController( $scope, User, Head, Awards, LoadingScreen ) {    
     var vm = this;
     vm.user = User;
     vm.adifFileChanged = adifFileChanged;
@@ -11,10 +11,26 @@ function profileController( $scope, User, Head, LoadingScreen ) {
     vm.changeEmail = changeEmail;
     vm.changePassword = changePassword;
     vm.email = User.data.email;
+    vm.adif = { file: null, awards: [] };
 
-    Head.setTitle( 'ADXCluster.com - Profile' );
+
+    activate();
 
     return vm;
+
+    function activate() {
+        Head.setTitle( 'ADXCluster.com - Profile' );
+        Awards.getAwards()
+            .then( function( data ) {
+                data.forEach( function( award ) {
+                    vm.adif.awards.push(
+                        { name: award.name, 
+                            title: award.fullName + ' (' + award.name + ')',
+                            enabled: User.data.awardsSettings[award.name].adif
+                            });
+                });
+            });
+    }
 
     function validateEmail() {
         var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;

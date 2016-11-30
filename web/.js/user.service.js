@@ -83,7 +83,6 @@ function UserService( $http, $window, $q, Storage, Awards, DxConst,
         if ( !user.data.awardValueConfirmedColor )
             user.data.awardValueConfirmedColor = '#02b20e';
 
-
         user.data.lists.forEach( function( list ) {
             if ( !user.data.listsAwards[list.id] )
                 user.data.listsAwards[list.id] = {};
@@ -96,10 +95,15 @@ function UserService( $http, $window, $q, Storage, Awards, DxConst,
                 data.forEach( function( award ) {
                     if ( !user.data.awards[award.name] )
                         user.data.awards[award.name] = {};
+
                     if ( !user.data.awardsSettings[award.name] ) 
                         user.data.awardsSettings[award.name] = 
-                            { 'track': true, 
-                            'color': award.color ? award.color : defaultColor };
+                        { 'track': true };
+                    if ( !user.data.awardsSettings[award.name].color )
+                        user.data.awardsSettings[award.name].color = 
+                            award.color ? award.color : defaultColor;
+                    if ( user.data.awardsSettings[award.name].adif == null )
+                        user.data.awardsSettings[award.name].adif = true;
                     if ( !user.data.awardsSettings[award.name].settings )
                         user.data.awardsSettings[award.name].settings = {};
                         var s = user.data.awardsSettings[award.name].settings;
@@ -156,7 +160,7 @@ function UserService( $http, $window, $q, Storage, Awards, DxConst,
                     'award': award.name,
                     'track': user.data.awardsSettings[award.name].track,
                     'color': user.data.awardsSettings[award.name].color,
-                    'settings': user.data.awardsSettings[award.name].settings,
+                    'settings': user.data.awardsSettings[award.name].settings
         } );
         $rootScope.$emit('user-awards-stats-change');
 

@@ -483,6 +483,10 @@ table.award_setup td{
 	width: 900px;
 	margin: 70px auto;
 }
+#awards_list a{
+   	text-decoration: none;
+}
+
 table#awards_list{
 	width: 100%;
 	background-color: #fff;
@@ -506,10 +510,12 @@ table#awards_list td{
 	vertical-align: middle;
 }
 table#awards_list td.country{
-	font-size: 22px;
+	font-size: 18px;
+	text-align: left;
+	padding-left: 60px;
 	font-weight: bold;
-	background-color: #eff9fe;
-	color: #900;
+	background-color: #ddf1fb;
+	color: #0075A2;
 }
 table#awards_list tr.country_footer{
 	display: none;
@@ -544,16 +550,20 @@ table#awards_list td.full_name img{
 	cursor: pointer;
 	width: 25px;
 }
-table#awards_list td.website, table#awards_list th.settings{
-	width: 80px;
+table#awards_list td.stats, table#awards_list td.website, table#awards_list th.settings{
+	width: 70px;
 }
 
 a#create_list{
 	font-weight: bold;
-	color: #00b;
+	color: #005778;
 	font-size: 18px;
 	display: inline-block;
 	margin: 7px 0;
+	text-decoration: underline;
+}
+a#create_list:hover{
+	color: #00f;
 }
 
 input#button_ok {
@@ -568,6 +578,7 @@ input#button_ok {
     cursor: pointer;
     box-shadow: 3px 3px 10px rgba(0,0,0,0.2); /* Параметры тени */
    	border-radius: 5px;
+   	text-decoration: none;
 }
 
 
@@ -590,9 +601,11 @@ input#button_ok {
 	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
 	margin: 20px auto;
 }
-#list_add_calls span#list_title{
-	font-size: 24px;
+#list_add_calls span#list_title input{
+	font-size: 20px;
 	font-weight: bold;
+	width: 500px;
+	padding: 0 5px;
 }
 #list_add_calls span#short_name{
 	font-size: 14px;

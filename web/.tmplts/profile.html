@@ -15,6 +15,21 @@
             <input type="submit" id="submit_btn" name="change_psw" value="Upload" 
                 ng-disabled="!vm.user.loggedIn || !vm.adif"/><br/>
             <span ng-show="vm.user.data.lastAdifLine">Last loaded QSO: {{vm.user.data.lastAdifLine}}</span>
+            <table>
+                <tr>
+                    <td>Award</td>
+                    <td>Enabled
+                        <input type="checkbox" ng-model="vm.adifSelectAllAwards"
+                                              ng-click="vm.adifToggleAllAwards()">
+                    </td>
+                </tr>
+                <tr ng-repeat="award in vm.adif.awards | orderBy: 'country'">
+                    <td>{{award.title}}</td>
+                    <td><input type="checkbox" ng-model="award.enabled"
+                                               ng-click="vm.adifAwardToggled()">
+                    </td>
+                </tr>
+            </table>
         </form>
         <form id="profile_call" ng-show="vm.show.changeEmail">
             Email<br>

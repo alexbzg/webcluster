@@ -60,7 +60,8 @@
     "valueColumns": {"value": 0, "desc": 1, "keys": 2 },
     "groupColumns": {"value": 3 },
    
-     "lookups":[{"type":"key", "source":"field", "field":"gridsquare"}]},
+     "lookups":[{"type":"key", "source":"field", "field":"gridsquare"},
+        {"type":"value","source":"text","re":"(?<=YUAFA\\s)[a-zA-Z]{4}(?=\\s)"} ]},
 
 
     {  "name": "Russia", "fullName": "Russia Award", "link":"http://news.srr.ru/?page_id=620",

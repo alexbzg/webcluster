@@ -485,7 +485,7 @@ class DX( object ):
                 self.qrzData = True
                 if self.country == 'USA':
                     if data.has_key( 'state' ):
-                        self.state = data['state']
+                        self.region = data['state']
                     if data.has_key( 'state' ) or data.has_key( 'county' ):
                         self.district = ( data['state'] \
                                 if data.has_key( 'state' ) else '' ) + \
@@ -504,6 +504,14 @@ class DX( object ):
                                 self.district = v
                                 if self.district == v:
                                     break
+                else:
+                    if data.has_key( 'state' ):
+                        self.region = data['state']
+                    if data.has_key( 'county' ):
+                        self.district = data['county']
+                    if data.has_key( 'grid' ):
+                        self.gridsquare = data['grid'].upper()
+
                 self.updateDB()
 
     def doTextLookup( self, text = None ):

@@ -92,12 +92,12 @@
             </th>
         </tr>
         <tr>
-            <td colspan="6" class="country">
+            <td colspan="7" class="country">
                 User lists
             </td>
         </tr>
         <tr>
-            <td colspan="6">
+            <td colspan="7">
                 <a id="create_list" ui-sref="listSetup">Create new list</a>
             </td>
         </tr>
@@ -135,7 +135,7 @@
         </tr>
 
         <tr ng-repeat-start="country in vm.awards | orderBy: 'country'">
-            <td colspan="6" class="country">
+            <td colspan="7" class="country">
                 {{country.country}}
             </td>
         </tr>
@@ -155,7 +155,7 @@
                 {{award.fullName}}
             </td>
             <td class="stats">
-                <a ui-sref="stats( { award: award.name } )">
+                <a ui-sref="stats( { award: award.name } )" ng-if="!award.noStats">
                     <img src="/images/icon_stats.png" title="Award stats">
                 </a>
             </td>
@@ -171,7 +171,7 @@
             </td>
         </tr>
         <tr ng-repeat-end class="country_footer">
-                <td colspan="5" class="country">
+            <td colspan="7" class="country">
             </td>
         </tr>
     </table>

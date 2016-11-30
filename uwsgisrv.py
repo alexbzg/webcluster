@@ -480,7 +480,7 @@ def getUserListsAwards( callsign ):
 def sendUserData( userData, start_response ):
     awardsSettings = cursor2dicts( \
             dxdb.execute( """
-                select award, track, color, settings, stats_settings
+                select award, track, color, settings, stats_settings, adif
                 from users_awards_settings
                 where callsign = %(callsign)s """, \
                  userData ), True )
