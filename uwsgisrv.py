@@ -183,9 +183,11 @@ def application(env, start_response):
                 else:
                     dbError = True
             elif data.has_key( 'adif' ):
-                adif = data['adif'].split( ',' )[1].decode( 'base64', 'strict' )
+                adif = data['adif']['file'].split( ',' )[1].decode( \
+                        'base64', 'strict' )
                 logging.debug( 'adif received' )
-                newAwards, lastLine = loadAdif( callsign, adif )
+                newAwards, lastLine = loadAdif( callsign, adif, \
+                        data['adif']['awards'] )
                 start_response( '200 OK', [('Content-Type','application/json')])     
                 return json.dumps( { 'lastAdifLine': lastLine, \
                         'awards': getUserAwards( callsign ) \
@@ -525,9 +527,16 @@ def getAdifField( line, field ):
     return line[iBeg:iEnd]         
 
 
-def loadAdif( callsign, adif ):
+def loadAdif( callsign, adif, awardsEnabled ):
     logging.debug( 'ADIF parsing start. Callsign: ' + callsign )
+    idParams = { 'callsign': callsign }
+    updParams = {}
+    for ( award, enabled ) in awardsEnabled.iteritems():
+        idParams['award'] = award
+        updParams['adif'] = enabled
+        dxdb.paramUpdateInsert( 'users_awards_settings', idParams, updParams )
     awards = {}
+    detectAwardsList = [ x for x in awardsEnabled.keys() if awardsEnabled[x] ]
     dxMod.dxdb = dxdb
     eoh = False
     adif = adif.upper().replace( '\r', '' ).replace( '\n', '' )
@@ -546,7 +555,9 @@ def loadAdif( callsign, adif ):
             freq = getAdifField( line, 'FREQ' )
             dx = dxMod.DX( cs = cs, de = '', text = '', \
                     freq = float( freq ) if freq else None, \
-                    time = '    ' )
+                    time = '    ', detectAwardsList = detectAwardsList )
+            if dx.isBeacon:
+                continue
             mode = getAdifField( line, 'MODE' )
             band = dx.band
             bandData = getAdifField( line, 'BAND' ).upper()

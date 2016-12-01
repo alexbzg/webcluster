@@ -15,19 +15,21 @@
             <input type="submit" id="submit_btn" name="change_psw" value="Upload" 
                 ng-disabled="!vm.user.loggedIn || !vm.adif"/><br/>
             <span ng-show="vm.user.data.lastAdifLine">Last loaded QSO: {{vm.user.data.lastAdifLine}}</span>
-            <table>
+            <div class="adifAwardsInfo">Select only awards you need</div>
+            <table id="adifAwards">
                 <tr>
-                    <td>Award</td>
-                    <td>Enabled
-                        <input type="checkbox" ng-model="vm.adifSelectAllAwards"
-                                              ng-click="vm.adifToggleAllAwards()">
+                    <td class="enabled">
+                        <input type="checkbox" ng-model="vm.adif.selectAllAwards"
+                                              ng-click="vm.adifToggleSelectAllAwards()">
                     </td>
+                    <td class="award">All awards</td>                  
                 </tr>
                 <tr ng-repeat="award in vm.adif.awards | orderBy: 'country'">
-                    <td>{{award.title}}</td>
-                    <td><input type="checkbox" ng-model="award.enabled"
-                                               ng-click="vm.adifAwardToggled()">
+                    <td class="enabled" ng-class="{'all': vm.adif.selectAllAwards }">
+                        <input type="checkbox" ng-model="award.enabled"
+                                               ng-click="vm.adifUpdateSelectAllAwards()">
                     </td>
+                    <td class="award" ng-class="{'all': vm.adif.selectAllAwards }">{{award.title}}</td>
                 </tr>
             </table>
         </form>

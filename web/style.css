@@ -405,7 +405,7 @@ form#login #login_register a:hover, form#login #login_recovery a:hover{
 	cursor: pointer;
 }
 #profile_settings form{
-    width: 40%; 
+    width: 50%; 
     margin: 20px auto;
     text-align: center;
     font-weight: bold;
@@ -418,6 +418,40 @@ form#login #login_register a:hover, form#login #login_recovery a:hover{
     border: 1px solid #ccc;
     text-align: center;
 }
+
+
+/*    Upload ADIF   */
+
+table#adifAwards{
+	border-collapse: collapse;
+	width: 100%;
+	margin-top: 30px;
+}
+table#adifAwards td{
+	border: 1px solid #ccc;
+	font-size: 14px;
+	line-height: 14px;
+	font-weight: normal;
+}
+table#adifAwards td.enabled{
+	width: 30px;
+}
+table#adifAwards td.award{
+	text-align: left;
+	padding-left: 10px;
+}
+table#adifAwards td.all{
+	color: #aaa;
+}
+
+
+
+
+
+
+
+
+
 
 
 

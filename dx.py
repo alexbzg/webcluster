@@ -328,7 +328,7 @@ class DX( object ):
         self.awards = {}
         self.dxData = dxData
         self.text = params['text'].decode('utf-8','ignore').encode("utf-8")
-        self.freq = params['freq']
+        self.freq = params['freq']        
         self.cs = params['cs']
         self.de = params['de']
 
@@ -341,6 +341,8 @@ class DX( object ):
         self.band = params['band'] if params.has_key( 'band' ) else None
         self.mode = params['mode'] if params.has_key( 'mode' ) else None
         self.subMode = params['subMode'] if params.has_key( 'subMode' ) else None
+        self.detectAwardsList = params['detectAwards'] \
+                if params.has_key( 'detectAwards' ) else None
 
 
         if not self.band and self.freq:
@@ -420,6 +422,8 @@ class DX( object ):
         skip = { 'web': self.qrzData or '/' in self.cs, 'text': '#' in self.de }
         do = { 'web': False , 'text': False }
         for ad in awardsData:
+            if self.detectAwardsList and not ad['name'] in self.detectAwardsList:
+                continue
             if not ad['country'] or ad['country'] == self.country:
                 for t in do.keys():
                     if not do[t] and ad['getFields'].has_key( t ) and \
@@ -583,6 +587,8 @@ class DX( object ):
             return None
 
         for ad in awardsData:
+            if self.detectAwardsList and not ad['name'] in self.detectAwardsList:
+                continue
             if not ad['country'] or ad['country'] == self.country:
                 
                 av = None

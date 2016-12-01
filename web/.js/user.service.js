@@ -346,13 +346,22 @@ function UserService( $http, $window, $q, Storage, Awards, DxConst,
     }
 
     
-    function uploadADIF( file ) {
+    function uploadADIF( adif ) {
+        var awards = {}
+        adif.awards.forEach( function( award ) {
+            user.data.awardsSettings[award.name].adif = award.enabled;
+            awards[award.name] = award.enabled;
+        });
+        toStorage();
         return $http({
             method: 'POST',
             url: "/uwsgi/userSettings",
             headers: { 'Content-Type': false,
                 'Content-Encoding': 'gzip'},
-            data: { token: user.data.token, adif: file }})
+            data: { token: user.data.token, 
+                adif: { file: adif.file, awards: awards }
+                }
+            })
             .then(
                 function( response ) {
                     if ( response.data.awards )

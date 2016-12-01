@@ -10,6 +10,8 @@ function profileController( $scope, User, Head, Awards, LoadingScreen ) {
     vm.uploadADIF = uploadADIF;
     vm.changeEmail = changeEmail;
     vm.changePassword = changePassword;
+    vm.adifUpdateSelectAllAwards = adifUpdateSelectAllAwards;
+    vm.adifToggleSelectAllAwards = adifToggleSelectAllAwards;
     vm.email = User.data.email;
     vm.adif = { file: null, awards: [] };
 
@@ -23,12 +25,15 @@ function profileController( $scope, User, Head, Awards, LoadingScreen ) {
         Awards.getAwards()
             .then( function( data ) {
                 data.forEach( function( award ) {
-                    vm.adif.awards.push(
-                        { name: award.name, 
-                            title: award.fullName + ' (' + award.name + ')',
-                            enabled: User.data.awardsSettings[award.name].adif
-                            });
+                    if ( !award.noStats )
+                        vm.adif.awards.push(
+                            { name: award.name, 
+                                title: award.fullName + ' (' + award.name + ')',
+                                country: award.country,
+                                enabled: User.data.awardsSettings[award.name].adif
+                                });
                 });
+                adifUpdateSelectAllAwards();
             });
     }
 
@@ -37,12 +42,28 @@ function profileController( $scope, User, Head, Awards, LoadingScreen ) {
         return re.test(vm.email);
     }
 
+    function adifUpdateSelectAllAwards() {
+        var l = vm.adif.awards.length;
+        vm.adif.selectAllAwards = true;
+        for ( var co = 0; co < l; co++ )
+            if ( !vm.adif.awards[co].enabled ) {
+                vm.adif.selectAllAwards = false;
+                break;
+            }
+    }
+
+    function adifToggleSelectAllAwards() {
+        vm.adif.awards.forEach( function( award ) {
+            award.enabled = vm.adif.selectAllAwards;
+        });
+    }
+
 
     function adifFileChanged( changeEvent ) {
         var reader = new FileReader();
         reader.onload = function (loadEvent) {
             $scope.$apply(function () {
-                vm.adif = loadEvent.target.result;
+                vm.adif.file = loadEvent.target.result;
            });
         }
         reader.readAsDataURL(changeEvent.target.files[0]);        

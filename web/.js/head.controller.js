@@ -3,6 +3,7 @@ angular
     .controller( 'headController', headController );
 
 function headController( Head ) {
-    var mv = this;
-    mv.head = Head;
+    var vm = this;
+    vm.head = Head;
+    return vm;
 }
