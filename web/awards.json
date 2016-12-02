@@ -63,6 +63,22 @@
      "lookups":[{"type":"key", "source":"field", "field":"gridsquare"},
         {"type":"value","source":"text","re":"(?<=YUAFA\\s)[a-zA-Z]{4}(?=\\s)"} ]},
 
+    { "name": "POLSKA", "fullName":"POLSKA Award", 
+     "link":"https://awards.pzk.org.pl/polskie-dyplomy/polska.html", "country": "Poland",
+    "valuesFile": "csv/polska.csv", "groupInValue": 0, "color":"#0004ba", 
+    "getFields":{"web":1}, "fieldValues":"region",
+    "valueColumns": {"value": 0, "desc": 1 },
+    "groupColumns": {"value": 3}, "byMode": 1, "byBand": 1,
+     "lookups":[{"type":"value", "source":"field", "field":"region"}]},
+
+    { "name": "SP-PA", "fullName":"SP - Powiat Award", 
+     "link":"https://awards.pzk.org.pl/polish-awards/sp-pa.html", "country": "Poland",
+    "valuesFile": "csv/sppa.csv", "groupInValue": 0, "color":"#0004ba", 
+    "getFields":{"web":1}, "fieldValues":"district",
+    "valueColumns": {"value": 0, "desc": 1 },
+    "groupColumns": {"value": 3}, 
+     "lookups":[{"type":"value", "source":"field", "field":"district"}]},
+
 
     {  "name": "Russia", "fullName": "Russia Award", "link":"http://news.srr.ru/?page_id=620",
     "country": "Russia", "valuesFile": "csv/russia.csv", "groupInValue": 0, "color":"#900202", 
@@ -93,6 +109,15 @@
     "lookups":[{"type":"key", "source":"field", "field":"cs"},
         {"type":"value","source":"text","re":"[a-zA-Z]\\d\\d"}] },
 
+    {  "name": "WANCA", "fullName": "Worked All Norwegian Communes Award", 
+        "link":"http://www.kvindesland.no/la9iha/wanca.html", "color":"#0D6400",
+    "country": "Norway", "valuesFile": "csv/wanca.csv", "groupInValue": 0,  
+    "keyAttr":"cs", "getFields":{"text":0, "web":0},
+    "valueColumns": {"value": 0, "keys": 1 },
+    "groupColumns": {"value": 3 },
+    "lookups":[{"type":"key", "source":"field", "field":"cs"}] },
+       
+
     {  "name": "WEIC", "fullName": "Worked EI Counties Award", 
         "link":"http://www.irts.ie/cgi/st.cgi?weic", "color":"#dc9816",
     "country": "Ireland", "valuesFile": "csv/weic.csv", "groupInValue": 0,  
@@ -101,6 +126,48 @@
     "groupColumns": {"value": 3 },
     "lookups":[{"type":"key", "source":"field", "field":"cs"}] },
 
+    {  "name": "A1 OP", "fullName": "A-1 Operator Club", 
+        "link":"http://www.arrl.org/a-1-op", "color":"#dc9816",
+    "valuesFile": "csv/list_a1op_.csv", "groupInValue": 0,  
+    "keyAttr":"cs", "getFields":{"text":0, "web":0},
+    "valueColumns": {"value": 0, "keys": 1 }, "country": null,
+    "groupColumns": {"value": 3 }, "noStats": 1, "membersList": 1,
+    "lookups":[{"type":"key", "source":"field", "field":"cs"}] },
+
+    {  "name": "DIG", "fullName": "Diplom Interessen Gruppe", 
+        "link":"http://diplom-interessen-gruppe.info/digdiplome.html", "color":"#dc9816",
+    "valuesFile": "csv/list_dig_.csv", "groupInValue": 0,  
+    "keyAttr":"cs", "getFields":{"text":0, "web":0},
+    "valueColumns": {"value": 0, "keys": 1 }, "country": null,
+    "groupColumns": {"value": 3 }, "noStats": 1, "membersList": 1,
+    "lookups":[{"type":"key", "source":"field", "field":"cs"}] },
+
+    {  "name": "FOC", "fullName": "First Class CW Operators' Club", 
+        "link":"http://www.g4foc.org/", "color":"#dc9816",
+    "valuesFile": "csv/list_foc_.csv", "groupInValue": 0,  
+    "keyAttr":"cs", "getFields":{"text":0, "web":0},
+    "valueColumns": {"value": 0, "keys": 1 }, "country": null,
+    "groupColumns": {"value": 3 }, "noStats": 1, "membersList": 1,
+    "lookups":[{"type":"key", "source":"field", "field":"cs"}] },
+
+    {  "name": "NAQCC", "fullName": "North American QRP CW Club", 
+        "link":"http://naqcc.info/awards_current.html", "color":"#dc9816",
+    "valuesFile": "csv/list_naqcc_.csv", "groupInValue": 0,  
+    "keyAttr":"cs", "getFields":{"text":0, "web":0},
+    "valueColumns": {"value": 0, "keys": 1 }, "country": null,
+    "groupColumns": {"value": 3 }, "noStats": 1, "membersList": 1,
+    "lookups":[{"type":"key", "source":"field", "field":"cs"}] },
+
+    
+    {  "name": "QCWA", "fullName": "Quarter Century Wireless Association", 
+        "link":"http://www.qcwa.org/qcwa.php", "color":"#dc9816",
+    "valuesFile": "csv/list_qcwa_.csv", "groupInValue": 0,  
+    "keyAttr":"cs", "getFields":{"text":0, "web":0},
+    "valueColumns": {"value": 0, "keys": 1 }, "country": null,
+    "groupColumns": {"value": 3 }, "noStats": 1, "membersList": 1,
+    "lookups":[{"type":"key", "source":"field", "field":"cs"}] },
+
+    
         
     {  "name": "OK-CA", "fullName": "OK Counties Award", 
         "link":"http://www.crk.cz/ENG/AWARDE", "color":"#13952e",

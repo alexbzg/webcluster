@@ -263,6 +263,7 @@ def findDiap( diaps, value ):
 class DX( object ):
     reState0 = re.compile( '(\w+)\s*-?\s*0*(\d\d)' )
     reFranceDC = re.compile( '(?<=\n)\d{5}(?=[^\n]*\(FRANCE\)<)' )
+    rePolandDC = re.compile( '<SMALL><I>\(woj\) pow:<\/I><\/SMALL> \((\w)\) (\w\w)' )
     bands = [ [ '1.8', 1800, 2000 ],
             [ '3.5', 3500, 4000 ],
             [ '7', 7000, 7300 ],
@@ -482,6 +483,17 @@ class DX( object ):
                 self.district = idx
                 self.qrzData = True
                 self.updateDB()
+        elif self.country == 'Poland':
+            r = urllib2.urlopen( \
+                'https://callbook.pzk.org.pl/szukaj.php?adv=1&query='\
+                    + self.cs )
+            rBody = r.read()
+            m = DX.rePolandDC.search( rBody )
+            if m:
+                self.region = m.group(1)
+                self.district = m.group(1) + m.group(2)
+                self.qrzData = True
+                self.updateDB()
 
         else:
             data = qrzComLink.getData( self.cs )
@@ -602,7 +614,7 @@ class DX( object ):
                             av = checkAwardValue( ad, l, v )
                     elif l['source'] == 'field' and getattr( self, l['field'] ):
                         av = checkAwardValue( ad, l, getattr( self, l['field'] )  )
-                    if av:
+                    if ad['values'].has_key( av ):
                         self.updateAward( ad, av )
                         break
 
@@ -643,7 +655,7 @@ class DX( object ):
                 if r in fieldValues[ 'USA' ]['region']:
                     self.region = r
                     self.updateDB()
-        elif self.country in ( 'Japan', 'Germany' ):
+        elif self.country in ( 'Japan', 'Germany', 'Poland', 'France' ):
             v = value
         else:
             if value:

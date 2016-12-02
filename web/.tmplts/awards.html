@@ -136,7 +136,7 @@
 
         <tr ng-repeat-start="country in vm.awards | orderBy: 'country'">
             <td colspan="7" class="country">
-                {{country.country}}
+                {{country.membersList ? 'Memberlists (no stats)' : country.country}}
             </td>
         </tr>
         <tr ng-repeat="award in country.awards">

@@ -17,13 +17,17 @@ function awardsController( DxConst, User, Awards, Head ) {
             .then( function( data ) {
                 data.forEach( function( award ) {
                     var country = vm.awards.find( function( item ) {
-                        return item.country == award.country; } );
+                        return item.country == award.country && item.membersList == award.membersList; } );
                     if ( !country ) {
-                        country = { country: award.country, awards: [] };
+                        country = { country: award.country, membersList: award.membersList, awards: [] };
                         vm.awards.push( country );
                     }
                     country.awards.push( award );
                 } );
+                vm.awards.forEach( function( country ) {
+                    if ( !country.country )
+                        country.country = undefined;
+                });
             });
      }
 
