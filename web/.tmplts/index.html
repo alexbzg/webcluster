@@ -57,14 +57,25 @@
                 href="http://qrz.com/db/{{item.cs.toLowerCase()}}">{{ vm.replace0( item.cs ) }}</a>
         </td>
         <td class="awards">
-            <a ng-repeat="award in item.awards" 
-               ui-sref="stats( {award: award.award, value: award.value, band: item.band, 
-               mode: item.mode, list_id: award.list_id} )">
-            <span 
-                class="award_name" ng-style="{'color': award.color}"
-                >{{award.award}}<img ng-show="award.worked" src="/images/icon_worked.png" 
-                        title="worked but not confirmed"/></span>
-                {{ vm.replace0( award.value)}}<span ng-show="!$last">, </span></a>
+            <span ng-repeat="award in item.awards">
+                <a ng-if="!award.noStats"
+                ui-sref="stats( {award: award.award, value: award.value, band: item.band, 
+                mode: item.mode, list_id: award.list_id} )">
+                    <span 
+                        class="award_name" ng-style="{'color': award.color}"
+                        >{{award.award}}<img ng-show="award.worked" src="/images/icon_worked.png" 
+                                title="worked but not confirmed"/></span>{{award.value ? 
+                            ' ' + vm.replace0( award.value) : ''}}<span ng-if="!$last">, </span>
+                </a>
+                <span ng-if="award.noStats">
+                    <span 
+                        class="award_name" ng-style="{'color': award.color}"
+                        >{{award.award}}<img ng-show="award.worked" src="/images/icon_worked.png" 
+                                title="worked but not confirmed"/></span>{{award.value 
+                            ? ' ' + vm.replace0( award.value) : ''}}<span ng-if="!$last">, </span>
+                </span>
+            </span>
+               
         </td>  
         <td class="text">{{ vm.replace0( item.text )}}</td>
         <td class="spotter">{{ vm.replace0( item.de )}}</td>

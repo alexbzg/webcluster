@@ -89,8 +89,17 @@
     "lookups":[{"type":"key","source":"text","field":"cs",
         "re":"(?<=[A-Z])[0-9][A-Z](?!.*\\/)"}] },
        
+    {  "name": "WAB", "fullName": "Worked All Brazil Award", 
+        "link":"http://www.labre.org.br/the-labre-awards-program/",
+    "country": "Brazil", "valuesFile": "csv/wba.csv", "groupInValue": 0, "color":"#900202", 
+    "byBand":1,
+    "getFields":{"text":0, "web":0},
+    "valueColumns": {"value": 0, "desc": 1, "keys": 2 },
+    "groupColumns": {"value": 3 },
+    "lookups":[{"type":"key","source":"text","field":"cs",
+        "re":"^..."}] },
 
-     {  "name": "Vulkaneifel", "fullName": "Vulkaneifel-Trophy (no stats)", 
+     {  "name": "Vulkaneifel", "fullName": "Vulkaneifel-Trophy", 
          "link":"http://www.ov-k34.de/vulkaneifel-trophy.html",
     "country": "Germany", "valuesFile": "csv/vulkaneifel.csv", 
     "groupInValue": 0, "color":"#900202", "noStats": 1,
@@ -99,6 +108,14 @@
      "lookups":[{"type":"key", "source":"field", "field":"cs"},
         {"type":"key","source":"field","field":"district"}] },
        
+    {  "name": "WTA", "fullName": "The Washington Totem Award", 
+         "link":"http://www.wwdxc.org/totem-htm/",
+    "country": "USA", "valuesFile": "csv/list_wwdxc_.csv", 
+    "groupInValue": 0, "color":"#1B700E", "noStats": 1,
+    "groupColumns": { "value": 3 }, "valueColumns": {"value":0, "keys": 1 },
+    "getFields":{"text":0, "web":0},
+     "lookups":[{"type":"key", "source":"field", "field":"cs"},
+        {"type":"key","source":"field","field":"region"}] },
 
     {  "name": "WASerbia", "fullName": "Worked All Serbia Award", 
         "link":"http://cqserbia.com", "color":"#dc9816",
@@ -158,7 +175,22 @@
     "groupColumns": {"value": 3 }, "noStats": 1, "membersList": 1,
     "lookups":[{"type":"key", "source":"field", "field":"cs"}] },
 
-    
+    {  "name": "SKCC", "fullName": "Straight Key Century Club", 
+        "link":"http://www.skccgroup.com/", "color":"#1B700E",
+    "valuesFile": "csv/list_skcc_.csv", "groupInValue": 0,  
+    "keyAttr":"cs", "getFields":{"text":0, "web":0},
+    "valueColumns": {"value": 0, "keys": 1 }, "country": null,
+    "groupColumns": {"value": 3 }, "noStats": 1, "membersList": 1,
+    "lookups":[{"type":"key", "source":"field", "field":"cs"}] },
+
+    {  "name": "MF-Runde", "fullName": "MF-Runde e.V.", 
+        "link":"http://www.marinefunker.de/eng/show.php3?pos=11", "color":"#303DF8",
+    "valuesFile": "csv/mf_runde_.csv", "groupInValue": 0,  
+    "keyAttr":"cs", "getFields":{"text":0, "web":0},
+    "valueColumns": {"value": 0, "keys": 1 }, "country": null,
+    "groupColumns": {"value": 3 }, "noStats": 1, "displayCountry": "Germany",
+    "lookups":[{"type":"key", "source":"field", "field":"cs"}] },
+
     {  "name": "QCWA", "fullName": "Quarter Century Wireless Association", 
         "link":"http://www.qcwa.org/qcwa.php", "color":"#dc9816",
     "valuesFile": "csv/list_qcwa_.csv", "groupInValue": 0,  
@@ -193,7 +225,15 @@
     "groupColumns": {"value": 3}, "byMode": 1, "byBand": 1,
      "lookups":[{"type":"key", "source":"field", "field":"district"}]},
    
-  
+    { "name": "TPEA", "fullName":"Trabajadas Provincias EA", 
+     "link":"http://www.ure.es/english/ure-awards/426-tpea-award-english-version.html", 
+     "country": "Spain",
+    "valuesFile": "csv/tpea.csv", "groupInValue": 0, "color":"#0004ba", 
+    "getFields":{"web":1}, 
+    "valueColumns": {"value": 0, "desc":1, "keys": 2 },
+    "groupColumns": {"value": 3}, "byMode": 1, "byBand": 1,
+     "lookups":[{"type":"key", "source":"field", "field":"district"}]},
+ 
        
   { "name": "WAS", "fullName":"Worked All States Award", 
      "link":"http://www.arrl.org/was", "country": "USA",

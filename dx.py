@@ -264,6 +264,7 @@ class DX( object ):
     reState0 = re.compile( '(\w+)\s*-?\s*0*(\d\d)' )
     reFranceDC = re.compile( '(?<=\n)\d{5}(?=[^\n]*\(FRANCE\)<)' )
     rePolandDC = re.compile( '<SMALL><I>\(woj\) pow:<\/I><\/SMALL> \((\w)\) (\w\w)' )
+    reSpainDC = re.compile( '\d\d(?=\d\d\d)' )
     bands = [ [ '1.8', 1800, 2000 ],
             [ '3.5', 3500, 4000 ],
             [ '7', 7000, 7300 ],
@@ -520,6 +521,13 @@ class DX( object ):
                                 self.district = v
                                 if self.district == v:
                                     break
+                elif self.country == 'Spain':
+                    for f in ( 'addr1', 'addr2' ):
+                        if data.has_key( f ):
+                            m = DX.reSpainDC.search( data[f] )
+                            if m:
+                                self.district = m.group(0)
+                                break
                 else:
                     if data.has_key( 'state' ):
                         self.region = data['state']
