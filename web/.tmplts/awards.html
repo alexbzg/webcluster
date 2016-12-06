@@ -101,6 +101,12 @@
                 <a id="create_list" ui-sref="listSetup">Create new list</a>
             </td>
         </tr>
+        <tr>
+            <td colspan="7" class="country">
+                &nbsp;
+            </td>
+        </tr>
+       
         <tr ng-repeat="list in vm.user.data.lists | orderBy: id track by $index">
             <td class="track">
                 <input type="checkbox" ng-model="list.track" 
@@ -125,6 +131,39 @@
            
             <td class="notification">
                 <a ui-sref="listSetup( { id: list.id } )"><img src="/images/icon_setup.png"></a>
+
+                <!--
+                <input type="checkbox" disabled><img src="/images/icon_sound.jpg" title="Sound notification"> <input type="checkbox" disabled><img src="/images/icon_telegram.jpg" title="Telegram message">  -->
+            </td>
+            <td class="website">
+                <!--a href="{{award.link}}" target="_blank" title="Link to {{award.name}} website"><img src="/images/icon_weblink.png"></a-->
+            </td>
+        </tr>
+        <tr>
+            <td class="track">
+                <input type="checkbox" ng-model="vm.user.dxpedition.track" 
+                    ng-change="vm.user.dxpeditionChanged()">
+            </td>
+            <td class="color_name">
+                <button-color-picker value="vm.user.dxpedition.color"
+                    change="vm.user.dxpeditionChanged()"></button-color-picker>
+            </td>
+            <td class="short_name" ng-style="{'color': vm.user.dxpedition.color}">
+                DXpedition
+            </td>
+            <td class="full_name">
+                DXpedition List                
+                <img src="/images/icon_edit.png" ng-click="vm.editDXpedition" title="Edit list" 
+                    ng-show="vm.user.data.admin">
+            </td>
+            <td class="stats">
+                <a ui-sref="stats( { list_id: 'DXpedition' } )">
+                    <img src="/images/icon_stats.png" title="List stats">
+                </a>
+            </td>
+           
+            <td class="notification">
+                <a ui-sref="listSetup( { id: 'DXpedition' } )"><img src="/images/icon_setup.png"></a>
 
                 <!--
                 <input type="checkbox" disabled><img src="/images/icon_sound.jpg" title="Sound notification"> <input type="checkbox" disabled><img src="/images/icon_telegram.jpg" title="Telegram message">  -->

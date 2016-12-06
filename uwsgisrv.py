@@ -53,6 +53,8 @@ awardsData = {}
 for entry in awardsDataJS:
     awardsData[entry['name']] = entry
 
+admins = conf.get( 'web', 'admin' ).split( ',' )
+
 def checkRecaptcha( response ):
     rcData = urllib.urlencode( \
             { 'secret': '6LeDVCQTAAAAABn29KxDjWk_6Kjv-CXQbPv3sqwP',\
@@ -127,7 +129,8 @@ def application(env, start_response):
                         not checkRecaptcha( data['recaptcha'] ):
                     error = 'Recaptcha error'
                 else:
-                    csLookup = dxdb.getObject( 'users', { 'callsign': data['callsign'] },\
+                    csLookup = dxdb.getObject( 'users', \
+                            { 'callsign': data['callsign'] },\
                             False )
                     if csLookup:
                         error = 'callsign is already registered'
@@ -299,7 +302,8 @@ def application(env, start_response):
                         else:
                             dbError = True
                 elif data.has_key( 'value' ):
-                    params =  { 'list_id': data['list_id'], 'callsign': data['value'], \
+                    params =  { 'list_id': data['list_id'], \
+                            'callsign': data['value'], \
                         'band': data['band'] if data.has_key( 'band' ) else 'N/A',\
                         'mode': data['mode'] if data.has_key( 'mode' ) else 'N/A',\
                         }
@@ -508,7 +512,8 @@ def sendUserData( userData, start_response ):
             'awardValueConfirmedColor': userData['award_value_confirmed_color'], \
             'awards': getUserAwards( userData['callsign'] ),\
             'listsAwards': getUserListsAwards( userData['callsign'] ),\
-            'lists': lists }
+            'lists': lists, 'admin': userData['callsign'] in admins, \
+            'dxpedition': userData['dxpedition'] }
     if awardsSettings:
         toSend['awardsSettings'] = {}
         for item in awardsSettings:

@@ -168,7 +168,9 @@ function UserService( $http, $window, $q, Storage, Awards, DxConst,
 
     function saveUserSettings() {
         saveData( { 'award_value_worked_color': user.data.awardValueWorkedColor,
-            'award_value_confirmed_color': user.data.awardValueConfirmedColor });
+            'award_value_confirmed_color': user.data.awardValueConfirmedColor,
+            'dxpedition': user.data.dxpedition
+        });
     }
     
 
