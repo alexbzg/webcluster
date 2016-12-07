@@ -272,13 +272,17 @@ function UserService( $http, $window, $q, Storage, Awards, DxConst,
                 item.callsign + ( item.pfx ? '*' : '' ) + ' from the list?' ) ) {
             var i = list.items.indexOf( item );
             list.items.splice( i, 1 );
-            toStorage();
-            if ( list.id )
-                toServer( {
-                        'list_id': list.id,
-                        'callsign': item.callsign,
-                        'delete': true
-                } );
+            toStorage();            
+            if ( list.id ) {
+                if ( list.id == 'dxpedition' )
+                    DXpedition.deleteItem( item );
+                else   
+                    toServer( {
+                            'list_id': list.id,
+                            'callsign': item.callsign,
+                            'delete': true
+                    } );
+            }
             $rootScope.$emit('user-awards-stats-change');
             return true;
        } else

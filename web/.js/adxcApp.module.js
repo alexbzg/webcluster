@@ -1,5 +1,6 @@
 angular
-    .module( 'adxcApp', [ 'ngSanitize', 'ui.router', 'colorpicker.module', 'vcRecaptcha'] )
+    .module( 'adxcApp', [ 'ngSanitize', 'ui.router', 'colorpicker.module', 'vcRecaptcha',
+    'datePicker'] )
     .config( config );
 
 function config( $stateProvider, $urlRouterProvider ) {
@@ -68,6 +69,14 @@ function config( $stateProvider, $urlRouterProvider ) {
         controllerAs: 'vm',
     };
 
+    var dxpeditionState = {
+        name: 'dxpedition',
+        url: '/dxpedition',
+        templateUrl: '/.tmplts/dxpedition.html',
+        controller: 'dxpeditionController',
+        controllerAs: 'vm',
+    };
+
     var infoState = {
         name: 'info',
         url: '/info',
@@ -82,6 +91,7 @@ function config( $stateProvider, $urlRouterProvider ) {
     $stateProvider.state( profileState );
     $stateProvider.state( contactState );
     $stateProvider.state( infoState );
+    $stateProvider.state( dxpeditionState );
 
 
 }

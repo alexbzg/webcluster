@@ -91,7 +91,7 @@
        
     {  "name": "WAB", "fullName": "Worked All Brazil Award", 
         "link":"http://www.labre.org.br/the-labre-awards-program/",
-    "country": "Brazil", "valuesFile": "csv/wba.csv", "groupInValue": 0, "color":"#900202", 
+    "country": "Brazil", "valuesFile": "csv/wba.csv", "groupInValue": 0, "color":"#006666", 
     "byBand":1,
     "getFields":{"text":0, "web":0},
     "valueColumns": {"value": 0, "desc": 1, "keys": 2 },
@@ -102,6 +102,15 @@
      {  "name": "Vulkaneifel", "fullName": "Vulkaneifel-Trophy", 
          "link":"http://www.ov-k34.de/vulkaneifel-trophy.html",
     "country": "Germany", "valuesFile": "csv/vulkaneifel.csv", 
+    "groupInValue": 0, "color":"#900202", "noStats": 1,
+    "groupColumns": { "value": 3 }, "valueColumns": {"value":0, "keys": 1 },
+    "getFields":{"text":0, "web":0},
+     "lookups":[{"type":"key", "source":"field", "field":"cs"},
+        {"type":"key","source":"field","field":"district"}] },
+
+   {  "name": "Louise", "fullName": "Louise-Trophy", 
+         "link":"http://www.darc.de/der-club/distrikte/y/diplome/louise-trophaee/",
+    "country": "Germany", "valuesFile": "csv/louise.csv", 
     "groupInValue": 0, "color":"#900202", "noStats": 1,
     "groupColumns": { "value": 3 }, "valueColumns": {"value":0, "keys": 1 },
     "getFields":{"text":0, "web":0},
@@ -144,7 +153,7 @@
     "lookups":[{"type":"key", "source":"field", "field":"cs"}] },
 
     {  "name": "A1 OP", "fullName": "A-1 Operator Club", 
-        "link":"http://www.arrl.org/a-1-op", "color":"#dc9816",
+        "link":"http://www.arrl.org/a-1-op", "color":"#FF0000",
     "valuesFile": "csv/list_a1op_.csv", "groupInValue": 0,  
     "keyAttr":"cs", "getFields":{"text":0, "web":0},
     "valueColumns": {"value": 0, "keys": 1 }, "country": null,
@@ -152,7 +161,7 @@
     "lookups":[{"type":"key", "source":"field", "field":"cs"}] },
 
     {  "name": "DIG", "fullName": "Diplom Interessen Gruppe", 
-        "link":"http://diplom-interessen-gruppe.info/digdiplome.html", "color":"#dc9816",
+        "link":"http://diplom-interessen-gruppe.info/digdiplome.html", "color":"#008744",
     "valuesFile": "csv/list_dig_.csv", "groupInValue": 0,  
     "keyAttr":"cs", "getFields":{"text":0, "web":0},
     "valueColumns": {"value": 0, "keys": 1 }, "country": null,
@@ -160,7 +169,7 @@
     "lookups":[{"type":"key", "source":"field", "field":"cs"}] },
 
     {  "name": "FOC", "fullName": "First Class CW Operators' Club", 
-        "link":"http://www.g4foc.org/", "color":"#dc9816",
+        "link":"http://www.g4foc.org/", "color":"#0057e7",
     "valuesFile": "csv/list_foc_.csv", "groupInValue": 0,  
     "keyAttr":"cs", "getFields":{"text":0, "web":0},
     "valueColumns": {"value": 0, "keys": 1 }, "country": null,
@@ -168,7 +177,7 @@
     "lookups":[{"type":"key", "source":"field", "field":"cs"}] },
 
     {  "name": "NAQCC", "fullName": "North American QRP CW Club", 
-        "link":"http://naqcc.info/awards_current.html", "color":"#dc9816",
+        "link":"http://naqcc.info/awards_current.html", "color":"#d62d20",
     "valuesFile": "csv/list_naqcc_.csv", "groupInValue": 0,  
     "keyAttr":"cs", "getFields":{"text":0, "web":0},
     "valueColumns": {"value": 0, "keys": 1 }, "country": null,
@@ -176,12 +185,21 @@
     "lookups":[{"type":"key", "source":"field", "field":"cs"}] },
 
     {  "name": "SKCC", "fullName": "Straight Key Century Club", 
-        "link":"http://www.skccgroup.com/", "color":"#1B700E",
+        "link":"http://www.skccgroup.com/", "color":"#a200ff",
     "valuesFile": "csv/list_skcc_.csv", "groupInValue": 0,  
     "keyAttr":"cs", "getFields":{"text":0, "web":0},
     "valueColumns": {"value": 0, "keys": 1 }, "country": null,
     "groupColumns": {"value": 3 }, "noStats": 1, "membersList": 1,
     "lookups":[{"type":"key", "source":"field", "field":"cs"}] },
+
+    {  "name": "5OCEAN", "fullName": "Fifth Ocean Club", 
+        "link":"http://www.aviaham.ru/awards/", "color":"#005b96",
+    "valuesFile": "csv/list_5ocean_.csv", "groupInValue": 0,  
+    "keyAttr":"cs", "getFields":{"text":0, "web":0},
+    "valueColumns": {"value": 0, "keys": 1 }, "country": null,
+    "groupColumns": {"value": 3 }, "noStats": 1, "membersList": 1,
+    "lookups":[{"type":"key", "source":"field", "field":"cs"}] },
+   
 
     {  "name": "MF-Runde", "fullName": "MF-Runde e.V.", 
         "link":"http://www.marinefunker.de/eng/show.php3?pos=11", "color":"#303DF8",

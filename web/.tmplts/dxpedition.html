@@ -1,0 +1,44 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"                                                
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<div id="fixed_top">
+
+     <div id="add_dx_call">
+        <span id="list_title">
+            DXpedition list
+        </span><br>
+        <input type="text" ng-model="vm.newCallsign">
+        <input type="text" ng-model="vm.newDesc"><br/>
+        <div class="datepicker">
+        <input date-time format="DD MMM YYYY" ng-model="vm.newDtBegin" view="date" min-view="date"/>
+        </div>
+        <div class="datepicker">
+        <input date-time format="DD MMM YYYY" ng-model="vm.newDtEnd" view="date" min-view="date"/>
+        </div>
+        <input type="button" ng-click="vm.insertItem()" id="submit_btn" value="OK"/>
+    </div>    
+
+    <table class="dx_list">
+        <tbody><tr>
+            <th id="callsign">&nbsp;</th>
+            <th id="comments">&nbsp;</th>
+            <th id="start_date">Start date</th>
+            <th id="end_date">End date</th>
+            <th id="delete">&nbsp;</th>
+        </tr>
+    </tbody></table>
+    
+</div> <!-- fixed div end-->
+
+
+<table class="dx_list dx_list_fixed">
+    <tbody>
+    <tr ng-repeat="item in vm.dxpedition.items">
+        <td class="callsign">{{item.callsign}}</td>
+        <td class="comments">{{item.desc}}</td>
+        <td class="start_date">{{item.dtBegin}}</td>
+        <td class="end_date">{{item.dtEnd}}</td>
+        <td class="delete"><img src="images/icon_close.png" ng-click="vm.deleteItem(item)" title="Delete"></td>
+    </tr>
+    </tbody>
+</table>
+

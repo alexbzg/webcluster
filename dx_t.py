@@ -32,7 +32,6 @@ fieldRe = { 'district': re.compile( '[a-zA-Z]{2}[ -]+\d\d' ),\
 
 reCountry = re.compile("\s\*?(\S+):$")
 rePfx = re.compile("(\(.*\))?(\[.*\])?")
-reGermanyDOK = re.compile("DOK.*?[:\-\s]([a-zA-Z])-? ?(\d\d)")
 prefixes = [ {}, {} ]
 countries = {}
 for cty, cl in conf.items( 'countries' ):
@@ -263,7 +262,9 @@ def findDiap( diaps, value ):
 class DX( object ):
     reState0 = re.compile( '(\w+)\s*-?\s*0*(\d\d)' )
     reFranceDC = re.compile( '(?<=\n)\d{5}(?=[^\n]*\(FRANCE\)<)' )
-    rePolandDC = re.compile( '<SMALL><I>\(woj\) pow:<\/I><\/SMALL> \((\w)\) (\w\w)' )
+    rePolandDC = re.compile( 
+            '<SMALL>(?:<I>)?\(woj\) pow:(?:<\/I>)?<\/SMALL> \((\w)\) (\w\w)' )
+    reGermanyDOK = re.compile("[Dd][Oo][Kk].*?[:\-\s]([a-zA-Z])-? ?(\d\d)")
     reSpainDC = re.compile( '\d\d(?=\d\d\d)' )
     bands = [ [ '1.8', 1800, 2000 ],
             [ '3.5', 3500, 4000 ],
@@ -522,7 +523,7 @@ class DX( object ):
                                 if self.district == v:
                                     break
                 elif self.country == 'Spain':
-                    for f in ( 'addr1', 'addr2' ):
+                    for f in ( 'zip', 'addr1', 'addr2' ):
                         if data.has_key( f ):
                             m = DX.reSpainDC.search( data[f] )
                             if m:

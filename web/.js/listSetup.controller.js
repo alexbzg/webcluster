@@ -21,8 +21,9 @@ function listSetupController( $state, $stateParams, DxConst, User, Head ) {
         fillSwitches( vm.switches );
 
         if ( $stateParams.id ) 
-            vm.list = User.data.lists.find( 
-                function( item ) { return $stateParams.id == item.id; } );
+            vm.list = $stateParams.id == 'dxpedition' ? User.data.dxpedition :
+                User.data.lists.find( 
+                    function( item ) { return $stateParams.id == item.id; } );
 
         if ( vm.list ) {
             vm.list.no = User.data.lists.indexOf( vm.list ) + 1;

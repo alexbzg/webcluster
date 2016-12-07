@@ -152,9 +152,10 @@
                 DXpedition
             </td>
             <td class="full_name">
-                DXpedition List                
-                <img src="/images/icon_edit.png" ng-click="vm.editDXpedition" title="Edit list" 
-                    ng-show="vm.user.data.admin">
+                DXpedition List   
+                <a ui-sref="dxpedition" ng-show="vm.user.data.admin">
+                    <img src="/images/icon_edit.png" title="Edit list" />
+                </a>
             </td>
             <td class="stats">
                 <a ui-sref="stats( { list_id: 'DXpedition' } )">
