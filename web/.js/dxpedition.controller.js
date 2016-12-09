@@ -2,9 +2,8 @@ angular
     .module( 'adxcApp' )
     .controller( 'dxpeditionController', dxpeditionController );
 
-function dxpeditionController( User, Head ) {    
+function dxpeditionController( User, Head, DXpedition, DXpeditionAdmin ) {    
     var vm = this;
-    vm.user = User;
     vm.insertItem = insertItem;
     vm.deleteItem = deleteItem;
 
@@ -12,22 +11,35 @@ function dxpeditionController( User, Head ) {
     return vm;
 
     function activate() {
-
-        vm.dxpedition = User.data.dxpedition;
-
         Head.setTitle( 'ADXCluster.com - DXpedition settings' );
+        load();
+    }
+
+    function load() {
+        DXpedition.load()
+            .then( function() { 
+                vm.dxpedition = DXpedition.dxpedition; 
+            } );
     }
 
     function deleteItem( item ) {
-        User.deleteItem( item, vm.dxpedition );
+        DXpeditionAdmin.deleteItem( item )
+            .then( load );
     }
 
     function insertItem() {
-        var newItem = { callsign: vm.newCallsign, desc: vm.newDesc,
-            dtBegin: vm.newDtBegin, dtEnd: vm.newDtEnd };
-        vm.dxpedition.items.push( newItem );
-        User.toStorage();
-        DXpedition.saveItem( item );
+        if ( vm.newLink && vm.newLink.indexOf( 'http://' ) != 0 )
+            vm.newLink = 'http://' + vm.newLink;
+        var newItem = { callsign: vm.newCallsign, descr: vm.newDescr, 
+            link: vm.newLink,
+            dt_begin: vm.newDtBegin ? moment( vm.newDtBegin ).format( 'L' ) : null, 
+            dt_end: vm.newDtEnd ? moment( vm.newDtEnd ).format( 'L' ) : null };
+        DXpeditionAdmin.saveItem( newItem )
+            .then( function() {
+                vm.newCallsign = null;
+                vm.newDesc = null;            
+                load();
+            } );
     }
      
 }

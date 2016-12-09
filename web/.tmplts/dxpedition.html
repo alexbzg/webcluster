@@ -6,11 +6,13 @@
         <span id="list_title">
             DXpedition list
         </span><br>
-        <input type="text" ng-model="vm.newCallsign">
-        <input type="text" ng-model="vm.newDesc"><br/>
+        <input type="text" ng-model="vm.newCallsign" placeholder="Callsign" class="input_dx_call"> <input type="text" ng-model="vm.newDescr" placeholder="Comments" class="input_dx_call"> <input type="text" ng-model="vm.newLink" placeholder="Link" class="input_dx_call">
+        <br/>
+        Start: 
         <div class="datepicker">
         <input date-time format="DD MMM YYYY" ng-model="vm.newDtBegin" view="date" min-view="date"/>
         </div>
+        End:
         <div class="datepicker">
         <input date-time format="DD MMM YYYY" ng-model="vm.newDtEnd" view="date" min-view="date"/>
         </div>
@@ -21,6 +23,7 @@
         <tbody><tr>
             <th id="callsign">&nbsp;</th>
             <th id="comments">&nbsp;</th>
+            <th id="link">&nbsp;</th>
             <th id="start_date">Start date</th>
             <th id="end_date">End date</th>
             <th id="delete">&nbsp;</th>
@@ -32,11 +35,12 @@
 
 <table class="dx_list dx_list_fixed">
     <tbody>
-    <tr ng-repeat="item in vm.dxpedition.items">
+    <tr ng-repeat="item in vm.dxpedition">
         <td class="callsign">{{item.callsign}}</td>
-        <td class="comments">{{item.desc}}</td>
-        <td class="start_date">{{item.dtBegin}}</td>
-        <td class="end_date">{{item.dtEnd}}</td>
+        <td class="comments">{{item.descr}}</td>
+        <td class="link"><a href="{{item.link}}">link</a></td>
+        <td class="start_date">{{item.dt_begin}}</td>
+        <td class="end_date">{{item.dt_end}}</td>
         <td class="delete"><img src="images/icon_close.png" ng-click="vm.deleteItem(item)" title="Delete"></td>
     </tr>
     </tbody>

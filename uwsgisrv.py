@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #coding=utf-8
-from common import appRoot, readConf, siteConf, loadJSON
+from common import appRoot, readConf, siteConf, loadJSON, jsonEncodeExtra
 from dxdb import cursor2dicts, dbConn, paramStr
 import dx as dxMod
 
@@ -185,6 +185,31 @@ def application(env, start_response):
                     okResponse = 'OK'
                 else:
                     dbError = True
+            elif data.has_key( 'dxpedition' ) and data['dxpedition'] == 'admin':
+                if callsign in admins:
+                    idParams = { 'callsign': data['callsign'] }
+                    if data.has_key('delete'):
+                        if dxdb.paramDelete( 'dxpedition', idParams ):
+                            okResponse = 'OK'
+                        else:
+                            dbError = True
+                    else:
+                        updParams = spliceParams( data, [ 'dt_begin', 'dt_end', \
+                            'descr', 'link' ] )
+                        if dxdb.paramUpdateInsert( 'dxpedition', idParams, \
+                                updParams ):
+                            okResponse = 'OK'
+                        else:
+                            dbError = True
+                    if okResponse:
+                        dxdb.commit()
+                        exportDXpedition( env )
+
+                else:
+                    start_response( '403 Forbidden', \
+                            [('Content-Type','text/plain')])
+                    return 'Permission denied'
+                   
             elif data.has_key( 'adif' ):
                 adif = data['adif']['file'].split( ',' )[1].decode( \
                         'base64', 'strict' )
@@ -667,7 +692,8 @@ def loadAdif( callsign, adif, awardsEnabled ):
                 idParams = { 'callsign': callsign, \
                         'award': award,\
                         'value': value }
-                if awardsData[award].has_key('byBand') and awardsData[award]['byBand']:
+                if awardsData[award].has_key('byBand') and \
+                    awardsData[award]['byBand']:
                     for band in awState:
                         idParams['band'] = band
                         for mode in awState[band]:
@@ -676,9 +702,19 @@ def loadAdif( callsign, adif, awardsEnabled ):
                 else:
                     commitFl = updateAward( idParams, awState )
 
-    dxdb.updateObject( 'users', { 'callsign': callsign, 'last_adif_line': lastLine }, \
+    dxdb.updateObject( 'users', \
+            { 'callsign': callsign, 'last_adif_line': lastLine }, \
             'callsign' )
     dxdb.commit()
 
     return ( commitFl, lastLine )
 
+def exportDXpedition( env ):
+    dir = conf.get( 'web', \
+            ( 'test_' if 'test' in env['SERVER_NAME'] else '' ) + 'root' )
+    with open( dir + '/dxpedition.json', 'w' ) as f:
+        f.write( json.dumps( cursor2dicts( \
+            dxdb.execute( """
+                select * from dxpedition
+                where dt_end > now();"""), True ), \
+            default = jsonEncodeExtra ) )

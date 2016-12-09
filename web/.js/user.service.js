@@ -2,10 +2,11 @@ angular
     .module( 'adxcApp' )
     .service( 'User', UserService );
 
-function UserService( $http, $window, $q, Storage, Awards, DxConst, 
-        LoadingScreen, $rootScope, Notify  ) {
+function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst, 
+        LoadingScreen, $rootScope, Notify ) {
     var storageKey = 'adxcluster-user';
     var defaultColor = '#770000';
+    var updateTask = $interval( update, 300000 );
     var user = { 
         fromStorage: fromStorage,
         toStorage: toStorage,
@@ -29,7 +30,20 @@ function UserService( $http, $window, $q, Storage, Awards, DxConst,
         onLogIO: onLogIO,
         onAwardsStatsChange: onAwardsStatsChange
     };
+    
     return user;
+
+    function update() {
+        Awards.load();
+    }
+
+    function onDestroy() {
+        if ( angular.isDefined( updateTask ) ) {
+            $interval.cancel( updateTask );
+            updateTask = undefined;
+        }
+    }
+
 
     function onLogIO( callback, scope ) {
         Notify.notify( 'user-log-io', callback, scope );
@@ -90,47 +104,58 @@ function UserService( $http, $window, $q, Storage, Awards, DxConst,
                 list.color = defaultColor;
         });
 
-        Awards.getAwards()
-            .then( function( data ) {
-                data.forEach( function( award ) {
-                    if ( !user.data.awards[award.name] )
-                        user.data.awards[award.name] = {};
+        Awards.onUpdate( createAwardsSettings );
+        if ( Awards.awards )
+            createAwardsSettings();
+        else
+            Awards.load();
 
-                    if ( !user.data.awardsSettings[award.name] ) 
-                        user.data.awardsSettings[award.name] = 
-                        { 'track': true };
-                    if ( !user.data.awardsSettings[award.name].color )
-                        user.data.awardsSettings[award.name].color = 
-                            award.color ? award.color : defaultColor;
-                    if ( user.data.awardsSettings[award.name].adif == null )
-                        user.data.awardsSettings[award.name].adif = true;
-                    if ( !user.data.awardsSettings[award.name].settings )
-                        user.data.awardsSettings[award.name].settings = {};
-                        var s = user.data.awardsSettings[award.name].settings;
-                    var st =
-                    { bands: DxConst.bands,
-                        modes: DxConst.modes,
-                        cfm: DxConst.cfm
-                    };
-                    for ( var field in st ) 
-                        if ( !s[field] ) {
-                            s[field] = [];
-                            st[field].forEach( function( item ) {
-                                if ( Array.isArray( item ) )
-                                    s[field].push( { name: item[1], 
-                                        enabled: true, display: item[0] } );
-                                else
-                                    s[field].push( { name: item, 
-                                        enabled: true, display: item } );
-                            });
-                        }
-                    if ( !user.data.awardsSettings[award.name].settings.sound )
-                        user.data.awardsSettings[award.name].settings.sound =
-                            { wkd: true, not: true };
+        $rootScope.$emit('user-log-io');
 
-            });
-        });
     }
+
+    function createAwardsSettings() {
+        Awards.awards.forEach( function( award ) {
+            if ( !user.data.awards[award.name] )
+                user.data.awards[award.name] = {};
+
+            if ( !user.data.awardsSettings[award.name] ) 
+                user.data.awardsSettings[award.name] = 
+                { 'track': true };
+            if ( !user.data.awardsSettings[award.name].color )
+                user.data.awardsSettings[award.name].color = 
+                    award.color ? award.color : defaultColor;
+            if ( user.data.awardsSettings[award.name].adif == null )
+                user.data.awardsSettings[award.name].adif = true;
+            if ( !user.data.awardsSettings[award.name].settings )
+                user.data.awardsSettings[award.name].settings = {};
+                var s = user.data.awardsSettings[award.name].settings;
+            var st =
+            { bands: DxConst.bands,
+                modes: DxConst.modes,
+                cfm: DxConst.cfm
+            };
+            for ( var field in st ) 
+                if ( !s[field] ) {
+                    s[field] = [];
+                    st[field].forEach( function( item ) {
+                        if ( Array.isArray( item ) )
+                            s[field].push( { name: item[1], 
+                                enabled: true, display: item[0] } );
+                        else
+                            s[field].push( { name: item, 
+                                enabled: true, display: item } );
+                    });
+                }
+            if ( !user.data.awardsSettings[award.name].settings.sound )
+                user.data.awardsSettings[award.name].settings.sound =
+                    { wkd: true, not: true };
+
+        });
+        $rootScope.$emit('user-awards-stats-change');
+    }
+
+
 
     function toStorage() {
         Storage.save( storageKey, user.data, 
@@ -326,7 +351,6 @@ function UserService( $http, $window, $q, Storage, Awards, DxConst,
                 user.data.remember = remember;
                 init();
                 toStorage();
-                $rootScope.$emit('user-log-io');
                 return true;
             });
     }
@@ -336,7 +360,6 @@ function UserService( $http, $window, $q, Storage, Awards, DxConst,
         Storage.remove( storageKey, 'session' );
         user.data = {};
         init();
-        $rootScope.$emit('user-log-io');
     }
 
 

@@ -3,6 +3,7 @@
 
 import ConfigParser, decimal, json, logging
 from os import path
+from datetime import datetime, date
 
 appRoot = path.dirname( path.abspath( __file__ ) ) 
 
@@ -21,6 +22,10 @@ def readConf( file ):
 def jsonEncodeExtra( obj ):
     if isinstance( obj, decimal.Decimal ):
         return float( obj )
+    elif isinstance(obj, datetime):
+        return obj.isoformat()
+    elif isinstance(obj, date):
+        return obj.isoformat()
     raise TypeError( repr( obj ) + " is not JSON serializable" )
 
 def loadJSON( pathJS ):
