@@ -3,10 +3,11 @@ angular
     .service( 'User', UserService );
 
 function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst, 
-        LoadingScreen, $rootScope, Notify ) {
+        LoadingScreen, $rootScope, Notify, DXpedition ) {
     var storageKey = 'adxcluster-user';
     var defaultColor = '#770000';
     var updateTask = $interval( update, 300000 );
+    var dxpedTask = $interval( initDXpedition, 3600000 );
     var user = { 
         fromStorage: fromStorage,
         toStorage: toStorage,
@@ -30,11 +31,13 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
         onLogIO: onLogIO,
         onAwardsStatsChange: onAwardsStatsChange
     };
+    var dxpSettings = null;
     
     return user;
 
     function update() {
         Awards.load();
+        DXpedition.load();
     }
 
     function onDestroy() {
@@ -97,6 +100,16 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
         if ( !user.data.awardValueConfirmedColor )
             user.data.awardValueConfirmedColor = '#02b20e';
 
+        user.data.dxpedition = user.data.lists.find( function( item ) {
+            return item.title == 'DXPED';
+        });
+        if ( !user.data.dxpedition ) {
+            user.data.dxpedition = { title: 'DXPED', 
+                full_title: 'DXpedition List',
+                items: [] };
+            user.data.lists.push( user.data.dxpedition );
+        }
+
         user.data.lists.forEach( function( list ) {
             if ( !user.data.listsAwards[list.id] )
                 user.data.listsAwards[list.id] = {};
@@ -110,9 +123,38 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
         else
             Awards.load();
 
+        DXpedition.onUpdate( initDXpedition );
+        if ( DXpedition.dxpedition )
+            initDXpedition();
+        else
+            DXpedition.load();
+
         $rootScope.$emit('user-log-io');
 
     }
+
+
+
+    function initDXpedition() {
+        var dxpList = DXpedition.dxpedition ? 
+            DXpedition.dxpedition.filter( function( item ) {
+                return ( !item.dt_begin || moment( item.dt_begin ) > moment() ) &&
+                    (!item.dt_end || 
+                     moment( item.dt_end ).add( 1, 'weeks' ) > moment() );
+            }) : [];        
+        user.data.dxpedition.items = 
+            user.data.dxpedition.items.filter( function( settingItem ) {
+                return dxpList.find( function( listItem ) {
+                    return listItem.callsign == settingsItem.callsign } );
+            });
+        dxpList.forEach( function( item ) {
+            if ( !user.data.dxpedition.items.find( function( settingsItem ) {
+                return item.callsign == settingsItem.callsign; } ) )
+                user.data.dxpedition.items.push( { callsign: item.callsign } );
+        });
+        $rootScope.$emit('user-awards-stats-change');
+    }
+
 
     function createAwardsSettings() {
         Awards.awards.forEach( function( award ) {
@@ -200,16 +242,23 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
     
 
     function listChanged( list ) {
-        toStorage();
-        if ( list.id )
+        function save() {
             toServer( { 
                         'list_id': list.id,
                         'track': list.track,
                         'color': list.color,
-            } );
+            } );          
+        }
+        toStorage();
+        if ( list.id )
+            save();
+        else
+            saveList( list )
+                .then( function( id ) {
+                    if ( id )
+                        save();
+                });
         $rootScope.$emit('user-awards-stats-change');
-   
-           
     }
 
     function deleteList( list ) {

@@ -716,5 +716,5 @@ def exportDXpedition( env ):
         f.write( json.dumps( cursor2dicts( \
             dxdb.execute( """
                 select * from dxpedition
-                where dt_end > now();"""), True ), \
+                where dt_end > now() - interval '1 week';"""), True ), \
             default = jsonEncodeExtra ) )

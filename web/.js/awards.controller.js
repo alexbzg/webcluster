@@ -13,22 +13,23 @@ function awardsController( DxConst, User, Awards, Head ) {
 
     function activate() {
         Head.setTitle( 'ADXCluster.com - Awards' );
-        Awards.getAwards()
-            .then( function( data ) {
-                data.forEach( function( award ) {
-                    var country = vm.awards.find( function( item ) {
-                        return item.country == award.country && item.membersList == award.membersList; } );
-                    if ( !country ) {
-                        country = { country: award.country, membersList: award.membersList, awards: [] };
-                        vm.awards.push( country );
-                    }
-                    country.awards.push( award );
-                } );
-                vm.awards.forEach( function( country ) {
-                    if ( !country.country )
-                        country.country = undefined;
-                });
-            });
+        Awards.awards.forEach( function( award ) {
+            var ac = award.displayCountry ? award.displayCountry : award.country;
+            var country = vm.awards.find( function( item ) {
+                return item.country == ac && 
+                    item.membersList == award.membersList; } );
+            if ( !country ) {
+                country = { country: ac, 
+                    membersList: award.membersList, 
+                    awards: [] };
+                vm.awards.push( country );
+            }
+            country.awards.push( award );
+        } );
+        vm.awards.forEach( function( country ) {
+            if ( !country.country )
+                country.country = undefined;
+        });
      }
 
     function openSetup( award ) {

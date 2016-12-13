@@ -101,13 +101,10 @@
                 <a id="create_list" ui-sref="listSetup">Create new list</a>
             </td>
         </tr>
-        <tr>
-            <td colspan="7" class="country">
-                &nbsp;
-            </td>
-        </tr>
        
-        <tr ng-repeat="list in vm.user.data.lists | orderBy: id track by $index">
+        <tr ng-repeat="list in vm.user.data.lists 
+            | filter: { title: '!DXPED' } : true
+            | orderBy: id track by $index">
             <td class="track">
                 <input type="checkbox" ng-model="list.track" 
                     ng-change="vm.user.listChanged(list)">
@@ -139,14 +136,21 @@
                 <!--a href="{{award.link}}" target="_blank" title="Link to {{award.name}} website"><img src="/images/icon_weblink.png"></a-->
             </td>
         </tr>
+
+        <tr>
+            <td colspan="7" class="country">
+                &nbsp;
+            </td>
+        </tr>
+       
         <tr>
             <td class="track">
-                <input type="checkbox" ng-model="vm.user.dxpedition.track" 
-                    ng-change="vm.user.dxpeditionChanged()">
+                <input type="checkbox" ng-model="vm.user.data.dxpedition.track" 
+                    ng-change="vm.user.listChanged( vm.user.data.dxpedition )">
             </td>
             <td class="color_name">
-                <button-color-picker value="vm.user.dxpedition.color"
-                    change="vm.user.dxpeditionChanged()"></button-color-picker>
+                <button-color-picker value="vm.user.data.dxpedition.color"
+                    change="vm.user.listChanged( vm.user.data.dxpedition )"></button-color-picker>
             </td>
             <td class="short_name" ng-style="{'color': vm.user.dxpedition.color}">
                 DXpedition

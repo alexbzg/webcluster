@@ -2,7 +2,7 @@ angular
     .module( 'adxcApp' )
     .controller( 'listSetupController', listSetupController );
 
-function listSetupController( $state, $stateParams, DxConst, User, Head ) {    
+function listSetupController( $state, $stateParams, $window, DxConst, User, Head ) {    
     var vm = this;
     var titleCache = { title: '', full_title: '' };
     vm.user = User;
@@ -21,7 +21,9 @@ function listSetupController( $state, $stateParams, DxConst, User, Head ) {
         fillSwitches( vm.switches );
 
         if ( $stateParams.id ) 
-            vm.list = $stateParams.id == 'dxpedition' ? User.data.dxpedition :
+            vm.list = $stateParams.id == 'DXpedition' ? 
+                User.data.lists.find( 
+                    function( item ) { return item.title == 'DXPED'; } ) :
                 User.data.lists.find( 
                     function( item ) { return $stateParams.id == item.id; } );
 
@@ -30,6 +32,12 @@ function listSetupController( $state, $stateParams, DxConst, User, Head ) {
             if ( !vm.list.items )
                 vm.list.items = [];
             updateAllSwitches();        
+            vm.list.items.forEach( function( item ) {
+                if ( !item.settings ) {
+                    item.settings = {};
+                    fillSwitches( item.settings );
+                }
+            });
         } else {
             User.createList()
                 .then( function( id ) {
@@ -63,7 +71,8 @@ function listSetupController( $state, $stateParams, DxConst, User, Head ) {
         var csl = vm.list.items.length;
         vm.switches[field][value] = true;
         for ( var co = 0; co < csl; co++ )
-            if ( !vm.list.items[co].settings[field][value] ) {
+            if ( vm.list.items[co].settings && 
+                    !vm.list.items[co].settings[field][value] ) {
                 vm.switches[field][value] = false;
                 break;
             }
@@ -76,6 +85,11 @@ function listSetupController( $state, $stateParams, DxConst, User, Head ) {
     }
 
     function checkTitle() {
+        if ( vm.list.title == 'DXPED' ) {
+            $window.alert( 'List title "DXPED" is reserved by system. Please choose any other title' );
+            vm.list.title = '';
+            return;
+        }
         var fl = false;
         for ( var field in titleCache )
             if ( titleCache[field] != vm.list[field] ) {

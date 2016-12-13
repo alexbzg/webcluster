@@ -2,7 +2,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <div id="fixed_top">
 
-    <div id="list_add_calls">
+    <div id="list_add_calls" ng-if="vm.list.title != 'DXPED'">
         <span id="list_title">
             <input type="text" ng-model="vm.list.full_title" ng-blur="vm.checkTitle()">
         </span> 
