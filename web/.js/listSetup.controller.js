@@ -71,7 +71,7 @@ function listSetupController( $state, $stateParams, $window, DxConst, User, Head
         var csl = vm.list.items.length;
         vm.switches[field][value] = true;
         for ( var co = 0; co < csl; co++ )
-            if ( vm.list.items[co].settings && 
+            if ( vm.list.items[co].settings && !vm.list.items[co].settings.hide &&
                     !vm.list.items[co].settings[field][value] ) {
                 vm.switches[field][value] = false;
                 break;
@@ -122,8 +122,15 @@ function listSetupController( $state, $stateParams, $window, DxConst, User, Head
     }
 
     function deleteItem( item ) {
-        if ( User.deleteListItem( item, vm.list ) )
+        if ( $window.confirm( 'Do you really want to remove callsign ' + 
+            item.callsign + ( item.pfx ? '*' : '' ) + ' from the list?' ) ) {
+            if ( vm.list.title == 'DXPED' ) {
+                item.settings.hide = true;
+                User.saveListItem( item, vm.list );
+            } else 
+                User.deleteListItem( item, vm.list );
             updateAllSwitches();
+        }
     }
 
 
@@ -137,7 +144,7 @@ function listSetupController( $state, $stateParams, $window, DxConst, User, Head
 
     function _switch( field, value ) {
         vm.list.items.forEach( function( item ) {
-            if ( item.settings[field][value] != vm.switches[field][value] ) {
+            if ( !item.settings.hide && item.settings[field][value] != vm.switches[field][value] ) {
                 item.settings[field][value] = vm.switches[field][value];
                 User.saveListItem( item, vm.list );
             }

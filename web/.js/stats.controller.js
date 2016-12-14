@@ -53,9 +53,19 @@ function statsController( $scope, $stateParams, DxConst, User, Head, Awards,
                     }
                 });
         });
+
+        vm.awards = vm.awards.sort( function( a, b ) {
+            if ( a.name == 'DXPED' )
+                return 1;
+            else if ( b.name == 'DXPED' )
+                return -1;
+            else 
+                return a.list_id - b.list_id;
+        });
+       
     
         LoadingScreen.on();
-        Awards.getAwards( true )
+        Awards.load( true )
             .then( function( data ) {
                 data.forEach( function( award ) {
                     vm.awards.push( award );

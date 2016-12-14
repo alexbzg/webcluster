@@ -318,10 +318,8 @@ def application(env, start_response):
                             dbError = True
                     else:
                         if dxdb.paramUpdateInsert( 'users_lists_items', \
-                            { 'list_id': data['list_id'], \
-                                'callsign': data['callsign'] },\
-                            { 'settings': json.dumps( data['settings'] ), \
-                            'pfx': data['pfx'] } ):
+                            spliceParams( data, [ 'list_id', 'callsign' ] ), \
+                            spliceParams( data, [ 'settings', 'pfx' ] ) ):
                             dxdb.commit()
                             okResponse = 'OK'
                         else:

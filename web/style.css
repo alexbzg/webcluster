@@ -422,10 +422,13 @@ form#login #login_register a:hover, form#login #login_recovery a:hover{
 
 /*    Upload ADIF   */
 
+.adifAwardsInfo{
+	padding: 30px 0 0 0;
+}
 table#adifAwards{
 	border-collapse: collapse;
 	width: 100%;
-	margin-top: 30px;
+	margin: 0px;
 }
 table#adifAwards td{
 	border: 1px solid #ccc;
@@ -755,7 +758,6 @@ table.list_edit_fixed{
 
 
 
-
 /*                ALL BANDS MODES     view       */
 
 
@@ -939,6 +941,222 @@ table#ABM_view td.confirmed{
 .popup div.hover{
 	border: 1px solid #0091c9;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+/*               D X   L I S T     edit         */
+
+
+
+
+
+#add_dx_call{
+	width:860px;
+	background-color: #fff;
+	padding: 20px 20px 10px 20px;
+	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
+	margin: 20px auto;
+	text-align: center;
+}
+#add_dx_call span#list_title{
+	font-size: 20px;
+	font-weight: bold;
+	width: 500px;
+	padding: 0 5px;
+}
+.input_dx_call{
+	width: 250px;
+	margin: 10px 0;
+}
+
+#add_dx_call div.datepicker{
+	display: inline-block;
+	margin-right: 20px;
+}
+#add_dx_call div.datepicker input{
+	text-align: center;
+}
+
+
+table.dx_list{
+	width: 900px;
+	background-color: #fff;
+	border-collapse: collapse;
+	margin: 0px auto;
+	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
+	margin: 0 auto;
+	text-align: center;
+}
+table.dx_list th{
+	padding: 2px 0;
+	border: 1px solid #a6def8;
+	background-color: #0091c9;
+	color: #fff;
+}
+table.dx_list th#callsign{
+	width: 200px;
+}
+table.dx_list th#comments{
+	width: 150px;
+}
+table.dx_list th#link{
+	width: 100px;
+}
+table.dx_list th#start_date, table.dx_list th#end_date{
+	width: 150px;
+}
+table.dx_list th#delete{
+	width: 50px;	
+}
+
+table.dx_list td{
+	padding: 2px 0px;
+	font-size: 14px;
+	border: 1px solid #a6def8;
+	color: #000;
+}
+table.dx_list td.comments{
+	width: 150px;
+}
+table.dx_list td.link{
+	width: 100px;
+}
+table.dx_list td.start_date, table.dx_list td.end_date{
+	width: 150px;
+}
+table.dx_list td.callsign{
+	width: 190px;
+	font-size: 16px;
+	padding-left: 10px;
+	text-align: left;
+}
+table.dx_list td.delete{
+	width: 50px;
+	padding: 0;
+	cursor: pointer;
+	vertical-align: middle;
+}
+table.dx_list td.delete img{
+	width: 20px;
+	margin: 3px 0 0 0;
+}
+table.dx_list tr.odd{	background-color: #eff9fe; }
+table.dx_list th.border_right, table.dx_list td.border_right{	border-right: 3px solid #a6def8; }
+.grey{color: #aaa;}
+
+
+table.dx_list_fixed{
+	margin-top: 260px;
+}
+
+@-moz-document url-prefix()
+{
+table.list_edit_fixed{
+	margin-top: 280px;
+}
+}
+
+
+
+
+
+
+
+/*                DX  L I S T     user edit         */
+
+table.dxlist_edit{
+	width: 1100px;
+	background-color: #fff;
+	border-collapse: collapse;
+	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
+	margin: 30px auto 0 auto;
+	text-align: center;
+}
+table.dxlist_edit th{
+	padding: 2px 0;
+	border: 1px solid #a6def8;
+}
+table.dxlist_edit th#mode, table.dxlist_edit th#band, table.dxlist_edit th#sound, table.dxlist_edit th#mobile{
+	background-color: #0091c9;
+	color: #fff;
+}
+table.dxlist_edit th#delete{
+	width: 30px;	
+}
+
+table.dxlist_edit td{
+	padding: 2px 0px;
+	font-size: 12px;
+	border: 1px solid #a6def8;
+	color: #000;
+}
+table.dxlist_edit td.band, table.dxlist_edit td.mobile{
+	width: 33px;
+}
+table.dxlist_edit td.mode{
+	width: 40px;
+}
+table.dxlist_edit td.sound, table.dxlist_edit td.mobile{
+	width: 50px;
+}
+
+table.dxlist_edit td.callsign{
+	font-size: 16px;
+	padding-left: 10px;
+	text-align: left;
+	border-right: 3px solid #a6def8;
+}
+table.dxlist_edit td.callsign span{
+	font-size: 10px;
+	color: #333;
+	display: inline-block;
+	float: right;
+	padding: 5px 5px 0 0;
+}
+table.dxlist_edit td.callsign span a{
+	color: #777;
+}
+table.dxlist_edit td.delete{
+	width: 30px;
+	padding: 0;
+	cursor: pointer;
+	vertical-align: middle;
+}
+table.dxlist_edit td.delete img{
+	width: 20px;
+	margin: 3px 0 0 0;
+}
+table.dxlist_edit tr.odd{	background-color: #eff9fe; }
+table.dxlist_edit th.border_right, table.dxlist_edit td.border_right{	border-right: 3px solid #a6def8; }
+.grey{color: #aaa;}
+
+
+table.dxlist_edit_fixed{
+	margin-top: 155px;
+}
+
+@-moz-document url-prefix()
+{
+table.list_edit_fixed{
+	margin-top: 175px;
+}
+}
+
+
+
+
+
+
+
 
 
 

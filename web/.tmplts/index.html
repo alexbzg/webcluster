@@ -63,18 +63,19 @@
                 mode: item.mode, list_id: award.list_id} )">
                     <span 
                         class="award_name" ng-style="{'color': award.color}"
-                        >{{award.award}}<img ng-show="award.worked" src="/images/icon_worked.png" 
+                        >{{award.award}}<img ng-if="award.worked" src="/images/icon_worked.png" 
                                 title="worked but not confirmed"/></span>{{award.value ? 
-                            ' ' + vm.replace0( award.value) : ''}}<span ng-if="!$last">, </span>
-                </a>
-                <span ng-if="award.noStats">
+                            ' ' + vm.replace0( award.value) : ''}}<span 
+                                ng-if="award.dtEnd"> till {{award.dtEnd}}</span><span 
+                                ng-if="award.descr"> ({{award.descr}})</span></a><span ng-if="award.noStats">
                     <span 
                         class="award_name" ng-style="{'color': award.color}"
-                        >{{award.award}}<img ng-show="award.worked" src="/images/icon_worked.png" 
+                        >{{award.award}}<img ng-if="award.worked" src="/images/icon_worked.png" 
                                 title="worked but not confirmed"/></span>{{award.value 
-                            ? ' ' + vm.replace0( award.value) : ''}}<span ng-if="!$last">, </span>
-                </span>
-            </span>
+                            ? ' ' + vm.replace0( award.value) : ''}}</span><span 
+                                ng-if="award.link"> <a href="{{award.link}}">info</a></span><span 
+                    ng-if="!$last">, </span>
+           </span>
                
         </td>  
         <td class="text">{{ vm.replace0( item.text )}}</td>

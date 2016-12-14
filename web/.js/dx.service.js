@@ -2,19 +2,13 @@ angular
     .module( 'adxcApp' )
     .service( 'DX', DXService );
 
-function DXService( $rootScope, $http, User, Awards, Notify ) {
+function DXService( $rootScope, $http, $interval, User, Awards, Notify ) {
     var url = '/dxdata.json';
     var lastModified = null;
+    var dxpeditionModified = null;
     var user = User.data;
     var awards = {};
     var cfm = {};
-    Awards.getAwards()
-        .then( function( data ) {
-            data.forEach( function( award ) {
-                award.cfm = createCfm( user.awardsSettings[award.name] );
-                awards[award.name] = award;
-            });
-        });
 
     var dx = { 
         items: [],
@@ -23,13 +17,29 @@ function DXService( $rootScope, $http, User, Awards, Notify ) {
         onUpdate: onUpdate
     };
 
-    User.onLogIO( function() {
-        user = User.data;
-        updateAwards() } );
-
-    User.onAwardsStatsChange( updateAwards );
-
+    init();
     return dx;
+
+    function init() {
+        User.onLogIO( function() {
+            user = User.data;
+            updateAwards(); 
+        } );
+
+        User.onAwardsStatsChange( updateAwards );
+        Awards.onUpdate( loadAwardsList );
+        if ( Awards.awards )
+            loadAwardsList();
+    }
+
+    function loadAwardsList() {
+        Awards.awards.forEach( function( award ) {
+            var a = angular.extend( {}, award );
+            a.cfm = createCfm( user.awardsSettings[award.name] );
+            awards[award.name] = a;
+        });
+        updateAwards();
+    }
 
     function onUpdate( callback, scope ) {
         Notify.notify( 'dx-update', callback, scope );
@@ -97,7 +107,7 @@ function DXService( $rootScope, $http, User, Awards, Notify ) {
     function itemAwards( item ) {
         for ( var aN in item._awards ) {
             var aV = item._awards[aN];
-            var a = { award: aN, value: aV, sound: true };
+            var a = { award: aN, value: aV, sound: false, noStats: awards[aN].noStats };
             if ( user.awards || user.awardsSettings ) {
                 if ( user.awardsSettings != null &&
                         aN in user.awardsSettings ) {
@@ -147,6 +157,8 @@ function DXService( $rootScope, $http, User, Awards, Notify ) {
         user.lists.forEach( function( list ) {
             if ( list.track )
                 list.items.forEach( function( listItem ) {
+                    if ( listItem.settings && listItem.settings.hide )
+                        return;
                     if ( item.band in listItem.settings.bands && 
                             !listItem.settings.bands[item.band] )
                         return;
@@ -172,7 +184,9 @@ function DXService( $rootScope, $http, User, Awards, Notify ) {
 
                         }
                         item.awards.push( { award: list.title, 
-                            value: listItem.callsign,
+                            dtEnd: listItem.dtEnd,
+                            link: listItem.link,
+                            descr: listItem.descr,
                             worked: worked, list_id: list.id, color: list.color,
                             sound: ( worked && listItem.settings.sound.wkd ) || 
                                 ( !worked && listItem.settings.sound.not )

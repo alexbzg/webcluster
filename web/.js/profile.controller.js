@@ -22,19 +22,16 @@ function profileController( $scope, User, Head, Awards, LoadingScreen ) {
 
     function activate() {
         Head.setTitle( 'ADXCluster.com - Profile' );
-        Awards.getAwards()
-            .then( function( data ) {
-                data.forEach( function( award ) {
-                    if ( !award.noStats )
-                        vm.adif.awards.push(
-                            { name: award.name, 
-                                title: award.fullName + ' (' + award.name + ')',
-                                country: award.country,
-                                enabled: User.data.awardsSettings[award.name].adif
-                                });
-                });
-                adifUpdateSelectAllAwards();
-            });
+        Awards.awards.forEach( function( award ) {
+            if ( !award.noStats )
+                vm.adif.awards.push(
+                    { name: award.name, 
+                        title: award.fullName + ' (' + award.name + ')',
+                        country: award.country,
+                        enabled: User.data.awardsSettings[award.name].adif
+                        });
+        });
+        adifUpdateSelectAllAwards();
     }
 
     function validateEmail() {

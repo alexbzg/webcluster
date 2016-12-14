@@ -21,7 +21,7 @@
         </td></tr></table>
     </div>
 
-    <table class="list_edit">
+    <table ng-class="{'dxlist_edit': vm.list.title == 'DXPED', 'list_edit': vm.list.title != 'DXPED'}">
         <tr>
             <th id="callsign" rowspan="2" class="border_right">&nbsp;</th>
             <th id="band" colspan="11" class="border_right">Band</th>
@@ -58,10 +58,15 @@
 
 </div> <!-- fixed div end-->
 
-<table class="list_edit list_edit_fixed" style="margin-top: 350px;">
-    <tr ng-repeat="item in vm.list.items track by $index" ng-class-odd="odd">
+<table ng-class="{'dxlist_edit': vm.list.title == 'DXPED', 'list_edit': vm.list.title != 'DXPED',
+        'dxlist_edit_fixed': vm.list.title == 'DXPED', 'list_edit_fixed': vm.list.title != 'DXPED'}" >
+    <tr ng-repeat="item in vm.list.items track by $index" ng-class-odd="odd" ng-if="!item.settings.hide">        
         <td class="callsign">
             {{item.callsign}}{{item.pfx ? '*' : ''}}
+            <span ng-if="vm.list.title == 'DXPED'">
+                {{item.dtEnd ? 'till ' + item.dtEnd : '' }}{{item.descr ? ' (' + item.descr + ')' : ''}}
+                <a ng-if="item.link" href="{{item.link}}">info</a>
+            </span>
         </td>
         <td class="band" ng-repeat="band in vm.switchesList.bands" ng-class="{border_right: $last}">
             <input type="checkbox" ng-model="item.settings.bands[band]" 

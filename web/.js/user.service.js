@@ -143,14 +143,23 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
                      moment( item.dt_end ).add( 1, 'weeks' ) > moment() );
             }) : [];        
         user.data.dxpedition.items = 
-            user.data.dxpedition.items.filter( function( settingItem ) {
+            user.data.dxpedition.items.filter( function( settingsItem ) {
                 return dxpList.find( function( listItem ) {
                     return listItem.callsign == settingsItem.callsign } );
             });
         dxpList.forEach( function( item ) {
-            if ( !user.data.dxpedition.items.find( function( settingsItem ) {
-                return item.callsign == settingsItem.callsign; } ) )
-                user.data.dxpedition.items.push( { callsign: item.callsign } );
+            var i;
+            if ( i = user.data.dxpedition.items.find( function( settingsItem ) {
+                return item.callsign == settingsItem.callsign; } ) ) {
+                i.dtEnd = item.dt_end;
+                i.descr = item.descr;
+                i.link = item.link;
+            } else
+                user.data.dxpedition.items.push( 
+                        { callsign: item.callsign, 
+                            dtEnd: item.dt_end,
+                            descr: item.descr,
+                            link: item.link } );
         });
         $rootScope.$emit('user-awards-stats-change');
     }
@@ -342,26 +351,21 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
     }
 
     function deleteListItem( item, list ) {
-        if ( $window.confirm( 'Do you really want to remove callsign ' + 
-                item.callsign + ( item.pfx ? '*' : '' ) + ' from the list?' ) ) {
-            var i = list.items.indexOf( item );
-            list.items.splice( i, 1 );
-            toStorage();            
-            if ( list.id ) {
-                if ( list.id == 'dxpedition' )
-                    DXpedition.deleteItem( item );
-                else   
-                    toServer( {
-                            'list_id': list.id,
-                            'callsign': item.callsign,
-                            'delete': true
-                    } );
-            }
-            $rootScope.$emit('user-awards-stats-change');
-            return true;
-       } else
-           return false;
-
+        var i = list.items.indexOf( item );
+        list.items.splice( i, 1 );
+        toStorage();            
+        if ( list.id ) {
+            if ( list.id == 'dxpedition' )
+                DXpedition.deleteItem( item );
+            else   
+                toServer( {
+                        'list_id': list.id,
+                        'callsign': item.callsign,
+                        'delete': true
+                } );
+        }
+        $rootScope.$emit('user-awards-stats-change');
+        return true;
     }
 
     function awardPostData( award ) {
