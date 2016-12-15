@@ -13,6 +13,14 @@ function awardsController( DxConst, User, Awards, Head ) {
 
     function activate() {
         Head.setTitle( 'ADXCluster.com - Awards' );
+        Awards.onUpdate( createAwards );
+        if ( Awards.awards )
+            createAwards();
+       
+    }
+
+    function createAwards() {
+        vm.awards = [];
         Awards.awards.forEach( function( award ) {
             var ac = award.displayCountry ? award.displayCountry : award.country;
             var country = vm.awards.find( function( item ) {
@@ -30,7 +38,8 @@ function awardsController( DxConst, User, Awards, Head ) {
             if ( !country.country )
                 country.country = undefined;
         });
-     }
+    }
+
 
     function openSetup( award ) {
         vm.setupAward = { name: award.name, 

@@ -6,6 +6,7 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
         LoadingScreen, $rootScope, Notify, DXpedition ) {
     var storageKey = 'adxcluster-user';
     var defaultColor = '#770000';
+    var defaultColorDXped = '#f600df';
     var updateTask = $interval( update, 300000 );
     var dxpedTask = $interval( initDXpedition, 3600000 );
     var user = { 
@@ -101,14 +102,19 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
             user.data.awardValueConfirmedColor = '#02b20e';
 
         user.data.dxpedition = user.data.lists.find( function( item ) {
-            return item.title == 'DXPED';
+            return item.title == 'DXpedition';
         });
         if ( !user.data.dxpedition ) {
-            user.data.dxpedition = { title: 'DXPED', 
-                full_title: 'DXpedition List',
+            user.data.dxpedition = { title: 'DXpedition', 
+                full_title: 'Updated DXpedition List',
+                track: true,
+                color: defaultColorDXped,
                 items: [] };
             user.data.lists.push( user.data.dxpedition );
         }
+        if ( !user.data.dxpedition.id )
+            saveList( user.data.dxpedition );
+        user.data.dxpedition.full_title = 'Updated DXpedition List';
 
         user.data.lists.forEach( function( list ) {
             if ( !user.data.listsAwards[list.id] )
@@ -138,10 +144,12 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
     function initDXpedition() {
         var dxpList = DXpedition.dxpedition ? 
             DXpedition.dxpedition.filter( function( item ) {
-                return ( !item.dt_begin || moment( item.dt_begin ) > moment() ) &&
+                return ( !item.dt_begin || moment( item.dt_begin ) < moment() ) &&
                     (!item.dt_end || 
                      moment( item.dt_end ).add( 1, 'weeks' ) > moment() );
             }) : [];        
+        if ( !user.data.dxpedition.items )
+            user.data.dxpedition.items = [];
         user.data.dxpedition.items = 
             user.data.dxpedition.items.filter( function( settingsItem ) {
                 return dxpList.find( function( listItem ) {

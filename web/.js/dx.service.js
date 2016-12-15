@@ -157,17 +157,19 @@ function DXService( $rootScope, $http, $interval, User, Awards, Notify ) {
         user.lists.forEach( function( list ) {
             if ( list.track )
                 list.items.forEach( function( listItem ) {
-                    if ( listItem.settings && listItem.settings.hide )
-                        return;
-                    if ( item.band in listItem.settings.bands && 
-                            !listItem.settings.bands[item.band] )
-                        return;
-                    if ( item.mode in listItem.settings.modes &&
-                            !listItem.settings.modes[item.mode] )
-                        return;
-                    if ( dx.subMode in listItem.settings.modes &&
-                            !listItem.settings.modes[item.subMode] )
-                        return;
+                    if ( listItem.settings ) {
+                        if ( listItem.settings.hide )
+                            return;
+                        if ( item.band in listItem.settings.bands && 
+                                !listItem.settings.bands[item.band] )
+                            return;
+                        if ( item.mode in listItem.settings.modes &&
+                                !listItem.settings.modes[item.mode] )
+                            return;
+                        if ( item.subMode in listItem.settings.modes &&
+                                !listItem.settings.modes[item.subMode] )
+                            return;
+                    }
                     if ( listItem.callsign == item.cs || ( listItem.pfx && 
                                 item.cs.indexOf( listItem.callsign ) == 0 ) ) {
                         var worked = false;
@@ -188,8 +190,12 @@ function DXService( $rootScope, $http, $interval, User, Awards, Notify ) {
                             link: listItem.link,
                             descr: listItem.descr,
                             worked: worked, list_id: list.id, color: list.color,
-                            sound: ( worked && listItem.settings.sound.wkd ) || 
-                                ( !worked && listItem.settings.sound.not )
+                            sound: ( worked && 
+                                    ( !listItem.settings || 
+                                      listItem.settings.sound.wkd ) ) || 
+                                ( !worked && 
+                                  ( !listItem.settings || 
+                                    listItem.settings.sound.not ) )
                         } );
                         
                     }

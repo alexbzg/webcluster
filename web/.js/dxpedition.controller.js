@@ -2,7 +2,7 @@ angular
     .module( 'adxcApp' )
     .controller( 'dxpeditionController', dxpeditionController );
 
-function dxpeditionController( User, Head, DXpedition, DXpeditionAdmin ) {    
+function dxpeditionController( User, Head, DXpedition, DXpeditionAdmin, $q ) {    
     var vm = this;
     vm.insertItem = insertItem;
     vm.deleteItem = deleteItem;
@@ -30,16 +30,25 @@ function dxpeditionController( User, Head, DXpedition, DXpeditionAdmin ) {
     function insertItem() {
         if ( vm.newLink && vm.newLink.indexOf( 'http://' ) != 0 )
             vm.newLink = 'http://' + vm.newLink;
-        var newItem = { callsign: vm.newCallsign, descr: vm.newDescr, 
-            link: vm.newLink,
-            dt_begin: vm.newDtBegin ? moment( vm.newDtBegin ).format( 'L' ) : null, 
-            dt_end: vm.newDtEnd ? moment( vm.newDtEnd ).format( 'L' ) : null };
-        DXpeditionAdmin.saveItem( newItem )
-            .then( function() {
-                vm.newCallsign = null;
-                vm.newDesc = null;            
-                load();
-            } );
+        vm.newCallsign = vm.newCallsign.toUpperCase();
+        var css = vm.newCallsign.split( /[,; ]+/ );
+        var chain = $q.when();
+        css.forEach( function( callsign ) {
+            var newItem = { callsign: callsign,
+                descr: vm.newDescr, 
+                link: vm.newLink,
+                dt_begin: vm.newDtBegin ? moment( vm.newDtBegin ).format( 'L' ) : null, 
+                dt_end: vm.newDtEnd ? moment( vm.newDtEnd ).format( 'L' ) : null };
+            chain = chain.then( function() {
+                return DXpeditionAdmin.saveItem( newItem );
+            });
+        });
+        chain = chain.then( function() {
+                    vm.newCallsign = null;
+                    vm.newDescr = null;            
+                    vm.newLink = null;
+                    load();
+                } );
     }
      
 }

@@ -21,11 +21,8 @@ function listSetupController( $state, $stateParams, $window, DxConst, User, Head
         fillSwitches( vm.switches );
 
         if ( $stateParams.id ) 
-            vm.list = $stateParams.id == 'DXpedition' ? 
-                User.data.lists.find( 
-                    function( item ) { return item.title == 'DXPED'; } ) :
-                User.data.lists.find( 
-                    function( item ) { return $stateParams.id == item.id; } );
+            vm.list = User.data.lists.find( 
+                function( item ) { return $stateParams.id == item.id; } );
 
         if ( vm.list ) {
             vm.list.no = User.data.lists.indexOf( vm.list ) + 1;
@@ -85,8 +82,8 @@ function listSetupController( $state, $stateParams, $window, DxConst, User, Head
     }
 
     function checkTitle() {
-        if ( vm.list.title == 'DXPED' ) {
-            $window.alert( 'List title "DXPED" is reserved by system. Please choose any other title' );
+        if ( vm.list.title == 'DXpedition' ) {
+            $window.alert( 'List title "DXpedition" is reserved by system. Please choose any other title' );
             vm.list.title = '';
             return;
         }
@@ -124,7 +121,7 @@ function listSetupController( $state, $stateParams, $window, DxConst, User, Head
     function deleteItem( item ) {
         if ( $window.confirm( 'Do you really want to remove callsign ' + 
             item.callsign + ( item.pfx ? '*' : '' ) + ' from the list?' ) ) {
-            if ( vm.list.title == 'DXPED' ) {
+            if ( vm.list.title == 'DXpedition' ) {
                 item.settings.hide = true;
                 User.saveListItem( item, vm.list );
             } else 

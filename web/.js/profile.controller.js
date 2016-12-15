@@ -22,6 +22,13 @@ function profileController( $scope, User, Head, Awards, LoadingScreen ) {
 
     function activate() {
         Head.setTitle( 'ADXCluster.com - Profile' );
+        Awards.onUpdate( adifAwards );
+        if ( Awards.awards )
+            adifAwards();
+    }
+
+    function adifAwards() {
+        vm.adif.awards = [];
         Awards.awards.forEach( function( award ) {
             if ( !award.noStats )
                 vm.adif.awards.push(
@@ -33,6 +40,8 @@ function profileController( $scope, User, Head, Awards, LoadingScreen ) {
         });
         adifUpdateSelectAllAwards();
     }
+
+    
 
     function validateEmail() {
         var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;

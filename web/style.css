@@ -1038,6 +1038,7 @@ table.dx_list td.callsign{
 	font-size: 16px;
 	padding-left: 10px;
 	text-align: left;
+	font-weight: bold;
 }
 table.dx_list td.delete{
 	width: 50px;

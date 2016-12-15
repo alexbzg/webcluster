@@ -103,7 +103,7 @@
         </tr>
        
         <tr ng-repeat="list in vm.user.data.lists 
-            | filter: { title: '!DXPED' } : true
+            | filter: { title: '!DXpedition' } : true
             | orderBy: id track by $index">
             <td class="track">
                 <input type="checkbox" ng-model="list.track" 
@@ -152,23 +152,26 @@
                 <button-color-picker value="vm.user.data.dxpedition.color"
                     change="vm.user.listChanged( vm.user.data.dxpedition )"></button-color-picker>
             </td>
-            <td class="short_name" ng-style="{'color': vm.user.dxpedition.color}">
+            <td class="short_name" 
+                ng-style="{'color': vm.user.data.dxpedition.color}">
                 DXpedition
             </td>
             <td class="full_name">
-                DXpedition List   
+                Updated DXpeditions List   
                 <a ui-sref="dxpedition" ng-show="vm.user.data.admin">
                     <img src="/images/icon_edit.png" title="Edit list" />
                 </a>
             </td>
             <td class="stats">
-                <a ui-sref="stats( { list_id: 'DXpedition' } )">
+                <a ui-sref="stats( { list_id: vm.user.data.dxpedition.id } )">
                     <img src="/images/icon_stats.png" title="List stats">
                 </a>
             </td>
            
             <td class="notification">
-                <a ui-sref="listSetup( { id: 'DXpedition' } )"><img src="/images/icon_setup.png"></a>
+                <a ui-sref="listSetup( { id: vm.user.data.dxpedition.id } )">
+                    <img src="/images/icon_setup.png">
+                </a>
 
                 <!--
                 <input type="checkbox" disabled><img src="/images/icon_sound.jpg" title="Sound notification"> <input type="checkbox" disabled><img src="/images/icon_telegram.jpg" title="Telegram message">  -->
@@ -180,7 +183,7 @@
 
         <tr ng-repeat-start="country in vm.awards | orderBy: 'country'">
             <td colspan="7" class="country">
-                {{country.membersList ? 'Memberlists (no stats)' : country.country}}
+                {{country.membersList ? 'Memberlists' : country.country}}
             </td>
         </tr>
         <tr ng-repeat="award in country.awards">
