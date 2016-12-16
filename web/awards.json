@@ -91,7 +91,8 @@
        
     {  "name": "WAB", "fullName": "Worked All Brazil Award", 
         "link":"http://www.labre.org.br/the-labre-awards-program/",
-    "country": "Brazil", "valuesFile": "csv/wba.csv", "groupInValue": 0, "color":"#006666", 
+    "country": "Brazil", "valuesFile": "csv/wba.csv", "groupInValue": 0, 
+    "color":"#006666", 
     "byBand":1,
     "getFields":{"text":0, "web":0},
     "valueColumns": {"value": 0, "desc": 1, "keys": 2 },
@@ -108,6 +109,17 @@
      "lookups":[{"type":"key", "source":"field", "field":"cs"},
         {"type":"key","source":"field","field":"district"}] },
 
+    {  "name": "Tyrol", "fullName": "Tyrol Award", 
+         "link":"http://www.oe7.oevsv.at/opencms/diplome/tyrol_award_e/",
+    "country": "Austria", "valuesFile": "csv/tyrol.csv", 
+    "groupInValue": 0, "color":"#900202", "noStats": 1,
+    "groupColumns": { "value": 3 }, "valueColumns": {"value":2, "keys": 0 },
+    "getFields":{"text":0, "web":0},
+     "lookups":[{"type":"key", "source":"field", "field":"cs"},
+        {"type":"key","source":"text","field":"cs","re":"^...."},
+        {"type":"key","source":"text","field":"cs","re":"^..."}] },
+
+        
    {  "name": "Louise", "fullName": "Louise-Trophy", 
          "link":"http://www.darc.de/der-club/distrikte/y/diplome/louise-trophaee/",
     "country": "Germany", "valuesFile": "csv/louise.csv", 
@@ -147,10 +159,19 @@
     {  "name": "WEIC", "fullName": "Worked EI Counties Award", 
         "link":"http://www.irts.ie/cgi/st.cgi?weic", "color":"#dc9816",
     "country": "Ireland", "valuesFile": "csv/weic.csv", "groupInValue": 0,  
-    "keyAttr":"cs", "getFields":{"text":0, "web":1},
+    "keyAttr":"cs", "getFields":{"text":0, "web":0},
     "valueColumns": {"value": 0, "keys": 1 },
     "groupColumns": {"value": 3 },
     "lookups":[{"type":"key", "source":"field", "field":"cs"}] },
+
+    {  "name": "Vienna", "fullName": "Vienna Award", 
+        "link":"http://www.oe1.oevsv.at/opencms/der_club/referate/Diplome.html", "color":"#dc9816",
+    "country": "Austria", "valuesFile": "csv/vienna.csv", "groupInValue": 0,  
+    "keyAttr":"cs", "getFields":{"text":0, "web":0},
+    "valueColumns": {"value": 0, "keys": 1 },
+    "groupColumns": {"value": 3 },
+    "lookups":[{"type":"key", "source":"field", "field":"cs"}] },
+   
 
     {  "name": "A1 OP", "fullName": "A-1 Operator Club", 
         "link":"http://www.arrl.org/a-1-op", "color":"#FF0000",
@@ -217,8 +238,30 @@
     "groupColumns": {"value": 3 }, "noStats": 1, "membersList": 1,
     "lookups":[{"type":"key", "source":"field", "field":"cs"}] },
 
-    
-        
+     {  "name": "FISTS", "fullName": "FISTS CW Club", 
+        "link":"http://www.fists.org", "color":"#dc9816",
+    "valuesFile": "csv/list_fists_.csv", "groupInValue": 0,  
+    "keyAttr":"cs", "getFields":{"text":0, "web":0},
+    "valueColumns": {"value": 0, "keys": 1 }, "country": null,
+    "groupColumns": {"value": 3 }, "noStats": 1, "membersList": 1,
+    "lookups":[{"type":"key", "source":"field", "field":"cs"}] },
+   
+    {  "name": "A1club", "fullName": "A1 Century Club", 
+        "link":"http://a1club.net/award/index_e.htm", "color":"#dc9816",
+    "valuesFile": "csv/list_a1club_.csv", "groupInValue": 0,  
+    "keyAttr":"cs", "getFields":{"text":0, "web":0},
+    "valueColumns": {"value": 0, "keys": 1 }, "country": null,
+    "groupColumns": {"value": 3 }, "noStats": 1, "membersList": 1,
+    "lookups":[{"type":"key", "source":"field", "field":"cs"}] },
+
+     {  "name": "RNARS", "fullName": "Royal Naval Amateur Radio Society", 
+        "link":"http://www.rnars.org.uk/EventsAwards.html", "color":"#dc9816",
+    "valuesFile": "csv/list_rnars_.csv", "groupInValue": 0,  
+    "keyAttr":"cs", "getFields":{"text":0, "web":0},
+    "valueColumns": {"value": 0, "keys": 1 }, "country": null,
+    "groupColumns": {"value": 3 }, "noStats": 1, "membersList": 1,
+    "lookups":[{"type":"key", "source":"field", "field":"cs"}] },
+       
     {  "name": "OK-CA", "fullName": "OK Counties Award", 
         "link":"http://www.crk.cz/ENG/AWARDE", "color":"#13952e",
     "country": "Czech Republic", "valuesFile": "csv/okca.csv", "groupInValue": 0,  

@@ -11,6 +11,7 @@ function clusterController( $interval, $timeout, $scope,
     var firstLoad = true;
     var lastCs = null;
     var lastTs = null;
+    var selector = { bands: {}, modes: {} };
 
     vm.dx = DX;
     vm.news = News;
@@ -19,7 +20,7 @@ function clusterController( $interval, $timeout, $scope,
     vm.selectorChange = selectorChange;
     vm.soundChange = soundChange;
 
-    DX.onUpdate( dxFilter, $scope );
+    DX.onUpdate( function() { dxFilter(); }, $scope );
 
     activate();
 
@@ -41,6 +42,7 @@ function clusterController( $interval, $timeout, $scope,
 
             }
         }
+        applySelector();
 
         dxFilter();
         DX.load();
@@ -68,7 +70,16 @@ function clusterController( $interval, $timeout, $scope,
 
     function selectorChange() {
         saveSelector();
+        applySelector();
         dxFilter( true );
+    }
+
+    function applySelector() {
+        [ 'bands', 'modes' ].forEach( function( field ) {
+            vm.selector[field].forEach( function( item ) {
+                selector[field][item.name] = item.enabled;
+            });
+        });
     }
 
     function soundChange() {
@@ -91,12 +102,10 @@ function clusterController( $interval, $timeout, $scope,
         DX.items.forEach( function( dx ) {
             var fl = false;
             if ( dx.awards.length > 0 || vm.selector.allSpots ){
-                var band =  vm.selector.bands.find( function( band ) {
-                    return band.name == dx.band; } );
-                if ( !band || band.enabled ) {
-                    var mode =  vm.selector.modes.find( function( mode ) {
-                        return mode.name == dx.mode; } );
-                    if ( !mode || mode.enabled )
+                if ( !(dx.band in selector.bands) || 
+                        selector.bands[dx.band] ) {
+                    if ( !(dx.mode in selector.modes) || 
+                        selector.modes[dx.mode] )
                         fl = true;
                 }
             } 

@@ -6,6 +6,7 @@ function dxpeditionController( User, Head, DXpedition, DXpeditionAdmin, $q ) {
     var vm = this;
     vm.insertItem = insertItem;
     vm.deleteItem = deleteItem;
+    vm.openItem = openItem;
 
     activate();
     return vm;
@@ -25,6 +26,14 @@ function dxpeditionController( User, Head, DXpedition, DXpeditionAdmin, $q ) {
     function deleteItem( item ) {
         DXpeditionAdmin.deleteItem( item )
             .then( load );
+    }
+
+    function openItem( item ) {
+        vm.newCallsign = item.callsign;
+        vm.newDescr = item.descr;
+        vm.newLink = item.link;
+        vm.newDtBegin = item.dt_begin;
+        vm.newDtEnd = item.dt_end;
     }
 
     function insertItem() {

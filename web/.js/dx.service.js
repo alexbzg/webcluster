@@ -5,6 +5,7 @@ angular
 function DXService( $rootScope, $http, $interval, User, Awards, Notify ) {
     var url = '/dxdata.json';
     var lastModified = null;
+    var lastItem = null;
     var dxpeditionModified = null;
     var user = User.data;
     var awards = {};
@@ -48,16 +49,24 @@ function DXService( $rootScope, $http, $interval, User, Awards, Notify ) {
     function load() {
         return $http.get( url, { cache: false } )
             .then( function( response ) {
-                if ( lastModified != response.headers( 'last-modified' ) ) {
-                    dx.items = response.data.reverse();
-                    dx.items.forEach( function( item ) {
+                if ( ( lastModified != response.headers( 'last-modified' ) ) && 
+                        response.data ) {
+                    var lastRespItemIdx = response.data.length - 1;
+                    for ( var co = 0; co <= lastRespItemIdx; co++ ) {
+                        var item = response.data[lastRespItemIdx - co];
+                        if ( lastItem && item.cs == lastItem.cs && 
+                                item.freq == lastItem.freq && 
+                                item.ts == lastItem.ts )
+                            break;
                         item._awards = angular.extend( {}, item.awards );
-                    });
+                        updateItemAwards( item );            
+                        dx.items.splice( co, 0, item );
+                    }
+                    lastItem = response.data[ lastRespItemIdx ];
                     lastModified =  response.headers( 'last-modified' );
-                    updateAwards();
-                    /*dx.onNewData.forEach( function( callback ) {
-                        callback();
-                    });*/
+                    if ( dx.items.length > 200 )
+                        dx.items.splice( 200, dx.items.length - 200 );
+                    $rootScope.$emit( 'dx-update' );
                     return true;
                 } 
                 return false;
@@ -76,13 +85,16 @@ function DXService( $rootScope, $http, $interval, User, Awards, Notify ) {
 
 
     function updateAwards() {
-        dx.items.forEach( function( item ) {
-            item.awards = [];
-            itemAwards( item );
-            itemListAwards( item );
-        });
+        dx.items.forEach( updateItemAwards );
         $rootScope.$emit( 'dx-update' );
     }
+
+    function updateItemAwards( item ) {
+        item.awards = [];
+        itemAwards( item );
+        itemListAwards( item );
+    }
+
 
     function checkAward( uav, dx ) {
         if ( dx.band in uav )
@@ -107,7 +119,8 @@ function DXService( $rootScope, $http, $interval, User, Awards, Notify ) {
     function itemAwards( item ) {
         for ( var aN in item._awards ) {
             var aV = item._awards[aN];
-            var a = { award: aN, value: aV, sound: false, noStats: awards[aN].noStats };
+            var a = { award: aN, value: aV, sound: false, 
+                noStats: awards[aN].noStats };
             if ( user.awards || user.awardsSettings ) {
                 if ( user.awardsSettings != null &&
                         aN in user.awardsSettings ) {

@@ -517,7 +517,7 @@ class DX( object ):
                     if data.has_key( 'bio' ):
                         bio = qrzComLink.getData( self.cs, True )
                         if bio:
-                            for m in reGermanyDOK.finditer( bio ):
+                            for m in DX.reGermanyDOK.finditer( bio ):
                                 v = m.group( 1 ).upper() + m.group( 2 )
                                 self.district = v
                                 if self.district == v:

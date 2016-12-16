@@ -36,7 +36,7 @@
 <table class="dx_list dx_list_fixed">
     <tbody>
     <tr ng-repeat="item in vm.dxpedition">
-        <td class="callsign">{{item.callsign}}</td>
+        <td class="callsign" ng-click="vm.openItem(item)">{{item.callsign}}</td>
         <td class="comments">{{item.descr}}</td>
         <td class="link"><a href="{{item.link}}">link</a></td>
         <td class="start_date">{{item.dt_begin}}</td>
