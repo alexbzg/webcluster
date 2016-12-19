@@ -199,7 +199,7 @@
 </table>
 
 <table id="ABM_view" ng-if="vm.activeAward.byBand">
-    <tr ng-repeat="item in vm.activeAward.values" ng-class-odd="odd">
+    <tr ng-repeat="item in vm.activeAward.values | orderBy: 'value'" ng-class-odd="odd">
         <td class="unit_to_select" ng-click="vm.setActive( item, null, null )">
             <span>{{item.value}}</span> {{item.desc}}
         </td>

@@ -98,12 +98,13 @@ input.select_color::-webkit-color-swatch-wrapper {
 #news{
 	width: 70%;
 	margin: 70px auto 0 auto;
-	padding: 10px 20px 5px 20px;
+	padding: 25px 20px 5px 20px;
 	background-color: #fffeb3;
 	box-shadow: 3px 3px 10px rgba(0,0,0,0.3); /* Параметры тени */
 	position: relative;
 	border: 1px solid #c30202;
 	font-size: 14px;
+	line-height: 20px;
 }
 #news_close{
 	width: 30px;
@@ -239,6 +240,14 @@ table#cluster a{
 table#cluster a:hover{
 	text-decoration: underline;
 }
+table#cluster a.dxinfo{
+	padding-left: 10px;
+	color: #33a;
+	font-weight: bold;
+	font-size: 12px;
+	text-transform: uppercase;
+	text-decoration: underline;
+}
 
 
 table#cluster td.time{
@@ -285,6 +294,12 @@ table#cluster td.awards span.award_name{
 	font-weight: bold;
 	font-size: 16px;
 	color: #700;
+}
+table#cluster td.awards span{
+	padding-right: 10px;
+}
+table#cluster td.awards span span{
+	padding-right: 0px;
 }
 table#cluster td.awards span.award_name img{
 	padding-left: 2px;
@@ -1003,13 +1018,13 @@ table.dx_list th{
 	color: #fff;
 }
 table.dx_list th#callsign{
-	width: 200px;
+	width: 170px;
 }
 table.dx_list th#comments{
-	width: 150px;
+	width: 220px;
 }
 table.dx_list th#link{
-	width: 100px;
+	width: 60px;
 }
 table.dx_list th#start_date, table.dx_list th#end_date{
 	width: 150px;
@@ -1025,16 +1040,21 @@ table.dx_list td{
 	color: #000;
 }
 table.dx_list td.comments{
-	width: 150px;
+	width: 210px;
+	text-align: left;
+	padding-left: 10px;
 }
 table.dx_list td.link{
-	width: 100px;
+	width: 60px;
+}
+table.dx_list td.link a {
+	color: #000;
 }
 table.dx_list td.start_date, table.dx_list td.end_date{
 	width: 150px;
 }
 table.dx_list td.callsign{
-	width: 190px;
+	width: 160px;
 	font-size: 16px;
 	padding-left: 10px;
 	text-align: left;

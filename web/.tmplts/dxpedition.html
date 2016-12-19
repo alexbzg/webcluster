@@ -35,7 +35,7 @@
 
 <table class="dx_list dx_list_fixed">
     <tbody>
-    <tr ng-repeat="item in vm.dxpedition">
+    <tr ng-repeat="item in vm.dxpedition | orderBy: 'callsign'">
         <td class="callsign" ng-click="vm.openItem(item)">{{item.callsign}}</td>
         <td class="comments">{{item.descr}}</td>
         <td class="link"><a href="{{item.link}}">link</a></td>

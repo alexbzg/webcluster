@@ -99,7 +99,11 @@ function clusterController( $interval, $timeout, $scope,
         vm.dxFiltered = [];
 
 
-        DX.items.forEach( function( dx ) {
+        var dxl = DX.items.length;
+        var dxfl = 0;
+        for ( var co = 0; co < dxl; co++ )
+        {
+            var dx = DX.items[co];
             var fl = false;
             if ( dx.awards.length > 0 || vm.selector.allSpots ){
                 if ( !(dx.band in selector.bands) || 
@@ -126,8 +130,10 @@ function clusterController( $interval, $timeout, $scope,
                             break;
                         }
                 }
+                if ( ++dxfl > 199 )
+                    break;
             }
-        });
+        }
 
         if ( tmpTs > lastTs ) {
             lastTs = tmpTs;

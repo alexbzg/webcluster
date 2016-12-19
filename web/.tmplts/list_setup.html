@@ -60,11 +60,12 @@
 
 <table ng-class="{'dxlist_edit': vm.list.title == 'DXpedition', 'list_edit': vm.list.title != 'DXpedition',
         'dxlist_edit_fixed': vm.list.title == 'DXpedition', 'list_edit_fixed': vm.list.title != 'DXpedition'}" >
-    <tr ng-repeat="item in vm.list.items track by $index" ng-class-odd="odd" ng-if="!item.settings.hide">        
+    <tr ng-repeat="item in vm.list.items | orderBy: 'callsign' track by $index" 
+        ng-class-odd="odd" ng-if="!item.settings.hide">        
         <td class="callsign">
             {{item.callsign}}{{item.pfx ? '*' : ''}}
             <span ng-if="vm.list.title == 'DXpedition'">
-                {{item.dtEnd ? 'till ' + item.dtEnd : '' }}{{item.descr ? ' (' + item.descr + ')' : ''}}
+                {{item.descr ? ' (' + item.descr + ')' : ''}}
                 <a ng-if="item.link" href="{{item.link}}">info</a>
             </span>
         </td>

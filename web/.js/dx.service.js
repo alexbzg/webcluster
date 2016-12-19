@@ -54,18 +54,22 @@ function DXService( $rootScope, $http, $interval, User, Awards, Notify ) {
                     var lastRespItemIdx = response.data.length - 1;
                     for ( var co = 0; co <= lastRespItemIdx; co++ ) {
                         var item = response.data[lastRespItemIdx - co];
-                        if ( lastItem && item.cs == lastItem.cs && 
-                                item.freq == lastItem.freq && 
-                                item.ts == lastItem.ts )
-                            break;
+                        if ( co < dx.items.length && dx.items[co].cs == item.cs && 
+                                dx.items[co].freq == item.freq && 
+                                dx.items[co].ts == item.ts )
+                                break;
+                        for ( var coDup = co; coDup < dx.items.length; coDup++ )
+                            if ( dx.items[coDup].cs == item.cs &&
+                                ( dx.items[coDup].freq - item.freq < 1 &&
+                                  item.freq - dx.items[coDup].freq < 1 ) ) {
+                                dx.items.splice( coDup, 1 );
+                                coDup--;
+                            }
                         item._awards = angular.extend( {}, item.awards );
                         updateItemAwards( item );            
                         dx.items.splice( co, 0, item );
                     }
-                    lastItem = response.data[ lastRespItemIdx ];
                     lastModified =  response.headers( 'last-modified' );
-                    if ( dx.items.length > 200 )
-                        dx.items.splice( 200, dx.items.length - 200 );
                     $rootScope.$emit( 'dx-update' );
                     return true;
                 } 

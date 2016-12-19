@@ -44,7 +44,7 @@
         <th id="link_status">Text</th>
         <th class="spotter">Spotter</th>
     </tr>
-    <tr ng-repeat="item in vm.dxFiltered" 
+    <tr ng-repeat="item in vm.dxFiltered track by $index" 
         ng-class-odd="'odd'" ng-class-even="'even'">
         <td class="time">{{item.time}}</td>
         <td class="freq">
@@ -57,7 +57,7 @@
                 href="http://qrz.com/db/{{item.cs.toLowerCase()}}">{{ vm.replace0( item.cs ) }}</a>
         </td>
         <td class="awards">
-            <span ng-repeat="award in item.awards">
+            <span ng-repeat="award in item.awards track by $index">
                 <a ng-if="!award.noStats"
                 ui-sref="stats( {award: award.award, value: award.value, band: item.band, 
                 mode: item.mode, list_id: award.list_id} )">
@@ -66,15 +66,14 @@
                         >{{award.award}}<img ng-if="award.worked" src="/images/icon_worked.png" 
                                 title="worked but not confirmed"/></span>{{award.value ? 
                             ' ' + vm.replace0( award.value) : ''}}<span 
-                                ng-if="award.dtEnd"> till {{award.dtEnd}}</span><span 
                                 ng-if="award.descr"> ({{award.descr}})</span></a><span ng-if="award.noStats">
                     <span 
                         class="award_name" ng-style="{'color': award.color}"
                         >{{award.award}}<img ng-if="award.worked" src="/images/icon_worked.png" 
                                 title="worked but not confirmed"/></span>{{award.value 
                             ? ' ' + vm.replace0( award.value) : ''}}</span><span 
-                                ng-if="award.link"> <a class="dxinfo" target="_blank" href="{{award.link}}">info</a></span><span 
-                    ng-if="!$last">, </span>
+                                ng-if="award.link"> <a class="dxinfo" 
+                                target="_blank" href="{{award.link}}">info</a></span><span ng-if="!$last">, </span>
            </span>
                
         </td>  
