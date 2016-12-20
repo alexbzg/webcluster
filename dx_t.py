@@ -529,6 +529,27 @@ class DX( object ):
                             if m:
                                 self.district = m.group(0)
                                 break
+                elif self.country == 'United Kingdom':
+                    if data.has_key( 'lat' ) and  data.has_key( 'lon' ):
+                        try:
+                            url = \
+                                'http://www.whatsmylocator.co.uk/wabsquare.php?lat=' \
+                                + data['lat'] + '&long=' + data['lon']
+                            headers = { 
+                                    'User-Agent': 'Wget/1.16 (linux-gnu)',
+                                    'Accept': '*/*',
+                                    'Host': 'www.whatsmylocator.co.uk',
+                                    'Connection': 'Keep-Alive' }
+
+                            req = urllib2.Request( url, None, headers )
+                            r = urllib2.urlopen( req )
+                            wabData = json.loads( r.read() )
+                            if wabData.has_key( 'wabsquare' ):
+                                self.district = wabData['wabsquare']
+                        except urllib2.HTTPError as e:
+                            print e.read()
+
+
                 else:
                     if data.has_key( 'state' ):
                         self.region = data['state']

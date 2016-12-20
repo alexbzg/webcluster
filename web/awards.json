@@ -327,7 +327,28 @@
     "valueColumns": {"value": 1, "keys": 2, "desc": 2 },
     "groupColumns": {"value": 0 },
     "getFields":{"web":1},
-    "lookups":[{"type":"key", "source":"field", "field":"gridsquare"}] }
+    "lookups":[{"type":"key", "source":"field", "field":"gridsquare"}] },
     
+ { "name": "WAB-SA", "fullName": "W.A.B. Squares Award", 
+     "link":"http://wab.intermip.net/WAB%20Squares%20Award.php", "country": "United Kingdom",
+    "valuesFile": "csv/wab_sa.csv", "groupInValue": 0, "getFields":{"text":0, "web":1},  
+    "valueColumns": {"value": 0, "desc": 1 },
+    "groupColumns": {"value": 3 },
+    "fieldValues":"district",
+    "color":"#e00101",
+    "lookups":[{"type":"value", "source":"field", "field":"district"}] },
+
+  { "name": "WAB-LSA", "fullName": "W.A.B. Large Squares Award", 
+     "link":"http://wab.intermip.net/Large%20Squares%20Award.php", 
+     "country": "United Kingdom", "byBand": 1,
+    "valuesFile": "csv/wab_la.csv", "groupInValue": 0, 
+    "getFields":{"text":0, "web":1},  
+    "valueColumns": {"value": 0 },
+    "groupColumns": {"value": 3 },
+    "color":"#e00101",
+    "lookups":[{"type":"value","source":"text","field":"district", "re":"^."},
+        {"type":"value","source":"text","field":"district","re":"^.."}] }
+
+   
 
 ] 
