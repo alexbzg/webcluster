@@ -37,7 +37,8 @@ function dxpeditionController( User, Head, DXpedition, DXpeditionAdmin, $q ) {
     }
 
     function insertItem() {
-        if ( vm.newLink && vm.newLink.indexOf( 'http://' ) != 0 )
+        if ( vm.newLink && vm.newLink.indexOf( 'http://' ) != 0 && 
+                vm.newLink.indexOf( 'https://' ) != 0 ) 
             vm.newLink = 'http://' + vm.newLink;
         vm.newCallsign = vm.newCallsign.toUpperCase();
         var css = vm.newCallsign.split( /[,; ]+/ );

@@ -239,7 +239,7 @@
     "lookups":[{"type":"key", "source":"field", "field":"cs"}] },
 
      {  "name": "FISTS", "fullName": "FISTS CW Club", 
-        "link":"http://www.fists.org", "color":"#dc9816",
+        "link":"http://www.fists.org", "color":"#002D5B",
     "valuesFile": "csv/list_fists_.csv", "groupInValue": 0,  
     "keyAttr":"cs", "getFields":{"text":0, "web":0},
     "valueColumns": {"value": 0, "keys": 1 }, "country": null,
@@ -247,7 +247,7 @@
     "lookups":[{"type":"key", "source":"field", "field":"cs"}] },
    
     {  "name": "A1club", "fullName": "A1 Century Club", 
-        "link":"http://a1club.net/award/index_e.htm", "color":"#dc9816",
+        "link":"http://a1club.net/award/index_e.htm", "color":"#BD2C33",
     "valuesFile": "csv/list_a1club_.csv", "groupInValue": 0,  
     "keyAttr":"cs", "getFields":{"text":0, "web":0},
     "valueColumns": {"value": 0, "keys": 1 }, "country": null,
@@ -255,7 +255,7 @@
     "lookups":[{"type":"key", "source":"field", "field":"cs"}] },
 
      {  "name": "RNARS", "fullName": "Royal Naval Amateur Radio Society", 
-        "link":"http://www.rnars.org.uk/EventsAwards.html", "color":"#dc9816",
+        "link":"http://www.rnars.org.uk/EventsAwards.html", "color":"#0045ba",
     "valuesFile": "csv/list_rnars_.csv", "groupInValue": 0,  
     "keyAttr":"cs", "getFields":{"text":0, "web":0},
     "valueColumns": {"value": 0, "keys": 1 }, "country": null,

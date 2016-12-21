@@ -66,7 +66,7 @@
             {{item.callsign}}{{item.pfx ? '*' : ''}}
             <span ng-if="vm.list.title == 'DXpedition'">
                 {{item.descr ? ' (' + item.descr + ')' : ''}}
-                <a ng-if="item.link" href="{{item.link}}">info</a>
+                <a ng-if="item.link" target="_blank" href="{{item.link}}">info</a>
             </span>
         </td>
         <td class="band" ng-repeat="band in vm.switchesList.bands" ng-class="{border_right: $last}">

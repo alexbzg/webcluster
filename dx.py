@@ -266,6 +266,8 @@ class DX( object ):
             '<SMALL>(?:<I>)?\(woj\) pow:(?:<\/I>)?<\/SMALL> \((\w)\) (\w\w)' )
     reGermanyDOK = re.compile("[Dd][Oo][Kk].*?[:\-\s]([a-zA-Z])-? ?(\d\d)")
     reSpainDC = re.compile( '\d\d(?=\d\d\d)' )
+    reDigitsSpecial = re.compile( '\d\d' )
+    reLettersSpecial = re.compile( '\d[A-Z]{4}' )
     bands = [ [ '1.8', 1800, 2000 ],
             [ '3.5', 3500, 4000 ],
             [ '7', 7000, 7300 ],
@@ -308,7 +310,8 @@ class DX( object ):
             'mode': self.mode,
             'subMode': self.subMode,
             'band': self.band,
-            'region': self.region
+            'region': self.region,
+            'special': self.special
             }
 
     def setMode( self, mode, alias ):
@@ -330,6 +333,8 @@ class DX( object ):
         self.offDB = False
         self.awards = {}
         self.dxData = dxData
+        self.country = None
+        self.special = False
         self.text = params['text'].decode('utf-8','ignore').encode("utf-8")
         self.freq = params['freq']        
         self.cs = params['cs']
@@ -368,6 +373,29 @@ class DX( object ):
                     if modeByMap in aliases:
                         self.setMode( mode, modeByMap )
                         break
+
+        dxCty = None
+        if prefixes[1].has_key( self.cs ):
+            dxCty = prefixes[1][self.cs];
+        else:
+            for c in xrange(1, len( self.cs ) ):
+                if prefixes[0].has_key( self.cs[:c] ):
+                    dxCty = prefixes[0][ self.cs[:c] ]
+        if dxCty:
+            self.country = countries[ dxCty ] if countries.has_key( dxCty ) \
+                    else None
+            m = DX.reDigitsSpecial.search( dxCty )
+            if m:
+                self.special = True
+            else:
+                m = DX.reDigitsSpecial.search( self.cs[len( dxCty ):] )
+                if m: 
+                    self.special = True
+                else:
+                    m = DX.reLettersSpecial.search( self.cs )
+                    if m:
+                        self.special = True
+
 
 
         
@@ -419,6 +447,7 @@ class DX( object ):
 
             self.testLookups()
             self.detectAwards()
+            self.updateDB()
 
 
     def testLookups( self ):
@@ -606,13 +635,14 @@ class DX( object ):
             dxdb.updateObject( 'callsigns',
               { 'callsign': self.cs, 'qth': self.gridsquare, \
                       'district': self.district, 'region': self.region,\
-                      'qrz_data_loaded': self.qrzData }, 'callsign' )
+                      'qrz_data_loaded': self.qrzData, 
+                      'special_cs': self.special }, 'callsign' )
         else:
             dxdb.getObject( 'callsigns', \
                     { 'callsign': self.cs, 'region': self.region, \
                     'district': self.district,\
                     'qth': self.gridsquare, 'qrz_data_loaded': self.qrzData, \
-                    'country': self.country }, \
+                    'country': self.country, 'special_cs': self.special }, \
                     True )
             dxdb.commit()
             self.inDB = True
@@ -732,11 +762,10 @@ class DXData:
         m = DXData.reDX.match( line )
         if m: 
             cs = m.group( 3 )
-            country = getCountry( cs )
             freq = float( m.group(2) )
             self.append( \
                     DX( dxData = self, text = m.group(4), cs = cs, freq = freq, \
-                        de = m.group(1), time = m.group(5), country = country ) )
+                        de = m.group(1), time = m.group(5) ) )
 
 
 

@@ -38,7 +38,7 @@
     <tr ng-repeat="item in vm.dxpedition | orderBy: 'callsign'">
         <td class="callsign" ng-click="vm.openItem(item)">{{item.callsign}}</td>
         <td class="comments">{{item.descr}}</td>
-        <td class="link"><a href="{{item.link}}">link</a></td>
+        <td class="link"><a href="{{item.link}}" target="_blank">link</a></td>
         <td class="start_date">{{item.dt_begin}}</td>
         <td class="end_date">{{item.dt_end}}</td>
         <td class="delete"><img src="images/icon_close.png" ng-click="vm.deleteItem(item)" title="Delete"></td>

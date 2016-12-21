@@ -37,6 +37,8 @@ function statsController( $scope, $stateParams, DxConst, User, Head, Awards,
             vm.awards.push( listAV );
             if ( list.items ) 
                 list.items.forEach( function( item ) {
+                    if ( item.settings && item.settings.hide )
+                        return;
                     var itemAV = { value: item.callsign + ( item.pfx ? '*' : '' ),
                         'byBand': {} };
                     listAV.values.push( itemAV );
