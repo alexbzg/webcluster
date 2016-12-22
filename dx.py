@@ -7,7 +7,7 @@ from twisted.python import log
 
 import sys, decimal, re, datetime, os, logging, time, json, urllib2, xmltodict
 
-from common import appRoot, readConf, siteConf, loadJSON
+from common import appRoot, readConf, siteConf, loadJSON, jsonEncodeExtra
 from dxdb import dxdb, cursor2dicts
 
 conf = siteConf()
@@ -149,19 +149,17 @@ class QRZComLink:
 qrzComLink = QRZComLink()
 
 
-def getCountry( cs ):
-    dxCty = None
-    if prefixes[1].has_key( cs ):
-        dxCty = prefixes[1][cs];
-    else:
-        for c in xrange(1, len( cs ) ):
-            if prefixes[0].has_key( cs[:c] ):
-                dxCty = prefixes[0][ cs[:c] ]
-    if dxCty:
-        return countries[ dxCty ] if countries.has_key( dxCty ) else None
-    else:
-        return None
-
+def updateSpecialLists():
+    fName = webRoot + '/specialLists.json'
+    slData = loadJSON( fName )
+    if not slData:
+        slData = { 'DXpedition': [], 'Special': [] }
+    slData['Special'] = cursor2dicts( dxdb.execute( """
+        select callsign, last_ts 
+        from callsigns 
+        where special_cs and last_ts > now() - interval '2 days';""" ) )
+    with open( fName, 'w' ) as fsl:
+        fsl.write( json.dumps( slData, default = jsonEncodeExtra ) )
 
 
 class QRZLink:
@@ -396,11 +394,6 @@ class DX( object ):
                     if m:
                         self.special = True
 
-
-
-        
-        self.country = params['country'] if params.has_key( 'country' ) \
-                else getCountry( self.cs )
         self.qrzData = False
         self.inDB = False
 
@@ -646,6 +639,8 @@ class DX( object ):
                     True )
             dxdb.commit()
             self.inDB = True
+        if self.special:
+            updateSpecialLists()
 
     def detectAwards( self ):
 
