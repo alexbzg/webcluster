@@ -60,11 +60,11 @@
             <span ng-repeat="award in item.awards track by $index">
                 <a ng-if="!award.noStats"
                 ui-sref="stats( {award: award.award, value: award.value, band: item.band, 
-                mode: item.mode, list_id: award.list_id} )">
+                mode: item.subMode ? item.subMode : item.mode, list_id: award.list_id} )">
                     <span 
                         class="award_name" ng-style="{'color': award.color}"
                         >{{award.award}}<img ng-if="award.worked" src="/images/icon_worked.png" 
-                                title="worked but not confirmed"/></span>{{award.value ? 
+                                title="worked but not confirmed"/></span>{{award.value && !award.list_id ? 
                             ' ' + vm.replace0( award.value) : ''}}<span 
                                 ng-if="award.descr"> ({{award.descr}})</span></a><span ng-if="award.noStats">
                     <span 

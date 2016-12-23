@@ -3,12 +3,12 @@ angular
     .service( 'User', UserService );
 
 function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst, 
-        LoadingScreen, $rootScope, Notify, DXpedition ) {
+        LoadingScreen, $rootScope, Notify, SpecialLists ) {
     var storageKey = 'adxcluster-user';
     var defaultColor = '#770000';
     var defaultColorDXped = '#f600df';
     var updateTask = $interval( update, 300000 );
-    var dxpedTask = $interval( initDXpedition, 3600000 );
+    var dxpedTask = $interval( initSpecialLists, 3600000 );
     var user = { 
         fromStorage: fromStorage,
         toStorage: toStorage,
@@ -38,7 +38,7 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
 
     function update() {
         Awards.load();
-        DXpedition.load();
+        SpecialLists.load();
     }
 
     function onDestroy() {
@@ -101,39 +101,42 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
         if ( !user.data.awardValueConfirmedColor )
             user.data.awardValueConfirmedColor = '#02b20e';
 
-        user.data.dxpedition = user.data.lists.find( function( item ) {
-            return item.title == 'DXpedition';
-        });
-        if ( !user.data.dxpedition ) {
-            user.data.dxpedition = { title: 'DXpedition', 
-                full_title: 'Updated DXpedition List',
-                track: true,
-                color: defaultColorDXped,
-                items: [] };
-            user.data.lists.push( user.data.dxpedition );
+        user.data.specialLists = {};
+        for ( var title in SpecialLists.lists ) {
+            var listParams = SpecialLists.lists[title];
+            var list = user.data.lists.find( function( item ) {
+                return item.title == title;
+            });
+            if ( !list ) {
+                list = { title: title, 
+                    track: true,
+                    color: listParams.color,
+                    items: [] };
+                user.data.lists.push( list );
+            }
+            if ( !list.id )
+                saveList( list );
+            list.full_title = listParams.fullTitle;
+            list.special = true;
+            user.data.specialLists[title] = list;
         }
-        if ( !user.data.dxpedition.id )
-            saveList( user.data.dxpedition );
-        user.data.dxpedition.full_title = 'Updated DXpedition List';
 
         user.data.lists.forEach( function( list ) {
             if ( !user.data.listsAwards[list.id] )
                 user.data.listsAwards[list.id] = {};
             if ( !list.color )
                 list.color = defaultColor;
+            if ( !list.special )
+                list.special = false;
         });
 
         Awards.onUpdate( createAwardsSettings );
-        if ( Awards.awards )
-            createAwardsSettings();
-        else
+        if ( !Awards.data )
             Awards.load();
 
-        DXpedition.onUpdate( initDXpedition );
-        if ( DXpedition.dxpedition )
-            initDXpedition();
-        else
-            DXpedition.load();
+        SpecialLists.onUpdate( initSpecialLists );
+        if ( !SpecialLists.data )
+            SpecialLists.load();
 
         $rootScope.$emit('user-log-io');
 
@@ -141,40 +144,39 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
 
 
 
-    function initDXpedition() {
-        var dxpList = DXpedition.dxpedition ? 
-            DXpedition.dxpedition.filter( function( item ) {
-                return ( !item.dt_begin || moment( item.dt_begin ) < moment() ) &&
-                    (!item.dt_end || 
-                     moment( item.dt_end ).add( 1, 'weeks' ) > moment() );
-            }) : [];        
-        if ( !user.data.dxpedition.items )
-            user.data.dxpedition.items = [];
-        user.data.dxpedition.items = 
-            user.data.dxpedition.items.filter( function( settingsItem ) {
-                return dxpList.find( function( listItem ) {
-                    return listItem.callsign == settingsItem.callsign } );
+    function initSpecialLists() {
+        for ( var title in SpecialLists.data ) {
+            var listData = SpecialLists.data[title];
+            if ( title == 'DXpedition' )
+                listsData = listData.filter( function( item ) {
+                    return ( !item.dt_begin || moment( item.dt_begin ) < moment() ) &&
+                        (!item.dt_end || 
+                        moment( item.dt_end ).add( 1, 'weeks' ) > moment() );
+                });        
+            var list = user.data.specialLists[title];
+            if ( !list.items )
+                list.items = [];
+            list.items = 
+                list.items.filter( function( listItem ) {
+                    return listData.find( function( listDataItem ) {
+                        return listItem.callsign == listDataItem.callsign } );
+                });
+            listData.forEach( function( listDataItem ) {
+                var listItem;
+                if ( !( listItem = list.items.find( function( listItem ) {
+                    return listItem.callsign == listDataItem.callsign; } ) ) ) {
+                    listItem = { callsign: listDataItem.callsign };
+                    list.items.push( listItem );
+                }
+                angular.extend( listItem, listDataItem );
             });
-        dxpList.forEach( function( item ) {
-            var i;
-            if ( i = user.data.dxpedition.items.find( function( settingsItem ) {
-                return item.callsign == settingsItem.callsign; } ) ) {
-                i.dtEnd = item.dt_end;
-                i.descr = item.descr;
-                i.link = item.link;
-            } else
-                user.data.dxpedition.items.push( 
-                        { callsign: item.callsign, 
-                            dtEnd: item.dt_end,
-                            descr: item.descr,
-                            link: item.link } );
-        });
+        }
         $rootScope.$emit('user-awards-stats-change');
     }
 
 
     function createAwardsSettings() {
-        Awards.awards.forEach( function( award ) {
+        Awards.data.forEach( function( award ) {
             if ( !user.data.awards[award.name] )
                 user.data.awards[award.name] = {};
 

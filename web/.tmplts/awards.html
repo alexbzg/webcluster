@@ -101,86 +101,56 @@
                 <a id="create_list" ui-sref="listSetup">Create new list</a>
             </td>
         </tr>
-       
-        <tr ng-repeat="list in vm.user.data.lists 
-            | filter: { title: '!DXpedition' } : true
-            | orderBy: id track by $index">
-            <td class="track">
-                <input type="checkbox" ng-model="list.track" 
-                    ng-change="vm.user.listChanged(list)">
-            </td>
-            <td class="color_name">
-                <button-color-picker value="list.color"
-                    change="vm.user.listChanged(list)"></button-color-picker>
-            </td>
-            <td class="short_name" ng-style="{'color': list.color}">
-                {{list.title}}
-            </td>
-            <td class="full_name">
-                {{list.full_title ? list.full_title : 'List #' + ( $index + 1 ) }}
-                <img src="/images/icon_close.png" ng-click="vm.user.deleteList(list)" title="Delete list">
-            </td>
-            <td class="stats">
-                <a ui-sref="stats( { list_id: list.id } )">
-                    <img src="/images/icon_stats.png" title="List stats">
-                </a>
-            </td>
+    
+        <tbody ng-repeat="type in [ false, true ] track by $index">
+            <tr ng-repeat="list in vm.user.data.lists | filter: { 'special': type } |
+                orderBy: id track by $index">
+                <td class="track">
+                    <input type="checkbox" ng-model="list.track" 
+                        ng-change="vm.user.listChanged(list)">
+                </td>
+                <td class="color_name">
+                    <button-color-picker value="list.color"
+                        change="vm.user.listChanged(list)"></button-color-picker>
+                </td>
+                <td class="short_name" ng-style="{'color': list.color}">
+                    {{list.title}}
+                </td>
+                <td class="full_name">
+                    {{list.full_title ? list.full_title : 'List #' + ( $index + 1 ) }}
+                    <img src="/images/icon_close.png" ng-if="!type"
+                        ng-click="vm.user.deleteList(list)" title="Delete list">
+                    <a ui-sref="dxpedition" 
+                        ng-if="type && vm.user.data.admin && vm.specialLists[list.title].admin">
+                        <img src="/images/icon_edit.png" title="Edit list" />
+                    </a>
+                   
+                </td>
+                <td class="stats">
+                    <a ui-sref="stats( { list_id: list.id } )">
+                        <img src="/images/icon_stats.png" title="List stats">
+                    </a>
+                </td>
+            
+                <td class="notification">
+                    <a ui-sref="listSetup( { id: list.id } )"><img src="/images/icon_setup.png"></a>
+
+                    <!--
+                    <input type="checkbox" disabled><img src="/images/icon_sound.jpg" title="Sound notification"> <input type="checkbox" disabled><img src="/images/icon_telegram.jpg" title="Telegram message">  -->
+                </td>
+                <td class="website">
+                    <!--a href="{{award.link}}" target="_blank" title="Link to {{award.name}} website"><img src="/images/icon_weblink.png"></a-->
+                </td>
+            </tr>
+            <tr>
+                <td colspan="7" class="country">
+                    &nbsp;
+                </td>
+            </tr>
            
-            <td class="notification">
-                <a ui-sref="listSetup( { id: list.id } )"><img src="/images/icon_setup.png"></a>
+        </tbody>
 
-                <!--
-                <input type="checkbox" disabled><img src="/images/icon_sound.jpg" title="Sound notification"> <input type="checkbox" disabled><img src="/images/icon_telegram.jpg" title="Telegram message">  -->
-            </td>
-            <td class="website">
-                <!--a href="{{award.link}}" target="_blank" title="Link to {{award.name}} website"><img src="/images/icon_weblink.png"></a-->
-            </td>
-        </tr>
-
-        <tr>
-            <td colspan="7" class="country">
-                &nbsp;
-            </td>
-        </tr>
        
-        <tr>
-            <td class="track">
-                <input type="checkbox" ng-model="vm.user.data.dxpedition.track" 
-                    ng-change="vm.user.listChanged( vm.user.data.dxpedition )">
-            </td>
-            <td class="color_name">
-                <button-color-picker value="vm.user.data.dxpedition.color"
-                    change="vm.user.listChanged( vm.user.data.dxpedition )"></button-color-picker>
-            </td>
-            <td class="short_name" 
-                ng-style="{'color': vm.user.data.dxpedition.color}">
-                DXpedition
-            </td>
-            <td class="full_name">
-                Updated DXpeditions List   
-                <a ui-sref="dxpedition" ng-show="vm.user.data.admin">
-                    <img src="/images/icon_edit.png" title="Edit list" />
-                </a>
-            </td>
-            <td class="stats">
-                <a ui-sref="stats( { list_id: vm.user.data.dxpedition.id } )">
-                    <img src="/images/icon_stats.png" title="List stats">
-                </a>
-            </td>
-           
-            <td class="notification">
-                <a ui-sref="listSetup( { id: vm.user.data.dxpedition.id } )">
-                    <img src="/images/icon_setup.png">
-                </a>
-
-                <!--
-                <input type="checkbox" disabled><img src="/images/icon_sound.jpg" title="Sound notification"> <input type="checkbox" disabled><img src="/images/icon_telegram.jpg" title="Telegram message">  -->
-            </td>
-            <td class="website">
-                <!--a href="{{award.link}}" target="_blank" title="Link to {{award.name}} website"><img src="/images/icon_weblink.png"></a-->
-            </td>
-        </tr>
-
         <tr ng-repeat-start="country in vm.awards | orderBy: 'country'">
             <td colspan="7" class="country">
                 {{country.membersList ? 'Memberlists' : country.country}}

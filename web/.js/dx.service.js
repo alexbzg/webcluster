@@ -29,12 +29,10 @@ function DXService( $rootScope, $http, $interval, User, Awards, Notify ) {
 
         User.onAwardsStatsChange( updateAwards );
         Awards.onUpdate( loadAwardsList );
-        if ( Awards.awards )
-            loadAwardsList();
     }
 
     function loadAwardsList() {
-        Awards.awards.forEach( function( award ) {
+        Awards.data.forEach( function( award ) {
             var a = angular.extend( {}, award );
             a.cfm = createCfm( user.awardsSettings[award.name] );
             awards[award.name] = a;
@@ -96,6 +94,10 @@ function DXService( $rootScope, $http, $interval, User, Awards, Notify ) {
     function updateItemAwards( item ) {
         item.awards = [];
         itemAwards( item );
+/*        if ( item.special && 
+                !User.data.specialLists.Special.items.find( function( listItem ) {
+            item.cs == listItem.callsign; }) ) 
+            User.data.specialLists.Special.items.push( { callsign: item.cs } );*/
         itemListAwards( item );
     }
 
@@ -203,7 +205,8 @@ function DXService( $rootScope, $http, $interval, User, Awards, Notify ) {
 
                         }
                         item.awards.push( { award: list.title, 
-                            dtEnd: listItem.dtEnd,
+                            value: listItem.callsign,
+                            dtEnd: listItem.dt_end,
                             link: listItem.link,
                             descr: listItem.descr,
                             worked: worked, list_id: list.id, color: list.color,

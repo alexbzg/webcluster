@@ -57,9 +57,9 @@ function statsController( $scope, $stateParams, DxConst, User, Head, Awards,
         });
 
         vm.awards = vm.awards.sort( function( a, b ) {
-            if ( a.name == 'DXPED' )
+            if ( a.special && !b.special )
                 return 1;
-            else if ( b.name == 'DXPED' )
+            else if ( b.special && !a.special )
                 return -1;
             else 
                 return a.list_id - b.list_id;
@@ -67,7 +67,7 @@ function statsController( $scope, $stateParams, DxConst, User, Head, Awards,
        
     
         LoadingScreen.on();
-        Awards.load( true )
+        Awards.loadValues()
             .then( function( data ) {
                 data.forEach( function( award ) {
                     vm.awards.push( award );

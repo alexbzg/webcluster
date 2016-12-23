@@ -2,9 +2,10 @@ angular
     .module( 'adxcApp' )
     .controller( 'awardsController', awardsController );
 
-function awardsController( DxConst, User, Awards, Head ) {
+function awardsController( DxConst, User, Awards, Head, SpecialLists ) {
     var vm = this;
     vm.user = User;
+    vm.specialLists = SpecialLists.lists;
     vm.awards = [];
     vm.openSetup = openSetup;
 
@@ -14,14 +15,11 @@ function awardsController( DxConst, User, Awards, Head ) {
     function activate() {
         Head.setTitle( 'ADXCluster.com - Awards' );
         Awards.onUpdate( createAwards );
-        if ( Awards.awards )
-            createAwards();
-       
     }
 
     function createAwards() {
         vm.awards = [];
-        Awards.awards.forEach( function( award ) {
+        Awards.data.forEach( function( award ) {
             var ac = award.displayCountry ? award.displayCountry : award.country;
             var country = vm.awards.find( function( item ) {
                 return item.country == ac && 

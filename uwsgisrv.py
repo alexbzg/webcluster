@@ -710,10 +710,23 @@ def loadAdif( callsign, adif, awardsEnabled ):
 def exportDXpedition( env ):
     dir = conf.get( 'web', \
             ( 'test_' if 'test' in env['SERVER_NAME'] else '' ) + 'root' )
-    with open( dir + '/dxpedition.json', 'w' ) as f:
-        f.write( json.dumps( cursor2dicts( \
+    dxp = cursor2dicts( \
             dxdb.execute( """
                 select * from dxpedition
                 where dt_end > now() - interval '1 week'
-                order by callsign;"""), True ), \
-            default = jsonEncodeExtra ) )
+                order by callsign;"""), True )
+    if not dxp:
+        dxp = [];
+    dxpJSON = json.dumps( dxp, default = jsonEncodeExtra ) 
+    with open( dir + '/dxpedition.json', 'w' ) as f:
+        f.write( dxpJSON )
+    slFName = dir + '/specialLists.json'
+    sl = loadJSON( slFName )
+    if not sl:
+        sl = { 'DXpedition': [], 'Special': [] }
+    sl['DXpedition'] = dxp
+    slJSON = json.dumps( sl, default = jsonEncodeExtra ) 
+    with open( slFName, 'w' ) as slF:
+        slF.write( slJSON )
+
+       

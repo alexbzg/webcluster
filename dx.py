@@ -11,7 +11,12 @@ from common import appRoot, readConf, siteConf, loadJSON, jsonEncodeExtra
 from dxdb import dxdb, cursor2dicts
 
 conf = siteConf()
-webRoot = conf.get( 'web', ( 'test_' if '_t' in __name__ else '' ) + 'root' )
+testMode = '_t' in __name__
+webRoot = conf.get( 'web', ( 'test_' if testMode else '' ) + 'root' )
+testRoot = conf.get( 'web', 'test_root' )
+dirs = [ testRoot ]
+if not testMode:
+    dirs.append( webRoot )
 
 awardsData = loadJSON( webRoot + '/awardsData.json' )
 
@@ -158,8 +163,10 @@ def updateSpecialLists():
         select callsign, last_ts 
         from callsigns 
         where special_cs and last_ts > now() - interval '2 days';""" ) )
-    with open( fName, 'w' ) as fsl:
-        fsl.write( json.dumps( slData, default = jsonEncodeExtra ) )
+    slDataJSON = json.dumps( slData, default = jsonEncodeExtra )
+    for dir in dirs:
+        with open( dir + '/specialLists.json', 'w' ) as fsl:
+            fsl.write( slDataJSON )
 
 
 class QRZLink:
@@ -787,17 +794,19 @@ class DXData:
 
     def toFile( self ):
         if self.file:
-            with open( self.file, 'w' ) as fDxData:
-                data = []
-                for x in self.data:
-                    try:
-                        json.dumps( x.toDict() ).encode( 'utf-8' )
-                        data.append( x.toDict() )
-                    except Exception as e:
-                        logging.exception( 'Non unicode character in dx' )
-                        logging.exception( x.toDict() )
-                        self.data.remove( x )
-                fDxData.write( json.dumps( data ) )
+            data = []
+            for x in self.data:
+                try:
+                    json.dumps( x.toDict() ).encode( 'utf-8' )
+                    data.append( x.toDict() )
+                except Exception as e:
+                    logging.exception( 'Non unicode character in dx' )
+                    logging.exception( x.toDict() )
+                    self.data.remove( x )
+            dataJSON = json.dumps( data )
+            for dir in dirs:
+                with open( dir + '/dxdata.json', 'w' ) as fDxData:
+                    fDxData.write( dataJSON )
 
 
 

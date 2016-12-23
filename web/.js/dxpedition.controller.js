@@ -2,7 +2,7 @@ angular
     .module( 'adxcApp' )
     .controller( 'dxpeditionController', dxpeditionController );
 
-function dxpeditionController( User, Head, DXpedition, DXpeditionAdmin, $q ) {    
+function dxpeditionController( User, Head, SpecialLists, DXpeditionAdmin, $q ) {    
     var vm = this;
     vm.insertItem = insertItem;
     vm.deleteItem = deleteItem;
@@ -17,9 +17,9 @@ function dxpeditionController( User, Head, DXpedition, DXpeditionAdmin, $q ) {
     }
 
     function load() {
-        DXpedition.load()
+        SpecialLists.load()
             .then( function() { 
-                vm.dxpedition = DXpedition.dxpedition; 
+                vm.dxpedition = SpecialLists.data.DXpedition;
             } );
     }
 
