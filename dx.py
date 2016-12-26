@@ -290,6 +290,7 @@ class DX( object ):
             'DIGI': ( 'RTTY', 'PSK', 'JT65', 'FSK', 'OLIVIA', 'SSTV' ) }
     subModes = { 'RTTY': [], 'JT65': [], 'PSK': [ 'PSK31', 'PSK63', 'PSK125' ] }
     modesMap = []
+    specialPfx = conf.get( 'misc', 'SpecialPfx' ).split( ',' )
     with open( appRoot + '/bandMap.txt', 'r' ) as fBandMap:
         reBandMap = re.compile( "^(\d+\.?\d*)\s*-?(\d+\.?\d*)\s+(\S+)(\r\n)?$" )
         for line in fBandMap.readlines():
@@ -380,26 +381,31 @@ class DX( object ):
                         break
 
         dxCty = None
+        pfx = None
         if prefixes[1].has_key( self.cs ):
             dxCty = prefixes[1][self.cs];
         else:
             for c in xrange(1, len( self.cs ) ):
                 if prefixes[0].has_key( self.cs[:c] ):
+                    pfx = self.cs[:c]
                     dxCty = prefixes[0][ self.cs[:c] ]
         if dxCty:
             self.country = countries[ dxCty ] if countries.has_key( dxCty ) \
                     else None
-            m = DX.reDigitsSpecial.search( dxCty )
-            if m:
+            if pfx in DX.specialPfx:
                 self.special = True
             else:
-                m = DX.reDigitsSpecial.search( self.cs[len( dxCty ):] )
-                if m: 
+                m = DX.reDigitsSpecial.search( pfx )
+                if m:
                     self.special = True
                 else:
-                    m = DX.reLettersSpecial.search( self.cs )
-                    if m:
+                    m = DX.reDigitsSpecial.search( self.cs[len( pfx ):] )
+                    if m: 
                         self.special = True
+                    else:
+                        m = DX.reLettersSpecial.search( self.cs )
+                        if m:
+                            self.special = True
 
         self.qrzData = False
         self.inDB = False

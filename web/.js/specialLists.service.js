@@ -11,7 +11,7 @@ function SpecialListsService( DataServiceFactory ) {
     s.eventName = 'special-lists-updated';
     s.lists = { DXpedition: { fullTitle: 'Updated DXpeditions List', admin: true, 
                     color: '#f600df' },
-        Special: { fullTitle: 'Autoupdating special calls list', color: '#f600df'
+        Special: { fullTitle: 'Autoupdating special calls list', color: '#ffa700'
         }
     };
     s.processData = processData;

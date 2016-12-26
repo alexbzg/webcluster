@@ -94,10 +94,10 @@ function DXService( $rootScope, $http, $interval, User, Awards, Notify ) {
     function updateItemAwards( item ) {
         item.awards = [];
         itemAwards( item );
-/*        if ( item.special && 
+        if ( item.special && 
                 !User.data.specialLists.Special.items.find( function( listItem ) {
-            item.cs == listItem.callsign; }) ) 
-            User.data.specialLists.Special.items.push( { callsign: item.cs } );*/
+            return item.cs == listItem.callsign; }) ) 
+            User.data.specialLists.Special.items.push( { callsign: item.cs } );
         itemListAwards( item );
     }
 
