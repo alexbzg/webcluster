@@ -134,6 +134,8 @@ function clusterController( $interval, $timeout, $scope,
                     break;
             }
         }
+        if ( vm.dxFiltered.length > 200 )
+            vm.dxFiltered.length = 200;
 
         if ( tmpTs > lastTs ) {
             lastTs = tmpTs;

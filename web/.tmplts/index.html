@@ -54,7 +54,8 @@
         <td class="mode">{{item.subMode ? item.subMode : item.mode}}</td>
         <td class="callsign">
             <a target="_blank" 
-                href="http://qrz.com/db/{{item.cs.toLowerCase()}}">{{ vm.replace0( item.cs ) }}</a>
+                href="http://qrz.com/db/{{item.cs.toLowerCase()}}">{{ vm.replace0( item.cs ) +
+                    (item.qrp ? '/QRP' : '' ) }}</a>
         </td>
         <td class="awards">
             <span ng-repeat="award in item.awards track by $index">

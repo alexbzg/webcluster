@@ -19,7 +19,7 @@ function loginController( $scope, $state, vcRecaptchaService, User, Head ) {
 
         vm.user = { 'callsign': '', 'password': '', 'register': false,
                     'recaptcha': false, 'email': '' };
-        vm.remember = false;
+        vm.remember = true;
         Head.setTitle( 'ADXCluster.com - Login' );
     }
 

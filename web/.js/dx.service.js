@@ -67,6 +67,8 @@ function DXService( $rootScope, $http, $interval, User, Awards, Notify ) {
                         updateItemAwards( item );            
                         dx.items.splice( co, 0, item );
                     }
+                    if ( dx.items.length > 200 )
+                        dx.items.length = 200;
                     lastModified =  response.headers( 'last-modified' );
                     $rootScope.$emit( 'dx-update' );
                     return true;

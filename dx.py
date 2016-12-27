@@ -272,7 +272,7 @@ class DX( object ):
     reGermanyDOK = re.compile("[Dd][Oo][Kk].*?[:\-\s]([a-zA-Z])-? ?(\d\d)")
     reSpainDC = re.compile( '\d\d(?=\d\d\d)' )
     reDigitsSpecial = re.compile( '\d\d' )
-    reLettersSpecial = re.compile( '\d[A-Z]{4}' )
+    reLettersSpecial = re.compile( '(?<!^VK)\d[A-Z]{4}' )
     bands = [ [ '1.8', 1800, 2000 ],
             [ '3.5', 3500, 4000 ],
             [ '7', 7000, 7300 ],
@@ -304,6 +304,7 @@ class DX( object ):
             return { 'beacon': True }
         return {
             'cs': self.cs,
+            'qrp': self.qrp,
             'text': self.text,
             'de': self.de,
             'freq': self.freq,
@@ -344,6 +345,11 @@ class DX( object ):
         self.text = params['text'].decode('utf-8','ignore').encode("utf-8")
         self.freq = params['freq']        
         self.cs = params['cs']
+        if '/QRP' in self.cs:
+            self.cs = self.cs.replace( '/QRP', '' )
+            self.qrp = True
+        else:
+            self.qrp = False
         self.de = params['de']
 
         txt = self.text.lower()
@@ -379,34 +385,6 @@ class DX( object ):
                     if modeByMap in aliases:
                         self.setMode( mode, modeByMap )
                         break
-
-        dxCty = None
-        pfx = None
-        if prefixes[1].has_key( self.cs ):
-            dxCty = prefixes[1][self.cs];
-        else:
-            for c in xrange(1, len( self.cs ) ):
-                if prefixes[0].has_key( self.cs[:c] ):
-                    pfx = self.cs[:c]
-                    dxCty = prefixes[0][ self.cs[:c] ]
-        if dxCty:
-            self.country = countries[ dxCty ] if countries.has_key( dxCty ) \
-                    else None
-            if pfx in DX.specialPfx:
-                self.special = True
-            else:
-                m = DX.reDigitsSpecial.search( pfx )
-                if m:
-                    self.special = True
-                else:
-                    m = DX.reDigitsSpecial.search( self.cs[len( pfx ):] )
-                    if m: 
-                        self.special = True
-                    else:
-                        m = DX.reLettersSpecial.search( self.cs )
-                        if m:
-                            self.special = True
-
         self.qrzData = False
         self.inDB = False
 
@@ -429,6 +407,46 @@ class DX( object ):
             self.region = None
             self.district = None
             self.gridsquare = None
+
+        slashPos = self.cs.find( '/' )
+        if ( slashPos != -1 and slashPos < 4 ) or self.cs.endswith( '/AM' ) or \
+                self.cs.endswith( '/MM' ):
+            return
+
+        dxCty = None
+        pfx = None
+        if prefixes[1].has_key( self.cs ):
+            dxCty = prefixes[1][self.cs];
+        else:
+            for c in xrange(1, len( self.cs ) ):
+                if prefixes[0].has_key( self.cs[:c] ):
+                    pfx = self.cs[:c]
+                    dxCty = prefixes[0][ self.cs[:c] ]
+        if dxCty:
+            print pfx 
+            print dxCty
+            self.country = countries[ dxCty ] if countries.has_key( dxCty ) \
+                    else None
+            if pfx in DX.specialPfx:
+                self.special = True
+            elif self.country == 'Russia':
+                m = DX.reDigitsSpecial.search( self.cs )
+                if m:
+                    self.special = True
+            else:
+                m = DX.reDigitsSpecial.search( pfx )
+                if m:
+                    self.special = True
+                else:
+                    m = DX.reDigitsSpecial.search( self.cs[len( pfx ):] )
+                    if m: 
+                        self.special = True
+                    else:
+                        m = DX.reLettersSpecial.search( self.cs )
+                        if m:
+                            self.special = True
+
+        if not self.inDB:
 
             csLookup = dxdb.getObject( 'callsigns', { 'callsign': self.cs }, \
                     False, True )
