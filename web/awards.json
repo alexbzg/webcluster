@@ -88,7 +88,16 @@
     "groupColumns": {"value": 3 },
     "lookups":[{"type":"key","source":"text","field":"cs",
         "re":"(?<=[A-Z])[0-9][A-Z](?!.*\\/)"}] },
-       
+ 
+    {  "name": "Russia_", "fullName": "Russia Award", "link":"http://news.srr.ru/?page_id=620",
+    "country": "Russia", "valuesFile": "csv/russia.csv", "groupInValue": 0, "color":"#900202", 
+    "byBand":1, "modes": ["CW", "SSB", "DIGI"],
+    "getFields":{"text":0, "web":0},
+    "valueColumns": {"value": 0, "desc": 1, "keys": 2 },
+    "groupColumns": {"value": 3 },
+    "lookups":[{"type":"key","source":"text","field":"cs",
+        "re":"(?<=[A-Z])[0-9][A-Z](?!.*\\/)"}] },
+      
     {  "name": "WAB", "fullName": "Worked All Brazil Award", 
         "link":"http://www.labre.org.br/the-labre-awards-program/",
     "country": "Brazil", "valuesFile": "csv/wba.csv", "groupInValue": 0, 
