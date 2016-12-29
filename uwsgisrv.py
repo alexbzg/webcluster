@@ -185,6 +185,12 @@ def application(env, start_response):
                     okResponse = 'OK'
                 else:
                     dbError = True
+            elif data.has_key( 'reload' ):
+                userData = dxdb.getObject( 'users', \
+                        { 'callsign': callsign },\
+                        False, True )
+                return sendUserData( userData, start_response )
+
             elif data.has_key( 'dxpedition' ) and data['dxpedition'] == 'admin':
                 if callsign in admins:
                     idParams = { 'callsign': data['callsign'] }
@@ -616,6 +622,7 @@ def loadAdif( callsign, adif, awardsEnabled ):
                             dx.detectAwards()
             if dx.awards:
                 cfm = {}
+                awMode = None
                 for ( cfmType, field ) in cfmFields.iteritems():
                     cfm[cfmType] = getAdifField( line, field ) == 'Y'
                 for ( award, value ) in dx.awards.iteritems():
@@ -623,8 +630,15 @@ def loadAdif( callsign, adif, awardsEnabled ):
                         awardsData[award]['noStats']:
                         continue
                     if awardsData[award].has_key('byBand') and \
-                            awardsData[award]['byBand'] and \
-                            (not band or not mode):
+                            awardsData[award]['byBand']:
+                        modes = ( 'CW', 'SSB', 'RTTY', 'PSK31', 'PSK63', 'JY65' )
+                        if awardsData.has_key( 'modes' ):
+                            modes = awardsData['modes']
+                            for m in ( mode, dx.mode, dx.subMode ):
+                                if m in modes:
+                                    awMode = m
+                                    break
+                            if not band or not awMode:
                                 continue
                     if not awards.has_key(award):
                         awards[award] = {}
@@ -635,9 +649,9 @@ def loadAdif( callsign, adif, awardsEnabled ):
                             awardsData[award]['byBand']:
                         if not aw.has_key( band ):
                             aw[band] = {}
-                        if not aw[band].has_key( mode ):
-                            aw[band][mode] = {}
-                        aw = aw[band][mode]
+                        if not aw[band].has_key( awMode ):
+                            aw[band][awMode] = {}
+                        aw = aw[band][awMmode]
                     for cfmType in cfmFields.keys():
                         if not aw.has_key( cfmType ):
                             aw[cfmType] = False

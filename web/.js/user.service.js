@@ -69,17 +69,39 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
         if ( ud ) {
             user.data = ud;
         }
-        init();
+        getDataVersion()
+            .then( function() {
+                init( true );
+            });
+    }
+
+    function getDataVersion() {
+        return $http.get( '/userMetadata.json' )
+            .then( function( result ) {
+                user.dataVersion = result.data;
+            });
     }
 
     function loggedIn() {
         return Boolean( user.data.token );
     }
 
-    function init() {
+    function init( checkVersion ) {
 
         if ( !user.data )
             user.data = {};
+
+        if ( checkVersion ) {
+            if ( !user.data.version )
+                user.data.version = null;
+            
+            if ( user.data.version != user.dataVersion ) {
+                reload();
+                return;
+            }
+        } else
+            user.data.version = user.dataVersion;
+
 
         if ( !user.data.lists )
             user.data.lists = [];
@@ -193,21 +215,35 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
                 var s = user.data.awardsSettings[award.name].settings;
             var st =
             { bands: DxConst.bands,
-                modes: DxConst.modes,
+                modes: award.modes ? award.modes : DxConst.modes,
                 cfm: DxConst.cfm
             };
-            for ( var field in st ) 
+            function findMode(mode) {
+                return st.modes.find( function( item ) {
+                    return item == mode; } );
+            }
+            for ( var field in st ) {
                 if ( !s[field] ) {
                     s[field] = [];
-                    st[field].forEach( function( item ) {
-                        if ( Array.isArray( item ) )
+                }
+                st[field].forEach( function( item ) {
+                    if ( Array.isArray( item ) ) {
+                        if ( !s[field].find( function( sItem  ) {
+                            return sItem.name == item[1]; }) )
                             s[field].push( { name: item[1], 
                                 enabled: true, display: item[0] } );
-                        else
-                            s[field].push( { name: item, 
-                                enabled: true, display: item } );
-                    });
-                }
+                    } else if ( !s[field].find( function( sItem ) {
+                            return sItem.name == item; }))
+                        s[field].push( { name: item, 
+                            enabled: true, display: item } );
+                });
+            }
+            s.modes = s.modes.filter( function( item ) {
+                return findMode( item.name ); } );
+            if ( s.stats_settings && s.stats_settings.modeFilter )
+                for ( var mode in s.stats_settings.modeFilter )
+                    if ( !findMode( mode ) )
+                        delete s.stats_settings.modeFilter[mode];
             if ( !user.data.awardsSettings[award.name].settings.sound )
                 user.data.awardsSettings[award.name].settings.sound =
                     { wkd: true, not: true };
@@ -227,10 +263,18 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
         if ( data.token = user.data.token ) 
             return $http.post( '/uwsgi/userSettings', data )
                 .then( function( response ) {
-                    console.log( response.data );
                     return response.data;
                 })
                 .catch( serverError );
+    }
+
+    function reload() {
+        return toServer( { reload: 1 } )
+            .then( function( result ) {
+                user.data = result.data;
+                init();
+                toStorage();
+            } );
     }
 
     function serverError( error ) {
@@ -406,14 +450,17 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
                 return true;
             })
     }
-
+    
     function login( userData, remember ) {
         return $http.post( '/uwsgi/login', userData )
             .then( function( response ) {
                 user.data = response.data;
                 user.data.remember = remember;
-                init();
-                toStorage();
+                getDataVersion().
+                    then( function() {
+                        init();
+                        toStorage();
+                    });
                 return true;
             });
     }
@@ -425,7 +472,7 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
         init();
     }
 
-
+    
     function saveAwardStatsSettings( award ) {
         var data = awardPostData( award )
         data.stats_settings = award.statsSettings;
