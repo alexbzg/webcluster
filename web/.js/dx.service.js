@@ -129,6 +129,7 @@ function DXService( $rootScope, $http, $interval, User, Awards, Notify ) {
             var aV = item._awards[aN];
             var a = { award: aN, value: aV, sound: false, 
                 noStats: awards[aN].noStats };
+            var byBand = awards[aN].byBand;
             if ( user.awards || user.awardsSettings ) {
                 if ( user.awardsSettings != null &&
                         aN in user.awardsSettings ) {
@@ -154,16 +155,22 @@ function DXService( $rootScope, $http, $interval, User, Awards, Notify ) {
                     aV in user.awards[aN] ) {
                     var uav = user.awards[aN][aV];
                     var fl = false;
-                    var byBand = awards[aN].byBand;
                     if ( byBand && ( fl = checkAward( uav, item ) ) )
                         uav = fl;
-                    if ( !awards[aN].byBand || fl ) {
+                    if ( !byBand || fl ) {
                         if ( checkAwardCfm( uav, awards[aN].cfm ) )
                             continue;
                         else
                             a.worked = true;
                     }
                 }
+
+                if ( byBand && awards[aN].modes ) {
+                    if ( awards[aN].modes.indexOf( item.mode ) != -1 )
+                        a.mode = item.mode;
+                    else a.mode = item.subMode;
+                }
+
                 if ( !as || !as.settings || 
                         ( a.worked && as.settings.sound.wkd ) || 
                         ( !a.worked && as.settings.sound.not ) )

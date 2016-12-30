@@ -34,8 +34,6 @@ digiModesStr = makeStr( digiModes )
 allModes = digiModes + ('CW', 'SSB')
 
 for aw in awards:
-    if aw['name'] != 'Russia_':
-        continue
     if not aw.has_key( 'byBand' ) or not aw['byBand']:
         continue
     modes = aw['modes'] if aw.has_key( 'modes' ) else allModes
@@ -54,7 +52,7 @@ for aw in awards:
     sql = """delete from user_awards
         where award = %s and not mode in (""" + modesStr + """) and 
         mode != 'N/A' """ + \
-        "and callsign = 'QQQQ' " if testMode else ''
+        ( "and callsign = 'QQQQ' " if testMode else '' )
     dxdb.execute( sql, ( aw['name'], ) )
     dxdb.commit()
 

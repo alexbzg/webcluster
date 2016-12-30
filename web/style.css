@@ -827,7 +827,9 @@ table#ABM_edit td#view span#view_filter_note{
 table#ABM_edit span#selected_item{
 	font-size: 24px;
 	font-weight: bold;
-	line-height: 16px;
+	line-height: 18px;
+	display: inline-block;
+	margin-bottom: 5px;
 }
 table#ABM_edit span#selected_item span{
 	font-size: 18px;
@@ -855,12 +857,38 @@ table#ABM_edit input#wkd_calls{
 	margin:7px 0 0 0;
 	padding: 2px 5px;
 }
-table#ABM_edit td span#manual_edit_note{
+table#ABM_edit td#edit_inputs{
+	position: relative;
+}
+table#ABM_edit td#edit_inputs span#manual_edit_note{
 	font-size: 10px;
 	background-color: #aaa;
 	color: #fff;
 	padding: 0 5px;
 	float: right;
+	position: absolute;
+	right: 0px;
+}
+
+
+table#ABM_edit td#edit_inputs{
+	text-align: center;
+}
+table#ABM_edit td#edit_inputs span.button{
+	display: inline-block;
+	padding: 3px 7px;
+	margin: 5px 7px;
+	font-size: 14px;
+	background-color: #f0f0f0;
+	color: #000;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	cursor: pointer;
+}
+table#ABM_edit td#edit_inputs span.active{
+	background-color: #0091c9;
+	color: #fff;
+	border-color: #0091c9;
 }
 
 
@@ -926,12 +954,29 @@ table#ABM_view td.unit_to_select span{
 	font-size: 18px;
 	padding-right: 20px;
 }
-table#ABM_view td.worked{
+table#ABM_view td.worked, table#ABM_view td.band span.worked{
 	background-color: #0091c9;
 }
-table#ABM_view td.confirmed{
+table#ABM_view td.confirmed, table#ABM_view td.band span.confirmed{
 	background-color: #02b20e;
 }
+
+
+table#ABM_view td.band span.mode_unit{
+	display: inline-block;
+	font-size: 12px;
+	padding: 0 3px;
+	color: #333;
+}
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1225,7 +1270,6 @@ table#award_info{
 table#award_info td{
 	margin: 10px;
 	padding: 10px 20px;
-	line-height: 2em;
 	vertical-align: center;
 }
 
@@ -1293,6 +1337,7 @@ table#award_info td#award_edit input.submit_btn {
 }
 
 
+
 #selected_unit_info{
 	padding: 10px 0;
 	border: 1px solid #eee;
@@ -1312,9 +1357,9 @@ table#award_info td#award_edit input.submit_btn {
 	color: #999;
 }
 
-span#wkd, span#cfm{
+span#cfm{
 	font-weight: bold;
-	padding-right: 20px;
+	padding-left: 20px;
 }
 
 table#award_info td#award_edit input#wkd_calls{
@@ -1324,6 +1369,26 @@ table#award_info td#award_edit input#wkd_calls{
 	margin-left: 20px;
 	padding: 2px 5px;
 }
+
+table#award_info td#award_edit span.button{
+	display: inline-block;
+	padding: 3px 7px;
+	margin: 5px 7px;
+	font-size: 14px;
+	background-color: #f0f0f0;
+	color: #000;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	cursor: pointer;
+}
+table#award_info td#award_edit span.active{
+	background-color: #0091c9;
+	color: #fff;
+	border-color: #0091c9;
+}
+
+
+
 
 
 

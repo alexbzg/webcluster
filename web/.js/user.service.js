@@ -269,12 +269,18 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
     }
 
     function reload() {
-        return toServer( { reload: 1 } )
-            .then( function( result ) {
-                user.data = result.data;
-                init();
-                toStorage();
-            } );
+        if ( user.data.token )
+            return toServer( { reload: 1 } )
+                .then( function( result ) {
+                    user.data = result.data;
+                    init();
+                    toStorage();
+                } );
+        else {
+            user.data = {};
+            user.data.version = user.dataVersion;
+            init();
+        }
     }
 
     function serverError( error ) {
