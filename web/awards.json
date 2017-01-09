@@ -294,7 +294,16 @@
     "valueColumns": {"value": 0, "desc":1, "keys": 2 },
     "groupColumns": {"value": 3}, "byMode": 1, "byBand": 1,
      "lookups":[{"type":"key", "source":"field", "field":"district"}]},
- 
+
+     { "name": "OHCA", "fullName":"OH County Award", 
+     "link":"http://www.sral.fi/en/award.html", 
+     "country": "Finland",
+    "valuesFile": "csv/ohca_.csv", "groupInValue": 0, "color":"#0004ba", 
+    "getFields":{"web":1}, 
+    "valueColumns": {"value": 1, "keys": 2 },
+    "groupColumns": {"value": 0}, "byMode": 0, "byBand": 0,
+     "lookups":[{"type":"key", "source":"field", "field":"district"}]},
+    
        
   { "name": "WAS", "fullName":"Worked All States Award", 
      "link":"http://www.arrl.org/was", "country": "USA",

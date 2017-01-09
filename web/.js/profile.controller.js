@@ -23,13 +23,11 @@ function profileController( $scope, User, Head, Awards, LoadingScreen ) {
     function activate() {
         Head.setTitle( 'ADXCluster.com - Profile' );
         Awards.onUpdate( adifAwards );
-        if ( Awards.awards )
-            adifAwards();
     }
 
     function adifAwards() {
         vm.adif.awards = [];
-        Awards.awards.forEach( function( award ) {
+        Awards.data.forEach( function( award ) {
             if ( !award.noStats )
                 vm.adif.awards.push(
                     { name: award.name, 

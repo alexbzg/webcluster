@@ -37,7 +37,6 @@ dxData = DXData( conf.get( 'web', 'root' ) + "/dxdata.json" )
 class ClusterProtocol(StatefulTelnetProtocol):
     def lineReceived(self, line):
         dxData.dxLine( line )
-        logging.debug( line )
         self.schedulePing()
         if self.connectionStatus == 'testing':
             self.setConnectionStatus( 'connected' )

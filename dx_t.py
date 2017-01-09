@@ -271,6 +271,7 @@ class DX( object ):
             '<SMALL>(?:<I>)?\(woj\) pow:(?:<\/I>)?<\/SMALL> \((\w)\) (\w\w)' )
     reGermanyDOK = re.compile("[Dd][Oo][Kk].*?[:\-\s]([a-zA-Z])-? ?(\d\d)")
     reSpainDC = re.compile( '\d\d(?=\d\d\d)' )
+    reFinlandDC = re.compile( '\d\d\d\d\d' )
     reDigitsSpecial = re.compile( '\d\d' )
     reLettersSpecial = re.compile( '(?<!^VK)\d[A-Z]{4}' )
     bands = [ [ '1.8', 1800, 2000 ],
