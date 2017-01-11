@@ -265,14 +265,30 @@ def findDiap( diaps, value ):
 
 
 class DX( object ):
-    reState0 = re.compile( '(\w+)\s*-?\s*0*(\d\d)' )
-    reFranceDC = re.compile( '(?<=\n)\d{5}(?=[^\n]*\(FRANCE\)<)' )
+    reState0 = re.compile( r'(\w+)\s*-?\s*0*(\d\d)' )
+    reFranceDC = re.compile( r'(?<=\n)\d{5}(?=[^\n]*\(FRANCE\)<)' )
     rePolandDC = re.compile( 
-            '<SMALL>(?:<I>)?\(woj\) pow:(?:<\/I>)?<\/SMALL> \((\w)\) (\w\w)' )
-    reGermanyDOK = re.compile("[Dd][Oo][Kk].*?[:\-\s]([a-zA-Z])-? ?(\d\d)")
-    reSpainDC = re.compile( '\d\d(?=\d\d\d)' )
-    reDigitsSpecial = re.compile( '\d\d' )
-    reLettersSpecial = re.compile( '(?<!^VK)\d[A-Z]{4}' )
+            r'<SMALL>(?:<I>)?\(woj\) pow:(?:<\/I>)?<\/SMALL> \((\w)\) (\w\w)' )
+    reGermanyDOK = re.compile(r"[Dd][Oo][Kk].*?[:\-\s]([a-zA-Z])-? ?(\d\d)")
+
+    reZIP = { 'Spain': r'\d\d(?=\d\d\d)',
+                'Finland': r'\d\d\d\d\d',
+                'Sweden': r'(?<=\b)\d\d\d \d\d(?=\b)' }
+    for k in reZIP.keys():
+        reZIP[k] = re.compile( reZIP[k] )
+
+    zipData = { 'Sweden': 'SE' }
+    for k in zipData:
+        with open( appRoot + '/zip/' + zipData[k] + '.txt', 'r' ) as zipF:
+            zipData[k] = {}
+            for line in zipF.readlines():
+                lineD = line.split( '\t' )
+                zipData[k][lineD[1]] = lineD[2:]
+
+    reDigitsSpecial = re.compile( r'\d\d' )
+    reLettersSpecial = re.compile( r'(?<!^VK)\d[A-Z]{4}' )
+    specialPfx = conf.get( 'misc', 'SpecialPfx' ).split( ',' )
+
     bands = [ [ '1.8', 1800, 2000 ],
             [ '3.5', 3500, 4000 ],
             [ '7', 7000, 7300 ],
@@ -290,7 +306,6 @@ class DX( object ):
             'DIGI': ( 'RTTY', 'PSK', 'JT65', 'FSK', 'OLIVIA', 'SSTV' ) }
     subModes = { 'RTTY': [], 'JT65': [], 'PSK': [ 'PSK31', 'PSK63', 'PSK125' ] }
     modesMap = []
-    specialPfx = conf.get( 'misc', 'SpecialPfx' ).split( ',' )
     with open( appRoot + '/bandMap.txt', 'r' ) as fBandMap:
         reBandMap = re.compile( "^(\d+\.?\d*)\s*-?(\d+\.?\d*)\s+(\S+)(\r\n)?$" )
         for line in fBandMap.readlines():
@@ -410,7 +425,7 @@ class DX( object ):
 
         slashPos = self.cs.find( '/' )
         if ( slashPos != -1 and slashPos < 4 ) or self.cs.endswith( '/AM' ) or \
-                self.cs.endswith( '/MM' ):
+                self.cs.endswith( '/MM' ) or self.subMode == 'PSK125':
             return
 
         dxCty = None
@@ -422,9 +437,7 @@ class DX( object ):
                 if prefixes[0].has_key( self.cs[:c] ):
                     pfx = self.cs[:c]
                     dxCty = prefixes[0][ self.cs[:c] ]
-        if dxCty:
-            print pfx 
-            print dxCty
+        if dxCty and pfx:
             self.country = countries[ dxCty ] if countries.has_key( dxCty ) \
                     else None
             if pfx in DX.specialPfx:
@@ -457,7 +470,6 @@ class DX( object ):
                 self._district = csLookup['district']
                 self.gridsquare = csLookup['qth']
                 self.qrzData = csLookup['qrz_data_loaded']
-                logging.debug( 'callsign found in db' )
                 awLookup = cursor2dicts( dxdb.execute( """ 
                     select award, value 
                     from awards
@@ -508,6 +520,14 @@ class DX( object ):
         if do['text'] and not skip['text']:
             self.doTextLookup()
 
+    def detectZip( self, data ):
+        for f in ( 'zip', 'addr1', 'addr2' ):
+            if data.has_key( f ):
+                m = DX.reZIP[ self.country ].search( data[f] )
+                if m:
+                    return m.group(0)
+        return None
+
     def doWebLookup( self ):
         if self.country == 'Russia':
             if self.dxData:
@@ -538,6 +558,28 @@ class DX( object ):
                 self.district = idx
                 self.qrzData = True
                 self.updateDB()
+        elif self.country == 'Sweden':
+            zip = None
+            rBody = ''
+            try:
+                r = urllib2.urlopen( \
+                    r'http://www.ssa.se/smcb/index.php?call='\
+                    + self.cs )
+                rBody = r.read()
+            except urllib2.HTTPError as e:
+                rBody = e.read()
+            m = DX.reZIP['Sweden'].search( rBody )
+            if m:
+                zip = m.group( 0 )
+            else:
+                data = qrzComLink.getData( self.cs )
+                if data:
+                    zip = self.detectZIP( data )
+            if zip:
+                self.district = DX.zipData['Sweden'][zip][3]
+
+
+
         elif self.country == 'Poland':
             r = urllib2.urlopen( \
                 'https://callbook.pzk.org.pl/szukaj.php?adv=1&query='\
@@ -575,13 +617,10 @@ class DX( object ):
                                 self.district = v
                                 if self.district == v:
                                     break
-                elif self.country == 'Spain':
-                    for f in ( 'zip', 'addr1', 'addr2' ):
-                        if data.has_key( f ):
-                            m = DX.reSpainDC.search( data[f] )
-                            if m:
-                                self.district = m.group(0)
-                                break
+                elif self.country in ( 'Spain', 'Finland' ):
+                    zip = self.detectZIP( data )
+                    if zip:
+                        self.district = zip
                 elif self.country == 'United Kingdom':
                     if data.has_key( 'lat' ) and  data.has_key( 'lon' ):
                         try:
@@ -692,17 +731,26 @@ class DX( object ):
                 av = None
                 
                 for l in ad['lookups']:                
-                    if l['source'] == 'text':
-                        text = getattr( self, l['field'] ) if l.has_key( 'field' ) \
-                                else self.text
-                        for m in re.finditer( l['re'], text ):
-                            v = m.group(0).upper()
-                            av = checkAwardValue( ad, l, v )
-                    elif l['source'] == 'field' and getattr( self, l['field'] ):
-                        av = checkAwardValue( ad, l, getattr( self, l['field'] )  )
-                    if ad['values'].has_key( av ):
-                        self.updateAward( ad, av )
-                        break
+                    try:
+                        if l['source'] == 'text':
+                            text = getattr( self, l['field'] ) \
+                                    if l.has_key( 'field' ) \
+                                    else self.text
+                            if text:
+                                for m in re.finditer( l['re'], text ):
+                                    v = m.group(0).upper()
+                                    av = checkAwardValue( ad, l, v )
+                        elif l['source'] == 'field' and getattr( self, l['field'] ):
+                            av = checkAwardValue( ad, l, \
+                                    getattr( self, l['field'] )  )
+                        if ad['values'].has_key( av ):
+                            self.updateAward( ad, av )
+                            break
+                    except Exception as e:
+                        logging.exception( 'Award detection error: award ' \
+                                + ad['name'] + ' lookup' + str( l ) + ' dx ' + \
+                                str( self.toDict() ) )
+                        logging.exception( e )
 
 
     def updateAward( self, ad, av ):

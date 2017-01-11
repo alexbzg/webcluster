@@ -604,6 +604,7 @@ def loadAdif( callsign, adif, awardsEnabled ):
                     if district and not reDistrict.match( district ):
                         state = None
                 if district and district != dx.district:
+                    dx.offDB = True
                     dx.district = district
                     dx.detectAwards()
             if dx.country == 'USA':
@@ -651,7 +652,7 @@ def loadAdif( callsign, adif, awardsEnabled ):
                             aw[band] = {}
                         if not aw[band].has_key( awMode ):
                             aw[band][awMode] = {}
-                        aw = aw[band][awMmode]
+                        aw = aw[band][awMode]
                     for cfmType in cfmFields.keys():
                         if not aw.has_key( cfmType ):
                             aw[cfmType] = False

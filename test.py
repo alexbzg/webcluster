@@ -14,23 +14,8 @@ from dx_t import DX
 
 conf = siteConf()
 
+ad = loadJSON( '/var/www/adxc.73/awards.json' )
+aw = [ a for a in ad if a['name'] == 'WAB-LSA' ][0]
 
-dxdb = dbConn()
-
-while 1:
-    d = []
-    td = loadJSON( '/var/www/adxc.73/dxdata.json' )
-    for i in td:
-        del i['ts']
-        if i['country'] == 'Russia':
-            tm = i['time']
-            aw = DX( **i ).toDict()
-            aw['time'] = tm
-            d.append( aw )
-            print aw
-    with open( '/var/www/adxc.73/debug/dxdata.json', 'w' ) as f:
-        f.write( json.dumps( d ) )
-    break
-    time.sleep( 100 )
-
+re.finditer( aw['lookups'][0]['re'], 'blah blah' )
 
