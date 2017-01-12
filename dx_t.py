@@ -303,7 +303,7 @@ class DX( object ):
             [ 'UHF', 150000, 2000000 ] ]
     modes = { 'CW': ( 'CW', ),
             'SSB': ( 'USB', 'LSB', 'FM', 'SSB' ),
-            'DIGI': ( 'RTTY', 'PSK', 'JT65', 'FSK', 'OLIVIA', 'SSTV' ) }
+            'DIGI': ( 'RTTY', 'PSK', 'JT65', 'FSK', 'OLIVIA', 'SSTV', 'JT9' ) }
     subModes = { 'RTTY': [], 'JT65': [], 'PSK': [ 'PSK31', 'PSK63', 'PSK125' ] }
     modesMap = []
     with open( appRoot + '/bandMap.txt', 'r' ) as fBandMap:
@@ -348,8 +348,23 @@ class DX( object ):
             'special': self.special
             }
 
-    def setMode( self, mode, alias ):
-        self.mode = mode
+    def setMode( self, value ):
+        alias = None
+        for ( mode, aliases ) in DX.modes.iteritems():
+            if value == mode:
+                self.mode = mode
+                break
+            if value in aliases:
+                self.mode = mode
+                alias = value
+                break
+            for a in aliases:
+                if a in value:
+                    self.mode = mode
+                    alias = a
+                    break
+            if alias:
+                break
         if DX.subModes.has_key( alias ):
             if DX.subModes[alias]:
                 t = self.text.upper()
@@ -359,6 +374,10 @@ class DX( object ):
                         break
             else:
                 self.subMode = alias
+            if not self.subMode:
+                for a in DX.subModes[alias]:
+                    if a in value:
+                        self.subMode = a
 
     def __init__( self, dxData = None, **params ):
         self.isBeacon = False
@@ -386,8 +405,17 @@ class DX( object ):
        
 
         self.band = params['band'] if params.has_key( 'band' ) else None
-        self.mode = params['mode'] if params.has_key( 'mode' ) else None
-        self.subMode = params['subMode'] if params.has_key( 'subMode' ) else None
+        self.mode = None
+        self.subMode = None
+        if params.has_key( 'mode' ):
+            self.setMode( params['mode'] )
+            if not self.mode:
+                print params['mode']
+                self.mode = params['mode']
+        else:
+            self.mode = None
+        if params.has_key( 'subMode' ):
+            self.subMode = params['subMode'] 
         self.detectAwardsList = params['detectAwards'] \
                 if params.has_key( 'detectAwards' ) else None
 
@@ -400,7 +428,7 @@ class DX( object ):
             for ( mode, aliases ) in DX.modes.iteritems():
                 for alias in aliases:
                     if re.search( '(^|\s)' + alias + '(\d|\s|$)', t ):
-                        self.setMode( mode, alias )
+                        self.setMode( alias )
                         break
         if not self.mode and self.freq:
             modeByMap = findDiap( DX.modesMap, self.freq )
@@ -408,10 +436,7 @@ class DX( object ):
                 if modeByMap == 'BCN':
                     self.isBeacon = True
                     return
-                for ( mode, aliases ) in DX.modes.iteritems():
-                    if modeByMap in aliases:
-                        self.setMode( mode, modeByMap )
-                        break
+                self.setMode( modeByMap )
         self.qrzData = False
         self.inDB = False
 

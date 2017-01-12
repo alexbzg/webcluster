@@ -587,12 +587,17 @@ def loadAdif( callsign, adif, awardsEnabled ):
             lastLine = getAdifField( line, 'QSO_DATE' ) + ' ' + \
                     getAdifField( line, 'TIME_ON' ) + ' ' + cs
             freq = getAdifField( line, 'FREQ' )
+            mode = getAdifField( line, 'MODE' )
+
+
             dx = dxMod.DX( cs = cs, de = '', text = '', \
                     freq = float( freq ) if freq else None, \
+                    mode = mode if mode else None, \
                     time = '    ', detectAwardsList = detectAwardsList )
+
+
             if dx.isBeacon:
                 continue
-            mode = getAdifField( line, 'MODE' )
             band = dx.band
             bandData = getAdifField( line, 'BAND' ).upper()
             if bands.has_key( bandData ):
@@ -692,7 +697,9 @@ def loadAdif( callsign, adif, awardsEnabled ):
                 awState = awards[award][value]
                 idParams = { 'callsign': callsign, \
                         'award': award,\
-                        'value': value }
+                        'value': value, \
+                        'band': 'N/A', \
+                        'mode': 'N/A' }
                 if awardsData[award].has_key('byBand') and \
                     awardsData[award]['byBand']:
                     for band in awState:
