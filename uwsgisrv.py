@@ -623,36 +623,24 @@ def loadAdif( callsign, adif, awardsEnabled ):
                             dx.detectAwards()
             if dx.awards:
                 cfm = {}
-                awMode = None
                 for ( cfmType, field ) in cfmFields.iteritems():
                     cfm[cfmType] = getAdifField( line, field ) == 'Y'
                 for ( award, value ) in dx.awards.iteritems():
                     if awardsData[award].has_key( 'noStats' ) and \
                         awardsData[award]['noStats']:
                         continue
-                    if awardsData[award].has_key('byBand') and \
-                            awardsData[award]['byBand']:
-                        modes = ( 'CW', 'SSB', 'RTTY', 'PSK31', 'PSK63', 'JY65' )
-                        if awardsData.has_key( 'modes' ):
-                            modes = awardsData['modes']
-                            for m in ( mode, dx.mode, dx.subMode ):
-                                if m in modes:
-                                    awMode = m
-                                    break
-                            if not band or not awMode:
-                                continue
                     if not awards.has_key(award):
                         awards[award] = {}
-                    if not awards[award].has_key(value):
-                        awards[award][value] = {}
-                    aw = awards[award][value]
+                    if not awards[award].has_key( value['value'] ):
+                        awards[award][ value['value'] ] = {}
+                    aw = awards[award][ value['value'] ]
                     if awardsData[award].has_key('byBand') and \
                             awardsData[award]['byBand']:
                         if not aw.has_key( band ):
                             aw[band] = {}
-                        if not aw[band].has_key( awMode ):
-                            aw[band][awMode] = {}
-                        aw = aw[band][awMode]
+                        if not aw[band].has_key( value['mode'] ):
+                            aw[band][value['mode']] = {}
+                        aw = aw[band][value['mode']]
                     for cfmType in cfmFields.keys():
                         if not aw.has_key( cfmType ):
                             aw[cfmType] = False

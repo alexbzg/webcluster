@@ -314,6 +314,18 @@ class DX( object ):
                 modesMap.append( [ m.group(3), float( m.group(1) ), \
                         float( m.group(2) ) ] )
 
+    def getAwardMode( self, award ):
+        if award.has_key( 'modes' ):
+            if self.mode in award['modes']:
+                return self.mode
+            if self.subMode in award['modes']:
+                return self.subMode
+            if r'DATA' in award['modes'] and \
+                    ( r'PSK' in self.subMode or r'JT' in self.subMode ):
+                return r'DATA'
+        else:
+            return self.subMode if self.subMode else self.mode
+
     def toDict( self ):
         if self.isBeacon:
             return { 'beacon': True }
@@ -471,12 +483,17 @@ class DX( object ):
                 self.gridsquare = csLookup['qth']
                 self.qrzData = csLookup['qrz_data_loaded']
                 awLookup = cursor2dicts( dxdb.execute( """ 
-                    select award, value 
+                    select award, value, mode
                     from awards
                     where callsign = %s""", ( self.cs, ) ), True )
                 if awLookup:
                     for i in awLookup:
-                        self.awards[i['award']] = i['value']
+                        if not i['mode']:
+                            award = [a for a in awardsData \
+                                    if a['name'] == i['award'] ][0]
+                            i['mode'] = self.getAwardMode( award )
+                        self.awards[i['award']] = \
+                            { 'value': i['value'], 'mode': i['mode'] }
 
             if '#' in self.de:
                 self.text = (self.text.split( ' ', 1 ))[0]
@@ -523,9 +540,12 @@ class DX( object ):
     def detectZip( self, data ):
         for f in ( 'zip', 'addr1', 'addr2' ):
             if data.has_key( f ):
-                m = DX.reZIP[ self.country ].search( data[f] )
-                if m:
-                    return m.group(0)
+                for m in DX.reZIP[ self.country ].finditer( data[f] ):
+                    if DX.zipData.has_key( self.country ):
+                        if DX.zipData[ self.country ].has_key( m.group(0) ):
+                            return m.group( 0 )
+                    else:
+                        return m.group( 0 )
         return None
 
     def doWebLookup( self ):
@@ -568,13 +588,14 @@ class DX( object ):
                 rBody = r.read()
             except urllib2.HTTPError as e:
                 rBody = e.read()
-            m = DX.reZIP['Sweden'].search( rBody )
-            if m:
-                zip = m.group( 0 )
-            else:
+            for m in DX.reZIP['Sweden'].finditer( rBody ):
+                if DX.zipData['Sweden'].has_key( m.group( 0 ) ):
+                    zip = m.group( 0 )
+                    break
+            if not zip:
                 data = qrzComLink.getData( self.cs )
                 if data:
-                    zip = self.detectZIP( data )
+                    zip = self.detectZip( data )
             if zip:
                 self.district = DX.zipData['Sweden'][zip][3]
 
@@ -618,7 +639,7 @@ class DX( object ):
                                 if self.district == v:
                                     break
                 elif self.country in ( 'Spain', 'Finland' ):
-                    zip = self.detectZIP( data )
+                    zip = self.detectZip( data )
                     if zip:
                         self.district = zip
                 elif self.country == 'United Kingdom':
@@ -756,23 +777,14 @@ class DX( object ):
     def updateAward( self, ad, av ):
         if not self.inDB:
             self.updateDB()
-        if self.awards.has_key( ad['name'] ):
-            if self.awards[ad['name']] == av:
-                return
+        awardEntry = { 'value': av, 'mode': self.getAwardMode( ad ) }
+        if not self.awards.has_key( ad['name'] ) or \
+            self.awards[ad['name']] != awardEntry:
             if not self.offDB:
-                dxdb.execute( """
-                    update awards
-                    set value = %(value)s
-                    where callsign = %(callsign)s and award = %(award)s""",
-                    { 'value': av, 'award': ad['name'], 'callsign': self.cs } )
-        else:
-            if not self.offDB:
-                dxdb.execute( """
-                    insert into awards
-                    values ( %(callsign)s, %(award)s, %(value)s )""",
-                    { 'value': av, 'award': ad['name'], 'callsign': self.cs } )
-        dxdb.commit()
-        self.awards[ad['name']] = av
+                idParams = { 'callsign': self.cs, 'award': ad['name'] }
+                dxdb.paramUpdateInsert( 'awards', idParams, awardEntry )
+                dxdb.commit()
+            self.awards[ad['name']] = awardEntry
 
 
     @property

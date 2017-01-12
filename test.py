@@ -13,9 +13,18 @@ from dxdb import dbConn, cursor2dicts
 from dx_t import DX
 
 conf = siteConf()
+while 1:
+    d = []
+    td = loadJSON( '/var/www/adxc.test/dxdata_.json' )
+    for i in td:
+        del i['ts']
+        tm = i['time']
+        aw = DX( **i ).toDict()
+        aw['time'] = tm
+        d.append( aw )
+    with open( '/var/www/adxc.test/dxdata_.json', 'w' ) as f:
+        f.write( json.dumps( d ) )
+    break
+    time.sleep( 100 )
 
-ad = loadJSON( '/var/www/adxc.73/awards.json' )
-aw = [ a for a in ad if a['name'] == 'WAB-LSA' ][0]
-
-re.finditer( aw['lookups'][0]['re'], 'blah blah' )
 

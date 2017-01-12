@@ -127,8 +127,8 @@ function DXService( $rootScope, $http, $interval, User, Awards, Notify ) {
     function itemAwards( item ) {
         for ( var aN in item._awards ) {
             var aV = item._awards[aN];
-            var a = { award: aN, value: aV, sound: false, 
-                noStats: awards[aN].noStats };
+            var a = { award: aN, value: aV.value, sound: false, 
+                noStats: awards[aN].noStats, mode: aV.mode };
             var byBand = awards[aN].byBand;
             if ( user.awards || user.awardsSettings ) {
                 if ( user.awardsSettings != null &&
@@ -139,11 +139,8 @@ function DXService( $rootScope, $http, $interval, User, Awards, Notify ) {
                             if ( item.band in as.settings.bands && 
                                     !as.settings.bands[item.band] )
                                 continue;
-                            if ( item.mode in as.settings.modes &&
-                                    !as.settings.modes[item.mode] )
-                                continue;
-                            if ( item.subMode in as.settings.modes &&
-                                    !as.settings.modes[item.subMode] )
+                            if ( aV.mode in as.settings.modes &&
+                                    !as.settings.modes[aV.mode] )
                                 continue;
                         }
                         a.color = as.color;
@@ -163,12 +160,6 @@ function DXService( $rootScope, $http, $interval, User, Awards, Notify ) {
                         else
                             a.worked = true;
                     }
-                }
-
-                if ( byBand && awards[aN].modes ) {
-                    if ( awards[aN].modes.indexOf( item.mode ) != -1 )
-                        a.mode = item.mode;
-                    else a.mode = item.subMode;
                 }
 
                 if ( !as || !as.settings || 
