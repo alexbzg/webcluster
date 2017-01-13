@@ -495,6 +495,7 @@ class DX( object ):
                         m = DX.reLettersSpecial.search( self.cs )
                         if m:
                             self.special = True
+        self.pfx = dxCty
 
         if not self.inDB:
 

@@ -920,7 +920,7 @@ Benin:                    35:  46:  AF:    9.87:    -2.25:    -1.0:  TY:
     TY;
 Mali:                     35:  46:  AF:   18.00:     2.58:     0.0:  TZ:
     TZ;
-European Russia:          16:  29:  EU:   53.65:   -41.37:    -4.0:  UA:
+European Russia:          16:  29:  EU:   53.65:   -41.37:    -4.0:  R:
     R,U,R1N[19],R1O[19],R1P[20],R1Z[19],R4H[30],R4I[30],R4W[30],R8F(17)[30],
     R8G(17)[30],R8X(17)[20],R9F(17)[30],R9G(17)[30],R9X(17)[20],RA1N[19],
     RA1O[19],RA1P[20],RA1Z[19],RA4H[30],RA4I[30],RA4W[30],RA8F(17)[30],
@@ -991,13 +991,13 @@ European Russia:          16:  29:  EU:   53.65:   -41.37:    -4.0:  UA:
     =RJ4P[30],=RM4R[30],=RT9K/4[30],=RT9K/6,=RT9K/7,=RT9T/3,=RW3DU/N,
     =RW9WJ/4[30],=RZ5D/4,=UA0BDS/1,=UA4NF[30],=UA4PN[30],=UA4RW[30],=UA9JPX/6,
     =UB5O/1;
-Kaliningrad:              15:  29:  EU:   54.72:   -20.52:    -3.0:  UA2:
+Kaliningrad:              15:  29:  EU:   54.72:   -20.52:    -3.0:  R2F:
     R2F,R2K,RA2,RC2F,RC2K,RD2F,RD2K,RF2F,RF2K,RG2F,RG2K,RI2F,RI2K,RJ2F,RJ2K,
     RK2F,RK2K,RL2F,RL2K,RM2F,RM2K,RN2F,RN2K,RO2F,RO2K,RP2F,RP2K,RQ2F,RQ2K,
     RR2F,RR2K,RT2F,RT2K,RU2F,RU2K,RV2F,RV2K,RW2F,RW2K,RX2F,RX2K,RY2F,RY2K,
     RZ2F,RZ2K,U2F,U2K,UA2,UB2,UC2,UD2,UF2,UG2,UH2,UI2,=R2/DK2AI,=R2MWO,
     =R5QA/2,=RA/DK2AI,=UB5O/2,=UE2AT,=UE2MW;
-Asiatic Russia:           17:  30:  AS:   55.88:   -84.08:    -7.0:  UA9:
+Asiatic Russia:           17:  30:  AS:   55.88:   -84.08:    -7.0:  R9:
     R0,R8(17)[30],R9,RA0,RA8(17)[30],RA9,RB0,RB8(17)[30],RB9,RC0,RC8(17)[30],
     RC9,RD0,RD8(17)[30],RD9,RE0,RE8(17)[30],RE9,RF0,RF8(17)[30],RF9,RG0,
     RG8(17)[30],RG9,RH0,RH8(17)[30],RH9,RI0,RI8(17)[30],RI9,RJ0,RJ8(17)[30],

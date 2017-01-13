@@ -73,6 +73,8 @@ function statsController( $scope, $stateParams, DxConst, User, Head, Awards,
                     vm.awards.push( award );
                     award.worked = 0;
                     award.confirmed = 0;
+                    if ( !award.country )
+                        award.country = undefined;
                     award.values.forEach( function( av ) {
                         if ( User.data.awards[award.name][av.value] ) {
                             var uav = User.data.awards[award.name][av.value];
@@ -201,7 +203,8 @@ function statsController( $scope, $stateParams, DxConst, User, Head, Awards,
             return;
 
         vm.modesFilter = {};
-        DxConst.modes.forEach( function( mode ) {
+        vm.modes = vm.activeAward.modes ? vm.activeAward.modes : DxConst.modes;
+        vm.modes.forEach( function( mode ) {
             vm.modesFilter[mode] = true;
         });
 
