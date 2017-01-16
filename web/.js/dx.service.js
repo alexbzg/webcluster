@@ -24,10 +24,10 @@ function DXService( $rootScope, $http, $interval, User, Awards, Notify ) {
     function init() {
         User.onLogIO( function() {
             user = User.data;
-            updateAwards(); 
+            loadAwardsList(); 
         } );
 
-        User.onAwardsStatsChange( updateAwards );
+        User.onAwardsStatsChange( loadAwardsList );
         Awards.onUpdate( loadAwardsList );
     }
 
@@ -35,6 +35,14 @@ function DXService( $rootScope, $http, $interval, User, Awards, Notify ) {
         Awards.data.forEach( function( award ) {
             var a = angular.extend( {}, award );
             a.cfm = createCfm( user.awardsSettings[award.name] );
+            a.settings = { bands: {}, modes: {} };
+            if ( user.awardsSettings[award.name] )
+                for ( var field in a.settings )
+                    if ( user.awardsSettings[award.name].settings[field] )
+                        user.awardsSettings[award.name].settings[field].forEach( 
+                            function( item ) {
+                                a.settings[field][item.name] = item.enabled;
+                            });
             awards[award.name] = a;
         });
         updateAwards();
@@ -133,24 +141,20 @@ function DXService( $rootScope, $http, $interval, User, Awards, Notify ) {
             if ( user.awards || user.awardsSettings ) {
                 if ( user.awardsSettings != null &&
                         aN in user.awardsSettings ) {
-                    var as = user.awardsSettings[aN];
-                    if ( as.track ) {
-                        if ( as.settings != null ) {
-                            if ( item.band in as.settings.bands && 
-                                    !as.settings.bands[item.band] )
-                                continue;
-                            if ( aV.mode in as.settings.modes &&
-                                    !as.settings.modes[aV.mode] )
-                                continue;
-                        }
+                    if ( user.awardsSettings[aN].track ) {
+                        var as = awards[aN].settings;
+                        if ( item.band in as.bands && !as.bands[item.band] )
+                            continue;
+                        if ( aV.mode in as.modes && !as.modes[aV.mode] )
+                            continue;
                         a.color = as.color;
                     } else 
                         continue;
                 }
                 if ( user.awards != null 
                     && aN in user.awards &&
-                    aV in user.awards[aN] ) {
-                    var uav = user.awards[aN][aV];
+                    aV.value in user.awards[aN] ) {
+                    var uav = user.awards[aN][aV.value];
                     var fl = false;
                     if ( byBand && ( fl = checkAward( uav, item ) ) )
                         uav = fl;

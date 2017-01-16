@@ -718,8 +718,9 @@ def loadAdif( callsign, adif, awardsEnabled ):
     return ( commitFl, lastLine )
 
 def exportDXpedition( env ):
-    dir = conf.get( 'web', \
-            ( 'test_' if 'test' in env['SERVER_NAME'] else '' ) + 'root' )
+    test = 'test' in env['SERVER_NAME']
+    keys = ( 'root', ) if test else ( 'root', 'test_root' )
+    dirs = [ conf.get( 'web', key ) for key in keys ]
     dxp = cursor2dicts( \
             dxdb.execute( """
                 select * from dxpedition
@@ -728,15 +729,16 @@ def exportDXpedition( env ):
     if not dxp:
         dxp = [];
     dxpJSON = json.dumps( dxp, default = jsonEncodeExtra ) 
-    with open( dir + '/dxpedition.json', 'w' ) as f:
-        f.write( dxpJSON )
-    slFName = dir + '/specialLists.json'
+#    with open( dir + '/dxpedition.json', 'w' ) as f:
+#        f.write( dxpJSON )
+    slFName = dirs[0] + '/specialLists.json'
     sl = loadJSON( slFName )
     if not sl:
         sl = { 'DXpedition': [], 'Special': [] }
     sl['DXpedition'] = dxp
     slJSON = json.dumps( sl, default = jsonEncodeExtra ) 
-    with open( slFName, 'w' ) as slF:
-        slF.write( slJSON )
+    for dir in dirs:
+        with open( dir + '/specialLists.json', 'w' ) as slF:
+            slF.write( slJSON )
 
        

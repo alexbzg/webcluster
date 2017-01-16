@@ -20,3 +20,6 @@ uwsgisrv.dxdb = dbConn()
 with open( '/var/www/adxc.73/debug/fullAdif.adi', 'r' ) as f:
     adif = f.read()
     uwsgisrv.loadAdif( 'QQQQ', adif, { 'Russia': True } )
+
+
+#uwsgisrv.exportDXpedition( { 'SERVER_NAME': '' } )

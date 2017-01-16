@@ -320,11 +320,12 @@ class DX( object ):
                 return self.mode
             if self.subMode in award['modes']:
                 return self.subMode
-            if r'DATA' in award['modes'] and \
+            if ( r'DATA' in award['modes'] ) and self.subMode and \
                     ( r'PSK' in self.subMode or r'JT' in self.subMode ):
                 return r'DATA'
-        else:
-            return self.subMode if self.subMode else self.mode
+            logging.debug( 'Award mode detection failed: award' + award['name'] + \
+                    ' mode ' + str( self.mode ) + ' ' + str( self.subMode ) )
+        return self.subMode if self.subMode else self.mode
 
     def toDict( self ):
         if self.isBeacon:
@@ -378,6 +379,9 @@ class DX( object ):
                 for a in DX.subModes[alias]:
                     if a in value:
                         self.subMode = a
+                        break
+            if not self.subMode:
+                self.subMode = DX.subModes[alias][0]
 
     def __init__( self, dxData = None, **params ):
         self.isBeacon = False
