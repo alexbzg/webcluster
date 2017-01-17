@@ -5,6 +5,7 @@ from dxdb import cursor2dicts, dbConn, paramStr
 import dx as dxMod
 
 import json, smtplib, urllib2, urllib, os, base64, jwt, re, logging, time, urlparse
+import time
 
 from urlparse import parse_qs
 from email.mime.text import MIMEText
@@ -23,6 +24,7 @@ if not secret:
         fSecret.write( secret )
 
 conf = siteConf()
+adifQueueDir = conf.get( 'web', 'root' ) + '/.adif/'
 
 logging.basicConfig( level = logging.DEBUG,
         format='%(asctime)s %(message)s', 
@@ -185,6 +187,18 @@ def application(env, start_response):
                     okResponse = 'OK'
                 else:
                     dbError = True
+
+            elif data.has_key( 'checkMessage' ):
+                userData = dxdb.getObject( 'users', \
+                        { 'callsign': callsign },\
+                        False, True )
+                if ( userData['msg'] ):
+                    dxdb.paramUpdate( 'users', { 'callsign': callsign }, \
+                            { 'msg': None } )
+                    dxdb.commit()
+                start_response('200 OK', [('Content-Type','application/json')])
+                return json.dumps( userData['msg'] )
+
             elif data.has_key( 'reload' ):
                 userData = dxdb.getObject( 'users', \
                         { 'callsign': callsign },\
@@ -219,13 +233,20 @@ def application(env, start_response):
             elif data.has_key( 'adif' ):
                 adif = data['adif']['file'].split( ',' )[1].decode( \
                         'base64', 'strict' )
-                logging.debug( 'adif received' )
-                newAwards, lastLine = loadAdif( callsign, adif, \
-                        data['adif']['awards'] )
-                start_response( '200 OK', [('Content-Type','application/json')])     
-                return json.dumps( { 'lastAdifLine': lastLine, \
-                        'awards': getUserAwards( callsign ) \
-                            if newAwards else False } )
+                fName = callsign + '-' + str( time.time() ) + '.adif'
+                with open( adifQueueDir + fName, 'w' ) as f:
+                    f.write( adif )
+                queue = loadJSON( adifQueueDir + 'queue.json' )
+                if not queue:
+                    queue = []
+                queue.append( { 'callsign': callsign, \
+                        'awards': data['adif']['awards'],\
+                        'file': fName } )
+                with open( adifQueueDir + 'queue.json', 'w' ) as f:
+                    f.write( json.dumps( queue ) )
+
+                start_response( '200 OK', [('Content-Type','text/plain')])     
+                return 'OK'
             elif data.has_key( 'award' ) and data.has_key( 'value' ) \
                     and ( data.has_key( 'confirmed' ) or data.has_key('delete') or \
                     data.has_key( 'cfm_paper' ) ):
