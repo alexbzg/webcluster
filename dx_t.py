@@ -153,12 +153,15 @@ class QRZComLink:
 
 qrzComLink = QRZComLink()
 
-
-def updateSpecialLists():
+def loadSpecialLists():
     fName = webRoot + '/specialLists.json'
     slData = loadJSON( fName )
     if not slData:
         slData = { 'DXpedition': [], 'Special': [] }
+    return slData
+
+def updateSpecialLists():
+    slData = loadSpecialLists()
     slData['Special'] = cursor2dicts( dxdb.execute( """
         select callsign, last_ts 
         from callsigns 

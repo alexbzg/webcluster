@@ -6,10 +6,18 @@ from common import appRoot, readConf, siteConf, loadJSON, jsonEncodeExtra
 from dxdb import cursor2dicts, dxdb, paramStr
 import dx as dxMod
 
-import json, re, logging, time, os
+import json, re, logging, time, os, fcntl, sys
 
 conf = siteConf()
 adifQueueDir = conf.get( 'web', 'root' ) + '/.adif/'
+
+pid_file = '/var/run/adif.pid'
+fp = open(pid_file, 'w')
+try:
+        fcntl.lockf(fp, fcntl.LOCK_EX | fcntl.LOCK_NB)
+except IOError:
+        # another instance is running
+        sys.exit(0)
 
 logging.basicConfig( level = logging.DEBUG,
         format='%(asctime)s %(message)s', 

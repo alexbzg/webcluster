@@ -3,12 +3,13 @@ angular
     .service( 'User', UserService );
 
 function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst, 
-        LoadingScreen, $rootScope, Notify, SpecialLists ) {
+        LoadingScreen, $rootScope, Notify, SpecialLists, $state ) {
     var storageKey = 'adxcluster-user';
     var defaultColor = '#770000';
     var defaultColorDXped = '#f600df';
     var updateTask = $interval( update, 300000 );
     var dxpedTask = $interval( initSpecialLists, 3600000 );
+    var checkMsgTask = $interval( checkMessage, 60000 );
     var user = { 
         fromStorage: fromStorage,
         toStorage: toStorage,
@@ -171,8 +172,8 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
             var listData = SpecialLists.data[title];
             if ( title == 'DXpedition' )
                 listsData = listData.filter( function( item ) {
-                    return ( !item.dt_begin || moment( item.dt_begin ) < moment() ) &&
-                        (!item.dt_end || 
+                    return ( !item.dt_begin || moment( item.dt_begin ) < moment() ) 
+                        && ( !item.dt_end || 
                         moment( item.dt_end ).add( 1, 'weeks' ) > moment() );
                 });        
             var list = user.data.specialLists[title];
@@ -188,6 +189,8 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
                 if ( !( listItem = list.items.find( function( listItem ) {
                     return listItem.callsign == listDataItem.callsign; } ) ) ) {
                     listItem = { callsign: listDataItem.callsign };
+                    if ( title == 'DX Favourites' )
+                        listItem.pfx = true;
                     list.items.push( listItem );
                 }
                 angular.extend( listItem, listDataItem );
@@ -283,9 +286,28 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
         }
     }
 
+    function checkMessage() {
+        if ( user.data.token )
+            return toServer( { checkMessage: 1 } )
+                .then( function( result ) {
+                    if ( result ) {
+                        if ( result.reload )
+                            reload();
+                        if ( result.text )
+                            $window.alert( result.text );
+                    }
+                } );
+    }
+
+
     function serverError( error ) {
         console.log('User settings XHR Failed: ' + error.data);
-        $window.alert( 'Error saving your settings to server.' + 
+        if ( error.data == 'Login expired' ) {
+            logout();
+            $window.alert( 'Your login expired. Please relogin.' );
+            $state.go( 'login' );
+        } else 
+            $window.alert( 'Error saving your settings to server.' + 
                 'Please try again later' );
         return false;
     }
@@ -507,17 +529,7 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
                 adif: { file: adif.file, awards: awards }
                 }
             })
-            .then(
-                function( response ) {
-                    if ( response.data.awards )
-                        user.data.awards = response.data.awards;
-                    user.data.lastAdifLine = response.data.lastAdifLine;
-                    toStorage();
-                    if ( response.data.awards ) {
-                        $rootScope.$emit('user-awards-stats-change');
-                        return true;
-                    } else return false;
-                });
+            .catch( serverError );
     };
    
 }
