@@ -2,6 +2,11 @@ angular
     .module( 'adxcApp' )
     .service( 'User', UserService );
 
+UserService.$inject = [ '$http', '$window', '$q', '$interval', 
+    'Storage', 'Awards', 'DxConst', 'LoadingScreen', '$rootScope', 
+    'Notify', 'SpecialLists', '$state' ];
+
+
 function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst, 
         LoadingScreen, $rootScope, Notify, SpecialLists, $state ) {
     var storageKey = 'adxcluster-user';
@@ -141,6 +146,7 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
                 saveList( list );
             list.full_title = listParams.fullTitle;
             list.special = true;
+            list.noStats = listParams.noStats;
             user.data.specialLists[title] = list;
         }
 
@@ -189,7 +195,7 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
                 if ( !( listItem = list.items.find( function( listItem ) {
                     return listItem.callsign == listDataItem.callsign; } ) ) ) {
                     listItem = { callsign: listDataItem.callsign };
-                    if ( title == 'DX Favourites' )
+                    if ( title == 'DX' )
                         listItem.pfx = true;
                     list.items.push( listItem );
                 }

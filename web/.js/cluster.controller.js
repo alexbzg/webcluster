@@ -2,6 +2,10 @@ angular
     .module( 'adxcApp' )
     .controller( 'clusterController', clusterController );
 
+clusterController.$inject = [ '$interval', '$timeout', '$scope', 
+    'Storage', 'DxConst', 'DX', 'Head', 'News' ];
+   
+
 function clusterController( $interval, $timeout, $scope, 
         Storage, DxConst, DX, Head, News ) {
 

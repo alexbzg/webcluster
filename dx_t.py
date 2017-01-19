@@ -335,6 +335,7 @@ class DX( object ):
             return { 'beacon': True }
         return {
             'cs': self.cs,
+            'pfx': self.pfx,
             'qrp': self.qrp,
             'text': self.text,
             'de': self.de,

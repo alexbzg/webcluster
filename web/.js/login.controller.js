@@ -2,6 +2,10 @@ angular
     .module( 'adxcApp' )
     .controller( 'loginController', loginController );
 
+loginController.$inject = [ '$scope', '$state', 'vcRecaptchaService', 'User', 
+    'Head' ];   
+
+
 function loginController( $scope, $state, vcRecaptchaService, User, Head ) {    
     var vm = this;    
     rcExpired = rcExpired;

@@ -2,6 +2,9 @@ angular
     .module( 'adxcApp' )
     .service( 'DXpeditionAdmin', DXpeditionAdminService );
 
+    DXpeditionAdminService.$inject = [ 'User' ];
+
+
 function DXpeditionAdminService( User  ) {
     return {
         saveItem: saveItem,

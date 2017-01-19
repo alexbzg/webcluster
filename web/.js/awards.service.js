@@ -2,38 +2,26 @@ angular
     .module('adxcApp')
     .service('Awards', AwardsService);
 
-AwardsService.$inject = ['$http', '$rootScope', 'Notify' ];
+AwardsService.$inject = ['$http', 'DataServiceFactory' ];
 
-function AwardsService( $http, $rootScope, Notify ) {
-    var s = { lasModified: null,
-                    load: load,
-                    awards: null,
-                    onUpdate: onUpdate };
+function AwardsService( $http, DataServiceFactory ) {
+    var s = DataServiceFactory();
+    s.url = '/awards.json';
+    s.eventName = 'awards-list-updated';
+    s.loadValues = loadValues;
     return s;
 
-    function onUpdate( callback, scope ) {
-        Notify.notify( 'awards-list-updated', callback, scope );
-    }
+    function loadValues() {
+        return $http.get( '/awardsValues.json' )
+            .then(loadValuesComplete)
+            .catch(loadValuesFailed);
 
-
-    function load( values ) {
-        var url = values ? '/awardsValues.json' : '/awards.json';
-        return $http.get( url )
-            .then(getAwardsComplete)
-            .catch(getAwardsFailed);
-
-        function getAwardsComplete(response) {
-            if ( !values && 
-                    ( s.lastModified != response.headers( 'last-modified' ) ) ) {
-                s.lastModified =  response.headers( 'last-modified' );
-                s.awards = response.data;
-                $rootScope.$emit('awards-list-updated');
-            }
+        function loadValuesComplete(response) {
             return response.data;
         }
 
-        function getAwardsFailed(error) {
-            console.log('Awards XHR Failed: ' + error.data);
+        function loadValuesFailed(error) {
+            console.log('Awards values XHR Failed: ' + error.data);
         }
     }
 }

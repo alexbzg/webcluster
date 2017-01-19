@@ -2,6 +2,9 @@ angular
     .module( 'adxcApp' )
     .controller( 'awardsController', awardsController );
 
+awardsController.$inject = [ 'DxConst', 'User', 'Awards', 'Head', 
+    'SpecialLists' ];
+
 function awardsController( DxConst, User, Awards, Head, SpecialLists ) {
     var vm = this;
     vm.user = User;

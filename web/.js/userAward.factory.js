@@ -2,6 +2,9 @@ angular
     .module( 'adxcApp' )
     .factory( 'UserAwardFactory', UserAwardFactory );
 
+UserAwardFactory.$inject = [ '$rootScope', 'User', 'DxConst' ];
+   
+
 function UserAwardFactory( $rootScope, User, DxConst ) {
     var props = [ 'workedCS' ];
     DxConst.cfm.forEach( function( item ) {

@@ -2,6 +2,8 @@ angular
     .module( 'adxcApp' )
     .service( 'Notify', notifyService );
 
+notifyService.$inject = [ '$rootScope' ];
+   
 function notifyService( $rootScope ) {
     return { notify: notify };
 

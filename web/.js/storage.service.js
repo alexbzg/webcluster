@@ -2,6 +2,9 @@ angular
     .module( 'adxcApp' )
     .service( 'Storage', StorageService );
 
+StorageService.$inject = [ '$window' ];
+
+
 function StorageService( $window ) {
     var ownStorage = {
         setItem: 

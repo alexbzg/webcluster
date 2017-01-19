@@ -335,6 +335,7 @@ class DX( object ):
             return { 'beacon': True }
         return {
             'cs': self.cs,
+            'pfx': self.pfx,
             'qrp': self.qrp,
             'text': self.text,
             'de': self.de,
@@ -391,6 +392,7 @@ class DX( object ):
         self._district = None
         self.region = None
         self.offDB = False
+        self.pfx = None
         self.awards = {}
         self.dxData = dxData
         self.country = None

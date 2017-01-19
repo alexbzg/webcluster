@@ -2,6 +2,9 @@ angular
     .module( 'adxcApp' )
     .controller( 'profileController', profileController );
 
+profileController.$inject = [ '$scope', 'User', 'Head', 'Awards', 
+    'LoadingScreen' ];    
+
 function profileController( $scope, User, Head, Awards, LoadingScreen ) {    
     var vm = this;
     vm.user = User;
@@ -77,11 +80,8 @@ function profileController( $scope, User, Head, Awards, LoadingScreen ) {
         vm.loading = true;
         LoadingScreen.on();
         User.uploadADIF( vm.adif )
-            .then( function( newAwards ) {
-                if ( newAwards )
-                    alert( 'ADIF log was loaded successfully!' );
-                else 
-                    alert( 'No new callsigns for supported awards were found!' );                
+            .then( function() {
+                alert( 'Your ADIF log was succefully uploaded and currenly is being processed. You will be notified when process is finished.' );                
             })
             .catch( function() { alert( 'Error while loading ADIF log!' ) } )
             .finally( function() { LoadingScreen.off() } );

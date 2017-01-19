@@ -2,6 +2,10 @@ angular
     .module( 'adxcApp' )
     .controller( 'listSetupController', listSetupController );
 
+listSetupController.$inject = [ '$state', '$stateParams', '$window', 'DxConst', 
+    'User', 'Head' ];   
+   
+
 function listSetupController( $state, $stateParams, $window, DxConst, User, Head ) {    
     var vm = this;
     var titleCache = { title: '', full_title: '' };

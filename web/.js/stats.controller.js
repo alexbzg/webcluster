@@ -2,6 +2,9 @@ angular
     .module( 'adxcApp' )
     .controller( 'statsController', statsController );
 
+statsController.$inject = [ '$scope', '$stateParams', 'DxConst', 'User', 
+    'Head', 'Awards', 'UserAwardFactory', 'LoadingScreen' ];   
+
 function statsController( $scope, $stateParams, DxConst, User, Head, Awards, 
         UserAwardFactory, LoadingScreen ) {    
     var vm = this;
@@ -132,19 +135,19 @@ function statsController( $scope, $stateParams, DxConst, User, Head, Awards,
 
     function bandConfirmed( band ) {
         var fl = false;
-        for ( var co = 0; co < DxConst.modesCount; co++ ) {
-            var mode = DxConst.modes[co];
+        for ( var co = 0; co < vm.modesCount; co++ ) {
+            var mode = vm.modes[co];
             if ( band[mode] && 
                     ( band[mode].confirmed = valueConfirmed( band[mode] ) ) &&
-                    vm.modesFilter[mode] )
+                    vm.modesFilter[mode] ) 
                 fl = true;
         }
         return fl;
     }
 
     function bandWorked( band ) {
-        for ( var co = 0; co < DxConst.modesCount; co++ ) {
-            var mode = DxConst.modes[co];
+        for ( var co = 0; co < vm.modesCount; co++ ) {
+            var mode = vm.modes[co];
             if ( vm.modesFilter[mode] && band[mode] )
                 return true;
         }
@@ -204,6 +207,7 @@ function statsController( $scope, $stateParams, DxConst, User, Head, Awards,
 
         vm.modesFilter = {};
         vm.modes = vm.activeAward.modes ? vm.activeAward.modes : DxConst.modes;
+        vm.modesCount = vm.modes.length;
         vm.modes.forEach( function( mode ) {
             vm.modesFilter[mode] = true;
         });

@@ -2,6 +2,9 @@ angular
     .module( 'adxcApp' )
     .controller( 'contactController', contactController );
 
+contactController.$inject = [ 'vcRecaptchaService', 'User', 'Head', '$http' ];    
+   
+
 function contactController( vcRecaptchaService, User, Head, $http ) {    
     var vm = this;
     vm.user = User;

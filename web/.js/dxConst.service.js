@@ -2,6 +2,9 @@ angular
     .module( 'adxcApp' )
     .constant( 'DxConst', DxConstService() );
 
+DxConstService.$inject = [];
+   
+
 function DxConstService() {
     var dxConst = { 
         bandsAll: [ '1.8', '3.5', '7', '10', '14', '18', '21', '24', '28', 

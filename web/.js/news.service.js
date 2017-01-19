@@ -2,6 +2,9 @@ angular
     .module( 'adxcApp' )
     .service( 'News', newsService );
 
+newsService.$inject = [ '$http', 'Storage' ];
+   
+
 function newsService( $http, Storage ) {
     var storageKey = 'adxcluster-news';
     var storageType = 'local';

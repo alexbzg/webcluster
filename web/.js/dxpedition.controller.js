@@ -2,6 +2,10 @@ angular
     .module( 'adxcApp' )
     .controller( 'dxpeditionController', dxpeditionController );
 
+dxpeditionController.$inject = [ 'User', 'Head', 'SpecialLists', 
+    'DXpeditionAdmin', '$q' ];    
+   
+
 function dxpeditionController( User, Head, SpecialLists, DXpeditionAdmin, $q ) {    
     var vm = this;
     vm.insertItem = insertItem;

@@ -2,6 +2,8 @@ angular
     .module( 'adxcApp' )
     .service( 'DX', DXService );
 
+DXService.$inject = [ '$rootScope', '$http', '$interval', 'User', 'Awards', 'Notify' ];
+
 function DXService( $rootScope, $http, $interval, User, Awards, Notify ) {
     var url = '/dxdata.json';
     var lastModified = null;
@@ -147,7 +149,7 @@ function DXService( $rootScope, $http, $interval, User, Awards, Notify ) {
                             continue;
                         if ( aV.mode in as.modes && !as.modes[aV.mode] )
                             continue;
-                        a.color = as.color;
+                        a.color = user.awardsSettings[aN].color;
                     } else 
                         continue;
                 }
@@ -193,8 +195,9 @@ function DXService( $rootScope, $http, $interval, User, Awards, Notify ) {
                                 !listItem.settings.modes[item.subMode] )
                             return;
                     }
-                    if ( listItem.callsign == item.cs || ( listItem.pfx && 
-                                item.cs.indexOf( listItem.callsign ) == 0 ) ) {
+                    if ( ( list.title != 'DX' && ( listItem.callsign == item.cs || ( listItem.pfx && 
+                                item.cs.indexOf( listItem.callsign ) == 0 ) ) ) || 
+                          ( list.title == 'DX' && listItem.callsign == item.pfx ) ) {
                         var worked = false;
                         if ( list.id in user.listsAwards && listItem.callsign in 
                             user.listsAwards[list.id] ) {
@@ -209,7 +212,9 @@ function DXService( $rootScope, $http, $interval, User, Awards, Notify ) {
 
                         }
                         item.awards.push( { award: list.title, 
+                            noStats: list.noStats,
                             value: listItem.callsign,
+                            pfx: listItem.pfx,
                             dtEnd: listItem.dt_end,
                             link: listItem.link,
                             descr: listItem.descr,
