@@ -95,6 +95,9 @@ class dbConn:
     def commit( self ):
         self.conn.commit()
 
+    def commit( self ):
+        self.conn.rollback()
+
 
 
     def getObject( self, table, params, create = False, 

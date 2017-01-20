@@ -127,7 +127,7 @@
                    
                 </td>
                 <td class="stats">
-                    <a ui-sref="stats( { list_id: list.id } )">
+                    <a ui-sref="stats( { list_id: list.id } )" ng-if="!list.noStats">
                         <img src="/images/icon_stats.png" title="List stats">
                     </a>
                 </td>

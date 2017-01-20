@@ -147,9 +147,10 @@ function listSetupController( $state, $stateParams, $window, DxConst, User, Head
         vm.list.items.forEach( function( item ) {
             if ( !item.settings.hide && item.settings[field][value] != vm.switches[field][value] ) {
                 item.settings[field][value] = vm.switches[field][value];
-                User.saveListItem( item, vm.list );
             }
         });
+        User.saveAllListItems( vm.list );
+       
     }
   
 }

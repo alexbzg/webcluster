@@ -66,13 +66,15 @@
                     <span 
                         class="award_name" ng-style="{'color': award.color}"
                         >{{award.award}}<img ng-if="award.worked" src="/images/icon_worked.png" 
-                                title="worked but not confirmed"/></span>{{award.value && !award.list_id ? 
-                            ' ' + vm.replace0( award.value) : ''}}<span 
+                                title="worked but not confirmed"/></span>{{
+                            award.value && ( !award.list_id || award.pfx )
+                            ? ' ' + vm.replace0( award.value) : ''}}<span 
                                 ng-if="award.descr"> ({{award.descr}})</span></a><span ng-if="award.noStats">
                     <span 
                         class="award_name" ng-style="{'color': award.color}"
                         >{{award.award}}<img ng-if="award.worked" src="/images/icon_worked.png" 
-                                title="worked but not confirmed"/></span>{{award.value 
+                                title="worked but not confirmed"/></span>{{
+                             award.value && ( !award.list_id || award.pfx )
                             ? ' ' + vm.replace0( award.value) : ''}}</span><span 
                                 ng-if="award.link"> <a class="dxinfo" 
                                 target="_blank" href="{{award.link}}">info</a></span><span ng-if="!$last">, </span>

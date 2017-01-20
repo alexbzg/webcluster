@@ -31,6 +31,8 @@ function statsController( $scope, $stateParams, DxConst, User, Head, Awards,
 
         var listCo = 1;
         User.data.lists.forEach( function( list ) {
+            if ( list.noStats )
+                return;
             var listAV = { fullName: list.full_title ? list.full_title : 
                     'List #' + listCo, 
                 name: list.title, byBand: true,

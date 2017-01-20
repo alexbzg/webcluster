@@ -22,6 +22,7 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
         listChanged: listChanged,
         deleteList: deleteList,
         saveList: saveList,
+        saveAllListItems: saveAllListItems,
         saveListItem: saveListItem,
         createList: createList,
         deleteListItem: deleteListItem,
@@ -195,8 +196,19 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
                 if ( !( listItem = list.items.find( function( listItem ) {
                     return listItem.callsign == listDataItem.callsign; } ) ) ) {
                     listItem = { callsign: listDataItem.callsign };
-                    if ( title == 'DX' )
+                    if ( title == 'DX' ) {
                         listItem.pfx = true;
+                        listItem.settings = {};
+                        var fields = { bands: DxConst.bands, modes: DxConst.modes };
+                        for ( var field in fields ) {
+                            listItem.settings[field] = {};
+                            fields[field].forEach( function( fieldV ) {
+                                listItem.settings[field][fieldV] = false;
+                            });
+                        }
+                        for ( var field in { 'mobile': 1, 'sound': 1 } )
+                            listItem.settings[field] = { 'wkd': true, 'not': true };
+                    }
                     list.items.push( listItem );
                 }
                 angular.extend( listItem, listDataItem );
@@ -424,7 +436,19 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
         $rootScope.$emit('user-awards-stats-change');
 
     };
-   
+
+    function saveAllListItems( list ) {
+        toStorage();
+        if ( list.id )
+            toServer( {
+                    'list_id': list.id,
+                    'items': list.items
+            } );
+        $rootScope.$emit('user-awards-stats-change');
+
+    };
+
+
     function createList() {
         var no = user.data.lists.length + 1;
         var list = { 

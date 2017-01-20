@@ -13,7 +13,7 @@ function SpecialListsService( DataServiceFactory, Awards, $rootScope ) {
                     color: '#f600df' },
         Special: { fullTitle: 'Autoupdating special calls list', color: '#ffa700',
             'noStats': true },
-        'DX': { fullTitle: 'User DX Favourites', color: '#ffa700' }
+        'DX': { fullTitle: 'User DX Favourites', color: '#ffa700', noStats: true }
    
     };
     s.processData = processData;

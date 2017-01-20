@@ -311,6 +311,19 @@ def application(env, start_response):
                         okResponse = 'OK'
                     else:
                         dbError = True
+                elif data.has_key( 'items' ):
+                    idParams = { 'list_id': data['list_id'] }
+                    okResponse = 'OK'
+                    for item in data['items']:
+                        idParams['callsign'] = item['callsign']
+                        if not dxdb.paramUpdateInsert( 'users_lists_items', \
+                            idParams,
+                            spliceParams( item, [ 'settings', 'pfx' ] ) ):  
+                            okResponse = ''
+                            dbError = True
+                            dxdb.rollback()
+                        else:
+                            dxdb.commit()
                 elif data.has_key( 'callsign' ):
                     if data.has_key( 'delete' ):
                         if dxdb.paramDelete( 'users_lists_items',\

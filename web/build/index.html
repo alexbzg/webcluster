@@ -1,0 +1,69 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"                                                
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" land="ru" xml:lang="en" ng-app="adxcApp">
+    <head ng-controller="headController as vm">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <meta http-equiv="Content-Language" content="ru-ru"/>
+        <meta name="description" content="" />
+        <meta name="keywords" content="" />
+        <title ng-bind="vm.head.title()">Awards DX Cluster by R7AB</title>
+        <link href="/style.css" rel="stylesheet" type="text/css">
+        <link href="/.js/lib/colorpicker.min.css" rel="stylesheet" type="text/css">
+        <link href="/.js/lib/angular-datepicker.min.css" rel="stylesheet" type="text/css">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon">
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans" 
+            rel="stylesheet">
+        <style>
+            [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], 
+                .ng-cloak, .x-ng-cloak {
+                  display: none !important;
+            }
+        </style>
+        <script src="//www.google.com/recaptcha/api.js?render=explicit&onload=vcRecaptchaApiLoaded" async defer>
+        </script>        
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-sanitize.js"></script>
+        <script src="/.js/lib/moment.min.js"></script>        
+        <script src="/.js/lib/angular-datepicker.min.js"></script>        
+        <script src="/.js/lib/angular-recaptcha.min.js"></script>        
+        <script src="/.js/lib/angular-ui-router.min.js"></script>
+        <script src="/.js/lib/bootstrap-colorpicker-module.min.js"></script>
+        <script src="app.min.js?version=0.0.0.2"></script>
+
+    </head>
+    <body ng-cloak>
+        <div id="top" ng-controller="menuController as vm">
+            <a ui-sref="main"><img src="/images/ac_logo.jpg" border="0" /></a>
+
+            <div id="unlogged_user_info" ng-show="!vm.user.loggedIn() 
+                && ( vm.state.includes( 'profile' ) || vm.state.includes( 'stats' ) ||
+                vm.state.includes( 'awards' ) || vm.state.includes( 'listSetup' ) )">
+                <b>Unregistered user</b>.<br/>Data and settings <u>will not be saved</u> on the server. 
+            </div>
+
+            <div id="top_menu" >
+                <span id="callsign" ng-show="vm.user.loggedIn()">
+                    {{vm.user.data.callsign}}</span>
+                <a ui-sref="info" ng-show="!vm.user.loggedIn()">Info</a>
+                <!-- <a ui-sref="stats">Stats</a> -->
+                <a ui-sref="awards">Awards</a>
+                <a ui-sref="profile">Profile</a>
+                        <a ui-sref="contact">Contact</a>
+                <a ui-sref="login" ng-show="!vm.user.loggedIn()">Login</a>
+                <a href="" ng-click="vm.user.logout()" ng-show="vm.user.loggedIn()">
+                    Logout</a>
+            </div>
+        </div>
+
+        <ui-view></ui-view>
+
+        <div id="counter">
+        Special thanks to <a href="http://qrz.ru/" target="_blank">QRZ.ru</a>, <a href="http://uarl.com.ua/" target="_blank">UARL</a>, <a href="http://qrz.com/" target="_blank">QRZ.com</a>, <a href="https://www.qrz.com/db/DL6KVA" target="_blank">DL6KVA</a>, <a href="http://www.whatsmylocator.co.uk/" target="_blank">WhatsMyLocator</a>, <a href="http://www.ng3k.com/" target="_blank">NG3K</a>, <a href="http://www.425dxn.org/" target="_blank">425DXN</a>, <a href="https://dxnews.com/" target="_blank">DX News</a>.
+        <br/><br/>
+            <!-- Yandex.Metrika informer --> <a href="https://metrika.yandex.ru/stat/?id=38305355&amp;from=informer" target="_blank" rel="nofollow"><img src="https://informer.yandex.ru/informer/38305355/3_0_EFEFEFFF_EFEFEFFF_0_pageviews" style="width:88px; height:31px; border:0;" alt="Яндекс.Метрика" title="Яндекс.Метрика: данные за сегодня (просмотры, визиты и уникальные посетители)" onclick="try{Ya.Metrika.informer({i:this,id:38305355,lang:'ru'});return false}catch(e){}" /></a> <!-- /Yandex.Metrika informer --> <!-- Yandex.Metrika counter --> <script type="text/javascript"> (function (d, w, c) { (w[c] = w[c] || []).push(function() { try { w.yaCounter38305355 = new Ya.Metrika({ id:38305355, clickmap:true, trackLinks:true, accurateTrackBounce:true }); } catch(e) { } }); var n = d.getElementsByTagName("script")[0], s = d.createElement("script"), f = function () { n.parentNode.insertBefore(s, n); }; s.type = "text/javascript"; s.async = true; s.src = "https://mc.yandex.ru/metrika/watch.js"; if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f, false); } else { f(); } })(document, window, "yandex_metrika_callbacks"); </script> <noscript><div><img src="https://mc.yandex.ru/watch/38305355" style="position:absolute; left:-9999px;" alt="" /></div></noscript> <!-- /Yandex.Metrika counter -->
+        </div>
+
+    </body>
+</html>
+
