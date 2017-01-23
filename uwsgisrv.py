@@ -14,7 +14,7 @@ from email.mime.multipart import MIMEMultipart
 from email import charset
 charset.add_charset('utf-8', charset.SHORTEST, charset.QP)
 secret = None
-fpSecret = '/var/run/adxcluster.secret'
+fpSecret = '/var/tmp/adxcluster.secret'
 if ( os.path.isfile( fpSecret ) ):
     with open( fpSecret, 'r' ) as fSecret:
         secret = fSecret.read()
@@ -191,6 +191,7 @@ def application(env, start_response):
                         else:
                             dbError = True
                     else:
+                        logging.debug( 'insert dxpedition callsign ' + json.dumps( data ) )
                         updParams = spliceParams( data, [ 'dt_begin', 'dt_end', \
                             'descr', 'link' ] )
                         if dxdb.paramUpdateInsert( 'dxpedition', idParams, \

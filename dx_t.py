@@ -392,6 +392,7 @@ class DX( object ):
         self._district = None
         self.region = None
         self.offDB = False
+        self.pfx = None
         self.awards = {}
         self.dxData = dxData
         self.country = None
@@ -468,20 +469,30 @@ class DX( object ):
             self.district = None
             self.gridsquare = None
 
+        dxCty = None
+        pfx = None
+
         slashPos = self.cs.find( '/' )
         if ( slashPos != -1 and slashPos < 4 ) or self.cs.endswith( '/AM' ) or \
                 self.cs.endswith( '/MM' ) or self.subMode == 'PSK125':
             return
+        if slashPos != -1:
+            parts = self.cs.split( '/' )
+            for part in parts:
+                if prefixes[0].has_key( part ):
+                    pfx = part
+                    dxCty = prefixes[0][part]
+                    break
 
-        dxCty = None
-        pfx = None
-        if prefixes[1].has_key( self.cs ):
-            dxCty = prefixes[1][self.cs];
-        else:
-            for c in xrange(1, len( self.cs ) ):
-                if prefixes[0].has_key( self.cs[:c] ):
-                    pfx = self.cs[:c]
-                    dxCty = prefixes[0][ self.cs[:c] ]
+        if not pfx:
+            if prefixes[1].has_key( self.cs ):
+                dxCty = prefixes[1][self.cs];
+            else:
+                for c in xrange(1, len( self.cs ) ):
+                    if prefixes[0].has_key( self.cs[:c] ):
+                        pfx = self.cs[:c]
+                        dxCty = prefixes[0][ self.cs[:c] ]
+
         if dxCty and pfx:
             self.country = countries[ dxCty ] if countries.has_key( dxCty ) \
                     else None

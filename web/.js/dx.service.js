@@ -38,13 +38,16 @@ function DXService( $rootScope, $http, $interval, User, Awards, Notify ) {
             var a = angular.extend( {}, award );
             a.cfm = createCfm( user.awardsSettings[award.name] );
             a.settings = { bands: {}, modes: {} };
-            if ( user.awardsSettings[award.name] )
-                for ( var field in a.settings )
-                    if ( user.awardsSettings[award.name].settings[field] )
-                        user.awardsSettings[award.name].settings[field].forEach( 
-                            function( item ) {
-                                a.settings[field][item.name] = item.enabled;
-                            });
+            var uas = user.awardsSettings[award.name];
+            for ( var field in a.settings )
+                if ( uas.settings[field] )
+                    uas.settings[field].forEach( 
+                        function( item ) {
+                            a.settings[field][item.name] = item.enabled;
+                        });
+            a.track = uas.track;
+            a.color = uas.color;
+            a.settings.sound = uas.settings.sound;
             awards[award.name] = a;
         });
         updateAwards();
@@ -137,43 +140,39 @@ function DXService( $rootScope, $http, $interval, User, Awards, Notify ) {
     function itemAwards( item ) {
         for ( var aN in item._awards ) {
             var aV = item._awards[aN];
+            var ad = awards[aN];
+            var as = ad.settings;
             var a = { award: aN, value: aV.value, sound: false, 
-                noStats: awards[aN].noStats, mode: aV.mode };
+                noStats: as.noStats, mode: aV.mode };
             var byBand = awards[aN].byBand;
-            if ( user.awards || user.awardsSettings ) {
-                if ( user.awardsSettings != null &&
-                        aN in user.awardsSettings ) {
-                    if ( user.awardsSettings[aN].track ) {
-                        var as = awards[aN].settings;
-                        if ( item.band in as.bands && !as.bands[item.band] )
-                            continue;
-                        if ( aV.mode in as.modes && !as.modes[aV.mode] )
-                            continue;
-                        a.color = user.awardsSettings[aN].color;
-                    } else 
+
+            if ( ad.track ) {
+                if ( item.band in as.bands && !as.bands[item.band] )
+                    continue;
+                if ( aV.mode in as.modes && !as.modes[aV.mode] )
+                    continue;
+                a.color = ad.color;
+            } else 
+                continue;
+
+            if ( aN in user.awards &&
+                aV.value in user.awards[aN] ) {
+                var uav = user.awards[aN][aV.value];
+                var fl = false;
+                if ( byBand && ( fl = checkAward( uav, item ) ) )
+                    uav = fl;
+                if ( !byBand || fl ) {
+                    if ( checkAwardCfm( uav, awards[aN].cfm ) )
                         continue;
+                    else
+                        a.worked = true;
                 }
-                if ( user.awards != null 
-                    && aN in user.awards &&
-                    aV.value in user.awards[aN] ) {
-                    var uav = user.awards[aN][aV.value];
-                    var fl = false;
-                    if ( byBand && ( fl = checkAward( uav, item ) ) )
-                        uav = fl;
-                    if ( !byBand || fl ) {
-                        if ( checkAwardCfm( uav, awards[aN].cfm ) )
-                            continue;
-                        else
-                            a.worked = true;
-                    }
-                }
-
-                if ( !as || !as.settings || 
-                        ( a.worked && as.settings.sound.wkd ) || 
-                        ( !a.worked && as.settings.sound.not ) )
-                    a.sound = true;
-
             }
+
+            if ( ( a.worked && as.sound.wkd ) || 
+                    ( !a.worked && as.sound.not ) )
+                a.sound = true;
+
             item.awards.push( a );
         }
     }

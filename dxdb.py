@@ -36,6 +36,8 @@ class dbConn:
             conn = psycopg2.connect( connStr )
             conn.set_client_encoding( 'UTF8' )
             self.conn = conn
+            self.conn.autocommit = True
+            self.error = None
         except:
             sys.stderr.write( "No db connection!" )
             self = False

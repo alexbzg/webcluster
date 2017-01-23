@@ -9,17 +9,25 @@ from twisted.python import log
 import sys, decimal, re, datetime, os, logging, time, json, urllib2, xmltodict, jwt
 
 from common import appRoot, readConf, siteConf, loadJSON
-from dxdb import dbConn, cursor2dicts
+from dxdb import dxdb, dbConn, cursor2dicts
 
-import uwsgisrv as uwsgisrv
-conf = siteConf()
+from uwsgisrv import spliceParams
 
+data = { 'callsign': '1111' }
+idParams = { 'callsign': data['callsign'] }
+if data.has_key('delete'):
+    if dxdb.paramDelete( 'dxpedition', idParams ):
+        okResponse = 'OK'
+    else:
+        dbError = True
+else:
+    updParams = spliceParams( data, [ 'dt_begin', 'dt_end', \
+        'descr', 'link' ] )
+    if dxdb.paramUpdateInsert( 'dxpedition', idParams, \
+            updParams ):
+        okResponse = 'OK'
+    else:
+        dbError = True
+if okResponse:
+    dxdb.commit()
 
-uwsgisrv.dxdb = dbConn()
-
-with open( '/var/www/adxc.73/debug/fullAdif.adi', 'r' ) as f:
-    adif = f.read()
-    uwsgisrv.loadAdif( 'QQQQ', adif, { 'Russia': True } )
-
-
-#uwsgisrv.exportDXpedition( { 'SERVER_NAME': '' } )
