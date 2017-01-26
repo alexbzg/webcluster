@@ -151,8 +151,8 @@
         </tbody>
 
        
-        <tr ng-repeat-start="country in vm.awards | orderBy: 'country'">
-            <td colspan="7" class="country">
+        <tr ng-repeat-start="country in vm.awards">
+            <td colspan="7" class="country" ng-if="country.country || country.membersList">
                 {{country.membersList ? 'Memberlists' : country.country}}
             </td>
         </tr>

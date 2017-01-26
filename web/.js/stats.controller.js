@@ -78,8 +78,7 @@ function statsController( $scope, $stateParams, DxConst, User, Head, Awards,
                     vm.awards.push( award );
                     award.worked = 0;
                     award.confirmed = 0;
-                    if ( !award.country )
-                        award.country = undefined;
+                    award.country = award.displayCountry || award.country || 'Aaab';
                     award.values.forEach( function( av ) {
                         if ( User.data.awards[award.name][av.value] ) {
                             var uav = User.data.awards[award.name][av.value];

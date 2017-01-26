@@ -285,11 +285,12 @@ class DX( object ):
         with open( appRoot + '/zip/' + zipData[k] + '.txt', 'r' ) as zipF:
             zipData[k] = {}
             for line in zipF.readlines():
-                lineD = line.split( '\t' )
+                lineD = line.decode( 'UTF-8' ).split( '\t' )
                 zipData[k][lineD[1]] = lineD[2:]
 
     reDigitsSpecial = re.compile( r'\d\d' )
     reLettersSpecial = re.compile( r'(?<!^VK)\d[A-Z]{4}' )
+    reTempPfx = re.compile( r'^([A-Z]+)\d$' )
     specialPfx = conf.get( 'misc', 'SpecialPfx' ).split( ',' )
 
     bands = [ [ '1.8', 1800, 2000 ],
@@ -473,15 +474,22 @@ class DX( object ):
         pfx = None
 
         slashPos = self.cs.find( '/' )
-        if ( slashPos != -1 and slashPos < 4 ) or self.cs.endswith( '/AM' ) or \
-                self.cs.endswith( '/MM' ) or self.subMode == 'PSK125':
+        if self.cs.endswith( '/AM' ) or self.cs.endswith( '/MM' ) \
+                or self.subMode == 'PSK125':
             return
         if slashPos != -1:
             parts = self.cs.split( '/' )
             for part in parts:
+                if part in ( 'M', 'P', 'QRP', 'QRO' ):
+                    continue
                 if prefixes[0].has_key( part ):
                     pfx = part
-                    dxCty = prefixes[0][part]
+                else:
+                    m = DX.reTempPfx.search( part )
+                    if m and prefixes[0].has_key( m.group( 1 ) ):
+                        pfx = m.group( 1 )
+                if pfx:
+                    dxCty = prefixes[0][pfx]
                     break
 
         if not pfx:

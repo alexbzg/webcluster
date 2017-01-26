@@ -39,6 +39,41 @@ function awardsController( DxConst, User, Awards, Head, SpecialLists ) {
             if ( !country.country )
                 country.country = undefined;
         });
+        vm.awards.sort( function( a, b ) {
+            if ( a.country && b.country ) {
+                if ( a.country < b.country )
+                    return -1;
+                if ( a.country == b.country )
+                    return 0;
+                else
+                    return 1;
+            } 
+            if ( a.country ) {
+                if ( b.membersList )
+                    return -1;
+                else
+                    return 1;
+            }
+            if ( b.country ) {
+                if ( a.membersList )
+                    return 1;
+                else
+                    return -1;
+            }
+            if ( a.membersList ) {
+                if ( b.membersList )
+                    return 0;
+                else
+                    return 1;
+            }
+            if ( b.membersList ) {
+                if ( a.membersList )
+                    return 0;
+                else
+                    return -1;
+            }
+            return 0;
+        } );
     }
 
 

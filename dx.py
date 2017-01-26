@@ -285,11 +285,12 @@ class DX( object ):
         with open( appRoot + '/zip/' + zipData[k] + '.txt', 'r' ) as zipF:
             zipData[k] = {}
             for line in zipF.readlines():
-                lineD = line.split( '\t' )
+                lineD = line.decode( 'UTF-8' ).split( '\t' )
                 zipData[k][lineD[1]] = lineD[2:]
 
     reDigitsSpecial = re.compile( r'\d\d' )
     reLettersSpecial = re.compile( r'(?<!^VK)\d[A-Z]{4}' )
+    reTempPfx = re.compile( r'^([A-Z]+)\d$' )
     specialPfx = conf.get( 'misc', 'SpecialPfx' ).split( ',' )
 
     bands = [ [ '1.8', 1800, 2000 ],
@@ -469,20 +470,37 @@ class DX( object ):
             self.district = None
             self.gridsquare = None
 
-        slashPos = self.cs.find( '/' )
-        if ( slashPos != -1 and slashPos < 4 ) or self.cs.endswith( '/AM' ) or \
-                self.cs.endswith( '/MM' ) or self.subMode == 'PSK125':
-            return
-
         dxCty = None
         pfx = None
-        if prefixes[1].has_key( self.cs ):
-            dxCty = prefixes[1][self.cs];
-        else:
-            for c in xrange(1, len( self.cs ) ):
-                if prefixes[0].has_key( self.cs[:c] ):
-                    pfx = self.cs[:c]
-                    dxCty = prefixes[0][ self.cs[:c] ]
+
+        slashPos = self.cs.find( '/' )
+        if self.cs.endswith( '/AM' ) or self.cs.endswith( '/MM' ) \
+                or self.subMode == 'PSK125':
+            return
+        if slashPos != -1:
+            parts = self.cs.split( '/' )
+            for part in parts:
+                if part in ( 'M', 'P', 'QRP', 'QRO' ):
+                    continue
+                if prefixes[0].has_key( part ):
+                    pfx = part
+                else:
+                    m = DX.reTempPfx.search( part )
+                    if m and prefixes[0].has_key( m.group( 1 ) ):
+                        pfx = m.group( 1 )
+                if pfx:
+                    dxCty = prefixes[0][pfx]
+                    break
+
+        if not pfx:
+            if prefixes[1].has_key( self.cs ):
+                dxCty = prefixes[1][self.cs];
+            else:
+                for c in xrange(1, len( self.cs ) ):
+                    if prefixes[0].has_key( self.cs[:c] ):
+                        pfx = self.cs[:c]
+                        dxCty = prefixes[0][ self.cs[:c] ]
+
         if dxCty and pfx:
             self.country = countries[ dxCty ] if countries.has_key( dxCty ) \
                     else None
