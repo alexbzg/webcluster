@@ -5,7 +5,7 @@ angular
     .config( config );
 
 function config( $stateProvider, $urlRouterProvider ) {
-    var version = '0.0.0.4';
+    var version = '0.0.0.6';
 
     $urlRouterProvider.otherwise('/');
 /*

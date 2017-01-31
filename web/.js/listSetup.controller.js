@@ -105,15 +105,10 @@ function listSetupController( $state, $stateParams, $window, DxConst, User, Head
         var css = vm.callsigns.split( /[,; ]+/ );
         css.forEach( function( cs ) {
             cs = cs.trim().toUpperCase();            
-            var pfx = false;
-            if ( cs.indexOf( '*' ) > -1 ) {
-                cs = cs.replace( '*', '' );
-                pfx = true;
-            }
             if ( cs != '' && 
                     !vm.list.items.find( function( item ) { 
                         return item.callsign == cs } ) ) {
-                var listItem = { callsign: cs, pfx: pfx, settings: {} };
+                var listItem = { callsign: cs, settings: {} };
                 fillSwitches( listItem.settings );
                 vm.list.items.push( listItem );
                 User.saveListItem( listItem, vm.list );
@@ -145,7 +140,8 @@ function listSetupController( $state, $stateParams, $window, DxConst, User, Head
 
     function _switch( field, value ) {
         vm.list.items.forEach( function( item ) {
-            if ( !item.settings.hide && item.settings[field][value] != vm.switches[field][value] ) {
+            if ( !item.settings.hide && item.settings[field][value] != 
+                    vm.switches[field][value] ) {
                 item.settings[field][value] = vm.switches[field][value];
             }
         });

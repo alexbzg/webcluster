@@ -27,7 +27,8 @@ function SpecialListsService( DataServiceFactory, Awards, $rootScope ) {
             dxcc.values.forEach( function( av ) {
                 dxF.push( { callsign: av.value } );
             });
-            s.data['DX'] = dxF;
+            if ( s.data )
+                s.data['DX'] = dxF;
             $rootScope.$emit(s.eventName);
         });
    

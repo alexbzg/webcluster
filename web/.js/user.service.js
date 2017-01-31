@@ -158,6 +158,8 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
                 list.color = defaultColor;
             if ( !list.special )
                 list.special = false;
+            if ( list.title != 'DX' && list.items )
+                list.items.forEach( listItemRE );
         });
 
         Awards.onUpdate( createAwardsSettings );
@@ -424,7 +426,17 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
 
     }
 
+    function listItemRE( item ) {
+        if ( item.callsign.indexOf( '*' ) == -1 )
+            item.re = null;
+        else
+            item.re = new RegExp( '^' + item.callsign.replace( '*', '.*' ) +
+                    '$' );
+    }
+
     function saveListItem( item, list ) {
+        if ( list.title != 'DX' )
+            listItemRE( item );
         toStorage();
         if ( list.id )
             toServer( {
