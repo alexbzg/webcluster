@@ -15,7 +15,7 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
     var updateTask = $interval( update, 300000 );
     var dxpedTask = $interval( initSpecialLists, 3600000 );
     var checkMsgTask = $interval( checkMessage, 60000 );
-    var user = { 
+    var user = {
         fromStorage: fromStorage,
         toStorage: toStorage,
         awardSettingsChanged: awardSettingsChanged,
@@ -75,22 +75,24 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
 
         if ( ud ) {
             user.data = ud;
-        }
-        getDataVersion()
-            .then( function() {
-                init( true );
-            });
+            getDataVersion()
+                .then( function() {
+                    init( true );
+                });
+        } else 
+            init();
     }
 
     function getDataVersion() {
         return $http.get( '/userMetadata.json' )
             .then( function( result ) {
-                user.dataVersion = result.data;
+                user.dataVersion = result.data[user.data.callsign];
             });
     }
 
     function loggedIn() {
-        return Boolean( user.data.token );
+        return user.data ? ( user.data.token ? true : false )
+            : false;
     }
 
     function init( checkVersion ) {
@@ -294,8 +296,8 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
     function reload() {
         if ( user.data.token )
             return toServer( { reload: 1 } )
-                .then( function( result ) {
-                    user.data = result.data;
+                .then( function( data ) {
+                    user.data = data;
                     init();
                     toStorage();
                 } );
@@ -430,8 +432,8 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
         if ( item.callsign.indexOf( '*' ) == -1 )
             item.re = null;
         else
-            item.re = new RegExp( '^' + item.callsign.replace( '*', '.*' ) +
-                    '$' );
+            item.re = new RegExp( '^' + item.callsign.replace( /\*/g, '.*' 
+                        ).replace( /\//g, '\\/' ) + '$' );
     }
 
     function saveListItem( item, list ) {

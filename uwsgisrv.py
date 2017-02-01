@@ -143,6 +143,7 @@ def application(env, start_response):
         okResponse = ''
         dbError = False
         callsign = None
+        updMeta = True
         if data.has_key( 'token' ):
             try:
                 pl = jwt.decode( data['token'], secret, algorithms=['HS256'] )
@@ -191,7 +192,6 @@ def application(env, start_response):
                         else:
                             dbError = True
                     else:
-                        logging.debug( 'insert dxpedition callsign ' + json.dumps( data ) )
                         updParams = spliceParams( data, [ 'dt_begin', 'dt_end', \
                             'descr', 'link' ] )
                         if dxdb.paramUpdateInsert( 'dxpedition', idParams, \
@@ -202,6 +202,7 @@ def application(env, start_response):
                     if okResponse:
                         dxdb.commit()
                         exportDXpedition( env )
+                        updMeta = False
 
                 else:
                     start_response( '403 Forbidden', \
@@ -383,6 +384,16 @@ def application(env, start_response):
                     [('Content-Type','text/plain')])
             return
         if okResponse:
+            if updMeta and ( 'test' in env['SERVER_NAME'] ):
+                test = 'test' in env['SERVER_NAME']
+                fname = conf.get( 'web', 'test_root' if test else 'root' ) + \
+                        '/userMetadata.json'
+                umd = loadJSON( fname )
+                if not umd:
+                    umd = {}
+                umd[callsign] = time.time()
+                with open( fname, 'w' ) as f:
+                    f.write( json.dumps( umd ) )
             start_response( '200 OK', [('Content-Type','text/plain')])
             return okResponse
 
