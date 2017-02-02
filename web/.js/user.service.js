@@ -288,6 +288,10 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
         if ( data.token = user.data.token ) 
             return $http.post( '/uwsgi/userSettings', data )
                 .then( function( response ) {
+                    if ( response.data && response.data.version ) {
+                        user.data.version = response.data.version;
+                        toStorage();
+                    }
                     return response.data;
                 })
                 .catch( serverError );
@@ -297,6 +301,7 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
         if ( user.data.token )
             return toServer( { reload: 1 } )
                 .then( function( data ) {
+                    data.remeber = user.data.remember;
                     user.data = data;
                     init();
                     toStorage();

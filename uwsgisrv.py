@@ -384,18 +384,18 @@ def application(env, start_response):
                     [('Content-Type','text/plain')])
             return
         if okResponse:
-            if updMeta and ( 'test' in env['SERVER_NAME'] ):
-                test = 'test' in env['SERVER_NAME']
-                fname = conf.get( 'web', 'test_root' if test else 'root' ) + \
-                        '/userMetadata.json'
-                umd = loadJSON( fname )
+            if updMeta:
+                umd = readWebFile( 'userMetadata.json', env )
                 if not umd:
                     umd = {}
-                umd[callsign] = time.time()
-                with open( fname, 'w' ) as f:
-                    f.write( json.dumps( umd ) )
-            start_response( '200 OK', [('Content-Type','text/plain')])
-            return okResponse
+                ts = time.time()
+                umd[callsign] = ts
+                writeWebFile( json.dumps( umd ), 'userMetadata.json', env )
+                start_response( '200 OK', [('Content-Type','application/json')])
+                return json.dumps( { 'version': ts } )
+            else:
+                start_response( '200 OK', [('Content-Type','text/plain')])
+                return okResponse
 
         start_response( '400 Bad Request', [('Content-Type','text/plain')])
         return error
@@ -573,10 +573,20 @@ def sendUserData( userData, start_response ):
     start_response('200 OK', [('Content-Type','application/json')])
     return json.dumps( toSend )
 
-def exportDXpedition( env ):
+def readWebFile( fName, env ):
     test = 'test' in env['SERVER_NAME']
-    keys = ( 'root', ) if test else ( 'root', 'test_root' )
+    return loadJSON( conf.get( 'web', 'test_root' if test else 'root' ) + \
+            '/' + fName )
+
+def writeWebFile( data, fName, env ):
+    test = 'test' in env['SERVER_NAME']
+    keys = ( 'test_root', ) if test else ( 'root', 'test_root' )
     dirs = [ conf.get( 'web', key ) for key in keys ]
+    for dir in dirs:
+        with open( dir + '/' + fName, 'w' ) as f:
+            f.write( data )
+
+def exportDXpedition( env ):
     dxp = cursor2dicts( \
             dxdb.execute( """
                 select * from dxpedition
@@ -591,8 +601,6 @@ def exportDXpedition( env ):
     sl = loadSpecialLists()
     sl['DXpedition'] = dxp
     slJSON = json.dumps( sl, default = jsonEncodeExtra ) 
-    for dir in dirs:
-        with open( dir + '/specialLists.json', 'w' ) as slF:
-            slF.write( slJSON )
+    writeWebFile( slJSON, 'specialLists.json', env )
 
        
