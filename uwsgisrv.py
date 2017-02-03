@@ -597,7 +597,6 @@ def exportDXpedition( env ):
     dxpJSON = json.dumps( dxp, default = jsonEncodeExtra ) 
 #    with open( dir + '/dxpedition.json', 'w' ) as f:
 #        f.write( dxpJSON )
-    slFName = dirs[0] + '/specialLists.json'
     sl = loadSpecialLists()
     sl['DXpedition'] = dxp
     slJSON = json.dumps( sl, default = jsonEncodeExtra ) 
