@@ -10,14 +10,17 @@ import json, re, logging, time, os, fcntl, sys
 
 conf = siteConf()
 adifQueueDir = conf.get( 'web', 'root' ) + '/.adif/'
-
-pid_file = '/var/run/adif.pid'
-fp = open(pid_file, 'w')
-try:
-        fcntl.lockf(fp, fcntl.LOCK_EX | fcntl.LOCK_NB)
-except IOError:
-        # another instance is running
-        sys.exit(0)
+fNames = None
+if len( sys.argv ) > 1:
+    fNames = sys.argv[1:]
+else:
+    pid_file = '/var/run/adif.pid'
+    fp = open(pid_file, 'w')
+    try:
+            fcntl.lockf(fp, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except IOError:
+            # another instance is running
+            sys.exit(0)
 
 logging.basicConfig( level = logging.DEBUG,
         format='%(asctime)s %(message)s', 
@@ -75,7 +78,6 @@ def loadAdif( callsign, adif, awardsEnabled ):
     awards = {}
     detectAwardsList = [ x for x in awardsEnabled.keys() if awardsEnabled[x] ]
     dxMod.dxdb = dxdb
-    eoh = False
     adif = adif.upper().replace( '\r', '' ).replace( '\n', '' )
     adif = adif.split( '<EOH>' )[1]
     lines = adif.split( '<EOR>' )
@@ -226,16 +228,23 @@ def loadAdif( callsign, adif, awardsEnabled ):
 
     return ( commitFl, lastLine )
 
-
-queue = loadQueue()
-while queue:
-    qe = queue[0]
-    with open( adifQueueDir + 'queue.json', 'w' ) as f:
-        f.write( json.dumps( queue[1:] ) )
-    adifName = adifQueueDir + qe['file']
+def readAdifFile( fName ):
+    adifName = adifQueueDir + fName
     with open( adifName, 'r' ) as f:
         adif = f.read()
-    loadAdif( qe['callsign'], adif, qe['awards'] )
-    os.remove( adifName )
+    return adif
+
+if fNames:
+    for fName in fNames:
+        cs = (fName.split('-'))[0]
+        loadAdif( cs, readAdifFile( fName ), {} )
+else:
     queue = loadQueue()
+    while queue:
+        qe = queue[0]
+        with open( adifQueueDir + 'queue.json', 'w' ) as f:
+            f.write( json.dumps( queue[1:] ) )
+        loadAdif( qe['callsign'], readAdifFile( qe['file'] ), qe['awards'] )
+        os.remove( adifName )
+        queue = loadQueue()
 

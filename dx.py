@@ -61,6 +61,15 @@ with open( appRoot + '/cty.dat', 'r' ) as fCty:
                 else:
                     prefixes[pfxType][pfx0] =  country
 
+def getWebData( url ):
+    try:
+        r = urllib2.urlopen( url )
+        return r.read()
+    except urllib2.HTTPError as e:
+        print e.read()
+        return ''
+
+
 class QRZComLink:
 
     def __init__( self ):
@@ -417,7 +426,7 @@ class DX( object ):
         self.band = params['band'] if params.has_key( 'band' ) else None
         self.mode = None
         self.subMode = None
-        if params.has_key( 'mode' ):
+        if params.has_key( 'mode' ) and params['mode']:
             self.setMode( params['mode'] )
             if not self.mode:
                 print params['mode']
@@ -607,19 +616,17 @@ class DX( object ):
                 self.dxData.qrzLink.csQueue.put( \
                         { 'cs': self.cs, 'cb': self.onQRZdata } )
         elif self.country == 'Ukraine':
-            r = urllib2.urlopen( \
+            r = getWebData( \
                 'http://www.uarl.com.ua/UkrainianCallBOOK/adxcluster.php?calls='\
                     + self.cs )
-            rBody = r.read()
-            self.doTextLookup( rBody )
+            self.doTextLookup( r )
             self.qrzData = True
             self.updateDB()
         elif self.country == 'France':
-            r = urllib2.urlopen( \
+            r = getWebData( \
                 'http://nomenclature.r-e-f.org/index.php?req='\
                     + self.cs )
-            rBody = r.read()
-            m = DX.reFranceDC.search( rBody )
+            m = DX.reFranceDC.search( r )
             if m:
                 idx = m.group(0)
                 if idx.startswith( '200' ) or idx.startswith( '201' ):
@@ -655,11 +662,10 @@ class DX( object ):
 
 
         elif self.country == 'Poland':
-            r = urllib2.urlopen( \
+            r = getWebData( \
                 'https://callbook.pzk.org.pl/szukaj.php?adv=1&query='\
                     + self.cs )
-            rBody = r.read()
-            m = DX.rePolandDC.search( rBody )
+            m = DX.rePolandDC.search( r )
             if m:
                 self.region = m.group(1)
                 self.district = m.group(1) + m.group(2)
