@@ -79,7 +79,8 @@ def loadAdif( callsign, adif, awardsEnabled ):
     detectAwardsList = [ x for x in awardsEnabled.keys() if awardsEnabled[x] ]
     dxMod.dxdb = dxdb
     adif = adif.upper().replace( '\r', '' ).replace( '\n', '' )
-    adif = adif.split( '<EOH>' )[1]
+    if '<EOH>' in adif:
+        adif = adif.split( '<EOH>' )[1]
     lines = adif.split( '<EOR>' )
     reDistrict = re.compile( '[a-zA-Z]{2}-\d\d' )
     lastLine = ''
@@ -91,12 +92,12 @@ def loadAdif( callsign, adif, awardsEnabled ):
             cs = getAdifField( line, 'CALL' )  
             lastLine = getAdifField( line, 'QSO_DATE' ) + ' ' + \
                     getAdifField( line, 'TIME_ON' ) + ' ' + cs
-            freq = getAdifField( line, 'FREQ' )
+            freq = getAdifField( line, 'FREQ' ).replace( '-', '.' ).replace( ':', '.' )
             mode = getAdifField( line, 'MODE' )
 
 
             dx = dxMod.DX( cs = cs, de = '', text = '', \
-                    freq = float( freq ) if freq else None, \
+                    freq = float( freq ) * 1000 if freq else None, \
                     mode = mode if mode else None, \
                     time = '    ', detectAwardsList = detectAwardsList )
 
