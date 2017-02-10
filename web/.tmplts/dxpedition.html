@@ -6,7 +6,7 @@
         <span id="list_title">
             DXpedition list
         </span><br>
-        <input type="text" ng-model="vm.newCallsign" placeholder="Callsign" class="input_dx_call"> <input type="text" ng-model="vm.newDescr" placeholder="Comments" class="input_dx_call"> <input type="text" ng-model="vm.newLink" placeholder="Link" class="input_dx_call">
+        <input type="text" ng-model="vm.newCallsign" placeholder="Callsign" class="input_dx_call" ng-blur="vm.callsignBlur()"> <input type="text" ng-model="vm.newDescr" placeholder="Comments" class="input_dx_call"> <input type="text" ng-model="vm.newLink" placeholder="Link" class="input_dx_call">
         <br/>
         Start: 
         <div class="datepicker">

@@ -11,6 +11,7 @@ function dxpeditionController( User, Head, SpecialLists, DXpeditionAdmin, $q ) {
     vm.insertItem = insertItem;
     vm.deleteItem = deleteItem;
     vm.openItem = openItem;
+    vm.callsignBlur = callsignBlur;
 
     activate();
     return vm;
@@ -40,11 +41,19 @@ function dxpeditionController( User, Head, SpecialLists, DXpeditionAdmin, $q ) {
         vm.newDtEnd = item.dt_end;
     }
 
+    function callsignBlur() {
+        var item;
+        vm.newCallsign = vm.newCallsign.toUpperCase();
+        if ( vm.newCallsign && ( item = 
+                vm.dxpedition.find( function( item ) {
+                    return item.callsign == vm.newCallsign; } ) ) )
+            openItem( item );
+    }
+
     function insertItem() {
         if ( vm.newLink && vm.newLink.indexOf( 'http://' ) != 0 && 
                 vm.newLink.indexOf( 'https://' ) != 0 ) 
             vm.newLink = 'http://' + vm.newLink;
-        vm.newCallsign = vm.newCallsign.toUpperCase();
         var css = vm.newCallsign.split( /[,; ]+/ );
         var chain = $q.when();
         css.forEach( function( callsign ) {
