@@ -4,11 +4,11 @@ angular
 
 UserService.$inject = [ '$http', '$window', '$q', '$interval', 
     'Storage', 'Awards', 'DxConst', 'LoadingScreen', '$rootScope', 
-    'Notify', 'SpecialLists', '$state' ];
+    'Notify', 'SpecialLists', '$location' ];
 
 
 function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst, 
-        LoadingScreen, $rootScope, Notify, SpecialLists, $state ) {
+        LoadingScreen, $rootScope, Notify, SpecialLists, $location ) {
     var storageKey = 'adxcluster-user';
     var defaultColor = '#770000';
     var defaultColorDXped = '#f600df';
@@ -37,9 +37,10 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
         loggedIn: loggedIn,
         saveUserSettings: saveUserSettings,
         onLogIO: onLogIO,
-        onAwardsStatsChange: onAwardsStatsChange
+        onAwardsStatsChange: onAwardsStatsChange,
     };
     var dxpSettings = null;
+    var usrTmplt = null;
     
     return user;
 
@@ -124,8 +125,13 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
         if ( !user.data.awardsSettings )
             user.data.awardsSettings = {};
 
-        if ( !user.data.token )
+        if ( user.data.token ) {
+            usrTmplt = null;
+        } else {
             user.data.remember = true;
+            usrTmplt = getJsonFromUrl().v; 
+        } 
+
 
         if ( !user.data.awardValueWorkedColor )
             user.data.awardValueWorkedColor = '#0091c9';
@@ -164,6 +170,13 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
                 list.items.forEach( listItemRE );
         });
 
+        if ( usrTmplt == 'dxp' ) {
+            user.data.lists.forEach( function( list ) {
+                list.track = false;
+            } );
+            user.data.specialLists['DXpedition'].track = true;
+        }
+
         Awards.onUpdate( createAwardsSettings );
         if ( !Awards.data )
             Awards.load();
@@ -172,8 +185,14 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
         if ( !SpecialLists.data )
             SpecialLists.load();
 
+
         $rootScope.$emit('user-log-io');
 
+    }
+
+    function applyUserTemplate( usrTmplt ) {
+        if ( usrTmplt == 'dxp' ) {
+        }   
     }
 
 
@@ -274,6 +293,9 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
                     { wkd: true, not: true };
 
         });
+        if ( usrTmplt == 'dxp' )
+            for ( var award in user.data.awardsSettings )
+                user.data.awardsSettings[award].track = false;
         $rootScope.$emit('user-awards-stats-change');
     }
 
