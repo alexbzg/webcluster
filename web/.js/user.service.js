@@ -4,11 +4,11 @@ angular
 
 UserService.$inject = [ '$http', '$window', '$q', '$interval', 
     'Storage', 'Awards', 'DxConst', 'LoadingScreen', '$rootScope', 
-    'Notify', 'SpecialLists', '$location' ];
+    'Notify', 'SpecialLists' ];
 
 
 function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst, 
-        LoadingScreen, $rootScope, Notify, SpecialLists, $location ) {
+        LoadingScreen, $rootScope, Notify, SpecialLists ) {
     var storageKey = 'adxcluster-user';
     var defaultColor = '#770000';
     var defaultColorDXped = '#f600df';
@@ -19,6 +19,7 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
         fromStorage: fromStorage,
         toStorage: toStorage,
         awardSettingsChanged: awardSettingsChanged,
+        applyUserTemplate: applyUserTemplate,
         listChanged: listChanged,
         deleteList: deleteList,
         saveList: saveList,
@@ -41,7 +42,8 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
     };
     var dxpSettings = null;
     var usrTmplt = null;
-    
+    var reUsrTmplts = /^\/(dxp)$/;
+
     return user;
 
     function update() {
@@ -98,6 +100,8 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
 
     function init( checkVersion ) {
 
+        //console.log( $stateParams );
+
         if ( !user.data )
             user.data = {};
 
@@ -125,11 +129,13 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
         if ( !user.data.awardsSettings )
             user.data.awardsSettings = {};
 
-        if ( user.data.token ) {
+        if ( user.data.token ) 
             usrTmplt = null;
-        } else {
+        else {            
             user.data.remember = true;
-            usrTmplt = getJsonFromUrl().v; 
+            var r = reUsrTmplts.exec( window.location.pathname );
+            if ( r )
+                usrTmplt = r[1]; 
         } 
 
 
