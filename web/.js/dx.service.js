@@ -24,13 +24,17 @@ function DXService( $rootScope, $http, $interval, User, Awards, Notify ) {
     return dx;
 
     function init() {
-        User.onLogIO( function() {
+       Awards.onUpdate( loadAwardsList );
+       User.onLogIO( function() {
             user = User.data;
-            loadAwardsList(); 
+            if ( Awards.data )
+                loadAwardsList(); 
         } );
 
-        User.onAwardsStatsChange( loadAwardsList );
-        Awards.onUpdate( loadAwardsList );
+        User.onAwardsStatsChange( function() {
+            if ( Awards.data )
+                loadAwardsList();
+        });
     }
 
     function loadAwardsList() {
@@ -80,8 +84,8 @@ function DXService( $rootScope, $http, $interval, User, Awards, Notify ) {
                         updateItemAwards( item );            
                         dx.items.splice( co, 0, item );
                     }
-                    if ( dx.items.length > 200 )
-                        dx.items.length = 200;
+                    if ( dx.items.length > 500 )
+                        dx.items.length = 500;
                     lastModified =  response.headers( 'last-modified' );
                     $rootScope.$emit( 'dx-update' );
                     return true;
@@ -194,8 +198,9 @@ function DXService( $rootScope, $http, $interval, User, Awards, Notify ) {
                                 !listItem.settings.modes[item.subMode] )
                             return;
                     }
-                    if ( ( list.title != 'DX' && ( listItem.callsign == item.cs || ( listItem.pfx && 
-                                item.cs.indexOf( listItem.callsign ) == 0 ) ) ) || 
+                    if ( ( list.title != 'DX' && 
+                            ( listItem.callsign == item.cs || 
+                              ( listItem.re && item.cs.match( listItem.re ) ) ) ) || 
                           ( list.title == 'DX' && listItem.callsign == item.pfx ) ) {
                         var worked = false;
                         if ( list.id in user.listsAwards && listItem.callsign in 
