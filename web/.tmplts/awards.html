@@ -75,7 +75,11 @@
 <div id="awards_list">
     <table id="awards_list">
         <tr>
-            <th class="track">Track</th>
+            <th class="track">
+                Track<br/>
+                <input type="checkbox" ng-model="vm.trackAll" 
+                    ng-click="vm.trackAllChanged()">
+            </th>
             <th class="color_name">Color</th>
             <th class="short_name"></th>
             <th class="full_name">

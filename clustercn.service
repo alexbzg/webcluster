@@ -1,6 +1,6 @@
 [Unit]
 Desription=web dx cluster backend
-After=network.target
+After=network.target postgresql@9.4-main.service 
 
 [Service]
 ExecStart=/usr/local/webcluster/clusterCn.py

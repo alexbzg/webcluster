@@ -3,14 +3,15 @@ angular
     .controller( 'awardsController', awardsController );
 
 awardsController.$inject = [ 'DxConst', 'User', 'Awards', 'Head', 
-    'SpecialLists' ];
+    'SpecialLists', '$window' ];
 
-function awardsController( DxConst, User, Awards, Head, SpecialLists ) {
+function awardsController( DxConst, User, Awards, Head, SpecialLists, $window ) {
     var vm = this;
     vm.user = User;
     vm.specialLists = SpecialLists.lists;
     vm.awards = [];
     vm.openSetup = openSetup;
+    vm.trackAllChanged = trackAllChanged;
 
     activate();
     return vm;
@@ -82,7 +83,17 @@ function awardsController( DxConst, User, Awards, Head, SpecialLists ) {
             settings: User.data.awardsSettings[award.name].settings };
     }
 
-
+    function trackAllChanged() {
+        if ( $window.confirm( "This change will affect track settings of ALL awards." +  
+                    "Do you really want to proceed?" ) ) {
+            Awards.data.forEach( function( award ) {
+                User.data.awardsSettings[award.name].track = vm.trackAll;
+            });
+            User.data.lists.forEach( function( list ) {
+                list.track = vm.trackAll;
+            });
+        }
+    }
    
 }
 
