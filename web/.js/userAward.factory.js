@@ -6,10 +6,6 @@ UserAwardFactory.$inject = [ '$rootScope', 'User', 'DxConst' ];
    
 
 function UserAwardFactory( $rootScope, User, DxConst ) {
-    var props = [ 'workedCS' ];
-    DxConst.cfm.forEach( function( item ) {
-        props.push( item[1] );
-    });
 
 
     return createUserAward;
@@ -29,6 +25,16 @@ function UserAwardFactory( $rootScope, User, DxConst ) {
 
         init();
         return ua;
+
+        function props() {
+            var props = [ 'workedCS' ];
+            var cfm = award.cfmTypes ? award.cfmTypes : DxConst.cfm;
+            cfm.forEach( function( item ) {
+                props.push( item[1] );
+            });
+            return props;
+        }
+
 
         function init() {
 
@@ -50,7 +56,7 @@ function UserAwardFactory( $rootScope, User, DxConst ) {
             }
             ua.data = ua.prnt[ua.key];
 
-            props.forEach( function( prop ) {
+            props().forEach( function( prop ) {
                 Object.defineProperty( ua, prop, { 
                 get: function() {
                     return ua.data[prop];
@@ -67,7 +73,7 @@ function UserAwardFactory( $rootScope, User, DxConst ) {
         }
 
         function copy( data ) {
-            props.forEach( function( prop ) {
+            props().forEach( function( prop ) {
                 ua[prop] = data[prop];
             });
         }
@@ -93,7 +99,7 @@ function UserAwardFactory( $rootScope, User, DxConst ) {
 
         function save() {
             var data = postData();
-            props.forEach( function( prop ) {                
+            props().forEach( function( prop ) {                
                 data[prop] = prop == 'workedCS' ? ua[prop] :
                     Boolean( ua[prop] );
             });

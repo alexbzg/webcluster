@@ -84,7 +84,8 @@ function awardsController( DxConst, User, Awards, Head, SpecialLists, $window ) 
     }
 
     function trackAllChanged() {
-        if ( $window.confirm( "This change will affect track settings of ALL awards." +  
+        if ( $window.confirm( 
+                    "This change will affect track settings of ALL awards." +  
                     "Do you really want to proceed?" ) ) {
             Awards.data.forEach( function( award ) {
                 User.data.awardsSettings[award.name].track = vm.trackAll;

@@ -74,6 +74,10 @@ function statsController( $scope, $stateParams, DxConst, User, Head, Awards,
         LoadingScreen.on();
         Awards.loadValues()
             .then( function( data ) {
+                if ( vm.awardsLoaded )
+                    return;
+                else
+                    vm.awardsLoaded = true;
                 data.forEach( function( award ) {
                     vm.awards.push( award );
                     award.worked = 0;
@@ -129,9 +133,11 @@ function statsController( $scope, $stateParams, DxConst, User, Head, Awards,
    
 
     function valueConfirmed( av ) {
-        for ( var co = 0; co < DxConst.cfmCount; co++ )
+        var cfmCount = vm.cfm.length;
+        for ( var co = 0; co < cfmCount; co++ )
             if ( vm.cfm[co].enabled && av[vm.cfm[co].field] ) 
                 return true;
+        return false;
     }
 
     function bandConfirmed( band ) {
@@ -184,16 +190,18 @@ function statsController( $scope, $stateParams, DxConst, User, Head, Awards,
             vm.cfm.forEach( function( type ) {
                 statsSettings.cfm[type.field] = type.enabled; 
             });
-            var award = vm.activeAward.name;
+            vm.activeAward.stats_settings = statsSettings;
+            var awardName = vm.activeAward.name;
             if ( vm.activeAward.list_id ) {
-                var activeList = findActiveList();
-                activeList.stats_settings = statsSettings;
+                award = findActiveList();
+                award.stats_settings = statsSettings;
             } else {
-                if ( !( award in User.data.awardsSettings ) )
-                    User.data.awardsSettings[award] = {};
-                User.data.awardsSettings[award].stats_settings = statsSettings;
+                if ( !( awardName in User.data.awardsSettings ) )
+                    User.data.awardsSettings[awardName] = {};
+                award = User.data.awardsSettings[awardName];
+                award.stats_settings = statsSettings;
             }
-            User.saveAwardStatsSettings();
+            User.saveAwardStatsSettings(vm.activeAward);
         }
 
     }
@@ -214,9 +222,17 @@ function statsController( $scope, $stateParams, DxConst, User, Head, Awards,
         });
 
         vm.cfm = [];
-        DxConst.cfm.forEach( function( item ) {
-            vm.cfm.push( { field: item[1], display: item[0], enabled: true } );
-        });
+        if ( vm.activeAward.list_id )
+            DxConst.cfm.forEach( function( item ) {
+                vm.cfm.push( { field: item[1], display: item[0], enabled: true } );
+            });
+        else
+            User.data.awardsSettings[vm.activeAward.name].settings.cfm.forEach( 
+                function( item ) {
+                    vm.cfm.push( { field: item.name, display: item.display,
+                        enabled: true
+                    } );
+                });
         
         var as;
         if ( as = vm.activeAward.list_id ? findActiveList() : 
@@ -300,7 +316,7 @@ function statsController( $scope, $stateParams, DxConst, User, Head, Awards,
                 'confirmed': bandConfirmed( iv ) };
         } else {
             iv = vm.activeValue;
-            state = { 'confirmed': iv.userAward && 
+            state = { 'confirmed': 'userAward' in iv && iv.userAward && 
                 valueConfirmed( iv.userAward ) };
         }
         for ( var field in state ) {

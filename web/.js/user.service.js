@@ -266,7 +266,7 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
             var st =
             { bands: DxConst.bands,
                 modes: award.modes ? award.modes : DxConst.modes,
-                cfm: DxConst.cfm
+                cfm: award.cfmTypes ? award.cfmTypes : DxConst.cfm 
             };
             function findMode(mode) {
                 return st.modes.find( function( item ) {
@@ -278,8 +278,10 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
                 }
                 st[field].forEach( function( item ) {
                     if ( Array.isArray( item ) ) {
-                        if ( !s[field].find( function( sItem  ) {
+                        if ( cfmItem = s[field].find( function( sItem  ) {
                             return sItem.name == item[1]; }) )
+                            cfmItem.display = item[0];
+                        else
                             s[field].push( { name: item[1], 
                                 enabled: true, display: item[0] } );
                     } else if ( !s[field].find( function( sItem ) {
@@ -288,6 +290,9 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
                             enabled: true, display: item } );
                 });
             }
+            s.cfm = s.cfm.filter( function( item ) {
+                return st.cfm.find( function( stItem ) {
+                    return stItem[1] == item.name; } ) } );
             s.modes = s.modes.filter( function( item ) {
                 return findMode( item.name ); } );
             if ( s.stats_settings && s.stats_settings.modeFilter )
@@ -580,7 +585,8 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
     
     function saveAwardStatsSettings( award ) {
         var data = awardPostData( award )
-        data.stats_settings = award.statsSettings;
+        data.stats_settings = award.list_id ? award.stats_settings : 
+            user.data.awardsSettings[award.name].stats_settings;
         saveData( data );
     }
 

@@ -36,6 +36,7 @@
                         <tr>
                             <td ng-repeat="type in vm.cfm">
                                 <input type="checkbox" ng-model="type.enabled" ng-change="vm.cfmChanged()">
+                                <br/>
                                 {{type.display}}
                             </td>
                         </tr>
@@ -52,17 +53,20 @@
                             <span id="code">{{vm.activeValue.value}}</span> &nbsp; 
                             <span id="code_info">{{vm.activeAward.groups[vm.activeValue.group]}} 
                                 {{vm.activeValue.desc}}</span><br/>
-                            <span id="wkd">
-                                <u>Worked</u>
-                                <input type="checkbox" name="unit_worked" 
-                                    ng-model="vm.activeValue.userAward.worked" 
-                                    ng-change="vm.modifyActiveValue( 'worked' )">
+                            <span id="wkd" class="button"
+                                ng-class="{'active': vm.activeValue.userAward.worked}"
+                                ng-click="vm.activeValue.userAward.worked = 
+                                    !vm.activeValue.userAward.worked;
+                                    vm.modifyActiveValue( 'worked' );">
+                                Worked
                             </span> 
                             <span id="cfm">
-                                <u>Confirmed</u>:
-                                <span ng-repeat="type in vm.cfm">
-                                    <input type="checkbox" ng-model="vm.activeValue.userAward[type.field]"
-                                        ng-change="vm.modifyActiveValue( 'confirmed' )">
+                                Confirmed:
+                                <span ng-repeat="type in vm.cfm" class="button"
+                                        ng-class="{'active':vm.activeValue.userAward[type.field]}"
+                                        ng-click="vm.activeValue.userAward[type.field] = 
+                                            !vm.activeValue.userAward[type.field];
+                                            vm.modifyActiveValue( 'confirmed' );">
                                     {{type.display}} &nbsp;
                                 </span> 
                             </span>
@@ -90,7 +94,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td ng-repeat="item in vm.const.modes">
+                            <td ng-repeat="item in vm.modes">
                                 <input type="checkbox" ng-model="vm.modesFilter[item]" 
                                     ng-change="vm.cfmChanged()">
                                 {{item}}
@@ -119,38 +123,30 @@
                     <span id="manual_edit_note">Manual edit</span>
                     <div>
 
-                    <span id="selected_item">{{vm.activeValue.value}} {{vm.activeValue.desc}}</span>
-                    <table class="bands_modes">
-                        <tr>
-                            <td ng-repeat="item in vm.const.modes">
-                                <input type="radio" ng-model="vm.activeMode" name="mode_select"
-                                value="{{item}}" ng-change="vm.activeModeChanged()">
-                                {{item}}
-                            </td>
-                        </tr>
-                    </table>
-                    <table class="bands_modes">
-                        <tr>
-                            <td ng-repeat="item in vm.const.bands">
-                                <input type="radio" ng-model="vm.activeBand" name="band_select"
-                                value="{{item}}" >
-                                {{item}}
-                            </td>
-                        </tr>
-                    </table>  
+                        <span id="selected_item">{{vm.activeValue.value}} {{vm.activeValue.desc}}</span><br/>
+                    <span class="button" ng-repeat="item in vm.modes"
+                        ng-class="{'active': vm.activeMode == item }"
+                        ng-click="vm.activeMode = item;">{{item}}</span>
+                    <br/>
+                    <span class="button" ng-repeat="item in vm.const.bands"
+                        ng-class="{'active': vm.activeBand == item }"
+                        ng-click="vm.activeBand = item;">{{item}}</span>
+                    <br/>
                     <span ng-show="vm.activeValue && vm.activeBand && vm.activeMode">
-                        <span id="wkd">
-                            <u>Worked</u>
-                            <input type="checkbox" name="unit_worked" 
-                                ng-model="vm.activeValue[vm.activeBand][vm.activeMode].worked" 
-                                ng-change="vm.modifyActiveValue( 'worked' )">
+                        <span id="wkd" class="button"
+                            ng-class="{'active': vm.activeValue[vm.activeBand][vm.activeMode].worked}"
+                            ng-click="vm.activeValue[vm.activeBand][vm.activeMode].worked = 
+                                !vm.activeValue[vm.activeBand][vm.activeMode].worked;
+                                vm.modifyActiveValue( 'worked' );">
+                            Worked
                         </span> 
                         <span id="cfm">
-                            <u>Confirmed</u>:
-                            <span ng-repeat="type in vm.cfm">
-                                <input type="checkbox" 
-                                    ng-model="vm.activeValue[vm.activeBand][vm.activeMode][type.field]"
-                                    ng-change="vm.modifyActiveValue( 'confirmed' )">
+                            Confirmed:
+                            <span ng-repeat="type in vm.cfm" class="button"
+                                    ng-class="{'active':vm.activeValue[vm.activeBand][vm.activeMode][type.field]}"
+                                    ng-click="vm.activeValue[vm.activeBand][vm.activeMode][type.field] = 
+                                        !vm.activeValue[vm.activeBand][vm.activeMode][type.field];
+                                        vm.modifyActiveValue( 'confirmed' );">
                                 {{type.display}} &nbsp;
                             </span> 
                         </span>
@@ -204,22 +200,15 @@
             <span>{{item.value}}</span> {{item.desc}}
         </td>
         <td class="band" ng-repeat="band in vm.const.bands" 
-            ng-style="{ 'background-color': item[band].confirmed ? vm.user.data.awardValueConfirmedColor : 
-                                ( item[band].worked ? vm.user.data.awardValueWorkedColor : null ) }"     
-            ng-click="vm.setActive( item, band, null )"
-            ng-mouseover="vm.popup = {item: item, band: band }"
-            ng-mouseleave="vm.popup = null">
-            <div class="popup" ng-if="vm.popup.item == item && vm.popup.band == band">
-                <div ng-repeat="mode in vm.const.modes" 
+                         ng-click="vm.setActive( item, band, null )">
+            <span ng-repeat="mode in vm.modes" class="mode_unit"
+                    ng-if="vm.modesFilter[mode]"
                     ng-click="vm.setActive( item, band, mode ); $event.stopPropagation();"
                     ng-style="{ 'background-color': item[band][mode].confirmed ? 
                         vm.user.data.awardValueConfirmedColor :                 
                         ( item[band][mode] ? 
                         vm.user.data.awardValueWorkedColor : null ) }" 
-                    ng-class="{'hover': vm.hover == mode }"
-                    ng-mouseenter="vm.hover = mode"
-                    ng-mouseleave="vm.hover = null"
-                    >{{mode}}</div>
+                    >{{vm.const.modesShort[mode]}}</span>
             </div>
         </td>
     </tr>

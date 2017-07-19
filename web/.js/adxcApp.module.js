@@ -5,7 +5,7 @@ angular
     .config( config );
 
 function config( $stateProvider, $urlRouterProvider ) {
-    var version = '0.0.0.6';
+    var version = '0.0.0.10';
 
     $urlRouterProvider.otherwise('/');
 /*
@@ -99,7 +99,7 @@ function config( $stateProvider, $urlRouterProvider ) {
     var states = [ 
         {
             name: 'main',
-            url: '/',
+            url: '/{usrTmplt:dxp|}',
             templateUrl: '/.tmplts/index.html',
             controller: 'clusterController',
             controllerAs: 'vm'

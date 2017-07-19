@@ -4,12 +4,12 @@
     <!-- <h4>{{user.callsign}}</h4> -->
     <div id="profile_settings">
         <div id="profile_menu">
-            <a ng-click="vm.show = { uploadAdif: true, changeEmail: false, changePwd: false }">Upload ADIF log</a>
+            <a ng-click="vm.show = { uploadAdif: true, changeEmail: false, changePwd: false }">Upload ADIF</a>
             <a ng-click="vm.show = { uploadAdif: false, changeEmail: true, changePwd: false }">Change email</a>
             <a ng-click="vm.show = { uploadAdif: false, changeEmail: false, changePwd: true }">Change password</a>
         </div>
         <form id="upload_adif" ng-show="vm.show.uploadAdif" ng-submit="vm.uploadADIF()">
-            Upload ADIF log<br>
+            Upload ADIF<br>
             <input type="file" name="adiflog" size="chars" id="adifFile" 
                 custom-change="vm.adifFileChanged"/><br/>
             <input type="submit" id="submit_btn" name="change_psw" value="Upload" 

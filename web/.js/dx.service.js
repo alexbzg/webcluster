@@ -95,12 +95,11 @@ function DXService( $rootScope, $http, $interval, User, Awards, Notify ) {
     }
 
     function createCfm( as ) {
-        var cfm = { 'cfm_paper': 1, 'cfm_eqsl': 1, 'cfm_lotw': 1 };
-        if ( as && as.settings && as.settings.cfm )
-            as.settings.cfm.forEach( function( cfmType ) {
-                if ( !cfmType.enabled )
-                    delete cfm[cfmType.name];
-            });
+        var cfm = {};
+        as.settings.cfm.forEach( function( cfmType ) {
+            if ( cfmType.enabled )
+                cfm[cfmType.name] = 1;
+        });
         return cfm;
     }
 
