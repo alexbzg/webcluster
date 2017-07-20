@@ -228,7 +228,7 @@ def application(env, start_response):
                 return 'OK'
             elif data.has_key( 'award' ) and data.has_key( 'value' ) \
                     and ( data.has_key( 'confirmed' ) or data.has_key('delete') or \
-                    data.has_key( 'cfm_paper' ) ):
+                    data.has_key( 'cfm_paper' ) or data.has_key( 'cfm' ) ):
 
                 params =  { 'callsign': callsign, 'award': data['award'], \
                     'value': data['value'], \
@@ -243,17 +243,9 @@ def application(env, start_response):
                     if awardLookup:
                         fl = dxdb.paramDelete( 'user_awards', params )
                 else:
-                    updParams = {}
-                    updParams['confirmed'] = data['confirmed'] \
-                            if data.has_key('confirmed') else None
-                    updParams['cfm_paper'] = data['cfm_paper'] \
-                            if data.has_key('cfm_paper') else None
-                    updParams['cfm_eqsl'] = data['cfm_eqsl'] \
-                            if data.has_key('cfm_eqsl') else None
-                    updParams['cfm_lotw'] = data['cfm_lotw'] \
-                            if data.has_key('cfm_lotw') else None
-                    updParams['worked_cs'] = data['workedCS'] \
-                            if data.has_key( 'workedCS' ) else None
+                    updParams = spliceParams( data, \
+                        [ 'confirmed', 'cfm_paper', 'cfm_eqsl', 'cfm_lotw', \
+                        'cfm', 'workedCS' ] )
                     fl = dxdb.paramUpdateInsert( 'user_awards', params, updParams )
                 if fl:
                     dxdb.commit()
@@ -498,12 +490,14 @@ def getUserAwards( callsign ):
                     { 'confirmed': item['confirmed'], \
                     'workedCS': item['worked_cs'],\
                     'cfm_paper': item['cfm_paper'], 'cfm_eqsl': item['cfm_eqsl'],\
-                    'cfm_lotw': item['cfm_lotw'] }
+                    'cfm_lotw': item['cfm_lotw'],
+                    'cfm': item['cfm']}
             else:
                 r[item['award']][item['value']] = \
                     { 'confirmed': item['confirmed'], 'workedCS': item['worked_cs'],\
                     'cfm_paper': item['cfm_paper'], 'cfm_eqsl': item['cfm_eqsl'],\
-                    'cfm_lotw': item['cfm_lotw'] }
+                    'cfm_lotw': item['cfm_lotw'],
+                    'cfm': item['cfm']}
         return r
     else:
         return None

@@ -166,8 +166,9 @@ def loadAdif( callsign, adif, awardsEnabled ):
     commitFl = False
     if awards:
 
-        def updateAward( idParams, awState ):
+        def updateAward( idParams, awState, cfmTypes ):
             updParams = {}
+            cfm = {}
             awLookup = dxdb.getObject( 'user_awards', idParams, False, True )
             if awLookup:
                 updateFl = False
@@ -175,6 +176,9 @@ def loadAdif( callsign, adif, awardsEnabled ):
                     if not awLookup[cfmType] and awState[cfmType]:
                         updParams[cfmType] = True
                         updateFl = True
+                    if not cfmTypes or cfmType in cfmTypes:
+                        cfm[cfmType] = awLookup[cfmType] or awState[cfmType]
+                updParams[cfm] = json.dumps( cfm )
                 csCount = 0 if not awLookup['worked_cs'] else \
                         2 if ',' in awLookup['worked_cs'] else 1
                 if csCount < 2:
@@ -193,8 +197,12 @@ def loadAdif( callsign, adif, awardsEnabled ):
                     return True
             else:
                 idParams['worked_cs'] = ', '.join( awState['callsigns'] )
+                cfm = {}
                 for cfmType in cfmFields.keys():
                     idParams[cfmType] = awState[cfmType]
+                    if not cfmTypes or cfmType in cfmTypes:
+                        cfm[cfmType] = awState[cfmType]
+                idParams[cfm] = json.dumps( cfm )
                 dxdb.getObject( 'user_awards', idParams, True )
                 return True
 
@@ -206,15 +214,18 @@ def loadAdif( callsign, adif, awardsEnabled ):
                         'value': value, \
                         'band': 'N/A', \
                         'mode': 'N/A' }
+                cfmTypes = None
+                if awardsData[award].has_key( 'cfmTypes' ):
+                    cfmTypes = [ type[1] for type in awardsData[award]['cfmTypes'] ]
                 if awardsData[award].has_key('byBand') and \
                     awardsData[award]['byBand']:
                     for band in awState:
                         idParams['band'] = band
                         for mode in awState[band]:
                             idParams['mode'] = mode
-                            commitFl = updateAward( idParams, awState[band][mode] )
+                            commitFl = updateAward( idParams, awState[band][mode], cfmTypes )
                 else:
-                    commitFl = updateAward( idParams, awState )
+                    commitFl = updateAward( idParams, awState, cfmTypes )
 
     msg = { 'text': 'Your ADIF log was processed succefully.' + \
             ( '' if commitFl \

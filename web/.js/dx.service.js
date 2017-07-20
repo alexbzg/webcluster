@@ -132,7 +132,7 @@ function DXService( $rootScope, $http, $interval, User, Awards, Notify ) {
     function checkAwardCfm( uav, cfm ) {
         var confirmed = false;
         for ( var cfmType in cfm )
-            if ( uav[cfmType] ) {
+            if ( uav.cfm[cfmType] ) {
                 confirmed = true;
                 break;
             }

@@ -12,6 +12,11 @@ function UserAwardFactory( $rootScope, User, DxConst ) {
 
     function createUserAward( award, value, band, mode, skipSave ) {
         
+        var cfmTypes = award.cfmTypes ? award.cfmTypes : DxConst.cfm;
+        var cfm = [];
+        cfmTypes.forEach( function( item ) {
+            cfm.push( item[1] );
+        });
 
         var ua = { award: award,
             value: value,
@@ -20,23 +25,16 @@ function UserAwardFactory( $rootScope, User, DxConst ) {
             worked: true,
             save: save,
             remove: remove,
-            copy: copy
+            copy: copy,
+            cfm: {}
         };
 
         init();
         return ua;
 
-        function props() {
-            var props = [ 'workedCS' ];
-            var cfm = award.cfmTypes ? award.cfmTypes : DxConst.cfm;
-            cfm.forEach( function( item ) {
-                props.push( item[1] );
-            });
-            return props;
-        }
-
 
         function init() {
+            var saveFl = false;
 
             ua.prnt = award.list_id ?
                 User.data.listsAwards[award.list_id] :
@@ -49,33 +47,47 @@ function UserAwardFactory( $rootScope, User, DxConst ) {
                 ua.prnt = ua.prnt[value][band];
             }
             ua.key = award.byBand ? mode : value; 
-            var saveFl = false;
             if ( !ua.prnt[ua.key] ) {
-                ua.prnt[ua.key] = {};
+                ua.prnt[ua.key] = { cfm: {} };
                 saveFl = true;
+                cfm.forEach( function( cfmType ) {
+                    ua.prnt[ua.key].cfm[cfmType] = false;
+                });
             }
             ua.data = ua.prnt[ua.key];
 
-            props().forEach( function( prop ) {
-                Object.defineProperty( ua, prop, { 
+            Object.defineProperty( ua, 'workedCS', { 
                 get: function() {
-                    return ua.data[prop];
+                    return ua.data.workedCS;
                                 },
                 set: function( val ) {
-                    if ( ua.data[prop] != val ) {
-                        ua.data[prop] = val;
+                    if ( ua.data.workedCS != val ) {
+                        ua.data.workedCS = val;
                         save();
                     }
+            } });
+
+            cfm.forEach( function( type ) {
+                Object.defineProperty( ua.cfm, type, { 
+                    get: function() {
+                        return ua.data.cfm[type];
+                                    },
+                   set: function( val ) {
+                        if ( ua.data.cfm[type] != val ) {
+                            ua.data.cfm[type] = val;
+                            save();
+                        }
                 } });
             });
+
             if ( saveFl && !skipSave )
                 save();
         }
 
         function copy( data ) {
-            props().forEach( function( prop ) {
-                ua[prop] = data[prop];
-            });
+            ua.workedCS = data.workedCS;
+            for ( var type in data.cfm )
+                ua.cfm[type] = data.cfm[type];
         }
 
         function postData() {
@@ -99,9 +111,10 @@ function UserAwardFactory( $rootScope, User, DxConst ) {
 
         function save() {
             var data = postData();
-            props().forEach( function( prop ) {                
-                data[prop] = prop == 'workedCS' ? ua[prop] :
-                    Boolean( ua[prop] );
+            data.workedCS = ua.workedCS;
+            data.cfm = {};
+            cfm.forEach( function( type ) {
+                data.cfm[type] = ua.cfm[type];
             });
             User.saveData( data );
             $rootScope.$emit('user-awards-stats-change');

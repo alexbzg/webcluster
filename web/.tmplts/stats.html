@@ -63,9 +63,9 @@
                             <span id="cfm">
                                 Confirmed:
                                 <span ng-repeat="type in vm.cfm" class="button"
-                                        ng-class="{'active':vm.activeValue.userAward[type.field]}"
-                                        ng-click="vm.activeValue.userAward[type.field] = 
-                                            !vm.activeValue.userAward[type.field];
+                                        ng-class="{'active':vm.activeValue.userAward.cfm[type.field]}"
+                                        ng-click="vm.activeValue.userAward.cfm[type.field] = 
+                                            !vm.activeValue.userAward.cfm[type.field];
                                             vm.modifyActiveValue( 'confirmed' );">
                                     {{type.display}} &nbsp;
                                 </span> 

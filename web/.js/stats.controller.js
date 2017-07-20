@@ -135,7 +135,7 @@ function statsController( $scope, $stateParams, DxConst, User, Head, Awards,
     function valueConfirmed( av ) {
         var cfmCount = vm.cfm.length;
         for ( var co = 0; co < cfmCount; co++ )
-            if ( vm.cfm[co].enabled && av[vm.cfm[co].field] ) 
+            if ( vm.cfm[co].enabled && av.cfm[vm.cfm[co].field] ) 
                 return true;
         return false;
     }
