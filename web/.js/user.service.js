@@ -39,6 +39,7 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
         saveUserSettings: saveUserSettings,
         onLogIO: onLogIO,
         onAwardsStatsChange: onAwardsStatsChange,
+        loadAutoCfm: loadAutoCfm
     };
     var dxpSettings = null;
     var usrTmplt = null;
@@ -357,6 +358,20 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
                             $window.alert( result.text );
                     }
                 } );
+    }
+
+    function loadAutoCfm() {
+        if ( user.data.token )
+            return toServer( { loadAutoCfm: 1 } )
+                .then( function( result ) {
+                    if ( result ) {
+                        if ( result.reload )
+                            reload();
+                        if ( result.text )
+                            $window.alert( result.text );
+                    }
+                });
+       
     }
 
 

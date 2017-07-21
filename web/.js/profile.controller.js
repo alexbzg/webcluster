@@ -16,6 +16,7 @@ function profileController( $scope, User, Head, Awards, LoadingScreen ) {
     vm.adifUpdateSelectAllAwards = adifUpdateSelectAllAwards;
     vm.adifToggleSelectAllAwards = adifToggleSelectAllAwards;
     vm.email = User.data.email;
+    vm.loadAutoCfm = User.loadAutoCfm;
     vm.adif = { file: null, awards: [] };
 
 
@@ -91,6 +92,7 @@ function profileController( $scope, User, Head, Awards, LoadingScreen ) {
         User.changeEmail( vm.email )
             .then( function( r ) { if ( r ) alert( 'Email changed successfully' ); } );
     }
+
 
     function changePassword() {
         User.changePassword( vm.newPwd, vm.oldPwd )

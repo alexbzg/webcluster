@@ -1,7 +1,7 @@
 #!/usr/bin/python
 #coding=utf-8
 
-import psycopg2, sys, logging
+import psycopg2, sys, logging, json
 
 from common import siteConf
 
@@ -24,6 +24,12 @@ def cursor2dicts( cur, keys = None ):
 
 def paramStr( params, str ):
     return str.join( [ x + " = %(" + x + ")s" for x in params.keys() ] )
+
+def spliceParams( data, params ):
+    return { param: json.dumps( data[param] ) \
+            if isinstance( data[param],dict ) else data[param] \
+        for param in params \
+        if data.has_key( param ) }
 
 
 class dbConn:

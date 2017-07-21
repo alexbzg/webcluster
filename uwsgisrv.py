@@ -5,7 +5,7 @@ from dxdb import cursor2dicts, dbConn, paramStr
 from dx import loadSpecialLists
 
 import json, smtplib, urllib2, urllib, os, base64, jwt, re, logging, time, urlparse
-import time
+import time, zlib
 
 from urlparse import parse_qs
 from email.mime.text import MIMEText
@@ -226,6 +226,20 @@ def application(env, start_response):
 
                 start_response( '200 OK', [('Content-Type','text/plain')])     
                 return 'OK'
+            elif data.has_key( 'loadAutoCfm' ):
+                rTxt = ''
+                r = False
+                try:
+                    r = loadAutoCfm( callsign )
+                    rTxt = 'Your awards were updated.' if r \
+                            else 'No new callsigns were found.'
+                except:
+                    rTxt = 'There was an error. Please try to update later.'
+                    logging.exception( 'Error while loading autoCfm. Callsign: ' + \
+                            callsign )
+                start_response( '200 OK', [('Content-Type','application/json')])     
+                return json.dumps( { 'reload': r, 'text': rTxt } )
+
             elif data.has_key( 'award' ) and data.has_key( 'value' ) \
                     and ( data.has_key( 'confirmed' ) or data.has_key('delete') or \
                     data.has_key( 'cfm_paper' ) or data.has_key( 'cfm' ) ):
@@ -596,4 +610,35 @@ def exportDXpedition( env ):
     slJSON = json.dumps( sl, default = jsonEncodeExtra ) 
     writeWebFile( slJSON, 'specialLists.json', env )
 
-       
+def loadAutoCfm( callsign ):
+    url = 'https://mydx.eu/rda/csv?call=' + \
+            ( 'RA3AV' if callsign == 'QQQQ' else callsign )
+    u = urllib2.urlopen(url)
+    data = zlib.decompress( u.read() , -15).split( '\n' )
+    idParams = { 'callsign': callsign, 'award': 'RDA' }
+    commitFl = False
+    for line in data:
+        if ',' in line:
+            val, cs = ( line.split( ',', 2 )[:2] )
+            idParams['value'] = val
+            lookup = dxdb.getObject( 'user_awards', idParams, False, True )
+            if lookup:
+                if not lookup['cfm']['cfm_auto']: 
+                    commitFl = True
+                    lookup['cfm']['cfm_auto'] = True
+                    if not lookup['worked_cs'] or not ',' in lookup['worked_cs']:
+                        if lookup['worked_cs']:
+                            lookup['worked_cs'] += ', ' + cs
+                        else:
+                            lookup['worked_cs'] = cs
+                    dxdb.paramUpdate( 'user_awards', idParams, \
+                            spliceParams( lookup, [ 'cfm', 'worked_cs' ] ) )
+            else:
+                commitFl = True
+                updParams = { 'cfm': json.dumps( { 'cfm_auto': True } ), \
+                        'worked_cs': cs }
+                updParams.update( idParams )
+                dxdb.getObject( 'user_awards', updParams, True )
+    if commitFl:
+        dxdb.commit()   
+    return commitFl
