@@ -1,8 +1,10 @@
 [ { "name": "RDA", "fullName": "Russian District Award", "link":"http://rdaward.org/", "country": "Russia",
     "valuesFile": "csv/rda.csv", "groupInValue": 1, "getFields":{"text":1, "web":1},  "fieldValues":"district",
     "substFile":"csv/rda_old_new.csv", "color":"#e00101",
+    "cfmTypes":  [ [ "Paper", "cfm_paper" ], [ "eQSL", "cfm_eqsl"], ["LOTW", "cfm_lotw"], 
+        ["AutoCFM", "cfm_auto"]],
     "lookups":[{"type":"value", "source":"field", "field":"district"},
-        {"type":"value","source":"text","re":"[a-zA-Z]{2}[ -]+\\d\\d"}] }, 
+        {"type":"value","source":"text","re":"(?<=\\s)[a-zA-Z]{2}[ -]+\\d\\d"}] }, 
 
  { "name": "URDA", "fullName":"Ukraine Districts Award", "link":"http://uarl.com.ua/urda/", "country": "Ukraine",
     "valuesFile": "csv/urda.csv", "groupInValue": 1, "color":"#17cb04", 
@@ -312,7 +314,7 @@
 
     { "name": "DDFM", "fullName":"Diplôme des Départements Français", 
      "link":"http://ddfm.free.fr/english/english.html", "country": "France",
-    "valuesFile": "csv/ddfm.csv", "groupInValue": 0, "color":"#0004ba", 
+    "valuesFile": "csv/ddfm_.csv", "groupInValue": 0, "color":"#0004ba", 
     "getFields":{"web":1},
     "valueColumns": {"value": 0, "keys": 1 },
     "groupColumns": {"value": 3}, "byMode": 1, "byBand": 1,

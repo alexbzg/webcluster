@@ -1,7 +1,7 @@
 #!/usr/bin/python
 #coding=utf-8
 
-import psycopg2, sys, logging, json
+import psycopg2, sys, logging, json, traceback
 
 from common import siteConf
 
@@ -83,6 +83,8 @@ class dbConn:
             cur.execute( sql, params )
         except psycopg2.Error, e:
             logging.exception( "Error executing: " + sql + "\n" )
+            stack = traceback.extract_stack()
+            logging.error( stack )
             if params:
                 logging.error( "Params: " )
                 logging.error( params )
@@ -103,7 +105,7 @@ class dbConn:
     def commit( self ):
         self.conn.commit()
 
-    def commit( self ):
+    def rollback( self ):
         self.conn.rollback()
 
 

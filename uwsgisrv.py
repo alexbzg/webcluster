@@ -623,7 +623,7 @@ def loadAutoCfm( callsign ):
             idParams['value'] = val
             lookup = dxdb.getObject( 'user_awards', idParams, False, True )
             if lookup:
-                if not lookup['cfm']['cfm_auto']: 
+                if not lookup['cfm'].has_key( 'cfm_auto' ) or not lookup['cfm']['cfm_auto']: 
                     commitFl = True
                     lookup['cfm']['cfm_auto'] = True
                     if not lookup['worked_cs'] or not ',' in lookup['worked_cs']:

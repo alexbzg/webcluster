@@ -33,6 +33,7 @@ cfmTypesDef = [ 'cfm_lotw', 'cfm_paper', 'cfm_eqsl' ]
 sql = """select * from user_awards
     where award = %s """ + \
     ( "and callsign = 'QQQQ' " if testMode else '' )
+users = []
 
 for aw in awards:
     
@@ -50,7 +51,19 @@ for aw in awards:
                     'band': record['band'], 'mode': record['mode'], \
                     'callsign': record['callsign'] },
                     { 'cfm': json.dumps( recordCfm ) } )
+            if not record['callsign'] in users:
+                users.append( record['callsign'] )
 dxdb.commit()
+umdPath = webRoot + '/userMetadata.json'
+umd = loadJSON( umdPath  )
+if not umd:
+    umd = {}
+ts = time.time()
+for callsign in users:
+    umd[callsign] = ts
+with open( umdPath, 'w' ) as f:
+    f.write( json.dumps( umd ) )
+
 
 
 #with open( webRoot + '/userMetadata.json', 'w' ) as f:

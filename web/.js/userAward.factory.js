@@ -111,7 +111,7 @@ function UserAwardFactory( $rootScope, User, DxConst ) {
 
         function save() {
             var data = postData();
-            data.workedCS = ua.workedCS;
+            data.worked_cs = ua.workedCS;
             data.cfm = {};
             cfm.forEach( function( type ) {
                 data.cfm[type] = ua.cfm[type];
