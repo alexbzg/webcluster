@@ -169,16 +169,19 @@ def loadAdif( callsign, adif, awardsEnabled ):
         def updateAward( idParams, awState, cfmTypes ):
             updParams = {}
             cfm = {}
+            if not cfmTypes:
+                cfmTypes = cfmFields.keys()
             awLookup = dxdb.getObject( 'user_awards', idParams, False, True )
             if awLookup:
                 updateFl = False
-                for cfmType in cfmFields.keys():
-                    if not awLookup[cfmType] and awState[cfmType]:
+                for cfmType in cfmTypes:
+                    if cfmFields.has_key(cfmType) and not awLookup[cfmType] \
+                        and awState[cfmType]:
                         updParams[cfmType] = True
                         updateFl = True
-                    if not cfmTypes or cfmType in cfmTypes:
-                        cfm[cfmType] = awLookup[cfmType] or awState[cfmType]
-                updParams[cfm] = json.dumps( cfm )
+                    cfm[cfmType] = awLookup['cfm'][cfmType] or \
+                        ( awState.has_key( cfmType ) and awState[cfmType] )
+                updParams['cfm'] = json.dumps( cfm )
                 csCount = 0 if not awLookup['worked_cs'] else \
                         2 if ',' in awLookup['worked_cs'] else 1
                 if csCount < 2:
@@ -198,11 +201,11 @@ def loadAdif( callsign, adif, awardsEnabled ):
             else:
                 idParams['worked_cs'] = ', '.join( awState['callsigns'] )
                 cfm = {}
-                for cfmType in cfmFields.keys():
-                    idParams[cfmType] = awState[cfmType]
-                    if not cfmTypes or cfmType in cfmTypes:
-                        cfm[cfmType] = awState[cfmType]
-                idParams[cfm] = json.dumps( cfm )
+                for cfmType in cfmTypes:
+                    if cfmFields.has_key( cfmType ):
+                        idParams[cfmType] = awState[cfmType]
+                    cfm[cfmType] = ( awState.has_key( cfmType ) and awState[cfmType] )
+                idParams['cfm'] = json.dumps( cfm )
                 dxdb.getObject( 'user_awards', idParams, True )
                 return True
 
