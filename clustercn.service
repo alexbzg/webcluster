@@ -1,5 +1,5 @@
 [Unit]
-Desription=web dx cluster backend
+Description=web dx cluster backend
 After=network.target postgresql@9.4-main.service 
 
 [Service]

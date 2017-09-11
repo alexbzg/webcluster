@@ -199,14 +199,15 @@ def loadAdif( callsign, adif, awardsEnabled ):
                     dxdb.paramUpdate( 'user_awards', idParams, updParams )
                     return True
             else:
-                idParams['worked_cs'] = ', '.join( awState['callsigns'] )
+                updParams = idParams.copy()
+                updParams['worked_cs'] = ', '.join( awState['callsigns'] )
                 cfm = {}
                 for cfmType in cfmTypes:
                     if cfmFields.has_key( cfmType ):
-                        idParams[cfmType] = awState[cfmType]
+                        updParams[cfmType] = awState[cfmType]
                     cfm[cfmType] = ( awState.has_key( cfmType ) and awState[cfmType] )
-                idParams['cfm'] = json.dumps( cfm )
-                dxdb.getObject( 'user_awards', idParams, True )
+                updParams['cfm'] = json.dumps( cfm )
+                dxdb.getObject( 'user_awards', updParams, True )
                 return True
 
         for award in awards.keys():

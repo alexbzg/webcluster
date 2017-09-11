@@ -260,7 +260,9 @@ def application(env, start_response):
                     updParams = spliceParams( data, \
                         [ 'confirmed', 'cfm_paper', 'cfm_eqsl', 'cfm_lotw', \
                         'cfm', 'workedCS' ] )
+                    dxdb.verbose = True
                     fl = dxdb.paramUpdateInsert( 'user_awards', params, updParams )
+                    dxdb.verbose = False
                 if fl:
                     dxdb.commit()
                     okResponse = 'OK'

@@ -44,6 +44,7 @@ class dbConn:
             self.conn = conn
             self.conn.autocommit = True
             self.error = None
+            self.verbose = False
         except:
             sys.stderr.write( "No db connection!" )
             self = False
@@ -60,7 +61,8 @@ class dbConn:
             return False
 
     def paramUpdate( self, table, idParams, updParams ):
-        return self.execute( 'update ' + table + ' set ' + paramStr( updParams, ', ' ) + \
+        return self.execute( 'update ' + table + \
+                ' set ' + paramStr( updParams, ', ' ) + \
                 " where " + paramStr( idParams, ' and ' ), \
                 dict( idParams, **updParams ) )
 
@@ -70,16 +72,25 @@ class dbConn:
                 idParams )
 
     def paramUpdateInsert( self, table, idParams, updParams ):
+        logging.debug( 'idParams:' )
+        logging.debug( idParams )
+        logging.debug( 'updParams:' )
+        logging.debug( updParams )
         lookup = self.getObject( table, idParams, False, True )
+        r = None
         if lookup:
-            return self.paramUpdate( table, idParams, updParams )
+            r = self.paramUpdate( table, idParams, updParams )
         else:
-            return self.getObject( table, dict( idParams, **updParams ), \
+            r = self.getObject( table, dict( idParams, **updParams ), \
                     True )
+        return r
 
     def execute( self, sql, params = None ):
         cur = self.conn.cursor()
         try:
+            if self.verbose:
+                logging.debug( sql )
+                logging.debug( params )
             cur.execute( sql, params )
         except psycopg2.Error, e:
             logging.exception( "Error executing: " + sql + "\n" )
@@ -115,6 +126,8 @@ class dbConn:
         sql = ''
         cur = False
         if not create:
+            if self.verbose:
+                logging.debug( 'getObject lookup' )
             sql = "select * from %s where %s" % (
                     table, 
                     " and ".join( [ k + " = %(" + k + ")s"
@@ -128,6 +141,8 @@ class dbConn:
                 if never_create:
                     return False
         if create or not cur:
+            if self.verbose:
+                logging.debug( 'getObject insert' )
             keys = params.keys()
             sql = "insert into " + table + " ( " + \
                 ", ".join( keys ) + ") values ( " + \

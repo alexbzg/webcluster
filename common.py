@@ -30,7 +30,7 @@ def jsonEncodeExtra( obj ):
 
 def loadJSON( pathJS ):
     if not path.isfile( pathJS ):
-        print pathJS + " not found"
+        logging.exception( pathJS + " not found" )
         return False
     try:
         r = json.load( open( pathJS ) )

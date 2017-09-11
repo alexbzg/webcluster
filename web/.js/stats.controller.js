@@ -74,6 +74,7 @@ function statsController( $scope, $stateParams, DxConst, User, Head, Awards,
         LoadingScreen.on();
         Awards.loadValues()
             .then( function( data ) {
+                LoadingScreen.off();
                 if ( vm.awardsLoaded )
                     return;
                 else

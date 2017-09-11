@@ -6,6 +6,8 @@ from twisted.internet.defer import DeferredQueue
 from twisted.python import log
 
 import sys, decimal, re, datetime, os, logging, time, json, urllib2, xmltodict
+import logging
+from urlparse import urlparse
 
 from common import appRoot, readConf, siteConf, loadJSON, jsonEncodeExtra
 from dxdb import dxdb, cursor2dicts
@@ -61,12 +63,21 @@ with open( appRoot + '/cty.dat', 'r' ) as fCty:
                 else:
                     prefixes[pfxType][pfx0] =  country
 
-def getWebData( url ):
+def getWebData( url, returnError = False ):
     try:
-        r = urllib2.urlopen( url )
+        headers = { 
+                'User-Agent': 'Wget/1.16 (linux-gnu)',
+                'Accept': '*/*',
+                'Host': urlparse( url ).hostname,
+                'Connection': 'Keep-Alive' }
+        req = urllib2.Request( url, None, headers )
+        r = urllib2.urlopen( req )
         return r.read()
     except urllib2.HTTPError as e:
-        print e.read()
+        if returnError:
+            return e.read()
+        logging.exception( 'Error getting data from ' + url )
+        logging.error( e.read() )
         return ''
 
 
@@ -179,7 +190,6 @@ def updateSpecialLists():
     for dir in dirs:
         with open( dir + '/specialLists.json', 'w' ) as fsl:
             fsl.write( slDataJSON )
-
 
 class QRZLink:
 
@@ -640,18 +650,19 @@ class DX( object ):
                 self.updateDB()
         elif self.country == 'Sweden':
             zip = None
-            rBody = ''
+            r = getWebData( \
+                r'http://www.ssa.se/smcb/adxcluster.php?call='\
+                + self.cs )
             try:
-                r = urllib2.urlopen( \
-                    r'http://www.ssa.se/smcb/index.php?call='\
-                    + self.cs )
-                rBody = r.read()
-            except urllib2.HTTPError as e:
-                rBody = e.read()
-            for m in DX.reZIP['Sweden'].finditer( rBody ):
-                if DX.zipData['Sweden'].has_key( m.group( 0 ) ):
-                    zip = m.group( 0 )
-                    break
+                rDict = xmltodict.parse( r )
+                if rDict.has_key( 'callbookentry' ) and \
+                    rDict['callbookentry'].has_key( 'zipcode' ) \
+                    and rDict['callbookentry']['zipcode']:
+                        zip = rDict['callbookentry']['zipcode']
+            except Exception as e:
+                logging.exception( 'Error parsing data from Sweden' )
+                logging.error( 'callsign: ' + self.cs )
+                logging.error( r )
             if not zip:
                 data = qrzComLink.getData( self.cs )
                 if data:
@@ -707,19 +718,11 @@ class DX( object ):
                             url = \
                                 'http://www.whatsmylocator.co.uk/wabsquare.php?lat=' \
                                 + data['lat'] + '&long=' + data['lon']
-                            headers = { 
-                                    'User-Agent': 'Wget/1.16 (linux-gnu)',
-                                    'Accept': '*/*',
-                                    'Host': 'www.whatsmylocator.co.uk',
-                                    'Connection': 'Keep-Alive' }
-
-                            req = urllib2.Request( url, None, headers )
-                            r = urllib2.urlopen( req )
-                            wabData = json.loads( r.read() )
+                            wabData = getWebData( url, True )
                             if wabData.has_key( 'wabsquare' ):
                                 self.district = wabData['wabsquare']
-                        except urllib2.HTTPError as e:
-                            print e.read()
+                        except Exception as e:
+                            logging.exception('Error loading data')
 
 
                 else:
