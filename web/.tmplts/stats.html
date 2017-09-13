@@ -143,15 +143,15 @@
                         <span id="cfm">
                             Confirmed:
                             <span ng-repeat="type in vm.cfm" class="button"
-                                    ng-class="{'active':vm.activeValue[vm.activeBand][vm.activeMode][type.field]}"
-                                    ng-click="vm.activeValue[vm.activeBand][vm.activeMode][type.field] = 
-                                        !vm.activeValue[vm.activeBand][vm.activeMode][type.field];
-                                        vm.modifyActiveValue( 'confirmed' );">
+                                ng-class="{'active':vm.activeValue[vm.activeBand][vm.activeMode].cfm[type.field]}"
+                                ng-click="vm.activeValue[vm.activeBand][vm.activeMode].cfm[type.field] = 
+                                    !vm.activeValue[vm.activeBand][vm.activeMode].cfm[type.field];
+                                    vm.modifyActiveValue( 'confirmed' );">
                                 {{type.display}} &nbsp;
                             </span> 
                         </span>
                         <input type="text" id="wkd_calls" placeholder="worked callsigns" 
-                            ng-model="vm.workedCS"/>
+                            ng-model="vm.activeValue[vm.activeBand][vm.activeMode].workedCS"/>
                         <input type="submit" class="submit_btn" name="save_award_unit_info" value="Save"
                             ng-disabled="!vm.activeValue[vm.activeBand][vm.activeMode].worked"
                             ng-click="vm.saveWorkedCS()"/>

@@ -5,7 +5,7 @@ from dxdb import cursor2dicts, dbConn, paramStr
 from dx import loadSpecialLists
 
 import json, smtplib, urllib2, urllib, os, base64, jwt, re, logging, time, urlparse
-import time, zlib
+import time, zlib, ssl
 
 from urlparse import parse_qs
 from email.mime.text import MIMEText
@@ -153,6 +153,7 @@ def application(env, start_response):
             if pl.has_key( 'callsign' ):
                 callsign = pl['callsign']
         if callsign:
+#award settings
             if data.has_key( 'award' ) and ( ( data.has_key( 'track' ) \
                     and data.has_key( 'color' ) ) \
                     or data.has_key( 'stats_settings' ) ) :
@@ -165,7 +166,7 @@ def application(env, start_response):
                     okResponse = 'OK'
                 else:
                     dbError = True
-
+#check message
             elif data.has_key( 'checkMessage' ):
                 userData = dxdb.getObject( 'users', \
                         { 'callsign': callsign },\
@@ -176,13 +177,13 @@ def application(env, start_response):
                     dxdb.commit()
                 start_response('200 OK', [('Content-Type','application/json')])
                 return json.dumps( userData['msg'] )
-
+#reload data
             elif data.has_key( 'reload' ):
                 userData = dxdb.getObject( 'users', \
                         { 'callsign': callsign },\
                         False, True )
                 return sendUserData( userData, start_response )
-
+#dxped admin
             elif data.has_key( 'dxpedition' ) and data['dxpedition'] == 'admin':
                 if callsign in admins:
                     idParams = { 'callsign': data['callsign'] }
@@ -208,7 +209,7 @@ def application(env, start_response):
                     start_response( '403 Forbidden', \
                             [('Content-Type','text/plain')])
                     return 'Permission denied'
-                   
+#adif                   
             elif data.has_key( 'adif' ):
                 adif = data['adif']['file'].split( ',' )[1].decode( \
                         'base64', 'strict' )
@@ -226,6 +227,7 @@ def application(env, start_response):
 
                 start_response( '200 OK', [('Content-Type','text/plain')])     
                 return 'OK'
+#autocfm    
             elif data.has_key( 'loadAutoCfm' ):
                 rTxt = ''
                 r = False
@@ -239,7 +241,7 @@ def application(env, start_response):
                             callsign )
                 start_response( '200 OK', [('Content-Type','application/json')])     
                 return json.dumps( { 'reload': r, 'text': rTxt } )
-
+#user award data
             elif data.has_key( 'award' ) and data.has_key( 'value' ) \
                     and ( data.has_key( 'confirmed' ) or data.has_key('delete') or \
                     data.has_key( 'cfm_paper' ) or data.has_key( 'cfm' ) ):
@@ -259,7 +261,7 @@ def application(env, start_response):
                 else:
                     updParams = spliceParams( data, \
                         [ 'confirmed', 'cfm_paper', 'cfm_eqsl', 'cfm_lotw', \
-                        'cfm', 'workedCS' ] )
+                        'cfm', 'worked_cs'] )
                     dxdb.verbose = True
                     fl = dxdb.paramUpdateInsert( 'user_awards', params, updParams )
                     dxdb.verbose = False
@@ -613,9 +615,12 @@ def exportDXpedition( env ):
     writeWebFile( slJSON, 'specialLists.json', env )
 
 def loadAutoCfm( callsign ):
+    ctx = ssl.create_default_context()
+    ctx.check_hostname = False
+    ctx.verify_mode = ssl.CERT_NONE
     url = 'https://mydx.eu/rda/csv?call=' + \
             ( 'RA3AV' if callsign == 'QQQQ' else callsign )
-    u = urllib2.urlopen(url)
+    u = urllib2.urlopen(url, context = ctx)
     data = zlib.decompress( u.read() , -15).split( '\n' )
     idParams = { 'callsign': callsign, 'award': 'RDA' }
     commitFl = False
@@ -625,7 +630,8 @@ def loadAutoCfm( callsign ):
             idParams['value'] = val
             lookup = dxdb.getObject( 'user_awards', idParams, False, True )
             if lookup:
-                if not lookup['cfm'].has_key( 'cfm_auto' ) or not lookup['cfm']['cfm_auto']: 
+                if not lookup['cfm'].has_key( 'cfm_auto' ) or \
+                        not lookup['cfm']['cfm_auto']: 
                     commitFl = True
                     lookup['cfm']['cfm_auto'] = True
                     if not lookup['worked_cs'] or not ',' in lookup['worked_cs']:

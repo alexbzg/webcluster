@@ -256,8 +256,6 @@ function statsController( $scope, $stateParams, DxConst, User, Head, Awards,
         vm.activeValue = value;
         vm.activeBand = band;
         vm.activeMode = mode;
-        if ( activeUserAward() )
-            vm.workedCS = activeUserAward().workedCS;
     }
    
     function findValue() {
@@ -362,5 +360,6 @@ function statsController( $scope, $stateParams, DxConst, User, Head, Awards,
         }
         updateIVState();
     }
+
    
 }
