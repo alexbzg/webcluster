@@ -6,6 +6,8 @@ from twisted.internet.defer import DeferredQueue
 from twisted.python import log
 
 import sys, decimal, re, datetime, os, logging, time, json, urllib2, xmltodict
+import logging
+from urlparse import urlparse
 
 from common import appRoot, readConf, siteConf, loadJSON, jsonEncodeExtra
 from dxdb import dxdb, cursor2dicts
@@ -60,6 +62,26 @@ with open( appRoot + '/cty.dat', 'r' ) as fCty:
                     prefixes[pfxType][pfx0] += "; " + country;
                 else:
                     prefixes[pfxType][pfx0] =  country
+
+def getWebData( url, returnError = False ):
+    try:
+        headers = { 
+                'User-Agent': 'Wget/1.16 (linux-gnu)',
+                'Accept': '*/*',
+                'Host': urlparse( url ).hostname,
+                'Connection': 'Keep-Alive' }
+        req = urllib2.Request( url, None, headers )
+        if 'ssa.se' in url:
+            logging.debug( 'Query to Sweden: ' + url )
+        r = urllib2.urlopen( req )
+        return r.read()
+    except urllib2.HTTPError as e:
+        if returnError:
+            return e.read()
+        logging.exception( 'Error getting data from ' + url )
+        logging.error( e.read() )
+        return ''
+
 
 class QRZComLink:
 
@@ -170,7 +192,6 @@ def updateSpecialLists():
     for dir in dirs:
         with open( dir + '/specialLists.json', 'w' ) as fsl:
             fsl.write( slDataJSON )
-
 
 class QRZLink:
 
@@ -417,7 +438,7 @@ class DX( object ):
         self.band = params['band'] if params.has_key( 'band' ) else None
         self.mode = None
         self.subMode = None
-        if params.has_key( 'mode' ):
+        if params.has_key( 'mode' ) and params['mode']:
             self.setMode( params['mode'] )
             if not self.mode:
                 print params['mode']
@@ -607,19 +628,17 @@ class DX( object ):
                 self.dxData.qrzLink.csQueue.put( \
                         { 'cs': self.cs, 'cb': self.onQRZdata } )
         elif self.country == 'Ukraine':
-            r = urllib2.urlopen( \
+            r = getWebData( \
                 'http://www.uarl.com.ua/UkrainianCallBOOK/adxcluster.php?calls='\
                     + self.cs )
-            rBody = r.read()
-            self.doTextLookup( rBody )
+            self.doTextLookup( r )
             self.qrzData = True
             self.updateDB()
         elif self.country == 'France':
-            r = urllib2.urlopen( \
+            r = getWebData( \
                 'http://nomenclature.r-e-f.org/index.php?req='\
                     + self.cs )
-            rBody = r.read()
-            m = DX.reFranceDC.search( rBody )
+            m = DX.reFranceDC.search( r )
             if m:
                 idx = m.group(0)
                 if idx.startswith( '200' ) or idx.startswith( '201' ):
@@ -633,33 +652,33 @@ class DX( object ):
                 self.updateDB()
         elif self.country == 'Sweden':
             zip = None
-            rBody = ''
+            r = getWebData( \
+                r'http://www.ssa.se/smcb/adxcluster.php?callsign='\
+                + self.cs )
             try:
-                r = urllib2.urlopen( \
-                    r'http://www.ssa.se/smcb/index.php?call='\
-                    + self.cs )
-                rBody = r.read()
-            except urllib2.HTTPError as e:
-                rBody = e.read()
-            for m in DX.reZIP['Sweden'].finditer( rBody ):
-                if DX.zipData['Sweden'].has_key( m.group( 0 ) ):
-                    zip = m.group( 0 )
-                    break
+                rDict = xmltodict.parse( r )
+                if rDict.has_key( 'callbookentry' ) and \
+                    rDict['callbookentry'].has_key( 'zipcode' ) \
+                    and rDict['callbookentry']['zipcode']:
+                        zip = rDict['callbookentry']['zipcode']
+            except Exception as e:
+                logging.exception( 'Error parsing data from Sweden' )
+                logging.error( 'callsign: ' + self.cs )
+                logging.error( r )
             if not zip:
                 data = qrzComLink.getData( self.cs )
                 if data:
                     zip = self.detectZip( data )
-            if zip:
+            if zip and DX.zipData['Sweden'].has_key( zip ):
                 self.district = DX.zipData['Sweden'][zip][3]
 
 
 
         elif self.country == 'Poland':
-            r = urllib2.urlopen( \
+            r = getWebData( \
                 'https://callbook.pzk.org.pl/szukaj.php?adv=1&query='\
                     + self.cs )
-            rBody = r.read()
-            m = DX.rePolandDC.search( rBody )
+            m = DX.rePolandDC.search( r )
             if m:
                 self.region = m.group(1)
                 self.district = m.group(1) + m.group(2)
@@ -701,19 +720,11 @@ class DX( object ):
                             url = \
                                 'http://www.whatsmylocator.co.uk/wabsquare.php?lat=' \
                                 + data['lat'] + '&long=' + data['lon']
-                            headers = { 
-                                    'User-Agent': 'Wget/1.16 (linux-gnu)',
-                                    'Accept': '*/*',
-                                    'Host': 'www.whatsmylocator.co.uk',
-                                    'Connection': 'Keep-Alive' }
-
-                            req = urllib2.Request( url, None, headers )
-                            r = urllib2.urlopen( req )
-                            wabData = json.loads( r.read() )
+                            wabData = getWebData( url, True )
                             if wabData.has_key( 'wabsquare' ):
                                 self.district = wabData['wabsquare']
-                        except urllib2.HTTPError as e:
-                            print e.read()
+                        except Exception as e:
+                            logging.exception('Error loading data')
 
 
                 else:

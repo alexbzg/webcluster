@@ -71,6 +71,8 @@ def getWebData( url, returnError = False ):
                 'Host': urlparse( url ).hostname,
                 'Connection': 'Keep-Alive' }
         req = urllib2.Request( url, None, headers )
+        if 'ssa.se' in url:
+            logging.debug( 'Query to Sweden: ' + url )
         r = urllib2.urlopen( req )
         return r.read()
     except urllib2.HTTPError as e:
@@ -651,7 +653,7 @@ class DX( object ):
         elif self.country == 'Sweden':
             zip = None
             r = getWebData( \
-                r'http://www.ssa.se/smcb/adxcluster.php?call='\
+                r'http://www.ssa.se/smcb/adxcluster.php?callsign='\
                 + self.cs )
             try:
                 rDict = xmltodict.parse( r )
@@ -667,7 +669,7 @@ class DX( object ):
                 data = qrzComLink.getData( self.cs )
                 if data:
                     zip = self.detectZip( data )
-            if zip:
+            if zip and DX.zipData['Sweden'].has_key( zip ):
                 self.district = DX.zipData['Sweden'][zip][3]
 
 

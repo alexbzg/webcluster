@@ -108,6 +108,8 @@ def loadAdif( callsign, adif, awardsEnabled ):
             bandData = getAdifField( line, 'BAND' ).upper()
             if bands.has_key( bandData ):
                 band = bands[bandData]
+            if band == None:
+                logging.debug( 'No band: ' + line )
             if dx.country == 'Russia' or dx.country == 'Ukraine':
                 district = getAdifField( line, 'CNTY' )
                 if not district or not reDistrict.match( district ):
@@ -147,6 +149,8 @@ def loadAdif( callsign, adif, awardsEnabled ):
                     aw = awards[award][ value['value'] ]
                     if awardsData[award].has_key('byBand') and \
                             awardsData[award]['byBand']:
+                        if not band:
+                            continue
                         if not aw.has_key( band ):
                             aw[band] = {}
                         if not aw[band].has_key( value['mode'] ):
@@ -179,7 +183,8 @@ def loadAdif( callsign, adif, awardsEnabled ):
                         and awState[cfmType]:
                         updParams[cfmType] = True
                         updateFl = True
-                    cfm[cfmType] = awLookup['cfm'][cfmType] or \
+                    cfm[cfmType] = (awLookup['cfm'].has_key(cfmType) and \
+                        awLookup['cfm'][cfmType]) or \
                         ( awState.has_key( cfmType ) and awState[cfmType] )
                 updParams['cfm'] = json.dumps( cfm )
                 csCount = 0 if not awLookup['worked_cs'] else \
@@ -205,7 +210,8 @@ def loadAdif( callsign, adif, awardsEnabled ):
                 for cfmType in cfmTypes:
                     if cfmFields.has_key( cfmType ):
                         updParams[cfmType] = awState[cfmType]
-                    cfm[cfmType] = ( awState.has_key( cfmType ) and awState[cfmType] )
+                    cfm[cfmType] = ( awState.has_key( cfmType ) \
+                            and awState[cfmType] )
                 updParams['cfm'] = json.dumps( cfm )
                 dxdb.getObject( 'user_awards', updParams, True )
                 return True
@@ -227,7 +233,8 @@ def loadAdif( callsign, adif, awardsEnabled ):
                         idParams['band'] = band
                         for mode in awState[band]:
                             idParams['mode'] = mode
-                            commitFl = updateAward( idParams, awState[band][mode], cfmTypes )
+                            commitFl = updateAward( idParams, \
+                                    awState[band][mode], cfmTypes )
                 else:
                     commitFl = updateAward( idParams, awState, cfmTypes )
 

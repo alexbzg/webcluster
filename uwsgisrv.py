@@ -619,7 +619,7 @@ def loadAutoCfm( callsign ):
     ctx.check_hostname = False
     ctx.verify_mode = ssl.CERT_NONE
     url = 'https://mydx.eu/rda/csv?call=' + \
-            ( 'RA3AV' if callsign == 'QQQQ' else callsign )
+            ( 'SM7ZDI' if callsign == 'QQQQ' else callsign )
     u = urllib2.urlopen(url, context = ctx)
     data = zlib.decompress( u.read() , -15).split( '\n' )
     idParams = { 'callsign': callsign, 'award': 'RDA' }
