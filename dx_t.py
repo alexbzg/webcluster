@@ -372,7 +372,9 @@ class DX( object ):
             'subMode': self.subMode,
             'band': self.band,
             'region': self.region,
-            'special': self.special
+            'special': self.special,
+            'iota': self.iota
+
             }
 
     def setMode( self, value ):
@@ -413,6 +415,7 @@ class DX( object ):
         self.isBeacon = False
         self._district = None
         self.region = None
+        self.iota = None
         self.offDB = False
         self.pfx = None
         self.awards = {}
@@ -482,6 +485,7 @@ class DX( object ):
             self.gridsquare = params['gridsquare'] if params.has_key( 'qth' ) \
                     else None
             self.awards = params['awards'] if params.has_key( 'awards' ) else {}
+            self.iota = params['iota'] if params.has_key( 'iota' ) else None
 
         else:
         
@@ -686,9 +690,10 @@ class DX( object ):
                 self.updateDB()
 
         else:
-            data = qrzComLink.getData( self.cs )
+            data = qrzComLink.getData( self.cs )            
             if data:
                 self.qrzData = True
+                self.updateIOTA( data )
                 if self.country == 'USA':
                     if data.has_key( 'state' ):
                         self.region = data['state']
@@ -783,19 +788,64 @@ class DX( object ):
             dxdb.updateObject( 'callsigns',
               { 'callsign': self.cs, 'qth': self.gridsquare, \
                       'district': self.district, 'region': self.region,\
-                      'qrz_data_loaded': self.qrzData, 
-                      'special_cs': self.special }, 'callsign' )
+                      'qrz_data_loaded': self.qrzData, \
+                      'special_cs': self.special,\
+                      'iota': self.iota }, 'callsign' )
         else:
             dxdb.getObject( 'callsigns', \
                     { 'callsign': self.cs, 'region': self.region, \
                     'district': self.district,\
                     'qth': self.gridsquare, 'qrz_data_loaded': self.qrzData, \
-                    'country': self.country, 'special_cs': self.special }, \
+                    'iota':self.iota,
+                    'country': self.country, 'special_cs': self.special,  }, \
                     True )
             dxdb.commit()
             self.inDB = True
         if self.special:
             updateSpecialLists()
+
+    def detectIOTA( self, ad ):
+        iota = None
+        text = []
+        web = False
+        for av, avd in ad['values'].items():
+            match = False
+            for f in avd['filter']:
+                if '^' in f: 
+                    match = re.match( f, self.cs )
+                else:
+                    match = f == self.pfx
+                if match:
+                    if avd['getFields'] == 'text':
+                        text.append( av )
+                    elif not avd['getFields']:
+                        return av
+                    elif not web and avd['getFields'] == 'web':
+                        web = True
+        if text:
+            t = self.text.upper()
+            for av in text:
+                avp = av.split( '-' )
+                avre = r"(?<=\s)" + avp[0] + r"[ -]+" + avp[1]
+                if re.search( avre, t ):
+                    return av
+        if web:
+            if not self.iota:
+                data = qrzComLink.getData( self.cs )            
+                if data:
+                    self.updateIOTA( data )
+                    self.updateDB()
+            if self.iota and self.iota != 'N/A' \
+                    and ad['values'].has_key( self.iota ):
+                return self.iota
+        return None
+            
+    def updateIOTA( self, data ):
+        if data.has_key( 'iota' ) and data['iota']:
+            self.iota = data['iota']
+        else:
+            self.iota = 'N/A'
+            
 
     def detectAwards( self ):
 
@@ -808,10 +858,17 @@ class DX( object ):
                     return v
             return None
 
-        for ad in awardsData:
+        for ad in awardsData:            
+
             if self.detectAwardsList and not ad['name'] in self.detectAwardsList:
                 continue
-            if not ad['country'] or ad['country'] == self.country:
+
+            if ad['name'] == 'IOTA':
+                av = self.detectIOTA( ad )
+                if av:
+                    self.updateAward( ad, av )
+
+            elif not ad['country'] or ad['country'] == self.country:
                 
                 av = None
                 

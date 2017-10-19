@@ -6,6 +6,7 @@ from common import appRoot
 
 reCountry = re.compile("\s\*?(\S+):$")
 rePfx = re.compile("(\(.*\))?(\[.*\])?")
+reDiap = re.compile(".-.")
 prefixes = []
 with open( appRoot + '/cty.dat', 'r' ) as fCty:
     for line in fCty.readlines():
@@ -34,8 +35,10 @@ with open( '/var/www/adxc.test/csv/iota_csv', 'r' ) as fS:
                     if '*' in data[3]:
                         pfxPcs = data[3].split( '*' )
                         pfx = pfxPcs[0] + '/' + pfxPcs[1].lower()
-                        if not pfx in prefixes:
-                            pfx = data[3].replace( '*', '\d' )
+                    if not pfx in prefixes:
+                        pfx = data[3].replace( '*', '\d' )
+                        if "-" in pfx:
+                            pfx = reDiap.sub( "[\g<0>]", pfx )
                     else:
                         pfx = data[3]
                 if not pfx in prefixes:

@@ -88,11 +88,20 @@ for aw in awardsData:
                 if columns['value'].has_key( 'desc' ):
                     av['desc'] = getColumn( data, 'desc' )
                 webAw['values'].append( av )
-                aw['values'][av['value']] = {'lookups':[]}
+                aw['values'][av['value']] = {}
                 if columns['value'].has_key( 'keys' ):
                     for key in getColumn( data, 'keys' ).split( ',' ):
                         if key:
                             aw['byKey'][key.strip().upper()] = av['value']
+                if columns['value'].has_key( 'filter' ):
+                    aw['values'][av['value']]['filter'] = []
+                    for filter in getColumn( data, 'filter' ).split( ',' ):
+                        aw['values'][av['value']]['filter'].append( \
+                            filter.strip() )
+                for column in columns['value'].keys():
+                    if not column in ['keys', 'value', 'desc', 'filter']:
+                        aw['values'][av['value']][column] = \
+                            getColumn( data, column )
             data = getSplitLine( file, 0 )
         webAw['values'].sort( key = lambda x: x['value'] )
         webAw['orderedGroups'] = webAw['groups'].keys() if webAw['groups'] \
