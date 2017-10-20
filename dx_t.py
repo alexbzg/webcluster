@@ -816,16 +816,18 @@ class DX( object ):
                 else:
                     match = f == self.pfx
                 if match:
-                    if avd['getFields'] == 'text':
+                    if avd['getFields']:
                         text.append( av )
+                        if not web and avd['getFields'] == 'web':
+                            web = True
                     elif not avd['getFields']:
                         return av
-                    elif not web and avd['getFields'] == 'web':
-                        web = True
         if text:
             t = self.text.upper()
             for av in text:
                 avp = av.split( '-' )
+                if avp[1].startswith( '0' ):
+                    avp[1] = '0*' + avp[1].lstrip( '0' )
                 avre = r"(?<=\s)" + avp[0] + r"[ -]+" + avp[1]
                 if re.search( avre, t ):
                     return av

@@ -30,13 +30,21 @@ with open( '/var/www/adxc.test/csv/iota_csv', 'r' ) as fS:
         for line in fS.readlines():
             data = splitLine( line )
             if not data[0]:
+                val = data[1]
+                digits = 0
+                for s in val:
+                    if s.isdigit():
+                        digits += 1
+                while digits < 3:
+                    val = '0' + val
+                    digits += 1
                 pfx = ''
                 if data[3]:
                     if '*' in data[3]:
                         pfxPcs = data[3].split( '*' )
                         pfx = pfxPcs[0] + '/' + pfxPcs[1].lower()
                     if not pfx in prefixes:
-                        pfx = data[3].replace( '*', '\d' )
+                        pfx = data[3].replace( '*', '.' )
                         if "-" in pfx:
                             pfx = reDiap.sub( "[\g<0>]", pfx )
                     else:
@@ -51,7 +59,7 @@ with open( '/var/www/adxc.test/csv/iota_csv', 'r' ) as fS:
                     lookup = 'web'
                 elif not data[4]:
                     lookup = 'text'
-                line = ';' + data[1] + ';' + \
+                line = ';' + val + ';' + \
                         data[2].replace( '  ( ', ' (' ).replace( ' )', ')' \
                             ).replace( '()', '' ) + ';' + pfx + ';' + lookup + '\n'
             fD.write( line )            
