@@ -61,8 +61,7 @@
     "getFields":{"web":1},
     "valueColumns": {"value": 0, "desc": 1, "keys": 2 },
     "groupColumns": {"value": 3 },
-   
-     "lookups":[{"type":"key", "source":"field", "field":"gridsquare"},
+    "lookups":[{"type":"key", "source":"field", "field":"gridsquare"},
         {"type":"value","source":"text","re":"(?<=YUAFA\\s)[a-zA-Z]{4}(?=\\s)"} ]},
 
     { "name": "POLSKA", "fullName":"POLSKA Award", 
@@ -189,6 +188,15 @@
     "lookups":[{"type":"key", "source":"field", "field":"cs"},
         {"type":"value","source":"text","re":"[a-zA-Z]\\d\\d"}] },
 
+     {  "name": "IOTA", "fullName": "Islands On The Air", 
+        "link":"https://www.iota-world.org/", "color":"#dc9816",
+    "country": "United Kingdom", "valuesFile": "csv/iota.csv", "groupInValue": 1,  
+    "getFields":{"text":0, "web":0},
+    "valueColumns": {"value": 1, "desc": 2, "filter": 3, "getFields": 4 },
+    "groupColumns": {"value": 0, "desc": 3 },
+    "lookups":[] },
+       
+        
     {  "name": "WANCA", "fullName": "Worked All Norwegian Communes Award", 
         "link":"http://www.kvindesland.no/la9iha/wanca.html", "color":"#0D6400",
     "country": "Norway", "valuesFile": "csv/wanca.csv", "groupInValue": 0,  
