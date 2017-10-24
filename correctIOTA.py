@@ -2,7 +2,7 @@
 #coding=utf-8
 
 import re
-from common import appRoot
+from common import appRoot, splitLine
 
 reCountry = re.compile("\s\*?(\S+):$")
 rePfx = re.compile("(\(.*\))?(\[.*\])?")
@@ -14,16 +14,6 @@ with open( appRoot + '/cty.dat', 'r' ) as fCty:
         mCountry = reCountry.search( line )
         if mCountry:
             prefixes.append( mCountry.group( 1 ) )
-
-def splitLine( line, fr = 0, to = None ):
-    if line:
-        data = [item.strip( '"\r\n ' ) for item in line.split( ';' )]
-        if to:
-            return data[fr:to]
-        else:
-            return data[fr:]
-    else:
-        return None
 
 with open( '/var/www/adxc.test/csv/iota_csv', 'r' ) as fS:
     with open( '/var/www/adxc.test/csv/iota.csv', 'w' ) as fD:
@@ -47,9 +37,7 @@ with open( '/var/www/adxc.test/csv/iota_csv', 'r' ) as fS:
                         pfx = data[3].replace( '*', '.' )
                         if "-" in pfx:
                             pfx = reDiap.sub( "[\g<0>]", pfx )
-                    else:
-                        pfx = data[3]
-                if not pfx in prefixes:
+                if pfx and not pfx in prefixes:
                     pfx = '^' + pfx
                 if pfx == '^R0F':
                     pfx = '^R.?0F'

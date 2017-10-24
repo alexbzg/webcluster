@@ -24,7 +24,7 @@ awards = []
 webAwards = []
 
 
-def getSplitLine( file, fr, to = None ):
+def getSplitLine( file, fr = 0, to = None ):
     line = file.readline()
     if line:
         data = [item.strip( '"\r\n ' ) for item in line.split( ';' )]

@@ -5,13 +5,15 @@
     <div id="profile_settings">
         <div id="profile_menu">
             <a ng-click="vm.show = { uploadAdif: true, changeEmail: false, changePwd: false, 
-                loadAutoCfm: false  }">Upload ADIF</a>
+                rdaAutoCfm: false, iotaAutoCfm: false  }">Upload ADIF</a>
             <a ng-click="vm.show = { uploadAdif: false, changeEmail: false, 
-                changePwd: false, loadAutoCfm: true }">RDA AutoCFM</a>
+                changePwd: false, rdaAutoCfm: true, iotaAutoCfm: false  }">RDA AutoCFM</a>
+            <a ng-click="vm.show = { uploadAdif: false, changeEmail: false, 
+                changePwd: false, rdaAutoCfm: false, iotaAutoCfm: true }">IOTA AutoCFM</a>
             <a ng-click="vm.show = { uploadAdif: false, changeEmail: true, changePwd: false, 
-                loadAutoCfm: false }">Change email</a>
+                rdaAutoCfm: false, iotaAutoCfm: false  }">Change email</a>
             <a ng-click="vm.show = { uploadAdif: false, changeEmail: false, changePwd: true, 
-                loadAutoCfm: false }">Change password</a>
+                rdaAutoCfm: false, iotaAutoCfm: false  }">Change password</a>
         </div>
         <form id="upload_adif" ng-show="vm.show.uploadAdif" ng-submit="vm.uploadADIF()">
             Upload ADIF<br>
@@ -38,9 +40,15 @@
                 </tr>
             </table>
         </form>
-        <form id="load_auto_cfm" ng-show="vm.show.loadAutoCfm" ng-submit="vm.loadAutoCfm()">
+        <form id="rda_auto_cfm" ng-show="vm.show.rdaAutoCfm" ng-submit="vm.loadAutoCfm( 'RDA' )">
              <input type="submit" id="submit_btn" name="change_psw" 
-                value="Load data from mydx.eu" />
+                value="Load data from mydx.eu" ng-disabled="!vm.user.loggedIn"/>
+        </form>          
+        <form id="iota_auto_cfm" ng-show="vm.show.iotaAutoCfm" ng-submit="vm.loadAutoCfm( 'IOTA', vm.iotaFile )">
+             <input type="file" name="iotaFile" size="chars" id="iotaFile" 
+                custom-change="vm.iotaFileChanged"/><br/>
+             <input type="submit" id="submit_btn" name="change_psw" 
+                value="Upload" ng-disabled="!vm.user.loggedIn || !vm.iotaFile" />
         </form>          
         <form id="profile_call" ng-show="vm.show.changeEmail">
             Email<br>

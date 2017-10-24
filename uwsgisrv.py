@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #coding=utf-8
-from common import appRoot, readConf, siteConf, loadJSON, jsonEncodeExtra
+from common import appRoot, readConf, siteConf, loadJSON, jsonEncodeExtra, splitLine
 from dxdb import cursor2dicts, dbConn, paramStr
 from dx import loadSpecialLists
 
@@ -211,8 +211,7 @@ def application(env, start_response):
                     return 'Permission denied'
 #adif                   
             elif data.has_key( 'adif' ):
-                adif = data['adif']['file'].split( ',' )[1].decode( \
-                        'base64', 'strict' )
+                adif = getUploadedFile( data['adif']['file'] )
                 fName = callsign + '-' + str( time.time() ) + '.adif'
                 with open( adifQueueDir + fName, 'w' ) as f:
                     f.write( adif )
@@ -232,7 +231,10 @@ def application(env, start_response):
                 rTxt = ''
                 r = False
                 try:
-                    r = loadAutoCfm( callsign )
+                    cfmData = None
+                    if data['award'] == 'IOTA':
+                        cfmData = getUploadedFile( data['cfmData'] )
+                    r = loadAutoCfm( callsign, data['award'], cfmData )
                     rTxt = 'Your awards were updated.' if r \
                             else 'No new callsigns were found.'
                 except:
@@ -520,6 +522,10 @@ def getUserAwards( callsign ):
     else:
         return None
 
+def getUploadedFile( field ):
+    return field.split( ',' )[1].decode( 'base64', 'strict' )
+
+
 def getUserListsAwards( callsign ):
     awards = cursor2dicts( \
             dxdb.execute( """
@@ -614,39 +620,56 @@ def exportDXpedition( env ):
     slJSON = json.dumps( sl, default = jsonEncodeExtra ) 
     writeWebFile( slJSON, 'specialLists.json', env )
 
-def loadAutoCfm( callsign ):
-    ctx = ssl.create_default_context()
-    ctx.check_hostname = False
-    ctx.verify_mode = ssl.CERT_NONE
-    url = 'https://mydx.eu/rda/csv?call=' + \
-            ( 'SM7ZDI' if callsign == 'QQQQ' else callsign )
-    u = urllib2.urlopen(url, context = ctx)
-    data = zlib.decompress( u.read() , -15).split( '\n' )
-    idParams = { 'callsign': callsign, 'award': 'RDA' }
+def loadAutoCfm( callsign, award, _data = None ):
+    idParams = { 'callsign': callsign, 'award': award }
+    data = []
+    if award == 'RDA':
+        ctx = ssl.create_default_context()
+        ctx.check_hostname = False
+        ctx.verify_mode = ssl.CERT_NONE
+        url = 'https://mydx.eu/rda/csv?call=' + \
+                ( 'SM7ZDI' if callsign == 'QQQQ' else callsign )
+        u = urllib2.urlopen(url, context = ctx)
+        _data = zlib.decompress( u.read() , -15).split( '\n' )
+        for line in _data:
+            if ',' in line:
+                item = ( line.split( ',', 2 )[:2] )
+                data.append( { 'value': item[0], 'worked_cs': item[1] } )
+    elif award == 'IOTA':
+        for line in _data.split( '\n')[1:]:
+            try:
+                item = splitLine( line, 0, 2, ',' )
+                data.append( { 'value': item[0], 'worked_cs': item[1] } )
+            except Exception, e:
+                logging.exception( e )
+                logging.error( line )
+                raise e
+    return processAutoCfm( idParams, data )  
+
+def processAutoCfm( idParams, data ):
     commitFl = False
-    for line in data:
-        if ',' in line:
-            val, cs = ( line.split( ',', 2 )[:2] )
-            idParams['value'] = val
-            lookup = dxdb.getObject( 'user_awards', idParams, False, True )
-            if lookup:
-                if not lookup['cfm'].has_key( 'cfm_auto' ) or \
-                        not lookup['cfm']['cfm_auto']: 
-                    commitFl = True
-                    lookup['cfm']['cfm_auto'] = True
-                    if not lookup['worked_cs'] or not ',' in lookup['worked_cs']:
-                        if lookup['worked_cs']:
-                            lookup['worked_cs'] += ', ' + cs
-                        else:
-                            lookup['worked_cs'] = cs
-                    dxdb.paramUpdate( 'user_awards', idParams, \
-                            spliceParams( lookup, [ 'cfm', 'worked_cs' ] ) )
-            else:
+    for item in data:
+        idParams['value'] = item['value']
+        lookup = dxdb.getObject( 'user_awards', idParams, False, True )
+        if lookup:
+            if not lookup['cfm'].has_key( 'cfm_auto' ) or \
+                    not lookup['cfm']['cfm_auto']: 
                 commitFl = True
-                updParams = { 'cfm': json.dumps( { 'cfm_auto': True } ), \
-                        'worked_cs': cs }
-                updParams.update( idParams )
-                dxdb.getObject( 'user_awards', updParams, True )
+                lookup['cfm']['cfm_auto'] = True
+                if not lookup['worked_cs'] or not ',' in lookup['worked_cs']:
+                    if lookup['worked_cs']:
+                        lookup['worked_cs'] += ', ' + item['worked_cs']
+                    else:
+                        lookup['worked_cs'] = item['worked_cs']
+                dxdb.paramUpdate( 'user_awards', idParams, \
+                        spliceParams( lookup, [ 'cfm', 'worked_cs' ] ) )
+        else:
+            commitFl = True
+            updParams = { 'cfm': json.dumps( { 'cfm_auto': True } ), \
+                    'worked_cs': item['worked_cs'] }
+            updParams.update( idParams )
+            dxdb.getObject( 'user_awards', updParams, True )
     if commitFl:
         dxdb.commit()   
     return commitFl
+   

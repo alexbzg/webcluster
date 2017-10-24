@@ -94,11 +94,13 @@ def loadAdif( callsign, adif, awardsEnabled ):
                     getAdifField( line, 'TIME_ON' ) + ' ' + cs
             freq = getAdifField( line, 'FREQ' ).replace( '-', '.' ).replace( ':', '.' )
             mode = getAdifField( line, 'MODE' )
+            iota = getAdifField( line, 'IOTA' )
 
 
             dx = dxMod.DX( cs = cs, de = '', text = '', \
                     freq = float( freq ) * 1000 if freq else None, \
                     mode = mode if mode else None, \
+                    iota = iota if iota else None, \
                     time = '    ', detectAwardsList = detectAwardsList )
 
 

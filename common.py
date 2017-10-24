@@ -40,3 +40,13 @@ def loadJSON( pathJS ):
         logging.exception( ex )
         return False
 
+def splitLine( line, fr = 0, to = None, delim = ';' ):
+    if line:
+        data = [item.strip( '"\r\n ' ) for item in line.split( delim )]
+        if to:
+            return data[fr:to]
+        else:
+            return data[fr:]
+    else:
+        return None
+
