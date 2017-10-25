@@ -411,7 +411,7 @@ class DX( object ):
             if not self.subMode:
                 self.subMode = DX.subModes[alias][0]
 
-    def __init__( self, dxData = None, **params ):
+    def __init__( self, dxData = None, newSpot = False, **params ):
         self.isBeacon = False
         self._district = None
         self.region = None
@@ -575,10 +575,19 @@ class DX( object ):
 
             if '#' in self.de:
                 self.text = (self.text.split( ' ', 1 ))[0]
-
             self.testLookups()
             self.detectAwards()
             self.updateDB()
+
+        if newSpot and not '#' in self.de:
+            dxdb.getObject( 'spots', \
+                { 'callsign': self.cs, 'time': self.time, \
+                'de': self.de, 'text': self.text, \
+                'freq': self.freq, 'band': self.band, \
+                'mode': self.mode }, \
+                True )
+
+
 
 
     def testLookups( self ):
@@ -973,7 +982,8 @@ class DXData:
             cs = m.group( 3 )
             freq = float( m.group(2) )
             self.append( \
-                    DX( dxData = self, text = m.group(4), cs = cs, freq = freq, \
+                    DX( dxData = self, newSpot = True, \
+                        text = m.group(4), cs = cs, freq = freq, \
                         de = m.group(1), time = m.group(5) ) )
 
 
