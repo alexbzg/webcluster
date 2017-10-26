@@ -566,10 +566,10 @@ class DX( object ):
                     where callsign = %s""", ( self.cs, ) ), True )
                 if awLookup:
                     for i in awLookup:
-                        if not i['mode']:
-                            award = [a for a in awardsData \
-                                    if a['name'] == i['award'] ][0]
-                            i['mode'] = self.getAwardMode( award )
+                        #if not i['mode']:
+                        award = [a for a in awardsData \
+                                if a['name'] == i['award'] ][0]
+                        i['mode'] = self.getAwardMode( award )
                         self.awards[i['award']] = \
                             { 'value': i['value'], 'mode': i['mode'] }
 
@@ -584,7 +584,7 @@ class DX( object ):
                 { 'callsign': self.cs, 'time': self.time, \
                 'de': self.de, 'text': self.text, \
                 'freq': self.freq, 'band': self.band, \
-                'mode': self.mode }, \
+                'mode': self.mode, 'submode': self.subMode }, \
                 True )
 
 
