@@ -584,7 +584,8 @@ class DX( object ):
                 { 'callsign': self.cs, 'time': self.time, \
                 'de': self.de, 'text': self.text, \
                 'freq': self.freq, 'band': self.band, \
-                'mode': self.mode, 'submode': self.subMode }, \
+                'mode': self.mode, 'submode': self.subMode, \
+                'qrp': self.qrp }, \
                 True )
 
 
