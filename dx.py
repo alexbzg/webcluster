@@ -585,7 +585,7 @@ class DX( object ):
                 'de': self.de, 'text': self.text, \
                 'freq': self.freq, 'band': self.band, \
                 'mode': self.mode, 'submode': self.subMode, \
-                'qrp': self.qrp }, \
+                'qrp': self.qrp, 'pfx': self.pfx }, \
                 True )
 
 
