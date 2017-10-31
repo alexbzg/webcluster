@@ -40,8 +40,10 @@
         <script src="/.js/user.service.js"></script>
         <script src="/.js/dxConst.service.js"></script>
         <script src="/.js/awards.service.js"></script>
+        <script src="/.js/history.service.js"></script>
         <script src="/.js/userAward.factory.js"></script>
         <script src="/.js/dataService.factory.js"></script>
+        <script src="/.js/spotAwards.service.js"></script>
         <script src="/.js/dx.service.js"></script>
         <script src="/.js/loadingScreen.service.js"></script>
         <script src="/.js/dxpedition.service.js"></script>
@@ -52,6 +54,7 @@
         <script src="/.js/buttonColorPicker.directive.js"></script>
         <script src="/.js/menu.controller.js"></script>
         <script src="/.js/cluster.controller.js"></script>
+        <script src="/.js/history.controller.js"></script>
         <script src="/.js/awards.controller.js"></script>
         <script src="/.js/listSetup.controller.js"></script>
         <script src="/.js/stats.controller.js"></script>
@@ -76,9 +79,11 @@
                     {{vm.user.data.callsign}}</span>
                 <a ui-sref="info" ng-show="!vm.user.loggedIn()">Info</a>
                 <!-- <a ui-sref="stats">Stats</a> -->
+                <a ui-sref="history">History</a>
                 <a ui-sref="awards">Awards</a>
                 <a ui-sref="profile">Profile</a>
-                        <a ui-sref="contact">Contact</a>
+                <a ui-sref="contact">Contact</a>
+                <a ui-sref="help">Help</a>
                 <a ui-sref="login" ng-show="!vm.user.loggedIn()">Login</a>
                 <a href="" ng-click="vm.user.logout()" ng-show="vm.user.loggedIn()">
                     Logout</a>

@@ -1,0 +1,67 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"                                                
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<div id="history">
+<select ng-model="vm.activeAward" 
+    ng-options="award as (award.fullName + ' (' + award.name + ')') 
+        for award in vm.awards | orderBy: 'country'"
+    ng-change="vm.activeAwardChanged()">
+    <option value="">Select award</option>
+</select>
+
+<table id="cluster" ng-if="vm.activeAward">
+    <tr>
+        <th class="time">{{vm.time}} <span>z</span></th>
+        <th class="freq">MHz</th>
+        <th class="mode">Mode</th>
+        <th class="callsign">Callsign</th>
+        <th class="awards">Awards</th> 
+        <th id="link_status">Text</th>
+        <th class="spotter">Spotter</th>
+    </tr>
+    <tr ng-repeat="item in vm.dxFiltered track by $index" 
+        ng-class-odd="'odd'" ng-class-even="'even'">
+        <td class="time">{{item.time}}</td>
+        <td class="freq">
+            {{item.freq.toFixed(1).substr(0, item.freq.toFixed(1).length - 5 )
+            }}<span>{{item.freq.toFixed(1).substr( -5 )}}</span>
+        </td>
+        <td class="mode">{{item.subMode ? item.subMode : item.mode}}</td>
+        <td class="callsign">
+            <a target="_blank" 
+                href="http://qrz.com/db/{{item.cs.toLowerCase()}}">{{ vm.replace0( item.cs ) +
+                    (item.qrp ? '/QRP' : '' ) }}</a>
+        </td>
+        <td class="awards">
+            <span>
+                <a ng-if="!item.awards[0].noStats"
+                ui-sref="stats( {award: item.awards[0].award, value: item.awards[0].value, band: item.band, 
+                mode: item.awards[0].mode || item.subMode || item.mode, 
+                list_id: item.awards[0].list_id} )">                    
+                        <img ng-if="award.worked" src="/images/icon_worked.png" 
+                                title="worked but not confirmed"/>{{
+                            item.awards[0].value && ( !item.awards[0].list_id || item.awards[0].pfx )
+                            ? ' ' + vm.replace0( item.awards[0].value) : ''}}<span 
+                                ng-if="item.awards[0].descr"> ({{item.awards[0].descr}})</span>
+                </a><span ng-if="item.awards[0].noStats">
+                      <img ng-if="award.worked" src="/images/icon_worked.png" 
+                                title="worked but not confirmed"/>{{
+                            item.awards[0].value && ( !item.awards[0].list_id || item.awards[0].pfx )
+                            ? ' ' + vm.replace0( item.awards[0].value) : ''}}</span><span 
+                                ng-if="item.awards[0].link"> <a class="dxinfo" 
+                                target="_blank" href="{{item.awards[0].link}}">info</a></span>
+           </span>
+               
+        </td>  
+        <td class="text">{{ vm.replace0( item.text )}}</td>
+        <td class="spotter">{{ vm.replace0( item.de )}}</td>
+    </tr>
+</table>
+</div>
+
+
+
+<loading-screen></loading-screen>
+
+
+
