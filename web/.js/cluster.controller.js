@@ -2,12 +2,12 @@ angular
     .module( 'adxcApp' )
     .controller( 'clusterController', clusterController );
 
-clusterController.$inject = [ '$interval', '$timeout', '$scope', 
-    'Storage', 'DxConst', 'DX', 'Head', 'News' ];
+clusterController.$inject = [ '$interval', '$timeout', '$scope',
+    'Storage', 'DxConst', 'DX', 'Head', 'News', 'User' ];
    
 
-function clusterController( $interval, $timeout, $scope, 
-        Storage, DxConst, DX, Head, News ) {
+function clusterController( $interval, $timeout, $scope,
+        Storage, DxConst, DX, Head, News, User ) {
 
     var vm = this;
     var selectorKey = 'adxcluster-selector';
@@ -15,7 +15,6 @@ function clusterController( $interval, $timeout, $scope,
     var firstLoad = true;
     var lastCs = null;
     var lastTs = null;
-    var selector = { bands: {}, modes: {} };
 
     vm.dx = DX;
     vm.news = News;
@@ -23,6 +22,7 @@ function clusterController( $interval, $timeout, $scope,
     vm.replace0 = replace0;
     vm.selectorChange = selectorChange;
     vm.soundChange = soundChange;
+    vm.selectorInit = selectorInit;
 
     DX.onUpdate( function() { dxFilter(); }, $scope );
 
@@ -32,29 +32,18 @@ function clusterController( $interval, $timeout, $scope,
 
     function activate() {
         Head.setTitle( 'Awards DX Cluster by R7AB' );
-        vm.selector = Storage.load( selectorKey, 'local' );
-        if ( !vm.selector )
-            vm.selector = {};
-        if ( !vm.selector.bands || !vm.selector.modes  ) {
-            var resp = { 'bands': 'bandsAll', 'modes': 'modesSuper' };
-            for ( var field in resp ) {
 
-                vm.selector[field] = [];
-                DxConst[resp[field]].forEach( function( value ) {
-                    vm.selector[field].push( { name: value, enabled: true } );
-                } );
-
-            }
-        }
-        applySelector();
-
-        dxFilter();
         DX.load();
         vm.dxReload = $interval( DX.load, 1000 );
 
         updateTime();
 
         $scope.$on( '$destroy', onDestroy );
+    }
+
+    function selectorInit( $selector ) {
+        vm.selector = $selector;
+        dxFilter( true );
     }
 
     function onDestroy() {
@@ -68,28 +57,14 @@ function clusterController( $interval, $timeout, $scope,
         }
     }
    
-    function saveSelector() {
-        Storage.save( selectorKey, vm.selector, 'local');
-    }
 
     function selectorChange() {
-        saveSelector();
-        applySelector();
         dxFilter( true );
-    }
-
-    function applySelector() {
-        [ 'bands', 'modes' ].forEach( function( field ) {
-            vm.selector[field].forEach( function( item ) {
-                selector[field][item.name] = item.enabled;
-            });
-        });
     }
 
     function soundChange() {
         if ( vm.selector.sound )
             playSound();
-        saveSelector();
     }
 
     function playSound() {
@@ -97,6 +72,8 @@ function clusterController( $interval, $timeout, $scope,
     }
 
     function dxFilter( noSound ) {
+        if ( !vm.selector )
+            return;
         var tmpTs = lastTs;
         var tmpCs = null;
         var soundFl = false;
@@ -108,17 +85,8 @@ function clusterController( $interval, $timeout, $scope,
         for ( var co = 0; co < dxl; co++ )
         {
             var dx = DX.items[co];
-            var fl = false;
-            if ( dx.awards.length > 0 || vm.selector.allSpots ){
-                if ( !(dx.band in selector.bands) || 
-                        selector.bands[dx.band] ) {
-                    if ( !(dx.mode in selector.modes) || 
-                        selector.modes[dx.mode] )
-                        fl = true;
-                }
-            } 
             
-            if ( fl ) {
+            if ( vm.selector.spotFilter( dx ) ) {
                 vm.dxFiltered.push( dx );
                 if ( dx.ts > tmpTs ) {
                     tmpTs = dx.ts;
@@ -138,8 +106,8 @@ function clusterController( $interval, $timeout, $scope,
                     break;
             }
         }
-        if ( vm.dxFiltered.length > 200 )
-            vm.dxFiltered.length = 200;
+        if ( vm.dxFiltered.length > 500 )
+            vm.dxFiltered.length = 500;
 
         if ( tmpTs > lastTs ) {
             lastTs = tmpTs;

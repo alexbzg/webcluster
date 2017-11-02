@@ -9,19 +9,25 @@
     <option value="">Select award</option>
 </select>
 
+<dx-selector storage-key="history-selector" disable-sound-switch="true"
+        disable-all-spots-switch="true"
+        on-selector-change="vm.selectorChange()" after-init="vm.selectorInit( $selector )">
+</dx-selector>
+
+
 <table id="cluster" ng-if="vm.activeAward">
     <tr>
-        <th class="time">{{vm.time}} <span>z</span></th>
+        <th class="time">Time</th>
         <th class="freq">MHz</th>
         <th class="mode">Mode</th>
         <th class="callsign">Callsign</th>
-        <th class="awards">Awards</th> 
+        <th class="awards">{{vm.activeAward.name}}</th> 
         <th id="link_status">Text</th>
         <th class="spotter">Spotter</th>
     </tr>
     <tr ng-repeat="item in vm.dxFiltered track by $index" 
         ng-class-odd="'odd'" ng-class-even="'even'">
-        <td class="time">{{item.time}}</td>
+        <td class="time">{{item.time}} {{item.day}}/{{item.month}}</td>
         <td class="freq">
             {{item.freq.toFixed(1).substr(0, item.freq.toFixed(1).length - 5 )
             }}<span>{{item.freq.toFixed(1).substr( -5 )}}</span>

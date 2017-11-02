@@ -7,32 +7,9 @@
     </div>
     <span ng-bind-html="vm.news.html()"/>
 </div>
-<div id="bands_modes">
-    <div id="selectors_bands_modes" ng-show="vm.showSelector">
-        <span class="band" ng-repeat="band in vm.selector.bands track by $index"
-            ng-class="{active: band.enabled}">
-            <input type="checkbox" ng-model="band.enabled" 
-                ng-change="vm.selectorChange()">{{band.name}}
-        </span><br/>
-        <span class="mode" ng-repeat="mode in vm.selector.modes" ng-class="{active: mode.enabled}">
-            <input type="checkbox" ng-model="mode.enabled" 
-                ng-change="vm.selectorChange()">{{mode.name}}
-        </span>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            
-        <span class="sound">
-            <input type="checkbox" ng-model="vm.selector.sound"
-                ng-change="vm.soundChange()">Sound
-        </span>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            
-        <span class="allSpots">
-            <input type="checkbox" ng-model="vm.selector.allSpots"
-                ng-change="vm.selectorChange()"/>All spots
-        </span>
-
-    </div>
-    <img src="/images/icon_select.png" title="Select bands and modes for view" 
-        ng-click="vm.showSelector = !vm.showSelector"/>
-</div>
+<dx-selector storage-key="adxcluster-selector" on-sound-change="vm.soundChange()"
+        on-selector-change="vm.selectorChange()" after-init="vm.selectorInit( $selector )">
+</dx-selector>
 
 <table id="cluster">
     <tr>

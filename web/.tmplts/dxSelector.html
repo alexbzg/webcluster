@@ -1,0 +1,30 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"                                                
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<div id="bands_modes">
+    <div id="selectors_bands_modes" ng-show="$ctrl.showSelector">
+        <span class="band" ng-repeat="band in $ctrl.selector.bands track by $index"
+            ng-class="{active: band.enabled}">
+            <input type="checkbox" ng-model="band.enabled" 
+                ng-change="$ctrl._onSelectorChange()">{{band.name}}
+        </span><br/>
+        <span class="mode" ng-repeat="mode in $ctrl.selector.modes" ng-class="{active: mode.enabled}">
+            <input type="checkbox" ng-model="mode.enabled" 
+                ng-change="$ctrl._onSelectorChange()">{{mode.name}}
+        </span>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            
+        <span class="sound" ng-if="!$ctrl.disableSoundSwitch">
+            <input type="checkbox" ng-model="$ctrl.selector.sound"
+                ng-change="$ctrl._onSoundChange()">Sound
+        </span>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            
+        <span class="allSpots" ng-if="!$ctrl.disableAllSpotsSwitch">
+            <input type="checkbox" ng-model="$ctrl.selector.allSpots"
+                ng-change="$ctrl._onSelectorChange()"/>All spots
+        </span>
+
+    </div>
+    <img src="/images/icon_select.png" title="Select bands and modes for view" 
+        ng-click="$ctrl.showSelector = !$ctrl.showSelector"/>
+</div>
+
+

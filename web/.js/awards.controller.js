@@ -88,10 +88,16 @@ function awardsController( DxConst, User, Awards, Head, SpecialLists, $window ) 
                     "This change will affect track settings of ALL awards." +  
                     "Do you really want to proceed?" ) ) {
             Awards.data.forEach( function( award ) {
-                User.data.awardsSettings[award.name].track = vm.trackAll;
+                if ( User.data.awardsSettings[award.name].track != vm.trackAll ) {
+                    User.data.awardsSettings[award.name].track = vm.trackAll;
+                    User.awardSettingsChanged( award );
+                }
             });
             User.data.lists.forEach( function( list ) {
-                list.track = vm.trackAll;
+                if ( list.track != vm.trackAll ) {
+                    list.track = vm.trackAll;
+                    User.listChanged( list );
+                }
             });
         }
     }

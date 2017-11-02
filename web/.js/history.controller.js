@@ -11,6 +11,9 @@ function historyController( $scope, User, Head, Awards, History, LoadingScreen, 
     vm.activeAward = null;
     vm.dxFiltered = [];
     vm.replace0 = replace0;
+    vm.awardsLoaded = false;
+    vm.selectorChange = selectorChange;
+    vm.selectorInit = selectorInit;
 
     User.onLogIO( activate, $scope );
 
@@ -48,6 +51,10 @@ function historyController( $scope, User, Head, Awards, History, LoadingScreen, 
        
         Awards.load() 
             .then( function(data) {
+                if ( vm.awardsLoaded )
+                    return;
+                else
+                    vm.awardsLoaded = true;
                 data.forEach( function(award) {
                     if ( User.data.awardsSettings[award.name].track )
                         vm.awards.push( award );
@@ -68,9 +75,23 @@ function historyController( $scope, User, Head, Awards, History, LoadingScreen, 
         return str == null ? null : str.replace( /0/g, '\u00D8' );
     }   
    
+    function selectorInit( $selector ) {
+        vm.selector = $selector;
+        dxFilter();
+    }
+
+    function selectorChange() {
+        dxFilter();
+    }
+
+    function dxFilter() {
+        if ( !vm.selector )
+            return;
+        vm.dxFiltered = vm.dx.filter( vm.selector.spotFilter );
+    }
 
     function activeAwardChanged() {
-        vm.dxFiltered = [];
+        vm.dx = [];
         var lists = [];
         var awards = [];
         if ( vm.activeAward.list_id )
@@ -83,8 +104,9 @@ function historyController( $scope, User, Head, Awards, History, LoadingScreen, 
                 return;
             SpotAwards.processSpot( spot, awards, lists );
             if ( spot.awards.length > 0 )
-                vm.dxFiltered.push( spot );
+                vm.dx.push( spot );
         });
+        dxFilter();
     }
 
 }

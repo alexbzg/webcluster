@@ -39,9 +39,12 @@ def getAwardMode( row, awardName ):
 
 dbData = cursor2dicts( dxdb.execute( """
     select text, mode, subMode, extract( epoch from ts) as ts, time, qrp, 
+        extract (day from ts) as day, 
+        extract (month from ts) as month,
         freq, de, pfx, spots.callsign as cs, band, special_cs as special
     from spots inner join callsigns on spots.callsign = callsigns.callsign
     where ts > now() - interval '24 hours'
+    order by ts desc
     """ ), True )
 
 for row in dbData:
