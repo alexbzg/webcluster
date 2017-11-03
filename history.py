@@ -47,9 +47,9 @@ dbData = cursor2dicts( dxdb.execute( """
     order by ts desc
     """ ), True )
 
+data = []
 for row in dbData:
-    row['subMode'] = row['submode']
-    del row['submode']
+    row['subMode'] = row.pop( 'submode' )
     awlu = cursor2dicts( dxdb.execute( """ 
         select award, value
         from awards
@@ -59,8 +59,13 @@ for row in dbData:
         for a in awlu:
             row['awards'][a['award']] = { 'value': a['value'], \
                 'mode': getAwardMode( row, a['award'] ) }
+        if not [ x for x in data \
+            if x['ts'] < row['ts'] + 1800 and \
+            x['cs'] == row['cs'] and ( x['freq'] - row['freq'] < 1 and \
+            row['freq'] - x['freq'] < 1 ) ]:
+            data.append( row )
 
-dataJSON = json.dumps( dbData, default = jsonEncodeExtra )
+dataJSON = json.dumps( data, default = jsonEncodeExtra )
 for dir in dirs:
     with open( dir + '/history.json', 'w' ) as fDxData:
         fDxData.write( dataJSON )
