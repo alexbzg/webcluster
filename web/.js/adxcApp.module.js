@@ -5,7 +5,7 @@ angular
     .config( config );
 
 function config( $stateProvider, $urlRouterProvider ) {
-    var version = '0.0.0.10';
+    var version = '0.0.0.16';
 
     $urlRouterProvider.otherwise('/');
 /*
@@ -128,6 +128,13 @@ function config( $stateProvider, $urlRouterProvider ) {
         },
 
         {
+            name: 'history',
+            url: '/history',
+            templateUrl: '/.tmplts/history.html',
+            controller: 'historyController',
+            controllerAs: 'vm'
+        },
+       {
             name: 'listSetup',
             url: '/list_setup/:id',
             templateUrl: '/.tmplts/list_setup.html',
@@ -171,7 +178,14 @@ function config( $stateProvider, $urlRouterProvider ) {
             name: 'info',
             url: '/info',
             templateUrl: '/.tmplts/info.html'
+        },
+
+        {
+            name: 'help',
+            url: '/help',
+            templateUrl: '/.tmplts/help.html'
         } 
+
     ];
 
     states.forEach( function( state ) {

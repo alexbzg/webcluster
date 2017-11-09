@@ -3,11 +3,14 @@
 <div id="bands_modes">
     <div id="selectors_bands_modes" ng-show="$ctrl.showSelector">
         <span class="band" ng-repeat="band in $ctrl.selector.bands track by $index"
+            ng-if="!$ctrl.disableBandsSwitch"
             ng-class="{active: band.enabled}">
             <input type="checkbox" ng-model="band.enabled" 
                 ng-change="$ctrl._onSelectorChange()">{{band.name}}
         </span><br/>
-        <span class="mode" ng-repeat="mode in $ctrl.selector.modes" ng-class="{active: mode.enabled}">
+        <span class="mode" ng-repeat="mode in $ctrl.selector.modes" 
+            ng-if="!$ctrl.disableModesSwitch"
+            ng-class="{active: mode.enabled}">
             <input type="checkbox" ng-model="mode.enabled" 
                 ng-change="$ctrl._onSelectorChange()">{{mode.name}}
         </span>

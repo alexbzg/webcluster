@@ -2,12 +2,13 @@ angular
     .module( 'adxcApp' )
     .service( 'SpotAwards', SpotAwards );
 
-SpotAwards.$inject = [ '$rootScope', 'User', 'Awards', 'Notify' ];
+SpotAwards.$inject = [ '$rootScope', 'User', 'Awards', 'Notify', 'DxConst' ];
 
-function SpotAwards( $rootScope, User, Awards, Notify ) {
+function SpotAwards( $rootScope, User, Awards, Notify, DxConst ) {
     var user = User.data;
     var allAwards = {};
     var cfm = {};
+    var listCfm = {};
 
     
     var sa = { 
@@ -20,17 +21,22 @@ function SpotAwards( $rootScope, User, Awards, Notify ) {
     return sa;
 
     function init() {
-       Awards.onUpdate( loadAwardsList );
-       User.onLogIO( function() {
-            user = User.data;
-            if ( Awards.data )
-                loadAwardsList(); 
-        } );
 
-        User.onAwardsStatsChange( function() {
-            if ( Awards.data )
-                loadAwardsList();
+        DxConst.cfm.forEach( function( item ) {
+            listCfm[ item[1] ] = 1;       
         });
+        
+        Awards.onUpdate( loadAwardsList );
+        User.onLogIO( function() {
+                user = User.data;
+                if ( Awards.data )
+                    loadAwardsList(); 
+            } );
+
+            User.onAwardsStatsChange( function() {
+                if ( Awards.data )
+                    loadAwardsList();
+            });
     }
 
     function loadAwardsList() {
@@ -89,15 +95,26 @@ function SpotAwards( $rootScope, User, Awards, Notify ) {
         return confirmed;
     }
    
-
+    function checkListCfm( uav ) {
+        var confirmed = false;
+        for ( var cfmType in listCfm )
+            if ( uav[cfmType] ) {
+                confirmed = true;
+                break;
+            }
+        return confirmed;
+    }
+ 
     function processSpot( spot, awardsList, listsList ) {
         spot.awards = [];
         var awards = false;
         if ( awardsList ) {
-            if ( awardsList.length > 0 )
+            if ( awardsList.length > 0 ) {
+                awards = {};
                 awardsList.forEach( function( item ) {
                     awards[item] = allAwards[item];
                 });
+            }
         } else 
             awards = angular.extend( {}, allAwards );
         if ( awards )
@@ -137,8 +154,7 @@ function SpotAwards( $rootScope, User, Awards, Notify ) {
                             user.listsAwards[list.id] ) {
                             var uav = user.listsAwards[list.id][listItem.callsign];
                             if ( uav = checkAward( uav, spot ) ) {
-                                var cfm = createCfm( listItem );
-                                if ( checkAwardCfm( uav, cfm ) )
+                                if ( checkListCfm( uav ) )
                                     return;
                                 else
                                     worked = true;

@@ -6,6 +6,8 @@ angular
                 bindings: {
                     disableSoundSwitch: '<',
                     disableAllSpotsSwitch: '<',
+                    disableBandsSwitch: '<',
+                    disableModesSwitch: '<',
                     storageKey: '<',
                     onSoundChange: '&',
                     onSelectorChange: '&',
@@ -68,11 +70,15 @@ function DXSelectorController( DxConst, Storage ) {
 
     function spotFilter( dx ) {
         if ( ctrl.selector.allSpots || dx.awards.length > 0 ) {
-            var band = ctrl.selector.bands.find( function( item ) {
-                return  item.name == dx.band; } );
+            var band = false;
+            if ( !ctrl.disableBandsSwitch )
+                band = ctrl.selector.bands.find( function( item ) {
+                    return  item.name == dx.band; } );
             if ( !band || band.enabled ) {
-                var mode = ctrl.selector.modes.find( function( item ) {
-                    return  item.name == dx.mode; } );
+                var mode = false;
+                if ( !ctrl.disableModesSwitch )
+                    mode = ctrl.selector.modes.find( function( item ) {
+                        return  item.name == dx.mode; } );
                 if ( !mode ||  mode.enabled )
                     return true;
             }
