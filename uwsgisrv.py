@@ -283,6 +283,7 @@ def application(env, start_response):
                     start_response( '500 Server Error', \
                             [('Content-Type','text/plain')])
                     return
+#user profile
             elif ( data.has_key( 'email' ) and validEmail( data['email'] ) ) or \
                 ( data.has_key( 'password' ) and len( data['password'] ) > 5  ):
                 field = 'email' if data.has_key( 'email' ) else 'password'
@@ -302,7 +303,9 @@ def application(env, start_response):
                         okResponse = 'OK'
                     else:
                         dbError = True
+#user's lists
             elif data.has_key( 'list_id' ):
+#users's list create
                 if data['list_id'] == 'new':
                     list = dxdb.getObject( 'users_lists',\
                             { 'callsign': callsign, \
@@ -315,6 +318,7 @@ def application(env, start_response):
                         return json.dumps( { 'list_id': list['id'] } )
                     else:
                         dbError = True
+#users lists settings
                 elif data.has_key( 'title' ) or data.has_key( 'track' ) or \
                         data.has_key( 'stats_settings' ) or \
                         data.has_key( 'full_title' ):
@@ -325,6 +329,7 @@ def application(env, start_response):
                         okResponse = 'OK'
                     else:
                         dbError = True
+#users lists items
                 elif data.has_key( 'items' ):
                     idParams = { 'list_id': data['list_id'] }
                     okResponse = 'OK'
@@ -355,6 +360,7 @@ def application(env, start_response):
                             okResponse = 'OK'
                         else:
                             dbError = True
+#user's list awards
                 elif data.has_key( 'value' ):
                     params =  { 'list_id': data['list_id'], \
                             'callsign': data['value'], \
@@ -370,6 +376,9 @@ def application(env, start_response):
                             else:
                                 dbError = True
                     else:
+                        if data.has_key( 'cfm' ):
+                            for k, v in data['cfm'].items():
+                                data[k] = v
                         if dxdb.paramUpdateInsert( 'users_lists_awards', params, \
                             spliceParams( data, \
                             ['cfm_paper', 'cfm_eqsl', 'cfm_lotw', 'worked_cs'] )):

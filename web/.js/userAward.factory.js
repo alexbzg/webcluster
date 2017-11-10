@@ -66,15 +66,16 @@ function UserAwardFactory( $rootScope, User, DxConst ) {
                         save();
                     }
             } });
-
+            
+            var cfmStorage = award.list_id ? ua.data : ua.data.cfm;
             cfm.forEach( function( type ) {
                 Object.defineProperty( ua.cfm, type, { 
                     get: function() {
-                        return ua.data.cfm[type];
+                        return cfmStorage[type];
                                     },
                    set: function( val ) {
-                        if ( ua.data.cfm[type] != val ) {
-                            ua.data.cfm[type] = val;
+                        if ( cfmStorage[type] != val ) {
+                            cfmStorage[type] = val;
                             save();
                         }
                 } });
