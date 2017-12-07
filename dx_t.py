@@ -36,6 +36,12 @@ for ad in awardsData:
 
 fieldRe = { 'district': re.compile( '[a-zA-Z]{2}[ -]+\d\d' ),\
         'gridsquare': re.compile( '[a-zA-Z0-9]{6}' ) }
+lotwData = []
+with open( appRoot + '/lotw-user-activity.csv', 'r' ) as lf:
+    for line in lf.readlines():
+        cs = line.split( ',', 1 )[0]
+        lotwData.append( cs )
+lotwData = frozenset( lotwData )
 
 reCountry = re.compile("\s\*?(\S+):$")
 rePfx = re.compile("(\(.*\))?(\[.*\])?")
@@ -373,8 +379,8 @@ class DX( object ):
             'band': self.band,
             'region': self.region,
             'special': self.special,
-            'iota': self.iota
-
+            'iota': self.iota,
+            'lotw': self.lotw
             }
 
     def setMode( self, value ):
@@ -431,6 +437,7 @@ class DX( object ):
         else:
             self.qrp = False
         self.de = params['de']
+        self.lotw = self.cs in lotwData
 
         txt = self.text.lower()
         if 'ncdxf' in txt or 'beacon' in txt or 'bcn' in txt or '/B' in self.cs:
@@ -584,7 +591,8 @@ class DX( object ):
                 { 'callsign': self.cs, 'time': self.time, \
                 'de': self.de, 'text': self.text, \
                 'freq': self.freq, 'band': self.band, \
-                'mode': self.mode, 'submode': self.subMode }, \
+                'mode': self.mode, 'submode': self.subMode, \
+                'qrp': self.qrp, 'pfx': self.pfx }, \
                 True )
 
 

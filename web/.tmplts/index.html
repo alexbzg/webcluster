@@ -16,6 +16,7 @@
         <th class="time">{{vm.time}} <span>z</span></th>
         <th class="freq">MHz</th>
         <th class="mode">Mode</th>
+        <th class="lotw" title="LOTW">L</th>
         <th class="callsign">Callsign</th>
         <th class="awards">Awards</th> 
         <th id="link_status">Text</th>
@@ -29,6 +30,7 @@
             }}<span>{{item.freq.toFixed(1).substr( -5 )}}</span>
         </td>
         <td class="mode">{{item.subMode ? item.subMode : item.mode}}</td>
+        <td class="lotw">{{item.lotw ? '+' : ''}}</td>
         <td class="callsign">
             <a target="_blank" 
                 href="http://qrz.com/db/{{item.cs.toLowerCase()}}">{{ vm.replace0( item.cs ) +
