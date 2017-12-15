@@ -26,9 +26,15 @@
                     <th id="mode" colspan="7">Mode</th>
                 </tr>
                 <tr>
+                    <td class="mode">
+                        Mix<br/>
+                        <input type="checkbox" ng-model="vm.setupAward.settings.mixMode"
+                            ng-change="vm.user.awardSettingsChanged(vm.setupAward)">
+                    </td>
                     <td class="mode" ng-repeat="mode in vm.setupAward.settings.modes">
                         {{mode.display}}<br/>
                         <input type="checkbox" ng-model="mode.enabled"
+                            ng-disabled="vm.setupAward.settings.mixMode"
                             ng-change="vm.user.awardSettingsChanged(vm.setupAward)">
                     </td>
                 </tr>

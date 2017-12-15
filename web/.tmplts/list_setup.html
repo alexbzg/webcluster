@@ -36,9 +36,15 @@
                 <input type="checkbox" ng-model="vm.switches.bands[band]" 
                                         ng-click="vm.switch( 'bands', band );">
             </td>
+            <td class="mode">
+                Mix<br/>
+                <input type="checkbox" ng-model="vm.switches.mixMode"
+                    ng-click="vm.switch( 'modes', 'Mix' )">
+            </td>
             <td class="mode" ng-repeat="mode in vm.switchesList.modes" ng-class="{border_right: $last}">
                 {{mode}}<br/>
                 <input type="checkbox" ng-model="vm.switches.modes[mode]"
+                    ng-disabled="vm.switches.mixMode"
                     ng-click="vm.switch( 'modes', mode )">
             </td>
             <td class="sound">
@@ -73,9 +79,14 @@
             <input type="checkbox" ng-model="item.settings.bands[band]" 
                 ng-click="vm.itemChanged( item, 'bands', band )">
         </td>
+        <td class="mode">
+            <input type="checkbox" ng-model="item.settings.mixMode" 
+                                    ng-click="vm.itemChanged( item, 'mixMode' )">
+        </td>
         <td class="mode" ng-repeat="mode in vm.switchesList.modes" ng-class="{border_right: $last}">
             <input type="checkbox" ng-model="item.settings.modes[mode]" 
-                                    ng-click="vm.itemChanged( item, 'modes', mode )">
+                                   ng-disabled="item.settings.mixMode"
+                                   ng-click="vm.itemChanged( item, 'modes', mode )">
         </td>
         <td class="sound"><input type="checkbox" ng-model="item.settings.sound.not"
                 ng-click="vm.itemChanged( item, 'sound', 'not' )"></td>

@@ -15,6 +15,8 @@ function statsController( $scope, $stateParams, DxConst, User, Head, Awards,
     vm.modifyActiveValue = modifyActiveValue;
     vm.setActive = setActive;
     vm.findValue = findValue;
+    vm.bandConfirmed = bandConfirmed;
+    vm.bandWorked = bandWorked;
     vm.stats = {};
 
     User.onLogIO( activate, $scope );
@@ -102,29 +104,43 @@ function statsController( $scope, $stateParams, DxConst, User, Head, Awards,
                             }
                         }
                     });
-            });
-            LoadingScreen.off();
-            if ( $stateParams.award || $stateParams.list_id ) {
-                var award = vm.awards.find( function( award ) {
-                    return ( $stateParams.list_id && 
-                            ( award.list_id == $stateParams.list_id ) ) ||
-                        ( !$stateParams.list_id && 
-                          ( award.name == $stateParams.award ) );
+
                 });
-                if ( award ) {
-                    vm.activeAward = award;
-                    activeAwardChanged();
-                    if ( $stateParams.value ) {
-                        var value = award.values.find( function( av ) {
-                            return av.value == $stateParams.value;
-                        });
-                        if ( value )
-                            setActive( value, $stateParams.band, 
-                                    $stateParams.mode );
+                if ( $stateParams.award || $stateParams.list_id ) {
+                    const award = vm.awards.find( function( award ) {
+                        return ( $stateParams.list_id && 
+                                ( award.list_id == $stateParams.list_id ) ) ||
+                            ( !$stateParams.list_id && 
+                            ( award.name == $stateParams.award ) );
+                    });
+                    if ( award ) {
+                        vm.activeAward = award;
+                        activeAwardChanged();
+                        if ( $stateParams.value ) {
+                            const value = award.values.find( function( av ) {
+                                return av.value == $stateParams.value;
+                            });
+                            if ( value ) {
+                                setActive( value, $stateParams.band, 
+                                        $stateParams.mode );
+                                setTimeout( function() {
+                                    const valRect = getValueRect( value );
+                                    const val0Rect = getValueRect( vm.activeAward.values[0] );              
+                                    const offset = valRect.height * 
+                                        ( vm.activeAward.byBand ? 0.5 : 1.5 );
+                                    window.scrollBy( 0, valRect.y - val0Rect.y + offset );
+                                });
+                            }
+                        }
                     }
                 }
-            }
-        });
+
+            });
+    }
+
+    function getValueRect( value ) {
+        return document.getElementById( 'value_' + value.value )
+            .getBoundingClientRect();
     }
 
     function findActiveList() {
@@ -146,8 +162,8 @@ function statsController( $scope, $stateParams, DxConst, User, Head, Awards,
         for ( var co = 0; co < vm.modesCount; co++ ) {
             var mode = vm.modes[co];
             if ( band[mode] && 
-                    ( band[mode].confirmed = valueConfirmed( band[mode] ) ) &&
-                    vm.modesFilter[mode] ) 
+                    ( band[mode].confirmed = vm.modesFilter[mode] && 
+                      valueConfirmed( band[mode] ) ) ) 
                 fl = true;
         }
         return fl;
@@ -186,7 +202,7 @@ function statsController( $scope, $stateParams, DxConst, User, Head, Awards,
             });
         }
         if ( !noSave ) {
-            var statsSettings = { cfm: {}, 
+            const statsSettings = { cfm: {}, mixMode: vm.mixMode,
                 modesFilter: angular.extend( {}, vm.modesFilter ) };
             vm.cfm.forEach( function( type ) {
                 statsSettings.cfm[type.field] = type.enabled; 
@@ -235,11 +251,11 @@ function statsController( $scope, $stateParams, DxConst, User, Head, Awards,
                     } );
                 });
         
-        var as;
+        let as;
         if ( as = vm.activeAward.list_id ? findActiveList() : 
                 User.data.awardsSettings[vm.activeAward.name] ) {
             if ( 'stats_settings' in as && as.stats_settings != null ) {
-                var ss = as.stats_settings;
+                const ss = as.stats_settings;
                 if ( 'cfm' in ss && ss.cfm != null ) 
                     vm.cfm.forEach( function( type ) {
                         if ( type.field in ss.cfm )
@@ -247,6 +263,7 @@ function statsController( $scope, $stateParams, DxConst, User, Head, Awards,
                     });
                 if ( 'modesFilter' in ss && ss.modesFilter != null )
                     vm.modesFilter = angular.extend( {}, ss.modesFilter );
+                vm.mixMode = ss.mixMode;
             }
         }
         cfmChanged( true );

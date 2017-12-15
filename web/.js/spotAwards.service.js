@@ -2,9 +2,9 @@ angular
     .module( 'adxcApp' )
     .service( 'SpotAwards', SpotAwards );
 
-SpotAwards.$inject = [ '$rootScope', 'User', 'Awards', 'Notify', 'DxConst' ];
+SpotAwards.$inject = [ '$rootScope', 'User', 'Awards', 'Notify', 'DxConst', 'UserAwards' ];
 
-function SpotAwards( $rootScope, User, Awards, Notify, DxConst ) {
+function SpotAwards( $rootScope, User, Awards, Notify, DxConst, UserAwards ) {
     var user = User.data;
     var allAwards = {};
     var cfm = {};
@@ -26,24 +26,20 @@ function SpotAwards( $rootScope, User, Awards, Notify, DxConst ) {
             listCfm[ item[1] ] = 1;       
         });
         
-        Awards.onUpdate( loadAwardsList );
         User.onLogIO( function() {
-                user = User.data;
-                if ( Awards.data )
-                    loadAwardsList(); 
-            } );
+            user = User.data;
+        } );
 
-            User.onAwardsStatsChange( function() {
-                if ( Awards.data )
-                    loadAwardsList();
-            });
+        User.onAwardsStatsChange( function() {
+            if ( Awards.data )
+                loadAwardsList();
+        });
     }
 
     function loadAwardsList() {
         if ( Awards.data.length > 0 ) {
             Awards.data.forEach( function( award ) {
                 var a = angular.extend( {}, award );
-                a.cfm = createCfm( user.awardsSettings[award.name] );
                 a.settings = { bands: {}, modes: {} };
                 var uas = user.awardsSettings[award.name];
                 for ( var field in a.settings )
@@ -54,6 +50,7 @@ function SpotAwards( $rootScope, User, Awards, Notify, DxConst ) {
                             });
                 a.track = uas.track;
                 a.color = uas.color;
+                a.settings.mixMode = uas.settings.mixMode;
                 a.settings.sound = uas.settings.sound;
                 allAwards[award.name] = a;
             });
@@ -66,45 +63,6 @@ function SpotAwards( $rootScope, User, Awards, Notify, DxConst ) {
         Notify.notify( 'spotAwards-update', callback, scope );
     }
 
-    function createCfm( as ) {
-        var cfm = {};
-        as.settings.cfm.forEach( function( cfmType ) {
-            if ( cfmType.enabled )
-                cfm[cfmType.name] = 1;
-        });
-        return cfm;
-    }
-
-    function checkAward( uav, dx ) {
-        if ( dx.band in uav )
-            for ( var mode in uav[dx.band] )
-                if ( mode == dx.mode || 
-                    ( dx.subMode != null && dx.subMode.indexOf( mode ) != -1 ) ) 
-                    return uav[dx.band][mode];
-        return false;
-    }
-  
-
-    function checkAwardCfm( uav, cfm ) {
-        var confirmed = false;
-        for ( var cfmType in cfm )
-            if ( uav.cfm[cfmType] ) {
-                confirmed = true;
-                break;
-            }
-        return confirmed;
-    }
-   
-    function checkListCfm( uav ) {
-        var confirmed = false;
-        for ( var cfmType in listCfm )
-            if ( uav[cfmType] ) {
-                confirmed = true;
-                break;
-            }
-        return confirmed;
-    }
- 
     function processSpot( spot, awardsList, listsList ) {
         spot.awards = [];
         var awards = false;
@@ -138,28 +96,26 @@ function SpotAwards( $rootScope, User, Awards, Notify, DxConst ) {
                         if ( spot.band in listItem.settings.bands && 
                                 !listItem.settings.bands[spot.band] )
                             return;
-                        if ( spot.mode in listItem.settings.modes &&
-                                !listItem.settings.modes[spot.mode] )
-                            return;
-                        if ( spot.subMode in listItem.settings.modes &&
-                                !listItem.settings.modes[spot.subMode] )
-                            return;
+                        if (!listItem.settings.mixMode) {
+                            if ( spot.mode in listItem.settings.modes &&
+                                    !listItem.settings.modes[spot.mode] )
+                                return;
+                            if ( spot.subMode in listItem.settings.modes &&
+                                    !listItem.settings.modes[spot.subMode] )
+                                return;
+                        }
                     }
                     if ( ( list.title != 'DX' && 
                             ( listItem.callsign == spot.cs || 
                               ( listItem.re && spot.cs.match( listItem.re ) ) ) ) || 
                           ( list.title == 'DX' && listItem.callsign == spot.pfx ) ) {
-                        var worked = false;
-                        if ( list.id in user.listsAwards && listItem.callsign in 
-                            user.listsAwards[list.id] ) {
-                            var uav = user.listsAwards[list.id][listItem.callsign];
-                            if ( uav = checkAward( uav, spot ) ) {
-                                if ( checkListCfm( uav ) )
-                                    return;
-                                else
-                                    worked = true;
-                            }
-
+                        let worked = false;
+                        let uav = null
+                        if ( uav = UserAwards.getListAward( list, listItem, spot ) ) {
+                            if (uav.confirmed)
+                                return;
+                            else
+                                worked = true;
                         }
                         spot.awards.push( { award: list.title, 
                             noStats: list.noStats,
@@ -184,39 +140,34 @@ function SpotAwards( $rootScope, User, Awards, Notify, DxConst ) {
     }
 
     function spotAwards( spot, awards ) {
-        for ( var aN in spot._awards ) {
-            var aV = spot._awards[aN];
+        for ( const aN in spot._awards ) {
+            const aV = spot._awards[aN];
             if ( !( aN in awards ) )
                 continue;
-            var ad = awards[aN];
-            var as = ad.settings;
-            var a = { award: aN, value: aV.value, sound: false, 
+            const ad = awards[aN];
+            const as = ad.settings;
+            const a = { award: aN, value: aV.value, sound: false, 
                 noStats: as.noStats, mode: aV.mode };
-            var byBand = awards[aN].byBand;
+            const byBand = awards[aN].byBand;
 
             if ( ad.track ) {
                 if ( spot.band in as.bands && !as.bands[spot.band] )
                     continue;
-                if ( aV.mode in as.modes && !as.modes[aV.mode] )
+                if ( !as.mixMode && aV.mode in as.modes && !as.modes[aV.mode] )
                     continue;
                 a.color = ad.color;
             } else 
                 continue;
-
-            if ( aN in user.awards &&
-                aV.value in user.awards[aN] ) {
-                var uav = user.awards[aN][aV.value];
-                var fl = false;
-                if ( byBand && ( fl = checkAward( uav, spot ) ) )
-                    uav = fl;
-                if ( !byBand || fl ) {
-                    if ( checkAwardCfm( uav, awards[aN].cfm ) )
-                        continue;
-                    else
-                        a.worked = true;
-                }
+            let ua = null;
+            if ( ua = UserAwards.getAward( ad, a.value, 
+                    byBand ? spot.band : null, 
+                    as.mixMode ? 'Mix' : a.mode ) ) {
+                if (ua.confirmed)
+                    continue;
+                else
+                    a.worked = true;
             }
-
+                
             if ( ( a.worked && as.sound.wkd ) || 
                     ( !a.worked && as.sound.not ) )
                 a.sound = true;

@@ -87,15 +87,21 @@
                     <span id="view_filter_note">View filter</span>
                     <table class="view_modes">
                         <tr>
-                            <td colspan="7" class="view_title">
+                            <td colspan="8" class="view_title">
                                 <button-color-picker value="vm.user.data.awardValueWorkedColor"
                                     change="vm.user.saveUserSettings()"></button-color-picker>
                                 Worked
                             </td>
                         </tr>
                         <tr>
+                            <td>
+                                <input type="checkbox" ng-model="vm.mixMode" 
+                                    ng-change="vm.cfmChanged()">
+                                Mix
+                            </td>
                             <td ng-repeat="item in vm.modes">
-                                <input type="checkbox" ng-model="vm.modesFilter[item]" 
+                                <input type="checkbox" ng-model="vm.modesFilter[item]"
+                                    ng-disabled="vm.mixMode"
                                     ng-change="vm.cfmChanged()">
                                 {{item}}
                             </td>
@@ -121,7 +127,7 @@
                 </td>
                 <td id="edit_inputs">
                     <span id="manual_edit_note">Manual edit</span>
-                    <div>
+                    <div ng-if="vm.activeValue">
 
                         <span id="selected_item">{{vm.activeValue.value}} {{vm.activeValue.desc}}</span><br/>
                     <span class="button" ng-repeat="item in vm.modes"
@@ -156,7 +162,7 @@
                             ng-disabled="!vm.activeValue[vm.activeBand][vm.activeMode].worked"
                             ng-click="vm.saveWorkedCS()"/>
                     </span>
-
+                    </span>
                     </div>
                 </td>
             </tr>
@@ -179,36 +185,51 @@
 
 </div>
 
-<table id="award_progress" ng-if="!vm.activeAward.byBand">
+<table id="award_progress" ng-if="vm.activeAward && !vm.activeAward.byBand">
     <tr ng-repeat="group in vm.activeAward.orderedGroups">
         <td class="award_block">
             {{group}}
         </td>
         <td class="award_units">           
             <div class="award_unit" 
-                ng-repeat="item in vm.activeAward.values | filter: { 'group': group }" 
+                ng-repeat="item in vm.activeAward.values | 
+                    filter: { 'group': group }" 
+                id="value_{{item.value}}"
                 ng-click="vm.setActive( item )"
-                ng-style="{ 'background-color': item.confirmed ? vm.user.data.awardValueConfirmedColor : 
-                ( item.userAward ? vm.user.data.awardValueWorkedColor : null ) }">{{item.displayValue}}</div>
+                ng-style="{ 'background-color': 
+                item.confirmed ? vm.user.data.awardValueConfirmedColor : 
+                ( item.userAward ? vm.user.data.awardValueWorkedColor : null ) }">
+                {{item.displayValue}}
+            </div>
         </td>
     </tr>
 </table>
 
 <table id="ABM_view" ng-if="vm.activeAward.byBand">
-    <tr ng-repeat="item in vm.activeAward.values | orderBy: 'value'" ng-class-odd="odd">
+    <tr ng-repeat="item in vm.activeAward.values | orderBy: 'value'" 
+        id="value_{{item.value}}"
+        ng-class-odd="odd">
         <td class="unit_to_select" ng-click="vm.setActive( item, null, null )">
             <span>{{item.value}}</span> {{item.desc}}
         </td>
         <td class="band" ng-repeat="band in vm.const.bands" 
                          ng-click="vm.setActive( item, band, null )">
+            <span ng-if="vm.mixMode" class="mode_unit"
+                ng-click="vm.setActive( item, band ); $event.stopPropagation();"
+                ng-style="{ 'background-color': item[band].confirmed ? 
+                    vm.user.data.awardValueConfirmedColor :                 
+                    ( item[band].worked ? 
+                    vm.user.data.awardValueWorkedColor : null ) }" 
+                >Mix</span>
             <span ng-repeat="mode in vm.modes" class="mode_unit"
-                    ng-if="vm.modesFilter[mode]"
-                    ng-click="vm.setActive( item, band, mode ); $event.stopPropagation();"
-                    ng-style="{ 'background-color': item[band][mode].confirmed ? 
-                        vm.user.data.awardValueConfirmedColor :                 
-                        ( item[band][mode] ? 
-                        vm.user.data.awardValueWorkedColor : null ) }" 
-                    >{{vm.const.modesShort[mode]}}</span>
+                ng-if="!vm.mixMode && vm.modesFilter[mode]"
+                ng-click="vm.setActive( item, band, mode ); 
+                    $event.stopPropagation();"
+                ng-style="{ 'background-color': item[band][mode].confirmed ? 
+                    vm.user.data.awardValueConfirmedColor :                 
+                    ( item[band][mode] ? 
+                    vm.user.data.awardValueWorkedColor : null ) }" 
+                >{{vm.const.modesShort[mode]}}</span>
             </div>
         </td>
     </tr>

@@ -110,12 +110,14 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
             if ( !user.data.version )
                 user.data.version = null;
             
-            if ( user.data.version != user.dataVersion ) {
+            if ( user.data.version !== user.dataVersion ) {
                 reload();
                 return;
             }
-        } else
+        } else if (user.data.version !== user.dataVersion ) {
             user.data.version = user.dataVersion;
+            toStorage();
+        }
 
 
         if ( !user.data.lists )
@@ -237,7 +239,8 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
                             });
                         }
                         for ( var field in { 'mobile': 1, 'sound': 1 } )
-                            listItem.settings[field] = { 'wkd': true, 'not': true };
+                            listItem.settings[field] = 
+                                { 'wkd': false, 'not': false };
                     }
                     list.items.push( listItem );
                 }
@@ -360,9 +363,9 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
                 } );
     }
 
-    function loadAutoCfm() {
+    function loadAutoCfm( award, cfmData ) {
         if ( user.data.token )
-            return toServer( { loadAutoCfm: 1 } )
+            return toServer( { loadAutoCfm: 1, award: award, cfmData: cfmData } )
                 .then( function( result ) {
                     if ( result ) {
                         if ( result.reload )

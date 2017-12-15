@@ -334,7 +334,8 @@ class DX( object ):
             [ 'UHF', 150000, 2000000 ] ]
     modes = { 'CW': ( 'CW', ),
             'SSB': ( 'USB', 'LSB', 'FM', 'SSB' ),
-            'DIGI': ( 'RTTY', 'PSK', 'JT65', 'FSK', 'OLIVIA', 'SSTV', 'JT9' ) }
+            'DIGI': ( 'RTTY', 'PSK', 'JT65', 'FSK', 'OLIVIA', 'SSTV', 'JT9', \
+                    'FT8' ) }
     subModes = { 'RTTY': [], 'JT65': [], 'PSK': [ 'PSK31', 'PSK63', 'PSK125' ] }
     modesMap = []
     with open( appRoot + '/bandMap.txt', 'r' ) as fBandMap:

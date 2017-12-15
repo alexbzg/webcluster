@@ -69,12 +69,19 @@ function listSetupController( $state, $stateParams, $window, DxConst, User, Head
     }
 
     function updateSwitch( field, value ) {
-        var csl = vm.list.items.length;
-        vm.switches[field][value] = true;
+        const csl = vm.list.items.length;
+        const setSwitchValue = function( swVal ) {
+            if ( field === 'mixMode' )
+                vm.switches.mixMode = swVal;
+            else
+                vm.switches[field][value] = swVal;
+        };
+        setSwitchValue( true );
         for ( var co = 0; co < csl; co++ )
             if ( vm.list.items[co].settings && !vm.list.items[co].settings.hide &&
-                    !vm.list.items[co].settings[field][value] ) {
-                vm.switches[field][value] = false;
+                    !( ( field === 'mixMode' && vm.list.items[co].settings.mixMode ) ||
+                    ( field !== 'mixMode'  && vm.list.items[co].settings[field][value] ) ) ) {
+                setSwitchValue( false )
                 break;
             }
     }
@@ -132,17 +139,29 @@ function listSetupController( $state, $stateParams, $window, DxConst, User, Head
 
     function itemChanged( item, field, value ) {
         User.saveListItem( item, vm.list );
-        if ( item.settings[field][value] )
-            updateSwitch( field, value );
-        else
-            vm.switches[field][value] = false;
+        if (field === 'mixMode') {
+            if (item.settings.mixMode)
+                updateSwitch( 'mixMode' );
+            else
+                vm.switches.mixMode = false;
+        } else {
+            if ( item.settings[field][value] )
+                updateSwitch( field, value );
+            else
+                vm.switches[field][value] = false;
+        }
     }
 
     function _switch( field, value ) {
         vm.list.items.forEach( function( item ) {
-            if ( !item.settings.hide && item.settings[field][value] != 
-                    vm.switches[field][value] ) {
-                item.settings[field][value] = vm.switches[field][value];
+            if ( !item.settings.hide ) {
+                if ( field === 'mixMode' ) {
+                    if ( item.settings[field][value] != vm.switches[field][value] ) 
+                        item.settings[field][value] = vm.switches[field][value];
+                } else {
+                    if ( item.settings.mixMode != vm.switches.mixMode ) 
+                        item.settings.mixMode = vm.switches.mixMode;
+                }
             }
         });
         User.saveAllListItems( vm.list );
