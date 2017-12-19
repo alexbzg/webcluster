@@ -332,11 +332,11 @@ class DX( object ):
             [ '50', 50000, 54000 ], 
             [ '144', 144000, 148000 ],
             [ 'UHF', 150000, 2000000 ] ]
-    modes = { 'CW': ( 'CW', ),
+    modes = { 'CW': ( 'CW' ),
             'SSB': ( 'USB', 'LSB', 'FM', 'SSB' ),
-            'DIGI': ( 'RTTY', 'PSK', 'JT65', 'FSK', 'OLIVIA', 'SSTV', 'JT9', \
-                    'FT8' ) }
-    subModes = { 'RTTY': [], 'JT65': [], 'PSK': [ 'PSK31', 'PSK63', 'PSK125' ] }
+            'DATA': ( 'RTTY', 'PSK', 'JT65', 'FSK', 'OLIVIA', 'SSTV', 'JT9', \
+                    'FT8', 'DIGI' ) }
+    subModes = { 'RTTY': None, 'JT65': None, 'PSK': ( 'PSK31', 'PSK63', 'PSK125' ) }
     modesMap = []
     with open( appRoot + '/bandMap.txt', 'r' ) as fBandMap:
         reBandMap = re.compile( "^(\d+\.?\d*)\s*-?(\d+\.?\d*)\s+(\S+)(\r\n)?$" )
