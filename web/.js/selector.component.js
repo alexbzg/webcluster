@@ -40,6 +40,12 @@ function DXSelectorController( DxConst, Storage ) {
 
             }
         }
+        var digiMode;
+        if ( digiMode = ctrl.selector.modes.find( function( item ) {
+                return item.name === 'DIGI'; } ) ) {
+            digiMode.name = 'DATA';
+            saveSelector();
+        }
         ctrl.selector.spotFilter = spotFilter;
 //        applySelector();
         ctrl.afterInit( { $selector: ctrl.selector } );

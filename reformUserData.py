@@ -122,9 +122,10 @@ for row in data:
     fl = False
     if row['settings']:
         if row['settings'].has_key( 'modes' ):
-            digiMode = [x for x in row['settings']['modes'] if x['name'] == 'DIGI' ]
+            digiMode = [x for x in row['settings']['modes'] if x['display'] == 'DIGI' ]
             if digiMode:
                 digiMode[0]['name'] = 'DATA'
+                digiMode[0]['display'] = 'DATA'
                 fl = True
     if row['stats_settings']:
         if row['stats_settings'].has_key( 'modesFilter' ) \

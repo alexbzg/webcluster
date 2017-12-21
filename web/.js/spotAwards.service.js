@@ -2,9 +2,9 @@ angular
     .module( 'adxcApp' )
     .service( 'SpotAwards', SpotAwards );
 
-SpotAwards.$inject = [ '$rootScope', 'User', 'Awards', 'Notify', 'DxConst', 'UserAwards' ];
+SpotAwards.$inject = [ '$rootScope', 'User', 'Awards', 'Notify', 'DxConst' ];
 
-function SpotAwards( $rootScope, User, Awards, Notify, DxConst, UserAwards ) {
+function SpotAwards( $rootScope, User, Awards, Notify, DxConst ) {
     var user = User.data;
     var allAwards = {};
     var cfm = {};
@@ -109,9 +109,9 @@ function SpotAwards( $rootScope, User, Awards, Notify, DxConst, UserAwards ) {
                             ( listItem.callsign == spot.cs || 
                               ( listItem.re && spot.cs.match( listItem.re ) ) ) ) || 
                           ( list.title == 'DX' && listItem.callsign == spot.pfx ) ) {
-                        let worked = false;
-                        let uav = null
-                        if ( uav = UserAwards.getListAward( list, listItem, spot ) ) {
+                        var worked = false;
+                        var uav = null;
+                        if ( uav = getListAward( list, listItem, spot ) ) {
                             if (uav.confirmed)
                                 return;
                             else
@@ -140,15 +140,15 @@ function SpotAwards( $rootScope, User, Awards, Notify, DxConst, UserAwards ) {
     }
 
     function spotAwards( spot, awards ) {
-        for ( const aN in spot._awards ) {
-            const aV = spot._awards[aN];
+        for ( var aN in spot._awards ) {
+            var aV = spot._awards[aN];
             if ( !( aN in awards ) )
                 continue;
-            const ad = awards[aN];
-            const as = ad.settings;
-            const a = { award: aN, value: aV.value, sound: false, 
+            var ad = awards[aN];
+            var as = ad.settings;
+            var a = { award: aN, value: aV.value, sound: false, 
                 noStats: as.noStats, mode: aV.mode };
-            const byBand = awards[aN].byBand;
+            var byBand = awards[aN].byBand;
 
             if ( ad.track ) {
                 if ( spot.band in as.bands && !as.bands[spot.band] )
@@ -158,8 +158,8 @@ function SpotAwards( $rootScope, User, Awards, Notify, DxConst, UserAwards ) {
                 a.color = ad.color;
             } else 
                 continue;
-            let ua = null;
-            if ( ua = UserAwards.getAward( ad, a.value, 
+            var ua = null;
+            if ( ua = getAward( ad, a.value, 
                     byBand ? spot.band : null, 
                     as.mixMode ? 'Mix' : a.mode ) ) {
                 if (ua.confirmed)
@@ -176,6 +176,70 @@ function SpotAwards( $rootScope, User, Awards, Notify, DxConst, UserAwards ) {
         }
     }
 
+    function getAward( award, value, band, mode ) {
+
+        var ua = null;
+        if ( award.name in user.awards && value in user.awards[award.name] ) {
+            if (band) {
+                if (band in user.awards[award.name][value]) {
+                    if (mode === 'Mix') 
+                        ua = user.awards[award.name][value][band];
+                    else
+                        ua = user.awards[award.name][value][band][mode];
+                }
+            } else 
+                ua = user.awards[award.name][value];
+        }
+        if (ua) {
+            var cfm = user.awardsSettings[award.name].settings.cfm;
+            var isConfirmed = function( _ua ) {
+                var cfmLength = cfm.length;
+                for ( var c = 0; c < cfmLength; c++ ) 
+                    if ( cfm[c].enabled && _ua.cfm[cfm[c].name] )
+                        return true;
+                return false;
+            };
+            if ( mode === 'Mix' ) {
+                for ( var _mode in ua )
+                    if ( isConfirmed( ua[_mode] ) )
+                        return { confirmed: true };
+                return { confirmed: false };
+            } else
+                return { confirmed: isConfirmed( ua ) };
+        }
+        return false;
+    }
+
+    function isConfirmedList( ua ) {
+        for (var cfmType in listCfm)
+            if (  ua.cfm[cfmType] )
+                return true;
+        return false;
+    }
+
+    function getListAward( list, item, spot ) {
+        if ( list.id in user.listsAwards && 
+            item.callsign in user.listsAwards[list.id] && 
+            spot.band in user.listAwards[list.id][item.callsign] ) {
+            var ua = user.listAwards[list.id][item.callsign][spot.band];
+            if (item.settings.mixMode) {
+                for (var mode in ua)
+                    if (isConfirmedList( ua[mode] ))
+                        return { 'confirmed': true };
+                return { 'confirmed': false };
+            } else {
+                var mode = null;
+                if ( spot.subMode && spot.subMode in ua )
+                    mode = spot.subMode;
+                if ( spot.mode in ua )
+                    mode = spot.mode;
+                if (mode)
+                    return { 'confirmed': isConfirmedList(ua[mode]) };
+            }
+        }
+        return false;
+    }
+                    
 
 }
  

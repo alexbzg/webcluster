@@ -117,16 +117,16 @@ function statsController( $scope, $stateParams, DxConst, User, Head, Awards,
                         vm.activeAward = award;
                         activeAwardChanged();
                         if ( $stateParams.value ) {
-                            const value = award.values.find( function( av ) {
+                            var value = award.values.find( function( av ) {
                                 return av.value == $stateParams.value;
                             });
                             if ( value ) {
                                 setActive( value, $stateParams.band, 
                                         $stateParams.mode );
                                 setTimeout( function() {
-                                    const valRect = getValueRect( value );
-                                    const val0Rect = getValueRect( vm.activeAward.values[0] );              
-                                    const offset = valRect.height * 
+                                    var valRect = getValueRect( value );
+                                    var val0Rect = getValueRect( vm.activeAward.values[0] );              
+                                    var offset = valRect.height * 
                                         ( vm.activeAward.byBand ? 0.5 : 1.5 );
                                     window.scrollBy( 0, valRect.y - val0Rect.y + offset );
                                 });
@@ -251,11 +251,11 @@ function statsController( $scope, $stateParams, DxConst, User, Head, Awards,
                     } );
                 });
         
-        let as;
+        var as;
         if ( as = vm.activeAward.list_id ? findActiveList() : 
                 User.data.awardsSettings[vm.activeAward.name] ) {
             if ( 'stats_settings' in as && as.stats_settings != null ) {
-                const ss = as.stats_settings;
+                var ss = as.stats_settings;
                 if ( 'cfm' in ss && ss.cfm != null ) 
                     vm.cfm.forEach( function( type ) {
                         if ( type.field in ss.cfm )

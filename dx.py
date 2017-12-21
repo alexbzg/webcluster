@@ -332,11 +332,16 @@ class DX( object ):
             [ '50', 50000, 54000 ], 
             [ '144', 144000, 148000 ],
             [ 'UHF', 150000, 2000000 ] ]
-    modes = { 'CW': ( 'CW', ),
-            'SSB': ( 'USB', 'LSB', 'FM', 'SSB' ),
-            'DIGI': ( 'RTTY', 'PSK', 'JT65', 'FSK', 'OLIVIA', 'SSTV', 'JT9', \
-                    'FT8' ) }
-    subModes = { 'RTTY': [], 'JT65': [], 'PSK': [ 'PSK31', 'PSK63', 'PSK125' ] }
+    modes = { 'CW': ( 'CW', 'A1A' ),
+            'SSB': ( 'USB', 'LSB', 'FM', 'SSB', 'AM', 'PHONE' ),
+            'DATA': ('DIGI', 'HELL', 'MT63', 'THOR16', 'FAX', 'OPERA', 'PKT', \
+                    'SIM31', 'CONTESTI', 'CONTESTIA', 'AMTOR', 'JT6M', 'ASCI', \
+                    'FT8', 'MSK144', 'THOR', 'QRA64','DOMINO', 'JT4C', 'THROB', \
+                    'DIG', 'ROS', 'SIM63', 'FSQ', 'THRB', 'J3E', 'WSPR', 'ISCAT', \
+                    'CONTESTIA8', 'ALE', 'JT10', 'TOR', 'PACKET', 'RTTY', \
+                    'PSK', 'JT65', 'FSK', 'OLIVIA', 'SSTV', \
+                    'JT9', 'FT8' ) }
+    subModes = { 'RTTY': None, 'JT65': None, 'PSK': ( 'PSK31', 'PSK63', 'PSK125' ) }
     modesMap = []
     with open( appRoot + '/bandMap.txt', 'r' ) as fBandMap:
         reBandMap = re.compile( "^(\d+\.?\d*)\s*-?(\d+\.?\d*)\s+(\S+)(\r\n)?$" )
@@ -464,6 +469,8 @@ class DX( object ):
 
         if not self.band and self.freq:
             self.band = findDiap( DX.bands, self.freq )
+            if not self.band:
+                return
 
         if not self.mode and self.text:
             t = self.text.upper()
@@ -998,7 +1005,8 @@ class DXData:
 
 
     def append( self, dxItem, new = True ):
-        if dxItem.isBeacon:
+        if dxItem.isBeacon or not dxItem.band:
+            logging.debug( dxItem.toDict() )
             return
         if new:
             self.data[:] = [ x for x in self.data \
