@@ -28,6 +28,8 @@ function SpotAwards( $rootScope, User, Awards, Notify, DxConst ) {
         
         User.onLogIO( function() {
             user = User.data;
+            if ( Awards.data )
+                loadAwardsList();
         } );
 
         User.onAwardsStatsChange( function() {
