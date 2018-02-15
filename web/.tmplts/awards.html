@@ -83,12 +83,12 @@
         <tr>
             <th class="track">
                 Track<br/>
-                <input type="checkbox" ng-model="vm.trackAll" 
-                    ng-click="vm.trackAllChanged()">
+                <input type="button" id="trackAll" ng-value="vm.trackAllCaption"
+                    ng-click="vm.trackAllChanged()"/>
             </th>
             <th class="color_name">Color</th>
-            <th class="short_name"></th>
-            <th class="full_name">
+            <th class="short_name">Short title</th>
+            <th class="full_name">Full award title
             </th>
             <th class="stats">
                 Stats
@@ -103,12 +103,12 @@
         </tr>
         <tr>
             <td colspan="7" class="country">
-                User lists
+                User awards
             </td>
         </tr>
         <tr>
             <td colspan="7">
-                <a id="create_list" ui-sref="listSetup">Create new list</a>
+                <a id="create_list" ui-sref="listSetup">Create new award</a>
             </td>
         </tr>
     

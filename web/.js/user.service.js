@@ -269,7 +269,7 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
                 var s = user.data.awardsSettings[award.name].settings;
             var st =
             { bands: DxConst.bands,
-                modes: award.modes ? award.modes : DxConst.modes,
+                modes: award.modes ? award.modes : DxConst.modesSuper,
                 cfm: award.cfmTypes ? award.cfmTypes : DxConst.cfm 
             };
             function findMode(mode) {
@@ -522,8 +522,8 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
     function createList() {
         var no = user.data.lists.length + 1;
         var list = { 
-            title: 'LIST' + no, 
-            full_title: 'List #' + no,
+            title: 'AWARD' + no, 
+            full_title: 'Award #' + no,
             no: no, 
             items: [], 
             color: defaultColor, 

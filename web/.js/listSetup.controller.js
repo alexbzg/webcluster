@@ -94,7 +94,7 @@ function listSetupController( $state, $stateParams, $window, DxConst, User, Head
 
     function checkTitle() {
         if ( vm.list.title == 'DXpedition' || vm.list.title == 'Special' ) {
-            $window.alert( 'This list title is reserved by system. Please choose any other title' );
+            $window.alert( 'This award title is reserved by system. Please choose any other title' );
             vm.list.title = '';
             return;
         }
@@ -126,7 +126,7 @@ function listSetupController( $state, $stateParams, $window, DxConst, User, Head
 
     function deleteItem( item ) {
         if ( $window.confirm( 'Do you really want to remove callsign ' + 
-            item.callsign + ( item.pfx ? '*' : '' ) + ' from the list?' ) ) {
+            item.callsign + ( item.pfx ? '*' : '' ) + ' from the award?' ) ) {
             if ( vm.list.special ) {
                 item.settings.hide = true;
                 User.saveListItem( item, vm.list );
@@ -155,7 +155,7 @@ function listSetupController( $state, $stateParams, $window, DxConst, User, Head
     function _switch( field, value ) {
         vm.list.items.forEach( function( item ) {
             if ( !item.settings.hide ) {
-                if ( field === 'mixMode' ) {
+                if ( field !== 'mixMode' ) {
                     if ( item.settings[field][value] != vm.switches[field][value] ) 
                         item.settings[field][value] = vm.switches[field][value];
                 } else {

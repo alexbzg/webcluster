@@ -232,7 +232,7 @@ function statsController( $scope, $stateParams, DxConst, User, Head, Awards,
             return;
 
         vm.modesFilter = {};
-        vm.modes = vm.activeAward.modes ? vm.activeAward.modes : DxConst.modes;
+        vm.modes = vm.activeAward.modes ? vm.activeAward.modes : DxConst.modesSuper;
         vm.modesCount = vm.modes.length;
         vm.modes.forEach( function( mode ) {
             vm.modesFilter[mode] = true;

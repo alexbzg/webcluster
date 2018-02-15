@@ -79,7 +79,7 @@ function SpotAwards( $rootScope, User, Awards, Notify, DxConst ) {
             awards = angular.extend( {}, allAwards );
         if ( awards )
             spotAwards( spot, awards );
-        if ( spot.special && 
+        if ( spot.special && User.data.specialLists.Special.items && 
                 !User.data.specialLists.Special.items.find( function( listItem ) {
             return spot.cs == listItem.callsign; }) ) 
             User.data.specialLists.Special.items.push( { callsign: spot.cs } );
@@ -214,7 +214,7 @@ function SpotAwards( $rootScope, User, Awards, Notify, DxConst ) {
 
     function isConfirmedList( ua ) {
         for (var cfmType in listCfm)
-            if (  ua.cfm[cfmType] )
+            if (  ua[cfmType] )
                 return true;
         return false;
     }
@@ -222,9 +222,9 @@ function SpotAwards( $rootScope, User, Awards, Notify, DxConst ) {
     function getListAward( list, item, spot ) {
         if ( list.id in user.listsAwards && 
             item.callsign in user.listsAwards[list.id] && 
-            spot.band in user.listAwards[list.id][item.callsign] ) {
-            var ua = user.listAwards[list.id][item.callsign][spot.band];
-            if (item.settings.mixMode) {
+            spot.band in user.listsAwards[list.id][item.callsign] ) {
+            var ua = user.listsAwards[list.id][item.callsign][spot.band];
+            if (item.settings && item.settings.mixMode) {
                 for (var mode in ua)
                     if (isConfirmedList( ua[mode] ))
                         return { 'confirmed': true };

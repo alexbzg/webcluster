@@ -12,6 +12,8 @@ function awardsController( DxConst, User, Awards, Head, SpecialLists, $window ) 
     vm.awards = [];
     vm.openSetup = openSetup;
     vm.trackAllChanged = trackAllChanged;
+    vm.trackAll = true;
+    vm.trackAllCaption = 'Clear';
 
     activate();
     return vm;
@@ -87,6 +89,8 @@ function awardsController( DxConst, User, Awards, Head, SpecialLists, $window ) 
         if ( $window.confirm( 
                     "This change will affect track settings of ALL awards." +  
                     "Do you really want to proceed?" ) ) {
+            vm.trackAll = !vm.trackAll;
+            vm.trackAllCaption = vm.trackAll ? 'Clear' : 'All';
             Awards.data.forEach( function( award ) {
                 if ( User.data.awardsSettings[award.name].track != vm.trackAll ) {
                     User.data.awardsSettings[award.name].track = vm.trackAll;

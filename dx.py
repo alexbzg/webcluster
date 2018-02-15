@@ -362,7 +362,7 @@ class DX( object ):
                 return r'DATA'
             logging.debug( 'Award mode detection failed: award' + award['name'] + \
                     ' mode ' + str( self.mode ) + ' ' + str( self.subMode ) )
-        return self.subMode if self.subMode else self.mode
+        return self.mode
 
     def toDict( self ):
         if self.isBeacon:

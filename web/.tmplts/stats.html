@@ -198,7 +198,8 @@
                 ng-click="vm.setActive( item )"
                 ng-style="{ 'background-color': 
                 item.confirmed ? vm.user.data.awardValueConfirmedColor : 
-                ( item.userAward ? vm.user.data.awardValueWorkedColor : null ) }">
+                ( item.userAward ? vm.user.data.awardValueWorkedColor : null ) }"
+                ng-class="{active: vm.activeValue == item}">
                 {{item.displayValue}}
             </div>
         </td>
@@ -220,7 +221,8 @@
                     vm.user.data.awardValueConfirmedColor :                 
                     ( item[band].worked ? 
                     vm.user.data.awardValueWorkedColor : null ) }" 
-                >Mix</span>
+                ng-class="{active: vm.activeValue == item && vm.activeBand == band}">
+                Mix</span>
             <span ng-repeat="mode in vm.modes" class="mode_unit"
                 ng-if="!vm.mixMode && vm.modesFilter[mode]"
                 ng-click="vm.setActive( item, band, mode ); 
@@ -229,7 +231,8 @@
                     vm.user.data.awardValueConfirmedColor :                 
                     ( item[band][mode] ? 
                     vm.user.data.awardValueWorkedColor : null ) }" 
-                >{{vm.const.modesShort[mode]}}</span>
+                ng-class="{active: vm.activeValue == item && vm.activeBand == band && vm.activeMode == mode}">
+                {{vm.const.modesShort[mode]}}</span>
             </div>
         </td>
     </tr>
