@@ -98,7 +98,6 @@ for row in data:
             row['settings']['modes'] = [ x for x in row['settings']['modes'] if
                     x['name'] in ( 'CW', 'SSB', 'DATA' ) ]
             fl = True
-            print row['settings']['modes']
     if row['stats_settings']:
         if row['stats_settings'].has_key( 'modesFilter' ):
             #print row['stats_settings']['modesFilter']
@@ -109,7 +108,7 @@ for row in data:
                             x in dataModesFull and row['stats_settings']['modesFilter'][x] ] ) }
             fl = True
             #print row['stats_settings']['modesFilter']
-    if fl and False:
+    if fl:
         dxdb.paramUpdate( 'users_awards_settings', spliceParams( row, ( 'user', 'award' ) ), \
             spliceParams( row, ( 'settings', 'stats_settings' ) ) )
 

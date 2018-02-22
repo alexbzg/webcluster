@@ -1,5 +1,67 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"                                                
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<table id="setup_block" ng-show="vm.showEmailForm">
+     <tr>
+        <td>
+            <div id="award_setup">
+                <table class="email_form">
+                    <tr>
+                        <td class="mailto">
+                            Email</br>
+                            {{vm.user.data.email}}
+                        </td>
+                        <td class="station_callsign">
+                            Callsign</br>
+                            <ui-select tagging tagging-label="false" ng-model="vm.email.stationCs" 
+                                theme="selectize" style="width: 100px;" title="Choose your callsign">
+                                <ui-select-match>{{$select.selected}}</ui-select-match>
+                                <ui-select-choices 
+                                    repeat="cs in vm.stationCsList | filter: $select.search">
+                                    <div ng-bind-html="cs | highlight: $select.search"></div>
+                                </ui-select-choices>
+                            </ui-select>                        
+                        </td>
+                        <td class="date">
+                            Date</br>
+                            <input type="text" ng-value="vm.email.date"/>
+                        </td>
+                        <td class="time">
+                            Time</br>
+                            <input type="text" ng-value="vm.email.time"/>
+                        </td>
+                        <td class="band" ng-if="vm.activeAward.byBand">
+                            Band</br>
+                            {{vm.activeBand}}
+                        </td>
+                        <td class="freq">
+                            MHz</br>
+                            <input type="text" ng-value="vm.email.freq"/>
+                        </td>
+                        <td class="mode" ng-if="vm.activeAward.byBand">
+                            Mode<br/>
+                            {{vm.activeMode}}
+                        </td>
+                        <td class="worked_callsign">
+                            Worked callsign
+                            <input type="text" ng-model="vm.email.workedCs"/>
+                        </td>
+                        <td class="comments">
+                            Comments</br>
+                            <input type="text" ng-model="vm.email.comments"/>
+                        </td>
+                    </tr>
+                </table>
+                <br/>
+                <input type="submit" id="submit_btn" name="email_btn_send" value="Send"
+                    ng-click="vm.emailSend()"/>&nbsp;
+                <input type="submit" id="submit_btn" name="email_btn_cancel" value="Cancel"
+                    ng-click="vm.showEmailForm = false"/>
+            </div>
+        </tr>
+    </td>
+</table>
+
+
 <div id="fixed_top">
 
     <!-- <h4>{{user.callsign}}</h4>    -->
@@ -74,7 +136,9 @@
                                 ng-model="vm.activeValue.userAward.workedCS"/>
                             <input type="submit" class="submit_btn" name="save_award_unit_info" value="Save"
                                 ng-click="vm.saveWorkedCS()"/>
-                        </div>
+                            <input type="submit" class="submit_btn" name="email_award_unit_info" value="Email"
+                                ng-click="vm.openEmailForm()" ng-if="vm.user.data.token""/>
+                       </div>
                 </td>
             </tr>
         </table>
@@ -161,7 +225,9 @@
                         <input type="submit" class="submit_btn" name="save_award_unit_info" value="Save"
                             ng-disabled="!vm.activeValue[vm.activeBand][vm.activeMode].worked"
                             ng-click="vm.saveWorkedCS()"/>
-                    </span>
+                        <input type="submit" class="submit_btn" name="email_award_unit_info" value="Email"
+                            ng-click="vm.openEmailForm()" ng-if="vm.user.data.token"/>
+                   </span>
                     </span>
                     </div>
                 </td>

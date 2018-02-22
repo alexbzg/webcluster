@@ -226,6 +226,22 @@ def application(env, start_response):
 
                 start_response( '200 OK', [('Content-Type','text/plain')])     
                 return 'OK'
+#email                   
+            elif data.has_key( 'email' ):
+                idParams = { 'callsign': callsign }
+                userData = dxdb.getObject( 'users', idParams )
+                additionalCs = []
+                if userData['misc'].has_key( 'additionalCs' ):
+                    addtionalCs = userData['misc']['additionalCs']
+                if not data['email']['stationCs'] in additionalCs:
+                    addtionalCs.insert( 0, data['email']['stationCs'] )
+                dxdb.paramUpdate( 'users', idParams,
+                    { 'misc': json.dumps( { 'addtionalCs': additionalCs,
+                        'defaultCs': data['email']['stationCs'] } ) } )
+
+                start_response( '200 OK', [('Content-Type','text/plain')])     
+                return 'OK'
+
 #autocfm    
             elif data.has_key( 'loadAutoCfm' ):
                 rTxt = ''
