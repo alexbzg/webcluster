@@ -231,14 +231,28 @@ def application(env, start_response):
                 idParams = { 'callsign': callsign }
                 userData = dxdb.getObject( 'users', idParams )
                 additionalCs = []
-                if userData['misc'].has_key( 'additionalCs' ):
-                    addtionalCs = userData['misc']['additionalCs']
+                if userData['misc'] and userData['misc'].has_key( 'additionalCs' ):
+                    additionalCs = userData['misc']['additionalCs']
                 if not data['email']['stationCs'] in additionalCs:
-                    addtionalCs.insert( 0, data['email']['stationCs'] )
+                    additionalCs.insert( 0, data['email']['stationCs'] )
                 dxdb.paramUpdate( 'users', idParams,
-                    { 'misc': json.dumps( { 'addtionalCs': additionalCs,
+                    { 'misc': json.dumps( { 'additionalCs': additionalCs,
                         'defaultCs': data['email']['stationCs'] } ) } )
 
+                text = "Award: " + data['award'] + "\n"
+                if data['email']['band']:
+                    text += "Band: " + data['email']['band'] + "\n" + \
+                        "Mode: " + data['email']['mode'] + "\n"
+                text += "Date: " + data['email']['date'] + "\n" + \
+                    "Time: " + data['email']['time'] + "\n" + \
+                    "Your callsign: " + data['email']['stationCs'] + "\n" + \
+                    "Freq: " + str( data['email']['freq'] ) + "\n" + \
+                    "Worked callsign: " + data['email']['workedCs'] + "\n" + \
+                    "Comments: " + data['email']['comments']
+
+                sendEmail( text = text, fr = conf.get( 'email', 'address' ), \
+                    to = userData['email'], subject = 'Adxcluster award message' )
+                   
                 start_response( '200 OK', [('Content-Type','text/plain')])     
                 return 'OK'
 
@@ -608,7 +622,8 @@ def sendUserData( userData, start_response ):
             'awards': getUserAwards( userData['callsign'] ),\
             'listsAwards': getUserListsAwards( userData['callsign'] ),\
             'lists': lists, 'admin': userData['callsign'] in admins, \
-            'dxpedition': userData['dxpedition'] }
+            'dxpedition': userData['dxpedition'],\
+            'msc': userData['misc'] }
     if awardsSettings:
         toSend['awardsSettings'] = {}
         for item in awardsSettings:

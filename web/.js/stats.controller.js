@@ -5,8 +5,8 @@ angular
 statsController.$inject = [ '$scope', '$stateParams', 'DxConst', 'User', 
     'Head', 'Awards', 'UserAwardFactory', 'LoadingScreen' ];   
 
-function statsController( $scope, $stateParams, DxConst, User, Head, Awards, 
-        UserAwardFactory, LoadingScreen ) {    
+function statsController( $scope, $stateParams, DxConst, User, Head, 
+        Awards, UserAwardFactory, LoadingScreen ) {    
     var vm = this;
     vm.user = User;
     vm.const = DxConst;
@@ -17,7 +17,10 @@ function statsController( $scope, $stateParams, DxConst, User, Head, Awards,
     vm.findValue = findValue;
     vm.bandConfirmed = bandConfirmed;
     vm.bandWorked = bandWorked;
+    vm.openEmailForm = openEmailForm;
+    vm.emailSend = emailSend;
     vm.stats = {};
+    vm.email = {};
 
     User.onLogIO( activate, $scope );
 
@@ -28,8 +31,11 @@ function statsController( $scope, $stateParams, DxConst, User, Head, Awards,
         Head.setTitle( 'ADXCluster.com - Stats' );
 
         vm.awards = [];
-
-        
+        vm.stationCsList = [ User.data.callsign ];
+        if (User.data.msc && User.data.msc.additionalCs) {
+            vm.stationCsList = vm.stationCsList.concat( 
+                    User.data.msc.additionalCs );
+        }
 
         var listCo = 1;
         User.data.lists.forEach( function( list ) {
@@ -377,6 +383,49 @@ function statsController( $scope, $stateParams, DxConst, User, Head, Awards,
         }
         updateIVState();
     }
+
+    function openEmailForm() {
+        if ( !vm.email.stationCs ) {
+            if ( User.data.msc && User.data.msc.defaultCs )
+                vm.email.stationCs = User.data.msc.defaultCs;
+            else
+                vm.email.stationCs = User.data.callsign;
+        }
+
+        var now = moment.utc();
+        vm.email.date = now.format( 'MM-DD-YYYY' );
+        vm.email.time = now.format( 'HH:mm' ) + 'z';
+
+        if (vm.activeAward.byBand)
+            vm.email.freq = DxConst.bandFreq[vm.activeBand];
+
+        vm.email.workedCs = vm.activeAward.byBand ?
+            vm.activeValue[vm.activeBand][vm.activeMode].workedCS :
+            vm.activeValue.userAward.workedCS;
+
+        vm.email.comments = '';
+
+        vm.showEmailForm = true;
+    }
+
+    function emailSend() {
+        if ( vm.stationCsList.indexOf( vm.email.stationCs ) == -1 ) {
+            vm.stationCsList.splice( 1, 0, vm.email.stationCs );
+            User.data.msc.additionalCs.splice( 
+                    0, 0, vm.email.stationCs );
+        }
+        User.data.msc.defaultCs = vm.email.stationCs;
+        if ( vm.activeAward.byBand ) {
+            vm.email.band = vm.activeBand;
+            vm.email.mode = vm.activeMode;
+        } else {
+            vm.email.band = null;
+            vm.email.mode = null;
+        }
+        User.saveData( { 'email': vm.email, award: vm.activeAward.name + ' ' + vm.activeValue.value } );
+        vm.showEmailForm = false;
+    }
+
 
    
 }
