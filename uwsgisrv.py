@@ -8,8 +8,10 @@ import json, smtplib, urllib2, urllib, os, base64, jwt, re, logging, time, urlpa
 import time, zlib, ssl
 
 from urlparse import parse_qs
+from datetime import datetime
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from email.mime.application import MIMEApplication
 
 from email import charset
 charset.add_charset('utf-8', charset.SHORTEST, charset.QP)
@@ -60,16 +62,28 @@ def spliceParams( data, params ):
 
 def sendEmail( **email ):
     myAddress = conf.get( 'email', 'address' )
-    msg = MIMEText( email['text'].encode( 'utf-8' ), 'plain', 'UTF-8' )
+    msg = MIMEMultipart()
+    msg.attach(  MIMEText( email['text'].encode( 'utf-8' ), 'plain', 'UTF-8' ) )
     msg['from'] = email['fr']
     msg['to'] = email['to']
     msg['MIME-Version'] = "1.0"
     msg['Subject'] = email['subject']
     msg['Content-Type'] = "text/plain; charset=utf-8"
     msg['Content-Transfer-Encoding'] = "quoted-printable"
+
+    if email.has_key('attachments') and email['attachments']:
+        for item in email['attachments']:
+            part = MIMEApplication( item['data'],
+                        Name = item['name'] )
+            part['Content-Disposition'] = 'attachment; filename="%s"' % item['name']
+            msg.attach(part)
     server = smtplib.SMTP_SSL( conf.get( 'email', 'smtp' ) )
     server.login( myAddress, conf.get( 'email', 'password' ) )
     server.sendmail( myAddress, msg['to'], str( msg ) )
+
+def adiffield( name, data ):
+    strData = str( data ) if data != None else ""
+    return "<" + name + ":" + str( len( strData ) ) + ">" + strData + " "
 
 def application(env, start_response):
     global dxdb
@@ -250,8 +264,23 @@ def application(env, start_response):
                     "Worked callsign: " + data['email']['workedCs'] + "\n" + \
                     "Comments: " + data['email']['comments']
 
+                adif = "ADIF export from adxcluster.com\n" + \
+                    "Logs generated @ " + \
+                    datetime.utcnow().strftime( "%Y-%m-%d %H:%M:%Sz" ) + "\n" + \
+                    "<EOH>\n"
+                adifFieldsList = { "CALL": 'workedCs',
+                        "BAND": 'band',
+                        "STATION_CALLSIGN": 'stationCs',
+                        "FREQ": 'freq',
+                        "MODE": 'mode' }
+                for ( k, v ) in adifFieldsList.iteritems():
+                    if data['email'][v]:
+                        adif += adiffield( k, data['email'][v] )
+                adif += " <EOR>"
+
                 sendEmail( text = text, fr = conf.get( 'email', 'address' ), \
-                    to = userData['email'], subject = 'Adxcluster award message' )
+                    to = userData['email'], subject = 'Adxcluster award message',\
+                    attachments = ( { 'data': adif, 'name': 'adxcluster.adif'}, ) )
                    
                 start_response( '200 OK', [('Content-Type','text/plain')])     
                 return 'OK'

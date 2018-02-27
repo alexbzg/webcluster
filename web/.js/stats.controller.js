@@ -398,6 +398,8 @@ function statsController( $scope, $stateParams, DxConst, User, Head,
 
         if (vm.activeAward.byBand)
             vm.email.freq = DxConst.bandFreq[vm.activeBand];
+        else
+            vm.email.freq = 14;
 
         vm.email.workedCs = vm.activeAward.byBand ?
             vm.activeValue[vm.activeBand][vm.activeMode].workedCS :
