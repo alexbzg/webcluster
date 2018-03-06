@@ -141,6 +141,13 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
                 usrTmplt = r[1]; 
         } 
 
+        if ( !user.data.msc )
+            user.data.msc = {};
+        if ( !user.data.msc.additionalCs )
+            user.data.msc.additionalCs = [];
+        if ( !user.data.msc.emails )
+            user.data.msc.emails = {};
+
 
         if ( !user.data.awardValueWorkedColor )
             user.data.awardValueWorkedColor = '#0091c9';

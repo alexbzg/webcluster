@@ -8,11 +8,19 @@
                     <tr>
                         <td class="mailto">
                             Email</br>
-                            {{vm.user.data.email}}
+                            <ui-select tagging tagging-label="false" ng-model="vm.email.to" 
+                                theme="selectize" style="width: 200px;" title="Choose email">
+                                <ui-select-match>{{$select.selected}}</ui-select-match>
+                                <ui-select-choices 
+                                    repeat="email in vm.emailList | filter: $select.search">
+                                    <div ng-bind-html="email | highlight: $select.search"></div>
+                                </ui-select-choices>
+                            </ui-select>                        
                         </td>
                         <td class="station_callsign">
                             Callsign</br>
                             <ui-select tagging tagging-label="false" ng-model="vm.email.stationCs" 
+                                on-select="vm.emailUpdateAddress()"
                                 theme="selectize" style="width: 100px;" title="Choose your callsign">
                                 <ui-select-match>{{$select.selected}}</ui-select-match>
                                 <ui-select-choices 
@@ -42,7 +50,7 @@
                             {{vm.activeMode}}
                         </td>
                         <td class="worked_callsign">
-                            Worked callsign
+                            Worked callsign<br/>
                             <input type="text" ng-model="vm.email.workedCs"/>
                         </td>
                         <td class="comments">

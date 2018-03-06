@@ -1,11 +1,11 @@
 
 angular
     .module( 'adxcApp', [ 'ngSanitize', 'ui.router', 'colorpicker.module', 'vcRecaptcha',
-    'datePicker'] )
+    'datePicker', 'ui.select'] )
     .config( config );
 
 function config( $stateProvider, $urlRouterProvider ) {
-    var version = '0.0.0.23';
+    var version = '0.0.0.27';
 
     $urlRouterProvider.otherwise('/');
 /*

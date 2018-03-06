@@ -19,6 +19,7 @@ function statsController( $scope, $stateParams, DxConst, User, Head,
     vm.bandWorked = bandWorked;
     vm.openEmailForm = openEmailForm;
     vm.emailSend = emailSend;
+    vm.emailUpdateAddress = emailUpdateAddress;
     vm.stats = {};
     vm.email = {};
 
@@ -35,6 +36,17 @@ function statsController( $scope, $stateParams, DxConst, User, Head,
         if (User.data.msc && User.data.msc.additionalCs) {
             vm.stationCsList = vm.stationCsList.concat( 
                     User.data.msc.additionalCs );
+        }
+        vm.emailList = [ User.data.email ];
+        vm.emailByCs = {};
+        if (User.data.msc && User.data.msc.emails) {
+            for ( var email in User.data.msc.emails ) {
+                var cs = User.data.msc.emails[email].cs;
+                if (vm.emailList.indexOf(email) == -1)
+                    vm.emailList.push(email);
+                if ( !(cs in vm.emailByCs) )
+                    vm.emailByCs[cs] = email;
+            }
         }
 
         var listCo = 1;
@@ -391,7 +403,7 @@ function statsController( $scope, $stateParams, DxConst, User, Head,
             else
                 vm.email.stationCs = User.data.callsign;
         }
-
+        emailUpdateAddress();
         var now = moment.utc();
         vm.email.date = now.format( 'MM-DD-YYYY' );
         vm.email.time = now.format( 'HH:mm' ) + 'z';
@@ -411,12 +423,17 @@ function statsController( $scope, $stateParams, DxConst, User, Head,
     }
 
     function emailSend() {
+        vm.email.stationCs = vm.email.stationCs.toUpperCase();
         if ( vm.stationCsList.indexOf( vm.email.stationCs ) == -1 ) {
             vm.stationCsList.splice( 1, 0, vm.email.stationCs );
             User.data.msc.additionalCs.splice( 
                     0, 0, vm.email.stationCs );
         }
+        if ( vm.emailList.indexOf( vm.email.to ) == -1 ) 
+            vm.emailList.splice( 1, 0, vm.email.to );
+        vm.emailByCs[vm.email.stationCs] = vm.email.to;
         User.data.msc.defaultCs = vm.email.stationCs;
+        User.data.msc.emails[vm.email.to] = { cs: vm.email.stationCs };
         if ( vm.activeAward.byBand ) {
             vm.email.band = vm.activeBand;
             vm.email.mode = vm.activeMode;
@@ -424,8 +441,15 @@ function statsController( $scope, $stateParams, DxConst, User, Head,
             vm.email.band = null;
             vm.email.mode = null;
         }
-        User.saveData( { 'email': vm.email, award: vm.activeAward.name + ' ' + vm.activeValue.value } );
+        User.saveData( { 'email': vm.email, 
+            award: vm.activeAward.name + ' ' + vm.activeValue.value } );
         vm.showEmailForm = false;
+    }
+
+    function emailUpdateAddress() {
+        vm.email.to = vm.email.stationCs in vm.emailByCs ? 
+            vm.emailByCs[vm.email.stationCs] :
+            User.data.email;
     }
 
 

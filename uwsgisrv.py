@@ -245,13 +245,20 @@ def application(env, start_response):
                 idParams = { 'callsign': callsign }
                 userData = dxdb.getObject( 'users', idParams )
                 additionalCs = []
-                if userData['misc'] and userData['misc'].has_key( 'additionalCs' ):
-                    additionalCs = userData['misc']['additionalCs']
-                if not data['email']['stationCs'] in additionalCs:
+                emails = {}
+                if userData['misc']:
+                    if userData['misc'].has_key( 'additionalCs' ):
+                        additionalCs = userData['misc']['additionalCs']
+                    if userData['misc'].has_key( 'emails' ):
+                        emails = userData['misc']['emails']
+                if data['email']['stationCs'] != callsign and \
+                        not data['email']['stationCs'] in additionalCs:
                     additionalCs.insert( 0, data['email']['stationCs'] )
+                emails[data['email']['to']] = { 'cs': data['email']['stationCs'] }
                 dxdb.paramUpdate( 'users', idParams,
                     { 'misc': json.dumps( { 'additionalCs': additionalCs,
-                        'defaultCs': data['email']['stationCs'] } ) } )
+                        'defaultCs': data['email']['stationCs'],
+                        'emails': emails } ) } )
 
                 text = "Award: " + data['award'] + "\n"
                 if data['email']['band']:
@@ -279,7 +286,7 @@ def application(env, start_response):
                 adif += " <EOR>"
 
                 sendEmail( text = text, fr = conf.get( 'email', 'address' ), \
-                    to = userData['email'], subject = 'Adxcluster award message',\
+                    to = data['email']['to'], subject = 'Adxcluster award message',\
                     attachments = ( { 'data': adif, 'name': 'adxcluster.adif'}, ) )
                    
                 start_response( '200 OK', [('Content-Type','text/plain')])     
