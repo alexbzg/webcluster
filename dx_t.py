@@ -22,6 +22,9 @@ if not testMode:
 
 awardsData = loadJSON( webRoot + '/awardsData.json' )
 
+def findAward( name ):
+    return [a for a in awardsData if a['name'] == name ][0]
+
 fieldValues = {}
 fieldValuesSubst = {}
 for ad in awardsData:
@@ -362,7 +365,7 @@ class DX( object ):
                 return r'DATA'
             logging.debug( 'Award mode detection failed: award' + award['name'] + \
                     ' mode ' + str( self.mode ) + ' ' + str( self.subMode ) )
-        return self.subMode if self.subMode else self.mode
+        return self.mode
 
     def toDict( self ):
         if self.isBeacon:
@@ -582,8 +585,7 @@ class DX( object ):
                 if awLookup:
                     for i in awLookup:
                         #if not i['mode']:
-                        award = [a for a in awardsData \
-                                if a['name'] == i['award'] ][0]
+                        award = findAward( i['award'] )
                         i['mode'] = self.getAwardMode( award )
                         self.awards[i['award']] = \
                             { 'value': i['value'], 'mode': i['mode'] }
@@ -908,6 +910,9 @@ class DX( object ):
                             if text:
                                 for m in re.finditer( l['re'], text ):
                                     v = m.group(0).upper()
+                                    if l.has_key( 'pad_to' ):
+                                        while len( v ) < l['pad_to']:
+                                            v = l['pad_char'] + v
                                     av = checkAwardValue( ad, l, v )
                         elif l['source'] == 'field' and getattr( self, l['field'] ):
                             av = checkAwardValue( ad, l, \
@@ -928,7 +933,7 @@ class DX( object ):
         awardEntry = { 'value': av, 'mode': self.getAwardMode( ad ) }
         if not self.awards.has_key( ad['name'] ) or \
             self.awards[ad['name']] != awardEntry:
-            if not self.offDB:
+            if not self.offDB and not ( ad.has_key( 'off_db' ) and ad['off_db'] ):
                 idParams = { 'callsign': self.cs, 'award': ad['name'] }
                 dxdb.paramUpdateInsert( 'awards', idParams, awardEntry )
                 dxdb.commit()
