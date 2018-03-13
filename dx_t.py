@@ -908,8 +908,9 @@ class DX( object ):
                                     if l.has_key( 'field' ) \
                                     else self.text
                             if text:
+                                text = text.upper()
                                 for m in re.finditer( l['re'], text ):
-                                    v = m.group(0).upper()
+                                    v = m.group(0)
                                     if l.has_key( 'pad_to' ):
                                         while len( v ) < l['pad_to']:
                                             v = l['pad_char'] + v
