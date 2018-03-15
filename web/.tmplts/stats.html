@@ -6,17 +6,6 @@
             <div id="award_setup">
                 <table class="email_form">
                     <tr>
-                        <td class="mailto">
-                            Email</br>
-                            <ui-select tagging tagging-label="false" ng-model="vm.email.to" 
-                                theme="selectize" style="width: 200px;" title="Choose email">
-                                <ui-select-match>{{$select.selected}}</ui-select-match>
-                                <ui-select-choices 
-                                    repeat="email in vm.emailList | filter: $select.search">
-                                    <div ng-bind-html="email | highlight: $select.search"></div>
-                                </ui-select-choices>
-                            </ui-select>                        
-                        </td>
                         <td class="station_callsign">
                             Callsign</br>
                             <ui-select tagging tagging-label="false" ng-model="vm.email.stationCs" 
@@ -26,6 +15,17 @@
                                 <ui-select-choices 
                                     repeat="cs in vm.stationCsList | filter: $select.search">
                                     <div ng-bind-html="cs | highlight: $select.search"></div>
+                                </ui-select-choices>
+                            </ui-select>                        
+                        </td>
+                        <td class="mailto">
+                            Email</br>
+                            <ui-select tagging tagging-label="false" ng-model="vm.email.to" 
+                                theme="selectize" style="width: 200px;" title="Choose email">
+                                <ui-select-match>{{$select.selected}}</ui-select-match>
+                                <ui-select-choices 
+                                    repeat="email in vm.emailList | filter: $select.search">
+                                    <div ng-bind-html="email | highlight: $select.search"></div>
                                 </ui-select-choices>
                             </ui-select>                        
                         </td>

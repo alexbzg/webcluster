@@ -283,11 +283,15 @@ def application(env, start_response):
                 for ( k, v ) in adifFieldsList.iteritems():
                     if data['email'][v]:
                         adif += adiffield( k, data['email'][v] )
+                m, d, y = data['email']['date'].split( '-' )
+                adif += adiffield( 'QSO_DATE', y + m + d )
+                adif += adiffield( 'TIME_ON', \
+                    data['email']['time'].replace( ':', '' ).replace( 'z', '' ) + '00' )
                 adif += " <EOR>"
 
                 sendEmail( text = text, fr = conf.get( 'email', 'address' ), \
                     to = data['email']['to'], subject = 'Adxcluster award message',\
-                    attachments = ( { 'data': adif, 'name': 'adxcluster.adif'}, ) )
+                    attachments = ( { 'data': adif, 'name': 'adxcluster.adi'}, ) )
                    
                 start_response( '200 OK', [('Content-Type','text/plain')])     
                 return 'OK'

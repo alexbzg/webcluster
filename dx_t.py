@@ -914,6 +914,8 @@ class DX( object ):
                                     if l.has_key( 'pad_to' ):
                                         while len( v ) < l['pad_to']:
                                             v = l['pad_char'] + v
+                                        if len( v ) > l['pad_to']:
+                                            v = v.lstrip( l['pad_char'] )
                                     av = checkAwardValue( ad, l, v )
                         elif l['source'] == 'field' and getattr( self, l['field'] ):
                             av = checkAwardValue( ad, l, \
