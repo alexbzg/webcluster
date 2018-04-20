@@ -182,7 +182,9 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
                 list.color = defaultColor;
             if ( !list.special )
                 list.special = false;
-            if ( list.title != 'DX' && list.items )
+            if ( !list.items )
+                list.items = [];
+            if ( list.title != 'DX' )
                 list.items.forEach( listItemRE );
         });
 
@@ -265,7 +267,7 @@ function UserService( $http, $window, $q, $interval, Storage, Awards, DxConst,
 
             if ( !user.data.awardsSettings[award.name] ) 
                 user.data.awardsSettings[award.name] = 
-                { 'track': true };
+                { 'track': !loggedIn() };
             if ( !user.data.awardsSettings[award.name].color )
                 user.data.awardsSettings[award.name].color = 
                     award.color ? award.color : defaultColor;
