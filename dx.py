@@ -681,7 +681,7 @@ class DX( object ):
                 self.district = idx
                 self.qrzData = True
                 self.updateDB()
-        elif self.country == 'Sweden':
+        elif self.country == '__Sweden':
             zip = None
             r = getWebData( \
                 r'http://www.ssa.se/smcb/adxcluster.php?callsign='\
@@ -752,7 +752,7 @@ class DX( object ):
                             url = \
                                 'http://www.whatsmylocator.co.uk/wabsquare.php?lat=' \
                                 + data['lat'] + '&long=' + data['lon']
-                            wabData = getWebData( url, True )
+                            wabData = xmltodict.parse( getWebData( url, True ) )
                             if wabData.has_key( 'wabsquare' ):
                                 self.district = wabData['wabsquare']
                         except Exception as e:
@@ -1005,10 +1005,13 @@ class DXData:
         if m: 
             cs = m.group( 3 )
             freq = float( m.group(2) )
-            self.append( \
-                    DX( dxData = self, newSpot = True, \
-                        text = m.group(4), cs = cs, freq = freq, \
-                        de = m.group(1), time = m.group(5) ) )
+            try:
+                self.append( \
+                        DX( dxData = self, newSpot = True, \
+                            text = m.group(4), cs = cs, freq = freq, \
+                            de = m.group(1), time = m.group(5) ) )
+            except:
+                logging.exception( 'New spot error: ' + line )
 
 
 

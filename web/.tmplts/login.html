@@ -1,6 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"                                                
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<script src='https://www.google.com/recaptcha/api.js'></script>
+<!--script src='//www.google.com/recaptcha/api.js?onload=vcRecaptchaApiLoaded()&render=explicit' async defer></script-->
 <form id="login" method="post">
     Callsign<br/>
     <input type="text" name="callsign" ng-model="vm.user.callsign">
@@ -18,7 +18,7 @@
             key="'6LeDVCQTAAAAAN3QgmsJzIi-mQP5nx9p5Pc6Nj4k'"
             on-create="vm.recaptchaWidgetId = widgetId"
             on-success="vm.user.recaptcha = response"
-            on-expire="rcExpired()">
+            on-expire="vm.rcExpired()">
         </div>
         <div id="recaptcha">
             <!--div class="g-recaptcha" data-sitekey="6LeDVCQTAAAAAN3QgmsJzIi-mQP5nx9p5Pc6Nj4k"

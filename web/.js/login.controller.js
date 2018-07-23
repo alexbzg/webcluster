@@ -8,7 +8,7 @@ loginController.$inject = [ '$scope', '$state', 'vcRecaptchaService', 'User',
 
 function loginController( $scope, $state, vcRecaptchaService, User, Head ) {    
     var vm = this;    
-    rcExpired = rcExpired;
+    vm.rcExpired = rcExpired;
     vm.login = login;
     vm.loginButtonVisible = loginButtonVisible;
 
@@ -39,12 +39,12 @@ function loginController( $scope, $state, vcRecaptchaService, User, Head ) {
                     $state.go( 'main' );
             })
             .catch( function( r ) {
-                vcRecaptchaService.reload(vm.widgetId);
                 if ( r.status == "500" || r.status == "502" )
                     alert( 'Server error. Please try again later' );
                 else
                     alert( r.data );
-            });
+                rcExpired();
+           });
     }
    
 
