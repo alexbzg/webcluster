@@ -710,7 +710,7 @@ def loadAutoCfm( callsign, award, _data = None ):
         url = 'https://mydx.eu/rda/csv?call=' + \
                 ( 'SM7ZDI' if callsign == 'QQQQ' else callsign )
         u = urllib2.urlopen(url, context = ctx)
-        _data = zlib.decompress( u.read() , -15).split( '\n' )
+        _data = u.read().split( '\n' )
         for line in _data:
             if ',' in line:
                 item = ( line.split( ',', 2 )[:2] )

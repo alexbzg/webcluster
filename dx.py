@@ -37,8 +37,8 @@ for ad in awardsData:
         if ad.has_key( 'subst' ):
             fieldValuesSubst[ad['country']][ad['fieldValues']] = ad['subst']
 
-fieldRe = { 'district': re.compile( '[a-zA-Z]{2}[ -]+\d\d' ),\
-        'gridsquare': re.compile( '[a-zA-Z0-9]{6}' ) }
+fieldRe = { 'district': re.compile( '(?<=\\b)[a-zA-Z]{2}[ -]+\d\d' ),\
+        'gridsquare': re.compile( '(?<=\\b)[a-zA-Z0-9]{6}' ) }
 lotwData = []
 with open( appRoot + '/lotw-user-activity.csv', 'r' ) as lf:
     for line in lf.readlines():
@@ -595,18 +595,6 @@ class DX( object ):
             self.testLookups()
             self.detectAwards()
             self.updateDB()
-
-        if newSpot and not '#' in self.de:
-            dxdb.getObject( 'spots', \
-                { 'callsign': self.cs, 'time': self.time, \
-                'de': self.de, 'text': self.text, \
-                'freq': self.freq, 'band': self.band, \
-                'mode': self.mode, 'submode': self.subMode, \
-                'qrp': self.qrp, 'pfx': self.pfx }, \
-                True )
-
-
-
 
     def testLookups( self ):
         skip = { 'web': self.qrzData or '/' in self.cs, 'text': '#' in self.de }

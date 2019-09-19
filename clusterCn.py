@@ -36,6 +36,7 @@ dxData = DXData( conf.get( 'web', 'root' ) + "/dxdata.json" )
 
 class ClusterProtocol(StatefulTelnetProtocol):
     def lineReceived(self, line):
+        logging.debug(line)
         dxData.dxLine( line )
         self.schedulePing()
         if self.connectionStatus == 'testing':
@@ -50,14 +51,18 @@ class ClusterProtocol(StatefulTelnetProtocol):
             self.timeoutTask = None
 
     def connectionMade(self):
-        self.sendLine( conf.get( 'cluster', 'callsign' ) )
-        self.sendLine( conf.get( 'cluster', 'init_cmd' ) )  
+        reactor.callLater(0.2, self._sendLine, conf.get( 'cluster', 'callsign' ) )
+        reactor.callLater(0.3, self._sendLine, conf.get( 'cluster', 'init_cmd' ) )  
         self.setLineMode()
         self.pingTask = None
         self.timeoutTask = None
         self.schedulePing()
         self.setConnectionStatus( 'connected' )
         logging.error( 'Cluster connection made' )
+
+    def _sendLine(self, text):
+        logging.debug('>>> ' + text)
+        self.sendLine(text)
 
     def connectionLost(self, reason):
         logging.error( 'Cluster connection lost: ' + reason.getErrorMessage() )
