@@ -64,8 +64,13 @@ for aw in awardsData:
 
     def getColumn( data, column ):
         type = getType( data )
-        return data[columns[type][column]] if columns[type].has_key(column) \
+        try:
+            return data[columns[type][column]] if columns[type].has_key(column) \
                 else None
+        except:
+            print data
+            print column
+            raise Exception
 
     with open( webRoot + '/' + aw['valuesFile'], 'r' ) as file:
         data = getSplitLine( file, 0 )

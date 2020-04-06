@@ -10,10 +10,10 @@ import sys, decimal, re, datetime, os, logging, time, json, urllib2, xmltodict, 
 
 from common import appRoot, readConf, siteConf, loadJSON
 from dxdb import dxdb, dbConn, cursor2dicts
-from dx_t import DX
+from dx_t import QRZComLink
 
-print dxdb.getObject( 'users', { 'callsign': 'QQQQ' } )
-
+q = QRZComLink()
+print q.getData('DF9PE/P')
 
 
 

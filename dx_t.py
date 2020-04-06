@@ -596,16 +596,14 @@ class DX( object ):
             self.detectAwards()
             self.updateDB()
 
-        if newSpot and not '#' in self.de:
-            dxdb.getObject( 'spots', \
-                { 'callsign': self.cs, 'time': self.time, \
-                'de': self.de, 'text': self.text, \
-                'freq': self.freq, 'band': self.band, \
-                'mode': self.mode, 'submode': self.subMode, \
-                'qrp': self.qrp, 'pfx': self.pfx }, \
-                True )
-
-
+            if newSpot and not '#' in self.de:
+                dxdb.getObject( 'spots', \
+                    { 'callsign': self.cs, 'time': self.time, \
+                    'de': self.de, 'text': self.text, \
+                    'freq': self.freq, 'band': self.band, \
+                    'mode': self.mode, 'submode': self.subMode, \
+                    'qrp': self.qrp, 'pfx': self.pfx }, \
+                    True )
 
 
     def testLookups( self ):
@@ -655,7 +653,7 @@ class DX( object ):
 
     def doWebLookup( self ):
         if self.country == 'Russia':
-            if self.dxData:
+            if self.dxData and self.dxData.qrzLink:
                 self.dxData.qrzLink.csQueue.put( \
                         { 'cs': self.cs, 'cb': self.onQRZdata } )
         elif self.country == 'Ukraine':
@@ -990,10 +988,11 @@ class DXData:
     reDX = re.compile( "DX de (\S+):\s+(\d+\.\d+)\s+(\S+)\s+(.+)\s(\d\d\d\dZ)" )
 
     
-    def __init__( self, file = None ):
+    def __init__( self, file = None, disable_qrz_ru = False ):
         self.data = []
         self.file = file
-        self.qrzLink = QRZLink()
+        if not disable_qrz_ru:
+            self.qrzLink = QRZLink()
         if file:
             prevDX = loadJSON( file )
             if prevDX:

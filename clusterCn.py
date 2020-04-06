@@ -32,7 +32,10 @@ logging.basicConfig( level = logging.DEBUG if args['t'] else logging.ERROR,
         datefmt='%Y-%m-%d %H:%M:%S' )
 logging.info( 'starting in test mode' )
 
-dxData = DXData( conf.get( 'web', 'root' ) + "/dxdata.json" )
+dxData = DXData( conf.get( 'web', 'root' ) + "/dxdata.json", disable_qrz_ru = False )
+init_cmd = []
+with open(appRoot + '/cluster.init.cmd', 'r') as f_cmd:
+    init_cmd = f_cmd.readlines()
 
 class ClusterProtocol(StatefulTelnetProtocol):
     def lineReceived(self, line):
@@ -52,7 +55,8 @@ class ClusterProtocol(StatefulTelnetProtocol):
 
     def connectionMade(self):
         reactor.callLater(0.2, self._sendLine, conf.get( 'cluster', 'callsign' ) )
-        reactor.callLater(0.3, self._sendLine, conf.get( 'cluster', 'init_cmd' ) )  
+        for cmd in init_cmd:
+            reactor.callLater(0.3, self._sendLine, cmd)  
         self.setLineMode()
         self.pingTask = None
         self.timeoutTask = None
