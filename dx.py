@@ -90,6 +90,11 @@ def getWebData( url, returnError = False ):
         logging.exception( 'Error getting data from ' + url )
         logging.error( e.read() )
         return ''
+    except urllib2.URLError as e:
+        logging.exception( 'Error getting data from ' + url )
+        logging.error( e.reason )
+        return ''
+
 
 
 class QRZComLink:
@@ -284,7 +289,8 @@ class QRZLink:
                 logging.exception( 'QRZ query error' )
                 if r:
                     logging.error( 'Http result code: ' + str( r.getcode() ) )
-                    logging.error( 'Http response body: ' + r.read() )
+                    logging.error( 'Http response body: ' +\
+                        (rBody if rBody else r.read()) )
                 return None
 
 def findDiap( diaps, value ):
@@ -437,7 +443,14 @@ class DX( object ):
         self.dxData = dxData
         self.country = None
         self.special = False
-        self.text = params['text'].decode('utf-8','ignore').encode("utf-8")
+        try:
+            self.text = params['text'].decode('utf-8','ignore').encode("utf-8")
+        except Exception as ex:
+            logging.error("Error decoding qso text:")
+            logging.error(params['text'])
+            logging.exception( ex )
+            self.text = ''
+
         self.freq = params['freq']        
         self.cs = params['cs']
         if '/QRP' in self.cs:
@@ -703,16 +716,16 @@ class DX( object ):
 
 
 
-        elif self.country == 'Poland':
-            r = getWebData( \
-                'https://callbook.pzk.org.pl/szukaj.php?adv=1&query='\
-                    + self.cs )
-            m = DX.rePolandDC.search( r )
-            if m:
-                self.region = m.group(1)
-                self.district = m.group(1) + m.group(2)
-                self.qrzData = True
-                self.updateDB()
+    #    elif self.country == 'Poland':
+    #        r = getWebData( \
+    #            'https://callbook.pzk.org.pl/szukaj.php?adv=1&query='\
+    #                + self.cs )
+    #        m = DX.rePolandDC.search( r )
+    #        if m:
+    #            self.region = m.group(1)
+    #            self.district = m.group(1) + m.group(2)
+    #            self.qrzData = True
+    #            self.updateDB()
 
         else:
             data = qrzComLink.getData( self.cs )            
@@ -744,17 +757,17 @@ class DX( object ):
                     zip = self.detectZip( data )
                     if zip:
                         self.district = zip
-                elif self.country == 'United Kingdom':
-                    if data.has_key( 'lat' ) and  data.has_key( 'lon' ):
-                        try:
-                            url = \
-                                'http://www.whatsmylocator.co.uk/wabsquare.php?lat=' \
-                                + data['lat'] + '&long=' + data['lon']
-                            wabData = xmltodict.parse( getWebData( url, True ) )
-                            if wabData.has_key( 'wabsquare' ):
-                                self.district = wabData['wabsquare']
-                        except Exception as e:
-                            logging.exception('Error loading data')
+#                elif self.country == 'United Kingdom':
+#                    if data.has_key( 'lat' ) and  data.has_key( 'lon' ):
+#                        try:
+#                            url = \
+#                                'http://www.whatsmylocator.co.uk/wabsquare.php?lat=' \
+#                                + data['lat'] + '&long=' + data['lon']
+#                            wabData = xmltodict.parse( getWebData( url, True ) )
+#                            if wabData.has_key( 'wabsquare' ):
+#                                self.district = wabData['wabsquare']
+#                        except Exception as e:
+#                            logging.exception('Error loading data')
 
 
                 else:
@@ -1020,11 +1033,13 @@ class DXData:
             return
         if new:
             self.data[:] = [ x for x in self.data \
-                    if x.ts > dxItem.ts - 1800 and \
+                    if x.ts > dxItem.ts - 5400 and \
                     not ( x.cs == dxItem.cs and ( x.freq - dxItem.freq < 1 and \
                     dxItem.freq - x.freq < 1 ) ) ]
 
         self.data.append( dxItem )
+        if len(self.data) > 2000:
+            self.data[:] = self.data[-2000:]
         dxItem.dxData = self
         
         if new and self.file:
