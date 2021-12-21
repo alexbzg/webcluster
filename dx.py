@@ -609,7 +609,7 @@ class DX( object ):
             self.detectAwards()
             self.updateDB()
 
-            if newSpot and not '#' in self.de:
+            if newSpot:
                 dxdb.getObject( 'spots', \
                     { 'callsign': self.cs, 'time': self.time, \
                     'de': self.de, 'text': self.text, \
